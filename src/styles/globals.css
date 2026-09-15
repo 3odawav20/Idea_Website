@@ -333,6 +333,7 @@ textarea:disabled {
   .idea-hero-content .idea-hero-title { font-size: 34px !important; line-height: 1.04; }
   .idea-hero-content p { font-size: 18px !important; max-width: 430px; margin-inline: auto !important; }
   .idea-hero-overlay { background: linear-gradient(180deg, var(--idea-scrim), transparent 58%, var(--idea-scrim)) !important; }
+  .idea-hero-copy--active .idea-hero-reveal { animation: none; opacity: 1; transform: none; }
 }
 
 @media (max-width: 480px) {
