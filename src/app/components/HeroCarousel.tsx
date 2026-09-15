@@ -29,6 +29,7 @@ export function HeroCarousel() {
   const nav = useNavigate();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [failedSlides, setFailedSlides] = useState<number[]>([]);
   const touchX = useRef<number | null>(null);
 
   const next = useCallback(() => setIndex((current) => (current + 1) % SLIDES.length), []);
@@ -91,14 +92,16 @@ export function HeroCarousel() {
         >
           <img
             className="idea-vivid-image"
-            src={slide.image}
+            src={failedSlides.includes(slideIndex) ? (slide.image === imgLivingRoom ? imgMarbleGold : imgLivingRoom) : slide.image}
             alt=""
             aria-hidden="true"
             loading="eager"
+            onError={() => setFailedSlides((current) => current.includes(slideIndex) ? current : [...current, slideIndex])}
             style={{
               width: "100%",
               height: "100%",
               objectFit: "cover",
+              objectPosition: slide.id === "supplier-offers" ? "center" : "center center",
               transform: slideIndex === index ? "scale(1.06)" : "scale(1)",
               transition: "transform 7s ease",
             }}
