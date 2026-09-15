@@ -1,1 +1,92 @@
-aW1wb3J0IHR5cGUgeyBCdXR0b25IVE1MQXR0cmlidXRlcywgQ1NTUHJvcGVydGllcywgUmVhY3ROb2RlIH0gZnJvbSAicmVhY3QiOwoKLy8g4pSA4pSAIFNoYXJlZCBpbmxpbmUtc3R5bGUgaGVscGVycyBib3VuZCB0byBJREVBIENTUyB0b2tlbnMg4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSACgpleHBvcnQgZnVuY3Rpb24gQ29udGFpbmVyKHsgY2hpbGRyZW4sIHN0eWxlLCBjbGFzc05hbWUgfTogeyBjaGlsZHJlbjogUmVhY3ROb2RlOyBzdHlsZT86IENTU1Byb3BlcnRpZXM7IGNsYXNzTmFtZT86IHN0cmluZyB9KSB7CiAgcmV0dXJuICgKICAgIDxkaXYgY2xhc3NOYW1lPXtbImlkZWEtY29udGFpbmVyIiwgY2xhc3NOYW1lXS5maWx0ZXIoQm9vbGVhbikuam9pbigiICIpfSBzdHlsZT17eyB3aWR0aDogIjEwMCUiLCBtYXhXaWR0aDogInZhcigtLWlkZWEtY29udGVudC1tYXgpIiwgbWFyZ2luOiAiMCBhdXRvIiwgcGFkZGluZ0lubGluZTogInZhcigtLWlkZWEtc3BhY2UtNSkiLCAuLi5zdHlsZSB9fT4KICAgICAge2NoaWxkcmVufQogICAgPC9kaXY+CiAgKTsKfQoKZXhwb3J0IGZ1bmN0aW9uIFNlY3Rpb24oeyBjaGlsZHJlbiwgc3R5bGUsIGFsdCB9OiB7IGNoaWxkcmVuOiBSZWFjdE5vZGU7IHN0eWxlPzogQ1NTUHJvcGVydGllczsgYWx0PzogYm9vbGVhbiB9KSB7CiAgcmV0dXJuICgKICAgIDxzZWN0aW9uIHN0eWxlPXt7IHBhZGRpbmc6ICJ2YXIoLS1pZGVhLXNwYWNlLTkpIDAiLCBiYWNrZ3JvdW5kOiBhbHQgPyAidmFyKC0taWRlYS1iZy0yKSIgOiAidHJhbnNwYXJlbnQiLCAuLi5zdHlsZSB9fT4KICAgICAge2NoaWxkcmVufQogICAgPC9zZWN0aW9uPgogICk7Cn0KCmV4cG9ydCBmdW5jdGlvbiBFeWVicm93KHsgY2hpbGRyZW4gfTogeyBjaGlsZHJlbjogUmVhY3ROb2RlIH0pIHsKICByZXR1cm4gPGRpdiBjbGFzc05hbWU9ImlkZWEtZXllYnJvdyI+e2NoaWxkcmVufTwvZGl2PjsKfQoKZXhwb3J0IGZ1bmN0aW9uIFNlY3Rpb25IZWFkZXIoeyBleWVicm93LCB0aXRsZSwgc3ViIH06IHsgZXllYnJvdz86IHN0cmluZzsgdGl0bGU6IHN0cmluZzsgc3ViPzogc3RyaW5nIH0pIHsKICByZXR1cm4gKAogICAgPGRpdiBzdHlsZT17eyBtYXJnaW5Cb3R0b206ICJ2YXIoLS1pZGVhLXNwYWNlLTcpIiwgbWF4V2lkdGg6IDcyMCB9fT4KICAgICAge2V5ZWJyb3cgJiYgPEV5ZWJyb3c+e2V5ZWJyb3d9PC9FeWVicm93Pn0KICAgICAgPGgyIGNsYXNzTmFtZT0iaWRlYS1kaXNwbGF5IiBzdHlsZT17eyBmb250U2l6ZTogInZhcigtLWlkZWEtdGV4dC0yeGwpIiwgbWFyZ2luOiAidmFyKC0taWRlYS1zcGFjZS0zKSAwIDAiLCBjb2xvcjogInZhcigtLWlkZWEtdGV4dCkiIH19PgogICAgICAgIHt0aXRsZX0KICAgICAgPC9oMj4KICAgICAge3N1YiAmJiA8cCBzdHlsZT17eyBjb2xvcjogInZhcigtLWlkZWEtdGV4dC1tdXRlZCkiLCBtYXJnaW5Ub3A6ICJ2YXIoLS1pZGVhLXNwYWNlLTMpIiwgZm9udFNpemU6ICJ2YXIoLS1pZGVhLXRleHQtYmFzZSkiLCBsaW5lSGVpZ2h0OiAxLjYgfX0+e3N1Yn08L3A+fQogICAgPC9kaXY+CiAgKTsKfQoKdHlwZSBWYXJpYW50ID0gImdvbGQiIHwgIm91dGxpbmUiIHwgImdob3N0IjsKCmludGVyZmFjZSBCdG5Qcm9wcyBleHRlbmRzIEJ1dHRvbkhUTUxBdHRyaWJ1dGVzPEhUTUxCdXR0b25FbGVtZW50PiB7CiAgdmFyaWFudD86IFZhcmlhbnQ7CiAgc2l6ZT86ICJzbSIgfCAibWQiIHwgImxnIjsKICBjaGlsZHJlbjogUmVhY3ROb2RlOwp9CgpleHBvcnQgZnVuY3Rpb24gQnV0dG9uKHsgdmFyaWFudCA9ICJnb2xkIiwgc2l6ZSA9ICJtZCIsIHN0eWxlLCBjaGlsZHJlbiwgLi4ucmVzdCB9OiBCdG5Qcm9wcykgewogIGNvbnN0IHBhZCA9IHNpemUgPT09ICJsZyIgPyAidmFyKC0taWRlYS1zcGFjZS00KSB2YXIoLS1pZGVhLXNwYWNlLTYpIiA6IHNpemUgPT09ICJzbSIgPyAidmFyKC0taWRlYS1zcGFjZS0yKSB2YXIoLS1pZGVhLXNwYWNlLTQpIiA6ICJ2YXIoLS1pZGVhLXNwYWNlLTMpIHZhcigtLWlkZWEtc3BhY2UtNSkiOwogIGNvbnN0IGZvbnQgPSBzaXplID09PSAibGciID8gInZhcigtLWlkZWEtdGV4dC1iYXNlKSIgOiAidmFyKC0taWRlYS10ZXh0LXNtKSI7CiAgY29uc3QgYmFzZTogQ1NTUHJvcGVydGllcyA9IHsKICAgIGRpc3BsYXk6ICJpbmxpbmUtZmxleCIsIGFsaWduSXRlbXM6ICJjZW50ZXIiLCBqdXN0aWZ5Q29udGVudDogImNlbnRlciIsIGdhcDogInZhcigtLWlkZWEtc3BhY2UtMikiLAogICAgcGFkZGluZzogcGFkLCBmb250RmFtaWx5OiAidmFyKC0taWRlYS1mb250LWJvZHkpIiwgZm9udFNpemU6IGZvbnQsIGZvbnRXZWlnaHQ6IDUwMCwKICAgIGxldHRlclNwYWNpbmc6ICIwLjA0ZW0iLCB0ZXh0VHJhbnNmb3JtOiAidXBwZXJjYXNlIiwgYm9yZGVyUmFkaXVzOiAidmFyKC0taWRlYS1yYWRpdXMtZnVsbCkiLAogICAgY3Vyc29yOiAicG9pbnRlciIsIHRyYW5zaXRpb246ICJjb2xvciAuMjVzIGVhc2UsIGJhY2tncm91bmQgLjI1cyBlYXNlLCBib3JkZXItY29sb3IgLjI1cyBlYXNlLCBib3gtc2hhZG93IC4yNXMgZWFzZSwgdHJhbnNmb3JtIC4yNXMgZWFzZSIsIGJvcmRlcjogIjFweCBzb2xpZCB0cmFuc3BhcmVudCIsIHdoaXRlU3BhY2U6ICJub3dyYXAiLCBtaW5IZWlnaHQ6ICJ2YXIoLS1pZGVhLWNvbnRyb2wtaGVpZ2h0KSIsCiAgfTsKICBjb25zdCB2YXJpYW50czogUmVjb3JkPFZhcmlhbnQsIENTU1Byb3BlcnRpZXM+ID0gewogICAgZ29sZDogeyBiYWNrZ3JvdW5kOiAibGluZWFyLWdyYWRpZW50KDEzNWRlZywgdmFyKC0taWRlYS1nb2xkLWJyaWdodCksIHZhcigtLWlkZWEtZ29sZCkpIiwgY29sb3I6ICJ2YXIoLS1pZGVhLW9uLWdvbGQpIiwgYm94U2hhZG93OiAidmFyKC0taWRlYS1zaGFkb3ctZ29sZCkiIH0sCiAgICBvdXRsaW5lOiB7IGJhY2tncm91bmQ6ICJ0cmFuc3BhcmVudCIsIGNvbG9yOiAidmFyKC0taWRlYS1nb2xkKSIsIGJvcmRlckNvbG9yOiAidmFyKC0taWRlYS1nb2xkKSIgfSwKICAgIGdob3N0OiB7IGJhY2tncm91bmQ6ICJ2YXIoLS1pZGVhLXN1cmZhY2UtMikiLCBjb2xvcjogInZhcigtLWlkZWEtdGV4dCkiLCBib3JkZXJDb2xvcjogInZhcigtLWlkZWEtYm9yZGVyLW5ldXRyYWwpIiB9LAogIH07CiAgcmV0dXJuICgKICAgIDxidXR0b24gey4uLnJlc3R9IHN0eWxlPXt7IC4uLmJhc2UsIC4uLnZhcmlhbnRzW3ZhcmlhbnRdLCAuLi5zdHlsZSB9fT4KICAgICAge2NoaWxkcmVufQogICAgPC9idXR0b24+CiAgKTsKfQoKZXhwb3J0IGZ1bmN0aW9uIENoaXAoeyBhY3RpdmUsIGNoaWxkcmVuLCBvbkNsaWNrIH06IHsgYWN0aXZlPzogYm9vbGVhbjsgY2hpbGRyZW46IFJlYWN0Tm9kZTsgb25DbGljaz86ICgpID0+IHZvaWQgfSkgewogIHJldHVybiAoCiAgICA8YnV0dG9uCiAgICAgIG9uQ2xpY2s9e29uQ2xpY2t9CiAgICAgIHN0eWxlPXt7CiAgICAgICAgbWluSGVpZ2h0OiAidmFyKC0taWRlYS1jb250cm9sLWhlaWdodC1jb21wYWN0KSIsIHBhZGRpbmc6ICJ2YXIoLS1pZGVhLXNwYWNlLTIpIHZhcigtLWlkZWEtc3BhY2UtNCkiLCBib3JkZXJSYWRpdXM6ICJ2YXIoLS1pZGVhLXJhZGl1cy1mdWxsKSIsIGN1cnNvcjogInBvaW50ZXIiLAogICAgICAgIGZvbnRTaXplOiAidmFyKC0taWRlYS10ZXh0LXNtKSIsIGZvbnRGYW1pbHk6ICJ2YXIoLS1pZGVhLWZvbnQtYm9keSkiLCB0cmFuc2l0aW9uOiAiYWxsIC4ycyBlYXNlIiwKICAgICAgICBib3JkZXI6IGAxcHggc29saWQgJHthY3RpdmUgPyAidmFyKC0taWRlYS1nb2xkKSIgOiAidmFyKC0taWRlYS1ib3JkZXItbmV1dHJhbCkifWAsCiAgICAgICAgYmFja2dyb3VuZDogYWN0aXZlID8gInZhcigtLWlkZWEtZ29sZC1zb2Z0KSIgOiAidHJhbnNwYXJlbnQiLAogICAgICAgIGNvbG9yOiBhY3RpdmUgPyAidmFyKC0taWRlYS1nb2xkLWJyaWdodCkiIDogInZhcigtLWlkZWEtdGV4dC1tdXRlZCkiLAogICAgICB9fQogICAgPgogICAgICB7Y2hpbGRyZW59CiAgICA8L2J1dHRvbj4KICApOwp9CgpleHBvcnQgZnVuY3Rpb24gVGFnKHsgY2hpbGRyZW4gfTogeyBjaGlsZHJlbjogUmVhY3ROb2RlIH0pIHsKICByZXR1cm4gKAogICAgPHNwYW4gc3R5bGU9e3sKICAgICAgZm9udFNpemU6ICJ2YXIoLS1pZGVhLXRleHQteHMpIiwgY29sb3I6ICJ2YXIoLS1pZGVhLXRleHQtbXV0ZWQpIiwgcGFkZGluZzogInZhcigtLWlkZWEtc3BhY2UtMSkgdmFyKC0taWRlYS1zcGFjZS0zKSIsCiAgICAgIGJvcmRlcjogInZhcigtLWlkZWEtaGFpcmxpbmUpIiwgYm9yZGVyUmFkaXVzOiAidmFyKC0taWRlYS1yYWRpdXMtc20pIiwgbGV0dGVyU3BhY2luZzogIjAuMDRlbSIsCiAgICB9fT4KICAgICAge2NoaWxkcmVufQogICAgPC9zcGFuPgogICk7Cn0K
+import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from "react";
+
+// ── Shared inline-style helpers bound to IDEA CSS tokens ──────────────────
+
+export function Container({ children, style, className }: { children: ReactNode; style?: CSSProperties; className?: string }) {
+  return (
+    <div className={["idea-container", className].filter(Boolean).join(" ")} style={{ width: "100%", maxWidth: "var(--idea-content-max)", margin: "0 auto", paddingInline: "var(--idea-space-5)", ...style }}>
+      {children}
+    </div>
+  );
+}
+
+export function Section({ children, style, alt }: { children: ReactNode; style?: CSSProperties; alt?: boolean }) {
+  return (
+    <section style={{ padding: "var(--idea-space-9) 0", background: alt ? "var(--idea-bg-2)" : "transparent", ...style }}>
+      {children}
+    </section>
+  );
+}
+
+export function Eyebrow({ children }: { children: ReactNode }) {
+  return <div className="idea-eyebrow">{children}</div>;
+}
+
+export function SectionHeader({ eyebrow, title, sub }: { eyebrow?: string; title: string; sub?: string }) {
+  return (
+    <div style={{ marginBottom: "var(--idea-space-7)", maxWidth: 720 }}>
+      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+      <h2 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", margin: "var(--idea-space-3) 0 0", color: "var(--idea-text)" }}>
+        {title}
+      </h2>
+      {sub && <p style={{ color: "var(--idea-text-muted)", marginTop: "var(--idea-space-3)", fontSize: "var(--idea-text-base)", lineHeight: 1.6 }}>{sub}</p>}
+    </div>
+  );
+}
+
+type Variant = "gold" | "outline" | "ghost";
+
+interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: Variant;
+  size?: "sm" | "md" | "lg";
+  children: ReactNode;
+}
+
+export function Button({ variant = "gold", size = "md", style, children, ...rest }: BtnProps) {
+  const pad = size === "lg" ? "var(--idea-space-4) var(--idea-space-6)" : size === "sm" ? "var(--idea-space-2) var(--idea-space-4)" : "var(--idea-space-3) var(--idea-space-5)";
+  const font = size === "lg" ? "var(--idea-text-base)" : "var(--idea-text-sm)";
+  const base: CSSProperties = {
+    display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "var(--idea-space-2)",
+    padding: pad, fontFamily: "var(--idea-font-body)", fontSize: font, fontWeight: 500,
+    letterSpacing: "0.04em", textTransform: "uppercase", borderRadius: "var(--idea-radius-full)",
+    cursor: "pointer", transition: "color .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease, transform .25s ease", border: "1px solid transparent", whiteSpace: "nowrap", minHeight: "var(--idea-control-height)",
+  };
+  const variants: Record<Variant, CSSProperties> = {
+    gold: { background: "linear-gradient(135deg, var(--idea-gold-bright), var(--idea-gold))", color: "var(--idea-on-gold)", boxShadow: "var(--idea-shadow-gold)" },
+    outline: { background: "transparent", color: "var(--idea-gold)", borderColor: "var(--idea-gold)" },
+    ghost: { background: "var(--idea-surface-2)", color: "var(--idea-text)", borderColor: "var(--idea-border-neutral)" },
+  };
+  return (
+    <button {...rest} style={{ ...base, ...variants[variant], ...style }}>
+      {children}
+    </button>
+  );
+}
+
+export function Chip({ active, children, onClick }: { active?: boolean; children: ReactNode; onClick?: () => void }) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        minHeight: "var(--idea-control-height-compact)", padding: "var(--idea-space-2) var(--idea-space-4)", borderRadius: "var(--idea-radius-full)", cursor: "pointer",
+        fontSize: "var(--idea-text-sm)", fontFamily: "var(--idea-font-body)", transition: "all .2s ease",
+        border: `1px solid ${active ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
+        background: active ? "var(--idea-gold-soft)" : "transparent",
+        color: active ? "var(--idea-gold-bright)" : "var(--idea-text-muted)",
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+
+export function Tag({ children }: { children: ReactNode }) {
+  return (
+    <span style={{
+      fontSize: "var(--idea-text-xs)", color: "var(--idea-text-muted)", padding: "var(--idea-space-1) var(--idea-space-3)",
+      border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)", letterSpacing: "0.04em",
+    }}>
+      {children}
+    </span>
+  );
+}

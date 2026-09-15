@@ -1,1 +1,133 @@
-aW1wb3J0IHsgdXNlQ2FsbGJhY2ssIHVzZUVmZmVjdCwgdXNlUmVmLCB1c2VTdGF0ZSB9IGZyb20gInJlYWN0IjsNCmltcG9ydCB7IHVzZU5hdmlnYXRlIH0gZnJvbSAicmVhY3Qtcm91dGVyIjsNCmltcG9ydCB7IENoZXZyb25MZWZ0LCBDaGV2cm9uUmlnaHQgfSBmcm9tICJsdWNpZGUtcmVhY3QiOw0KaW1wb3J0IHsgdXNlSTE4biB9IGZyb20gIi4uL2kxOG4vaTE4biI7DQppbXBvcnQgeyBCdXR0b24sIENvbnRhaW5lciB9IGZyb20gIi4vdWkiOw0KaW1wb3J0IGltZ0xpdmluZ1Jvb20gZnJvbSAiLi4vLi4vaW1wb3J0cy9Nb2Rlcm5fbHV4dXJ5X2xpdmluZ19yb29tX2FtYmlhbmNlLnBuZyI7DQppbXBvcnQgaW1nTWFyYmxlR29sZCBmcm9tICIuLi8uLi9pbXBvcnRzL0x1eHVyaW91c19tb2Rlcm5faW50ZXJpb3JzX3dpdGhfbWFyYmxlX2FuZF9nb2xkLnBuZyI7DQoNCmludGVyZmFjZSBTbGlkZSB7DQogIGlkOiBzdHJpbmc7DQogIGhlYWRsaW5lOiB7IGVuOiBzdHJpbmc7IGFyOiBzdHJpbmc7IGZyOiBzdHJpbmcgfTsNCiAgdGV4dDogeyBlbjogc3RyaW5nOyBhcjogc3RyaW5nOyBmcjogc3RyaW5nIH07DQogIGltYWdlOiBzdHJpbmc7DQogIGJ1dHRvbnM6IHsgbGFiZWw6IHsgZW46IHN0cmluZzsgYXI6IHN0cmluZzsgZnI6IHN0cmluZyB9OyB0bzogc3RyaW5nOyB2YXJpYW50OiAiZ29sZCIgfCAib3V0bGluZSIgfVtdOw0KfQ0KDQpjb25zdCBTTElERVM6IFNsaWRlW10gPSBbDQogIHsgaWQ6ICJwcmVtaXVtLWJhdGhyb29tIiwgaW1hZ2U6IGltZ0xpdmluZ1Jvb20sIGhlYWRsaW5lOiB7IGVuOiAiRGVmaW5lIFlvdXIgU3BhY2UgV2l0aCBQZXJmZWN0aW9uIiwgYXI6ICLYp9i12YbYuSDZhdiz2KfYrdiq2YMg2KjYpdiq2YLYp9mGIiwgZnI6ICJEw6lmaW5pc3NleiB2b3RyZSBlc3BhY2UgYXZlYyBwZXJmZWN0aW9uIiB9LCB0ZXh0OiB7IGVuOiAiRGlzY292ZXIgcHJlbWl1bSBjZXJhbWljcywgcG9yY2VsYWluIGFuZCBjb21wbGV0ZSBiYXRocm9vbSBzb2x1dGlvbnMgY3JlYXRlZCBmb3IgZXhjZXB0aW9uYWwgaW50ZXJpb3JzLiIsIGFyOiAi2KfZg9iq2LTZgSDYp9mE2LPZitix2KfZhdmK2YMg2YjYp9mE2KjZiNix2LPZhNmK2YYg2YjYrdmE2YjZhCDYp9mE2K3Zhdin2YXYp9iqINin2YTZhdiq2YPYp9mF2YTYqSDYp9mE2YXYtdmF2YXYqSDZhNmE2K/ZitmD2YjYsdin2Kog2KfZhNin2LPYqtir2YbYp9im2YrYqS4iLCBmcjogIkTDqWNvdXZyZXogY8OpcmFtaXF1ZXMsIHBvcmNlbGFpbmVzIGV0IHNvbHV0aW9ucyBjb21wbMOodGVzIGRlIHNhbGxlIGRlIGJhaW4gcG91ciBkZXMgaW50w6lyaWV1cnMgZXhjZXB0aW9ubmVscy4iIH0sIGJ1dHRvbnM6IFt7IGxhYmVsOiB7IGVuOiAiRXhwbG9yZSBDb2xsZWN0aW9ucyIsIGFyOiAi2KfYs9iq2YPYtNmBINin2YTZhdis2YXZiNi52KfYqiIsIGZyOiAiRXhwbG9yZXIgbGVzIGNvbGxlY3Rpb25zIiB9LCB0bzogIi9jb2xsZWN0aW9ucyIsIHZhcmlhbnQ6ICJnb2xkIiB9LCB7IGxhYmVsOiB7IGVuOiAiVmlzdWFsaXplIFlvdXIgUm9vbSIsIGFyOiAi2KrYtdmI2LEg2LrYsdmB2KrZgyIsIGZyOiAiVmlzdWFsaXNleiB2b3RyZSBwacOoY2UiIH0sIHRvOiAiL2FpLXJvb20tdmlzdWFsaXplciIsIHZhcmlhbnQ6ICJvdXRsaW5lIiB9XSB9LAogIHsgaWQ6ICJhaS12aXN1YWxpemVyIiwgaW1hZ2U6IGltZ0xpdmluZ1Jvb20sIGhlYWRsaW5lOiB7IGVuOiAiU2VlIEl0IEluc2lkZSBZb3VyIFNwYWNlIEJlZm9yZSBZb3UgQnV5IiwgYXI6ICLYtNin2YfYr9mH2Kcg2YHZiiDZhdiz2KfYrdiq2YMg2YLYqNmEINin2YTYtNix2KfYoSIsIGZyOiAiVmlzdWFsaXNlei1sZSBjaGV6IHZvdXMgYXZhbnQgZCdhY2hldGVyIiB9LCB0ZXh0OiB7IGVuOiAiVXBsb2FkIHlvdXIgYmF0aHJvb20sIGtpdGNoZW4gb3IgbGl2aW5nIHJvb20sIHNlbGVjdCBhIHJlYWwgSURFQSBwcm9kdWN0IGFuZCBleHBlcmllbmNlIHRoZSBmaW5pc2hlZCByZXN1bHQgYmVmb3JlIGluc3RhbGxhdGlvbi4iLCBhcjogItin2LHZgdi5INi12YjYsdipINit2YXYp9mF2YMg2KPZiCDZhdi32KjYrtmDINij2Ygg2LrYsdmB2KrZg9iMINin2K7YqtixINmF2YbYqtisIElERUEg2K3ZgtmK2YLZitiMINmI2LTYp9mH2K8g2KfZhNmG2KrZitis2Kkg2KfZhNmG2YfYp9im2YrYqSDZgtio2YQg2KfZhNiq2LHZg9mK2KguIiwgZnI6ICJUw6lsw6ljaGFyZ2V6IHZvdHJlIHNhbGxlIGRlIGJhaW4sIGN1aXNpbmUgb3Ugc2Fsb24sIGNob2lzaXNzZXogdW4gcHJvZHVpdCBJREVBIGV0IGTDqWNvdXZyZXogbGUgcsOpc3VsdGF0IGZpbmFsIGF2YW50IGwnaW5zdGFsbGF0aW9uLiIgfSwgYnV0dG9uczogW3sgbGFiZWw6IHsgZW46ICJTdGFydCBBSSBWaXN1YWxpemF0aW9uIiwgYXI6ICLYp9io2K/YoyDYp9mE2YXYrdin2YPYp9ipIiwgZnI6ICJEw6ltYXJyZXIgbGEgdmlzdWFsaXNhdGlvbiIgfSwgdG86ICIvcm9vbS1kZXNpZ25lci9uZXciLCB2YXJpYW50OiAiZ29sZCIgfSwgeyBsYWJlbDogeyBlbjogIkJyb3dzZSBQb3JjZWxhaW4iLCBhcjogItiq2LXZgditINin2YTYqNmI2LHYs9mE2YrZhiIsIGZyOiAiVm9pciBsYSBwb3JjZWxhaW5lIiB9LCB0bzogIi9jb2xsZWN0aW9ucy9wb3JjZWxhaW4iLCB2YXJpYW50OiAib3V0bGluZSIgfV0gfSwNCiAgeyBpZDogInN1cHBsaWVyLW9mZmVycyIsIGltYWdlOiBpbWdNYXJibGVHb2xkLCBoZWFkbGluZTogeyBlbjogIk9uZSBSZXF1ZXN0LiBNdWx0aXBsZSBRdWFsaWZpZWQgT2ZmZXJzLiIsIGFyOiAi2LfZhNioINmI2KfYrdivLiDYudix2YjYtiDZhdiq2LnYr9iv2Kkg2YXYpNmH2YTYqS4iLCBmcjogIlVuZSBkZW1hbmRlLiBQbHVzaWV1cnMgb2ZmcmVzIHF1YWxpZmnDqWVzLiIgfSwgdGV4dDogeyBlbjogIlNlbGVjdCB0aGUgcHJvZHVjdCBhbmQgcmVxdWlyZWQgcXVhbnRpdHksIHRoZW4gcmVjZWl2ZSBwcml2YXRlIG9mZmVycyBmcm9tIHZlcmlmaWVkIG1hdGNoaW5nIHN1cHBsaWVycy4iLCBhcjogItin2K7YqtixINin2YTZhdmG2KrYrCDZiNin2YTZg9mF2YrYqSDYp9mE2YXYt9mE2YjYqNip2Iwg2KvZhSDYp9it2LXZhCDYudmE2Ykg2LnYsdmI2LYg2K7Yp9i12Kkg2YXZhiDZhdmI2LHYr9mK2YYg2YXYudiq2YXYr9mK2YYuIiwgZnI6ICJTw6lsZWN0aW9ubmV6IGxlIHByb2R1aXQgZXQgbGEgcXVhbnRpdMOpLCBwdWlzIHJlY2V2ZXogZGVzIG9mZnJlcyBwcml2w6llcyBkZSBmb3Vybmlzc2V1cnMgdsOpcmlmacOpcy4iIH0sIGJ1dHRvbnM6IFt7IGxhYmVsOiB7IGVuOiAiUmVxdWVzdCBCZXN0IFByaWNlIiwgYXI6ICLYp9i32YTYqCDYo9mB2LbZhCDYs9i52LEiLCBmcjogIkRlbWFuZGVyIGxlIG1laWxsZXVyIHByaXgiIH0sIHRvOiAiL3JlcXVlc3QtcXVvdGUvbmV3IiwgdmFyaWFudDogImdvbGQiIH0sIHsgbGFiZWw6IHsgZW46ICJIb3cgSXQgV29ya3MiLCBhcjogItmD2YrZgSDZiti52YXZhCIsIGZyOiAiQ29tbWVudCDDp2EgbWFyY2hlIiB9LCB0bzogIi9ob3ctaXQtd29ya3MiLCB2YXJpYW50OiAib3V0bGluZSIgfV0gfSwNCiAgeyBpZDogImNvbXBsZXRlLWNvbGxlY3Rpb25zIiwgaW1hZ2U6IGltZ0xpdmluZ1Jvb20sIGhlYWRsaW5lOiB7IGVuOiAiRXZlcnkgU3VyZmFjZS4gRXZlcnkgRGV0YWlsLiBPbmUgRGVzdGluYXRpb24uIiwgYXI6ICLZg9mEINiz2LfYrS4g2YPZhCDYqtmB2LXZitmE2KkuINmI2KzZh9ipINmI2KfYrdiv2KkuIiwgZnI6ICJDaGFxdWUgc3VyZmFjZS4gQ2hhcXVlIGTDqXRhaWwuIFVuZSBkZXN0aW5hdGlvbi4iIH0sIHRleHQ6IHsgZW46ICJFeHBsb3JlIGNlcmFtaWMsIHBvcmNlbGFpbiwgZmF1Y2V0cywgYmF0aHJvb20gc2V0cywgdW5pdHMsIGJhdGh0dWJzLCBzaG93ZXIgc3lzdGVtcyBhbmQgYWNjZXNzb3JpZXMgaW4gb25lIGN1cmF0ZWQgbWFya2V0cGxhY2UuIiwgYXI6ICLYp9iz2KrZg9i02YEg2KfZhNiz2YrYsdin2YXZitmDINmI2KfZhNio2YjYsdiz2YTZitmGINmI2KfZhNiu2YTYp9i32KfYqiDZiNij2LfZgtmFINin2YTYrdmF2KfZhSDZiNin2YTZiNit2K/Yp9iqINmI2KfZhNij2K3ZiNin2LYg2YjYo9mG2LjZhdipINin2YTYr9i0INmI2KfZhNil2YPYs9iz2YjYp9ix2KfYqiDZgdmKINiz2YjZgiDZiNin2K3YryDZhdmG2LPZgi4iLCBmcjogIkV4cGxvcmV6IGPDqXJhbWlxdWUsIHBvcmNlbGFpbmUsIHJvYmluZXR0ZXJpZSwgZW5zZW1ibGVzLCBtZXVibGVzLCBiYWlnbm9pcmVzLCBkb3VjaGVzIGV0IGFjY2Vzc29pcmVzIGRhbnMgdW5lIHNldWxlIG1hcmtldHBsYWNlLiIgfSwgYnV0dG9uczogW3sgbGFiZWw6IHsgZW46ICJCcm93c2UgQWxsIFByb2R1Y3RzIiwgYXI6ICLYqti12YHYrSDZg9mEINin2YTZhdmG2KrYrNin2KoiLCBmcjogIlZvaXIgdG91cyBsZXMgcHJvZHVpdHMiIH0sIHRvOiAiL3Byb2R1Y3RzIiwgdmFyaWFudDogImdvbGQiIH0sIHsgbGFiZWw6IHsgZW46ICJCYXRocm9vbSBDb2xsZWN0aW9ucyIsIGFyOiAi2YXYrNmF2YjYudin2Kog2KfZhNit2YXYp9mFIiwgZnI6ICJDb2xsZWN0aW9ucyBzYWxsZSBkZSBiYWluIiB9LCB0bzogIi9jb2xsZWN0aW9ucy9zYW5pdGFyeS13YXJlIiwgdmFyaWFudDogIm91dGxpbmUiIH1dIH0sDQpdOw0KDQpjb25zdCBJTlRFUlZBTCA9IDYwMDA7DQpjb25zdCBGSVJTVF9UUkFOU0lUSU9OX0RFTEFZID0gSU5URVJWQUw7Cg0KZXhwb3J0IGZ1bmN0aW9uIEhlcm9DYXJvdXNlbCgpIHsKICBjb25zdCB7IGxvY2FsZSB9ID0gdXNlSTE4bigpOw0KICBjb25zdCBuYXYgPSB1c2VOYXZpZ2F0ZSgpOw0KICBjb25zdCBbaW5kZXgsIHNldEluZGV4XSA9IHVzZVN0YXRlKDApOwogIGNvbnN0IFtwYXVzZWQsIHNldFBhdXNlZF0gPSB1c2VTdGF0ZShmYWxzZSk7CiAgY29uc3QgW2ZhaWxlZFNsaWRlcywgc2V0RmFpbGVkU2xpZGVzXSA9IHVzZVN0YXRlPG51bWJlcltdPihbXSk7CiAgY29uc3QgdG91Y2hYID0gdXNlUmVmPG51bWJlciB8IG51bGw+KG51bGwpOw0KDQogIGNvbnN0IG5leHQgPSB1c2VDYWxsYmFjaygoKSA9PiBzZXRJbmRleCgoY3VycmVudCkgPT4gKGN1cnJlbnQgKyAxKSAlIFNMSURFUy5sZW5ndGgpLCBbXSk7DQogIGNvbnN0IHByZXYgPSB1c2VDYWxsYmFjaygoKSA9PiBzZXRJbmRleCgoY3VycmVudCkgPT4gKGN1cnJlbnQgLSAxICsgU0xJREVTLmxlbmd0aCkgJSBTTElERVMubGVuZ3RoKSwgW10pOw0KICBjb25zdCBnbyA9IHVzZUNhbGxiYWNrKChuZXh0SW5kZXg6IG51bWJlcikgPT4gc2V0SW5kZXgoKG5leHRJbmRleCArIFNMSURFUy5sZW5ndGgpICUgU0xJREVTLmxlbmd0aCksIFtdKTsNCg0KICB1c2VFZmZlY3QoKCkgPT4gewogICAgLy8gRmV0Y2ggZXZlcnkgYmFja2dyb3VuZCBiZWZvcmUgaXQgY2FuIGJlIHNlbGVjdGVkLCBwcmV2ZW50aW5nIGEgZGFyawogICAgLy8gZW1wdHkgZnJhbWUgZHVyaW5nIHRoZSBjcm9zcy1mYWRlIG9uIHNsb3dlciBjb25uZWN0aW9ucy4KICAgIFNMSURFUy5mb3JFYWNoKChzbGlkZSkgPT4gewogICAgICBjb25zdCBpbWFnZSA9IG5ldyBJbWFnZSgpOwogICAgICBpbWFnZS5zcmMgPSBzbGlkZS5pbWFnZTsKICAgIH0pOwogIH0sIFtdKTsKCiAgdXNlRWZmZWN0KCgpID0+IHsKICAgIGlmIChwYXVzZWQpIHJldHVybjsKICAgIC8vIFN0YXJ0IHF1aWNrbHkgaW4gdGhlIGxpdmUgcHJldmlldywgdGhlbiBjb250aW51ZSBhdCB0aGUgcmVndWxhciBjaW5lbWF0aWMgcGFjZS4KICAgIGNvbnN0IGZpcnN0VHJhbnNpdGlvbiA9IHdpbmRvdy5zZXRUaW1lb3V0KG5leHQsIEZJUlNUX1RSQU5TSVRJT05fREVMQVkpOw0KICAgIGNvbnN0IHRpbWVyID0gd2luZG93LnNldEludGVydmFsKG5leHQsIElOVEVSVkFMKTsNCiAgICByZXR1cm4gKCkgPT4gew0KICAgICAgd2luZG93LmNsZWFyVGltZW91dChmaXJzdFRyYW5zaXRpb24pOw0KICAgICAgd2luZG93LmNsZWFySW50ZXJ2YWwodGltZXIpOw0KICAgIH07DQogIH0sIFtuZXh0LCBwYXVzZWRdKTsKDQogIHJldHVybiAoDQogICAgPHNlY3Rpb24NCiAgICAgIGNsYXNzTmFtZT0iaWRlYS1oZXJvLWNhcm91c2VsIg0KICAgICAgYXJpYS1yb2xlZGVzY3JpcHRpb249ImNhcm91c2VsIg0KICAgICAgYXJpYS1sYWJlbD0iSURFQSBoaWdobGlnaHRzIg0KICAgICAgdGFiSW5kZXg9ezB9DQogICAgICBvbktleURvd249eyhldmVudCkgPT4geyBpZiAoZXZlbnQua2V5ID09PSAiQXJyb3dSaWdodCIpIG5leHQoKTsgaWYgKGV2ZW50LmtleSA9PT0gIkFycm93TGVmdCIpIHByZXYoKTsgfX0KICAgICAgb25Nb3VzZUVudGVyPXsoKSA9PiBzZXRQYXVzZWQodHJ1ZSl9CiAgICAgIG9uTW91c2VMZWF2ZT17KCkgPT4gc2V0UGF1c2VkKGZhbHNlKX0KICAgICAgb25Gb2N1cz17KCkgPT4gc2V0UGF1c2VkKHRydWUpfQogICAgICBvbkJsdXI9eyhldmVudCkgPT4geyBpZiAoIWV2ZW50LmN1cnJlbnRUYXJnZXQuY29udGFpbnMoZXZlbnQucmVsYXRlZFRhcmdldCkpIHNldFBhdXNlZChmYWxzZSk7IH19CiAgICAgIG9uVG91Y2hTdGFydD17KGV2ZW50KSA9PiB7IHRvdWNoWC5jdXJyZW50ID0gZXZlbnQudG91Y2hlc1swXT8uY2xpZW50WCA/PyBudWxsOyB9fQ0KICAgICAgb25Ub3VjaEVuZD17KGV2ZW50KSA9PiB7DQogICAgICAgIGlmICh0b3VjaFguY3VycmVudCA9PT0gbnVsbCkgcmV0dXJuOw0KICAgICAgICBjb25zdCBkaXN0YW5jZSA9IChldmVudC5jaGFuZ2VkVG91Y2hlc1swXT8uY2xpZW50WCA/PyB0b3VjaFguY3VycmVudCkgLSB0b3VjaFguY3VycmVudDsNCiAgICAgICAgaWYgKE1hdGguYWJzKGRpc3RhbmNlKSA+IDUwKSAoZGlzdGFuY2UgPCAwID8gbmV4dCA6IHByZXYpKCk7DQogICAgICAgIHRvdWNoWC5jdXJyZW50ID0gbnVsbDsNCiAgICAgIH19DQogICAgICBzdHlsZT17eyBwb3NpdGlvbjogInJlbGF0aXZlIiwgaGVpZ2h0OiAibWluKDg4c3ZoLCA3ODBweCkiLCBvdmVyZmxvdzogImhpZGRlbiIsIG91dGxpbmU6ICJub25lIiwgYmFja2dyb3VuZDogInZhcigtLWlkZWEtYmcpIiB9fQogICAgPg0KICAgICAge1NMSURFUy5tYXAoKHNsaWRlLCBzbGlkZUluZGV4KSA9PiAoCiAgICAgICAgPGRpdg0KICAgICAgICAgIGtleT17c2xpZGUuaWR9DQogICAgICAgICAgYXJpYS1oaWRkZW49e3NsaWRlSW5kZXggIT09IGluZGV4fQ0KICAgICAgICAgIGFyaWEtcm9sZWRlc2NyaXB0aW9uPSJzbGlkZSINCiAgICAgICAgICByb2xlPSJncm91cCINCiAgICAgICAgICBzdHlsZT17ew0KICAgICAgICAgICAgcG9zaXRpb246ICJhYnNvbHV0ZSIsDQogICAgICAgICAgICBpbnNldDogMCwNCiAgICAgICAgICAgIG9wYWNpdHk6IHNsaWRlSW5kZXggPT09IGluZGV4ID8gMSA6IDAsDQogICAgICAgICAgICBwb2ludGVyRXZlbnRzOiBzbGlkZUluZGV4ID09PSBpbmRleCA/ICJhdXRvIiA6ICJub25lIiwNCiAgICAgICAgICAgIHRyYW5zaXRpb246ICJvcGFjaXR5IDFzIGVhc2UiLA0KICAgICAgICAgIH19DQogICAgICAgID4NCiAgICAgICAgICA8aW1nCiAgICAgICAgICAgIGNsYXNzTmFtZT17YGlkZWEtdml2aWQtaW1hZ2UgaWRlYS1oZXJvLWltYWdlICR7c2xpZGVJbmRleCA9PT0gaW5kZXggPyAiaWRlYS1oZXJvLWltYWdlLS1hY3RpdmUiIDogIiJ9YH0KICAgICAgICAgICAgc3JjPXtmYWlsZWRTbGlkZXMuaW5jbHVkZXMoc2xpZGVJbmRleCkgPyAoc2xpZGUuaW1hZ2UgPT09IGltZ0xpdmluZ1Jvb20gPyBpbWdNYXJibGVHb2xkIDogaW1nTGl2aW5nUm9vbSkgOiBzbGlkZS5pbWFnZX0KICAgICAgICAgICAgYWx0PSIiCiAgICAgICAgICAgIGFyaWEtaGlkZGVuPSJ0cnVlIgogICAgICAgICAgICBsb2FkaW5nPSJlYWdlciIKICAgICAgICAgICAgb25FcnJvcj17KCkgPT4gc2V0RmFpbGVkU2xpZGVzKChjdXJyZW50KSA9PiBjdXJyZW50LmluY2x1ZGVzKHNsaWRlSW5kZXgpID8gY3VycmVudCA6IFsuLi5jdXJyZW50LCBzbGlkZUluZGV4XSl9CiAgICAgICAgICAgIHN0eWxlPXt7CiAgICAgICAgICAgICAgd2lkdGg6ICIxMDAlIiwKICAgICAgICAgICAgICBoZWlnaHQ6ICIxMDAlIiwKICAgICAgICAgICAgICBvYmplY3RGaXQ6ICJjb3ZlciIsCiAgICAgICAgICAgICAgb2JqZWN0UG9zaXRpb246IHNsaWRlLmlkID09PSAic3VwcGxpZXItb2ZmZXJzIiA/ICJjZW50ZXIiIDogImNlbnRlciBjZW50ZXIiLAogICAgICAgICAgICB9fQogICAgICAgICAgLz4NCiAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iaWRlYS1oZXJvLWRlcHRoIiBhcmlhLWhpZGRlbj0idHJ1ZSIgLz4KICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJpZGVhLWhlcm8tb3ZlcmxheSIgc3R5bGU9e3sgcG9zaXRpb246ICJhYnNvbHV0ZSIsIGluc2V0OiAwLCBiYWNrZ3JvdW5kOiAidmFyKC0taWRlYS1oZXJvLW92ZXJsYXkpIiB9fSAvPgogICAgICAgICAgPENvbnRhaW5lciBjbGFzc05hbWU9ImlkZWEtaGVyby1jb250ZW50IiBzdHlsZT17eyBwb3NpdGlvbjogImFic29sdXRlIiwgaW5zZXQ6IDAsIGRpc3BsYXk6ICJmbGV4IiwgZmxleERpcmVjdGlvbjogImNvbHVtbiIsIGp1c3RpZnlDb250ZW50OiAiY2VudGVyIiwgcGFkZGluZ0Jsb2NrU3RhcnQ6ICJ2YXIoLS1pZGVhLXNwYWNlLTgpIiwgcGFkZGluZ0Jsb2NrRW5kOiAidmFyKC0taWRlYS1zcGFjZS04KSIgfX0+CiAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPXtzbGlkZUluZGV4ID09PSBpbmRleCA/ICJpZGVhLWhlcm8tY29weS0tYWN0aXZlIiA6ICIifSBzdHlsZT17eyBtYXhXaWR0aDogNjQwIH19PgogICAgICAgICAgICAgIDxkaXYgY2xhc3NOYW1lPSJpZGVhLWV5ZWJyb3cgaWRlYS1oZXJvLXJldmVhbCBpZGVhLWhlcm8tcmV2ZWFsLS1vbmUiIHN0eWxlPXt7IG1hcmdpbkJvdHRvbTogInZhcigtLWlkZWEtc3BhY2UtNCkiLCBjb2xvcjogInZhcigtLWlkZWEtZ29sZC1icmlnaHQpIiB9fT5JREVBIMK3IEJ1c2luZXNzIEFkbWluaXN0cmF0aW9uPC9kaXY+CiAgICAgICAgICAgICAgPGgxIGNsYXNzTmFtZT0iaWRlYS1oZXJvLXRpdGxlIGlkZWEtaGVyby1yZXZlYWwgaWRlYS1oZXJvLXJldmVhbC0tdHdvIiBzdHlsZT17eyBmb250U2l6ZTogImNsYW1wKDM2cHgsIDQuNHZ3LCA2NHB4KSIsIG1hcmdpbjogMCwgY29sb3I6ICJ2YXIoLS1pZGVhLW9uLWdvbGQpIiB9fT57c2xpZGUuaGVhZGxpbmVbbG9jYWxlXX08L2gxPgogICAgICAgICAgICAgIDxwIGNsYXNzTmFtZT0iaWRlYS1oZXJvLXJldmVhbCBpZGVhLWhlcm8tcmV2ZWFsLS10aHJlZSIgc3R5bGU9e3sgY29sb3I6ICJ2YXIoLS1pZGVhLWhlcm8tY29weSkiLCBmb250U2l6ZTogInZhcigtLWlkZWEtdGV4dC1sZykiLCBsaW5lSGVpZ2h0OiAxLjYsIG1hcmdpbjogInZhcigtLWlkZWEtc3BhY2UtNSkgMCB2YXIoLS1pZGVhLXNwYWNlLTYpIiB9fT57c2xpZGUudGV4dFtsb2NhbGVdfTwvcD4KICAgICAgICAgICAgICA8ZGl2IGNsYXNzTmFtZT0iaWRlYS1oZXJvLXJldmVhbCBpZGVhLWhlcm8tcmV2ZWFsLS1mb3VyIiBzdHlsZT17eyBkaXNwbGF5OiAiZmxleCIsIGdhcDogInZhcigtLWlkZWEtc3BhY2UtNCkiLCBmbGV4V3JhcDogIndyYXAiIH19PgogICAgICAgICAgICAgICAge3NsaWRlLmJ1dHRvbnMubWFwKChidXR0b24pID0+IDxCdXR0b24ga2V5PXtidXR0b24udG99IHZhcmlhbnQ9e2J1dHRvbi52YXJpYW50fSBzaXplPSJsZyIgb25DbGljaz17KCkgPT4gbmF2KGJ1dHRvbi50byl9PntidXR0b24ubGFiZWxbbG9jYWxlXX08L0J1dHRvbj4pfQ0KICAgICAgICAgICAgICA8L2Rpdj4NCiAgICAgICAgICAgIDwvZGl2Pg0KICAgICAgICAgIDwvQ29udGFpbmVyPg0KICAgICAgICA8L2Rpdj4NCiAgICAgICkpfQ0KDQogICAgICA8YnV0dG9uIGNsYXNzTmFtZT0iaWRlYS1oZXJvLWFycm93IiBhcmlhLWxhYmVsPSJQcmV2aW91cyBzbGlkZSIgb25DbGljaz17cHJldn0gc3R5bGU9e2Fycm93U3R5bGUoInN0YXJ0Iil9PjxDaGV2cm9uTGVmdCBzaXplPXsyMn0gLz48L2J1dHRvbj4KICAgICAgPGJ1dHRvbiBjbGFzc05hbWU9ImlkZWEtaGVyby1hcnJvdyIgYXJpYS1sYWJlbD0iTmV4dCBzbGlkZSIgb25DbGljaz17bmV4dH0gc3R5bGU9e2Fycm93U3R5bGUoImVuZCIpfT48Q2hldnJvblJpZ2h0IHNpemU9ezIyfSAvPjwvYnV0dG9uPgogICAgICA8ZGl2IHN0eWxlPXt7IHBvc2l0aW9uOiAiYWJzb2x1dGUiLCBib3R0b206ICJ2YXIoLS1pZGVhLXNwYWNlLTkpIiwgaW5zZXRJbmxpbmU6IDAsIGRpc3BsYXk6ICJmbGV4IiwganVzdGlmeUNvbnRlbnQ6ICJjZW50ZXIiLCBnYXA6ICJ2YXIoLS1pZGVhLXNwYWNlLTMpIiB9fT4NCiAgICAgICAge1NMSURFUy5tYXAoKGl0ZW0sIGl0ZW1JbmRleCkgPT4gPGJ1dHRvbiBrZXk9e2l0ZW0uaWR9IGFyaWEtbGFiZWw9e2BHbyB0byBzbGlkZSAke2l0ZW1JbmRleCArIDF9YH0gYXJpYS1jdXJyZW50PXtpdGVtSW5kZXggPT09IGluZGV4fSBvbkNsaWNrPXsoKSA9PiBnbyhpdGVtSW5kZXgpfSBzdHlsZT17eyB3aWR0aDogaXRlbUluZGV4ID09PSBpbmRleCA/ICJ2YXIoLS1pZGVhLXNwYWNlLTcpIiA6ICJ2YXIoLS1pZGVhLXNwYWNlLTMpIiwgaGVpZ2h0OiAidmFyKC0taWRlYS1zcGFjZS0xKSIsIGJvcmRlclJhZGl1czogInZhcigtLWlkZWEtcmFkaXVzLWZ1bGwpIiwgYm9yZGVyOiAibm9uZSIsIGN1cnNvcjogInBvaW50ZXIiLCB0cmFuc2l0aW9uOiAiYWxsIC4zcyIsIGJhY2tncm91bmQ6IGl0ZW1JbmRleCA9PT0gaW5kZXggPyAidmFyKC0taWRlYS1nb2xkKSIgOiAidmFyKC0taWRlYS1oZXJvLWNvbnRyb2wpIiB9fSAvPil9DQogICAgICA8L2Rpdj4NCiAgICA8L3NlY3Rpb24+DQogICk7DQp9DQoNCmZ1bmN0aW9uIGFycm93U3R5bGUoc2lkZTogInN0YXJ0IiB8ICJlbmQiKTogUmVhY3QuQ1NTUHJvcGVydGllcyB7DQogIHJldHVybiB7IHBvc2l0aW9uOiAiYWJzb2x1dGUiLCB0b3A6ICI1MCUiLCB0cmFuc2Zvcm06ICJ0cmFuc2xhdGVZKC01MCUpIiwgaW5zZXRJbmxpbmVTdGFydDogc2lkZSA9PT0gInN0YXJ0IiA/ICJ2YXIoLS1pZGVhLXNwYWNlLTUpIiA6IHVuZGVmaW5lZCwgaW5zZXRJbmxpbmVFbmQ6IHNpZGUgPT09ICJlbmQiID8gInZhcigtLWlkZWEtc3BhY2UtNSkiIDogdW5kZWZpbmVkLCB3aWR0aDogInZhcigtLWlkZWEtc3BhY2UtNykiLCBoZWlnaHQ6ICJ2YXIoLS1pZGVhLXNwYWNlLTcpIiwgYm9yZGVyUmFkaXVzOiAidmFyKC0taWRlYS1yYWRpdXMtZnVsbCkiLCBkaXNwbGF5OiAiZ3JpZCIsIHBsYWNlSXRlbXM6ICJjZW50ZXIiLCBjdXJzb3I6ICJwb2ludGVyIiwgYmFja2dyb3VuZDogInZhcigtLWlkZWEtaGVyby1jb250cm9sLWJnKSIsIGJvcmRlcjogInZhcigtLWlkZWEtaGFpcmxpbmUpIiwgY29sb3I6ICJ2YXIoLS1pZGVhLWdvbGQtYnJpZ2h0KSIsIGJhY2tkcm9wRmlsdGVyOiAiYmx1cig2cHgpIiB9Ow0KfQ0K
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useI18n } from "../i18n/i18n";
+import { Button, Container } from "./ui";
+import imgLivingRoom from "../../imports/Modern_luxury_living_room_ambiance.png";
+import imgMarbleGold from "../../imports/Luxurious_modern_interiors_with_marble_and_gold.png";
+
+interface Slide {
+  id: string;
+  headline: { en: string; ar: string; fr: string };
+  text: { en: string; ar: string; fr: string };
+  image: string;
+  buttons: { label: { en: string; ar: string; fr: string }; to: string; variant: "gold" | "outline" }[];
+}
+
+const SLIDES: Slide[] = [
+  { id: "premium-bathroom", image: imgLivingRoom, headline: { en: "Define Your Space With Perfection", ar: "اصنع مساحتك بإتقان", fr: "Définissez votre espace avec perfection" }, text: { en: "Discover premium ceramics, porcelain and complete bathroom solutions created for exceptional interiors.", ar: "اكتشف السيراميك والبورسلين وحلول الحمامات المتكاملة المصممة للديكورات الاستثنائية.", fr: "Découvrez céramiques, porcelaines et solutions complètes de salle de bain pour des intérieurs exceptionnels." }, buttons: [{ label: { en: "Explore Collections", ar: "استكشف المجموعات", fr: "Explorer les collections" }, to: "/collections", variant: "gold" }, { label: { en: "Visualize Your Room", ar: "تصور غرفتك", fr: "Visualisez votre pièce" }, to: "/ai-room-visualizer", variant: "outline" }] },
+  { id: "ai-visualizer", image: imgLivingRoom, headline: { en: "See It Inside Your Space Before You Buy", ar: "شاهدها في مساحتك قبل الشراء", fr: "Visualisez-le chez vous avant d'acheter" }, text: { en: "Upload your bathroom, kitchen or living room, select a real IDEA product and experience the finished result before installation.", ar: "ارفع صورة حمامك أو مطبخك أو غرفتك، اختر منتج IDEA حقيقي، وشاهد النتيجة النهائية قبل التركيب.", fr: "Téléchargez votre salle de bain, cuisine ou salon, choisissez un produit IDEA et découvrez le résultat final avant l'installation." }, buttons: [{ label: { en: "Start AI Visualization", ar: "ابدأ المحاكاة", fr: "Démarrer la visualisation" }, to: "/room-designer/new", variant: "gold" }, { label: { en: "Browse Porcelain", ar: "تصفح البورسلين", fr: "Voir la porcelaine" }, to: "/collections/porcelain", variant: "outline" }] },
+  { id: "supplier-offers", image: imgMarbleGold, headline: { en: "One Request. Multiple Qualified Offers.", ar: "طلب واحد. عروض متعددة مؤهلة.", fr: "Une demande. Plusieurs offres qualifiées." }, text: { en: "Select the product and required quantity, then receive private offers from verified matching suppliers.", ar: "اختر المنتج والكمية المطلوبة، ثم احصل على عروض خاصة من موردين معتمدين.", fr: "Sélectionnez le produit et la quantité, puis recevez des offres privées de fournisseurs vérifiés." }, buttons: [{ label: { en: "Request Best Price", ar: "اطلب أفضل سعر", fr: "Demander le meilleur prix" }, to: "/request-quote/new", variant: "gold" }, { label: { en: "How It Works", ar: "كيف يعمل", fr: "Comment ça marche" }, to: "/how-it-works", variant: "outline" }] },
+  { id: "complete-collections", image: imgLivingRoom, headline: { en: "Every Surface. Every Detail. One Destination.", ar: "كل سطح. كل تفصيلة. وجهة واحدة.", fr: "Chaque surface. Chaque détail. Une destination." }, text: { en: "Explore ceramic, porcelain, faucets, bathroom sets, units, bathtubs, shower systems and accessories in one curated marketplace.", ar: "استكشف السيراميك والبورسلين والخلاطات وأطقم الحمام والوحدات والأحواض وأنظمة الدش والإكسسوارات في سوق واحد منسق.", fr: "Explorez céramique, porcelaine, robinetterie, ensembles, meubles, baignoires, douches et accessoires dans une seule marketplace." }, buttons: [{ label: { en: "Browse All Products", ar: "تصفح كل المنتجات", fr: "Voir tous les produits" }, to: "/products", variant: "gold" }, { label: { en: "Bathroom Collections", ar: "مجموعات الحمام", fr: "Collections salle de bain" }, to: "/collections/sanitary-ware", variant: "outline" }] },
+];
+
+const INTERVAL = 6000;
+const FIRST_TRANSITION_DELAY = INTERVAL;
+
+export function HeroCarousel() {
+  const { locale } = useI18n();
+  const nav = useNavigate();
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const [failedSlides, setFailedSlides] = useState<number[]>([]);
+  const touchX = useRef<number | null>(null);
+
+  const next = useCallback(() => setIndex((current) => (current + 1) % SLIDES.length), []);
+  const prev = useCallback(() => setIndex((current) => (current - 1 + SLIDES.length) % SLIDES.length), []);
+  const go = useCallback((nextIndex: number) => setIndex((nextIndex + SLIDES.length) % SLIDES.length), []);
+
+  useEffect(() => {
+    // Fetch every background before it can be selected, preventing a dark
+    // empty frame during the cross-fade on slower connections.
+    SLIDES.forEach((slide) => {
+      const image = new Image();
+      image.src = slide.image;
+    });
+  }, []);
+
+  useEffect(() => {
+    if (paused) return;
+    // Start quickly in the live preview, then continue at the regular cinematic pace.
+    const firstTransition = window.setTimeout(next, FIRST_TRANSITION_DELAY);
+    const timer = window.setInterval(next, INTERVAL);
+    return () => {
+      window.clearTimeout(firstTransition);
+      window.clearInterval(timer);
+    };
+  }, [next, paused]);
+
+  return (
+    <section
+      className="idea-hero-carousel"
+      aria-roledescription="carousel"
+      aria-label="IDEA highlights"
+      tabIndex={0}
+      onKeyDown={(event) => { if (event.key === "ArrowRight") next(); if (event.key === "ArrowLeft") prev(); }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onFocus={() => setPaused(true)}
+      onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false); }}
+      onTouchStart={(event) => { touchX.current = event.touches[0]?.clientX ?? null; }}
+      onTouchEnd={(event) => {
+        if (touchX.current === null) return;
+        const distance = (event.changedTouches[0]?.clientX ?? touchX.current) - touchX.current;
+        if (Math.abs(distance) > 50) (distance < 0 ? next : prev)();
+        touchX.current = null;
+      }}
+      style={{ position: "relative", height: "min(88svh, 780px)", overflow: "hidden", outline: "none", background: "var(--idea-bg)" }}
+    >
+      {SLIDES.map((slide, slideIndex) => (
+        <div
+          key={slide.id}
+          aria-hidden={slideIndex !== index}
+          aria-roledescription="slide"
+          role="group"
+          style={{
+            position: "absolute",
+            inset: 0,
+            opacity: slideIndex === index ? 1 : 0,
+            pointerEvents: slideIndex === index ? "auto" : "none",
+            transition: "opacity 1s ease",
+          }}
+        >
+          <img
+            className={`idea-vivid-image idea-hero-image ${slideIndex === index ? "idea-hero-image--active" : ""}`}
+            src={failedSlides.includes(slideIndex) ? (slide.image === imgLivingRoom ? imgMarbleGold : imgLivingRoom) : slide.image}
+            alt=""
+            aria-hidden="true"
+            loading="eager"
+            onError={() => setFailedSlides((current) => current.includes(slideIndex) ? current : [...current, slideIndex])}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: slide.id === "supplier-offers" ? "center" : "center center",
+            }}
+          />
+          <div className="idea-hero-depth" aria-hidden="true" />
+          <div className="idea-hero-overlay" style={{ position: "absolute", inset: 0, background: "var(--idea-hero-overlay)" }} />
+          <Container className="idea-hero-content" style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", paddingBlockStart: "var(--idea-space-8)", paddingBlockEnd: "var(--idea-space-8)" }}>
+            <div className={slideIndex === index ? "idea-hero-copy--active" : ""} style={{ maxWidth: 640 }}>
+              <div className="idea-eyebrow idea-hero-reveal idea-hero-reveal--one" style={{ marginBottom: "var(--idea-space-4)", color: "var(--idea-gold-bright)" }}>IDEA · Business Administration</div>
+              <h1 className="idea-hero-title idea-hero-reveal idea-hero-reveal--two" style={{ fontSize: "clamp(36px, 4.4vw, 64px)", margin: 0, color: "var(--idea-on-gold)" }}>{slide.headline[locale]}</h1>
+              <p className="idea-hero-reveal idea-hero-reveal--three" style={{ color: "var(--idea-hero-copy)", fontSize: "var(--idea-text-lg)", lineHeight: 1.6, margin: "var(--idea-space-5) 0 var(--idea-space-6)" }}>{slide.text[locale]}</p>
+              <div className="idea-hero-reveal idea-hero-reveal--four" style={{ display: "flex", gap: "var(--idea-space-4)", flexWrap: "wrap" }}>
+                {slide.buttons.map((button) => <Button key={button.to} variant={button.variant} size="lg" onClick={() => nav(button.to)}>{button.label[locale]}</Button>)}
+              </div>
+            </div>
+          </Container>
+        </div>
+      ))}
+
+      <button className="idea-hero-arrow" aria-label="Previous slide" onClick={prev} style={arrowStyle("start")}><ChevronLeft size={22} /></button>
+      <button className="idea-hero-arrow" aria-label="Next slide" onClick={next} style={arrowStyle("end")}><ChevronRight size={22} /></button>
+      <div style={{ position: "absolute", bottom: "var(--idea-space-9)", insetInline: 0, display: "flex", justifyContent: "center", gap: "var(--idea-space-3)" }}>
+        {SLIDES.map((item, itemIndex) => <button key={item.id} aria-label={`Go to slide ${itemIndex + 1}`} aria-current={itemIndex === index} onClick={() => go(itemIndex)} style={{ width: itemIndex === index ? "var(--idea-space-7)" : "var(--idea-space-3)", height: "var(--idea-space-1)", borderRadius: "var(--idea-radius-full)", border: "none", cursor: "pointer", transition: "all .3s", background: itemIndex === index ? "var(--idea-gold)" : "var(--idea-hero-control)" }} />)}
+      </div>
+    </section>
+  );
+}
+
+function arrowStyle(side: "start" | "end"): React.CSSProperties {
+  return { position: "absolute", top: "50%", transform: "translateY(-50%)", insetInlineStart: side === "start" ? "var(--idea-space-5)" : undefined, insetInlineEnd: side === "end" ? "var(--idea-space-5)" : undefined, width: "var(--idea-space-7)", height: "var(--idea-space-7)", borderRadius: "var(--idea-radius-full)", display: "grid", placeItems: "center", cursor: "pointer", background: "var(--idea-hero-control-bg)", border: "var(--idea-hairline)", color: "var(--idea-gold-bright)", backdropFilter: "blur(6px)" };
+}
