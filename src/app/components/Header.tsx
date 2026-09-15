@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
@@ -37,6 +37,13 @@ export function Header() {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const nav = useNavigate();
+
+  useEffect(() => {
+    if (!open) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = previous; };
+  }, [open]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();

@@ -91,7 +91,7 @@ export function HeroCarousel() {
           }}
         >
           <img
-            className="idea-vivid-image"
+            className={`idea-vivid-image idea-hero-image ${slideIndex === index ? "idea-hero-image--active" : ""}`}
             src={failedSlides.includes(slideIndex) ? (slide.image === imgLivingRoom ? imgMarbleGold : imgLivingRoom) : slide.image}
             alt=""
             aria-hidden="true"
@@ -102,17 +102,16 @@ export function HeroCarousel() {
               height: "100%",
               objectFit: "cover",
               objectPosition: slide.id === "supplier-offers" ? "center" : "center center",
-              transform: slideIndex === index ? "scale(1.06)" : "scale(1)",
-              transition: "transform 7s ease",
             }}
           />
+          <div className="idea-hero-depth" aria-hidden="true" />
           <div style={{ position: "absolute", inset: 0, background: "var(--idea-hero-overlay)" }} />
           <Container className="idea-hero-content" style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", paddingBlockStart: "var(--idea-space-8)", paddingBlockEnd: "var(--idea-space-8)" }}>
-            <div style={{ maxWidth: 640 }}>
-              <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)", color: "var(--idea-gold-bright)" }}>IDEA · Business Administration</div>
-              <h1 className="idea-hero-title" style={{ fontSize: "clamp(36px, 4.4vw, 64px)", margin: 0, color: "var(--idea-on-gold)" }}>{slide.headline[locale]}</h1>
-              <p style={{ color: "var(--idea-hero-copy)", fontSize: "var(--idea-text-lg)", lineHeight: 1.6, margin: "var(--idea-space-5) 0 var(--idea-space-6)" }}>{slide.text[locale]}</p>
-              <div style={{ display: "flex", gap: "var(--idea-space-4)", flexWrap: "wrap" }}>
+            <div className={slideIndex === index ? "idea-hero-copy--active" : ""} style={{ maxWidth: 640 }}>
+              <div className="idea-eyebrow idea-hero-reveal idea-hero-reveal--one" style={{ marginBottom: "var(--idea-space-4)", color: "var(--idea-gold-bright)" }}>IDEA · Business Administration</div>
+              <h1 className="idea-hero-title idea-hero-reveal idea-hero-reveal--two" style={{ fontSize: "clamp(36px, 4.4vw, 64px)", margin: 0, color: "var(--idea-on-gold)" }}>{slide.headline[locale]}</h1>
+              <p className="idea-hero-reveal idea-hero-reveal--three" style={{ color: "var(--idea-hero-copy)", fontSize: "var(--idea-text-lg)", lineHeight: 1.6, margin: "var(--idea-space-5) 0 var(--idea-space-6)" }}>{slide.text[locale]}</p>
+              <div className="idea-hero-reveal idea-hero-reveal--four" style={{ display: "flex", gap: "var(--idea-space-4)", flexWrap: "wrap" }}>
                 {slide.buttons.map((button) => <Button key={button.to} variant={button.variant} size="lg" onClick={() => nav(button.to)}>{button.label[locale]}</Button>)}
               </div>
             </div>

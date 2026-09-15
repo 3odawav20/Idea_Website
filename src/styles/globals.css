@@ -218,6 +218,19 @@ body {
   filter: saturate(1.16) contrast(1.06) brightness(1.04);
 }
 
+/* Hero motion uses only compositor-friendly opacity and transforms. */
+.idea-hero-image { will-change: transform, opacity; }
+.idea-hero-image--active { animation: idea-hero-kenburns 12s ease-out both; }
+.idea-hero-depth { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 75% 25%, var(--idea-gold-soft), transparent 38%); mix-blend-mode: screen; opacity: 0.18; animation: idea-hero-light 12s ease-in-out both; }
+.idea-hero-reveal { opacity: 0; transform: translate3d(0, var(--idea-space-4), 0); }
+.idea-hero-copy--active .idea-hero-reveal { animation: idea-hero-reveal 0.72s cubic-bezier(.22,1,.36,1) both; }
+.idea-hero-copy--active .idea-hero-reveal--two { animation-delay: 0.08s; }
+.idea-hero-copy--active .idea-hero-reveal--three { animation-delay: 0.16s; }
+.idea-hero-copy--active .idea-hero-reveal--four { animation-delay: 0.24s; }
+@keyframes idea-hero-kenburns { from { transform: scale(1.02); } to { transform: scale(1.08); } }
+@keyframes idea-hero-light { from { transform: translate3d(-2%, 1%, 0); opacity: 0.08; } to { transform: translate3d(2%, -1%, 0); opacity: 0.2; } }
+@keyframes idea-hero-reveal { to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
 /* Keep controls clear of the iPhone notch and home indicator. */
 @supports (padding: max(0px)) {
   header { padding-top: env(safe-area-inset-top); }
@@ -277,4 +290,6 @@ body {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
   }
+  .idea-hero-image--active, .idea-hero-depth, .idea-hero-copy--active .idea-hero-reveal { animation: none; }
+  .idea-hero-reveal { opacity: 1; transform: none; }
 }
