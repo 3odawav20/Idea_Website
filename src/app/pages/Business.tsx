@@ -101,7 +101,6 @@ export function BusinessVerification() {
             </div>
           ))}
         </div>
-        {biz.status !== "Verified" && <Button size="sm" variant="outline" style={{ marginTop: 14 }} onClick={() => api.updateBusinessStatus(biz.id, "Verified")}>Simulate admin approval (dev)</Button>}
       </Panel>
       <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>Only verified active businesses may submit real offers. Verification decisions are made by IDEA administrators.</p>
     </>

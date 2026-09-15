@@ -7,7 +7,7 @@ import { Panel, StatusBadge, Field, inputStyle } from "../components/dash";
 
 export function AdminLayout() {
   const { t } = useI18n();
-  const { session, api } = useBackend();
+  const { session } = useBackend();
   const nav = useNavigate();
   if (!session || session.role !== "admin") {
     return (
@@ -15,8 +15,8 @@ export function AdminLayout() {
         <Container style={{ maxWidth: 440, textAlign: "center" }}>
           <Panel>
             <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)" }}>Administrator area</div>
-            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", margin: "10px 0 16px" }}>This area requires an administrator session.</p>
-            <Button onClick={() => { api.signIn("email", "admin", { name: "IDEA Admin", email: "admin@idea.test" }); nav("/admin"); }}>Sign in as admin (dev)</Button>
+            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", margin: "10px 0 16px" }}>Administrator access is assigned and verified by the production backend.</p>
+            <Button variant="outline" onClick={() => nav("/login")}>Sign in</Button>
           </Panel>
         </Container>
       </Section>
@@ -77,7 +77,6 @@ export function AdminOverview() {
           {db.audit.slice(0, 12).map((a) => <div key={a.id}>{new Date(a.at).toLocaleTimeString()} · {a.action} · {a.detail}</div>)}
           {!db.audit.length && <span>No events yet.</span>}
         </div>
-        <Button size="sm" variant="ghost" style={{ marginTop: 12 }} onClick={() => { if (confirm("Reset all mock backend data?")) api.reset(); }}>Reset dev data</Button>
       </Panel>
     </>
   );

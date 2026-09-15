@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
+import { useBackend } from "../backend/db";
+import { requireSupabase } from "../backend/supabaseClient";
 
 export interface QuoteItem {
   productId: string;
@@ -52,7 +54,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => !current.some((existing) => existing.id === product.id))]))
       .catch(() => { /* Source remains staged in registry; keep verified local catalogue available. */ });
   }, []);
-  const [favorites, setFavorites] = usePersisted<string[]>("idea.favorites", []);
+  const { session } = useBackend();
+  const [favorites, setFavorites] = useState<string[]>([]);
+  useEffect(() => {
+    if (!session) { setFavorites([]); return; }
+    void requireSupabase().from("favorites").select("catalog_product_id").eq("profile_id", session.id)
+      .then(({ data, error }) => { if (error) console.error("IDEA favorites load failed", error); else setFavorites((data || []).map((row) => row.catalog_product_id)); });
+  }, [session?.id]);
   const [quote, setQuote] = usePersisted<QuoteItem[]>("idea.quote", []);
   const [compare, setCompare] = usePersisted<string[]>("idea.compare", []);
 
@@ -63,8 +71,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       quote,
       compare,
       isFavorite: (id) => favorites.includes(id),
-      toggleFavorite: (id) =>
-        setFavorites((f) => (f.includes(id) ? f.filter((x) => x !== id) : [...f, id])),
+      toggleFavorite: (id) => {
+        if (!session) throw new Error("Sign in to save favorites.");
+        const wasFavorite = favorites.includes(id);
+        setFavorites((current) => wasFavorite ? current.filter((value) => value !== id) : [...current, id]);
+        const query = requireSupabase().from("favorites");
+        void (wasFavorite ? query.delete().eq("profile_id", session.id).eq("catalog_product_id", id) : query.insert({ profile_id: session.id, catalog_product_id: id }))
+          .then(({ error }) => { if (error) { console.error("IDEA favorite update failed", error); void requireSupabase().from("favorites").select("catalog_product_id").eq("profile_id", session.id).then(({ data }) => setFavorites((data || []).map((row) => row.catalog_product_id))); } });
+      },
       toggleCompare: (id) =>
         setCompare((c) => (c.includes(id) ? c.filter((x) => x !== id) : [...c, id].slice(-4))),
       addToQuote: (id, unit) =>
@@ -78,7 +92,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       removeFromQuote: (id) => setQuote((q) => q.filter((i) => i.productId !== id)),
       clearQuote: () => setQuote([]),
     }),
-    [products, favorites, quote, compare, setFavorites, setQuote, setCompare]
+    [products, favorites, quote, compare, session, setQuote, setCompare]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;

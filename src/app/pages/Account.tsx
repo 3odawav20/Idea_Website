@@ -132,7 +132,6 @@ export function AccountRequestOffers() {
         <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)", marginTop: 4 }}>{product?.name[locale]} — {req.quantity} {req.unit}</div>
         <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{req.governorate} · {req.destination}</div>
         <div style={{ marginTop: 8 }}><StatusBadge text={req.status} tone={req.acceptedOfferId ? "green" : "gold"} /></div>
-        {!offers.length && <Button size="sm" variant="ghost" style={{ marginTop: 12 }} onClick={() => api.seedOffersFor(req.id)}>Simulate supplier offers</Button>}
       </Panel>
       {!offers.length ? <EmptyState title="Awaiting offers" sub="Verified matching suppliers submit private offers here." /> : (
         <div style={{ display: "grid", gap: 10 }}>
