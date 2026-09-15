@@ -27,7 +27,7 @@ export function Collections() {
                 {items.map((c) => (
                   <Link key={c.slug} to={`/collections/${c.slug}`} style={{ position: "relative", aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", display: "block" }}>
                     <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(6,6,8,.85), transparent 55%)" }} />
+                    <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay-soft)" }} />
                     <div style={{ position: "absolute", bottom: 0, padding: "var(--idea-space-4)" }}>
                       <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{c.title[locale]}</div>
                       <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", marginTop: 4 }}>{c.blurb[locale]}</div>

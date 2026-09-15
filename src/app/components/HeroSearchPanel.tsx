@@ -43,7 +43,7 @@ function Dropdown({
         <div style={{
           position: "absolute", top: "calc(100% + 6px)", insetInline: 0, zIndex: 30, maxHeight: 260, overflowY: "auto",
           background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)",
-          boxShadow: "var(--idea-shadow-lg, 0 20px 40px rgba(0,0,0,.4))", padding: 4,
+          boxShadow: "var(--idea-shadow-md)", padding: "var(--idea-space-1)",
         }}>
           {options.map((o) => (
             <button type="button" key={o.value} onClick={() => { onChange(o.value === value ? null : o.value); setOpen(false); }}
@@ -114,9 +114,9 @@ export function HeroSearchPanel() {
   return (
     <Container className="idea-hero-search-shell" style={{ position: "relative", zIndex: 20, paddingBlock: "var(--idea-space-6)" }}>
       <div style={{
-        background: "rgba(14,13,17,.86)", backdropFilter: "blur(16px)",
+        background: "var(--idea-search-panel)", backdropFilter: "blur(16px)",
         border: "1px solid var(--idea-gold-soft)", borderRadius: "var(--idea-radius-lg)",
-        boxShadow: "0 30px 60px rgba(0,0,0,.5)", padding: "var(--idea-space-6)", maxWidth: 1000, margin: "0 auto",
+        boxShadow: "var(--idea-shadow-overlay)", padding: "var(--idea-space-6)", maxWidth: 1000, margin: "0 auto",
       }}>
         {/* Tabs */}
         <div style={{ display: "flex", justifyContent: "center", gap: "var(--idea-space-7)", marginBottom: "var(--idea-space-6)" }}>
@@ -125,7 +125,7 @@ export function HeroSearchPanel() {
               style={{
                 background: "none", border: "none", cursor: "pointer", padding: "0 0 10px",
                 fontFamily: "var(--idea-font-display)", fontSize: "var(--idea-text-base)", letterSpacing: "0.04em", textTransform: "uppercase",
-                color: tab === k ? "var(--idea-gold-bright)" : "rgba(246,241,230,.6)",
+                color: tab === k ? "var(--idea-gold-bright)" : "var(--idea-search-tab-muted)",
                 borderBottom: `2px solid ${tab === k ? "var(--idea-gold)" : "transparent"}`, transition: "color .2s, border-color .2s",
                 display: "inline-flex", alignItems: "center", gap: 8,
               }}>

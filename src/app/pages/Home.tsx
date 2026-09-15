@@ -17,7 +17,7 @@ function CollectionTile({ slug }: { slug: string }) {
     <Link to={`/collections/${c.slug}`} style={{ position: "relative", display: "block", aspectRatio: "3/4", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)" }}>
       <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "")} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(0deg, rgba(6,6,8,.9), transparent 60%)" }} />
+      <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay)" }} />
       <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-4)", display: "grid", gridTemplateRows: "2.3em minmax(2.8em, auto)", alignItems: "end" }}>
         <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", display: "flex", alignItems: "end" }}>{c.title[locale]}</div>
         <div style={{ color: "var(--idea-gold)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 6, marginTop: 4, lineHeight: 1.45 }}>

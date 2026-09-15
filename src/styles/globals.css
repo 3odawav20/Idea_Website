@@ -11,6 +11,11 @@
   --idea-surface: #ffffff;
   --idea-surface-2: #f4f4f4;
   --idea-overlay: rgba(255, 255, 255, 0.9);
+  --idea-scrim: rgba(0, 0, 0, 0.6);
+  --idea-image-overlay: linear-gradient(0deg, rgba(6, 6, 8, 0.9), transparent 60%);
+  --idea-image-overlay-soft: linear-gradient(0deg, rgba(6, 6, 8, 0.85), transparent 55%);
+  --idea-search-panel: rgba(14, 13, 17, 0.86);
+  --idea-search-tab-muted: rgba(246, 241, 230, 0.6);
   --idea-hero-overlay: linear-gradient(90deg, rgba(22, 22, 22, 0.84) 0%, rgba(22, 22, 22, 0.58) 47%, rgba(22, 22, 22, 0.14) 100%);
   --idea-hero-copy: rgba(255, 255, 255, 0.9);
   --idea-hero-control: rgba(255, 255, 255, 0.52);
@@ -60,6 +65,8 @@
   --idea-shadow-sm: 0 2px 8px rgba(69, 69, 69, 0.12);
   --idea-shadow-md: 0 12px 32px rgba(69, 69, 69, 0.16);
   --idea-shadow-gold: 0 8px 30px rgba(255, 114, 0, 0.18);
+  --idea-shadow-overlay: 0 30px 60px rgba(0, 0, 0, 0.5);
+  --idea-shadow-drawer: 0 0 60px rgba(0, 0, 0, 0.6);
 
   /* ── Typography families ── */
   --idea-font-display: 'Oswald', 'Jost', system-ui, sans-serif;
@@ -88,6 +95,11 @@
   --idea-surface: #202020;
   --idea-surface-2: #292929;
   --idea-overlay: rgba(16, 16, 16, 0.82);
+  --idea-scrim: rgba(0, 0, 0, 0.6);
+  --idea-image-overlay: linear-gradient(0deg, rgba(6, 6, 8, 0.9), transparent 60%);
+  --idea-image-overlay-soft: linear-gradient(0deg, rgba(6, 6, 8, 0.85), transparent 55%);
+  --idea-search-panel: rgba(14, 13, 17, 0.86);
+  --idea-search-tab-muted: rgba(246, 241, 230, 0.6);
   --idea-hero-overlay: linear-gradient(90deg, rgba(16, 16, 16, 0.9) 0%, rgba(16, 16, 16, 0.6) 47%, rgba(16, 16, 16, 0.16) 100%);
   --idea-hero-copy: rgba(255, 255, 255, 0.84);
   --idea-hero-control: rgba(255, 255, 255, 0.35);
@@ -111,6 +123,8 @@
   --idea-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
   --idea-shadow-md: 0 12px 32px rgba(0, 0, 0, 0.5);
   --idea-shadow-gold: 0 8px 30px rgba(255, 114, 0, 0.18);
+  --idea-shadow-overlay: 0 30px 60px rgba(0, 0, 0, 0.5);
+  --idea-shadow-drawer: 0 0 60px rgba(0, 0, 0, 0.6);
 }
 
 /* ── Base element styling bound to the tokens ── */

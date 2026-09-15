@@ -109,7 +109,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
 
         <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "var(--idea-space-6)", alignItems: "start" }} className="idea-gallery-grid">
           {/* Filters */}
-          {mobileOpen && <div onClick={() => setMobileOpen(false)} className="idea-filter-scrim" style={{ display: "none", position: "fixed", inset: 0, zIndex: 60, background: "rgba(0,0,0,.6)" }} />}
+          {mobileOpen && <div onClick={() => setMobileOpen(false)} className="idea-filter-scrim" style={{ display: "none", position: "fixed", inset: 0, zIndex: 60, background: "var(--idea-scrim)" }} />}
           <aside className={`idea-filters-panel${mobileOpen ? " is-open" : ""}`} style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)", padding: "var(--idea-space-5)", position: "sticky", top: 90 }}>
             <button className="idea-filter-close" onClick={() => setMobileOpen(false)}
               style={{ display: "none", position: "absolute", insetInlineEnd: "var(--idea-space-4)", top: "var(--idea-space-4)", background: "none", border: "none", color: "var(--idea-text-muted)", cursor: "pointer" }}>
@@ -160,7 +160,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
             position: fixed !important; inset-block: 0; inset-inline-start: 0; z-index: 61;
             width: min(88vw, 360px); max-width: 360px; border-radius: 0 !important;
             overflow-y: auto; top: 0 !important; transform: translateX(-100%);
-            transition: transform .28s ease; box-shadow: 0 0 60px rgba(0,0,0,.6);
+            transition: transform .28s ease; box-shadow: var(--idea-shadow-drawer);
           }
           [dir="rtl"] .idea-filters-panel{ inset-inline-start: auto; inset-inline-end: 0; transform: translateX(100%); }
           .idea-filters-panel.is-open{ transform: translateX(0); }

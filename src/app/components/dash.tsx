@@ -15,8 +15,8 @@ export function Panel({ children, style }: { children: ReactNode; style?: CSSPro
 export function StatusBadge({ text, tone = "gold" }: { text: string; tone?: "gold" | "green" | "red" | "muted" }) {
   const map: Record<string, { bg: string; fg: string; bd: string }> = {
     gold: { bg: "var(--idea-gold-soft)", fg: "var(--idea-gold-bright)", bd: "var(--idea-gold)" },
-    green: { bg: "rgba(46,160,90,.14)", fg: "#5fd08a", bd: "rgba(46,160,90,.5)" },
-    red: { bg: "rgba(200,60,60,.14)", fg: "#e08a8a", bd: "rgba(200,60,60,.5)" },
+    green: { bg: "var(--idea-surface-2)", fg: "var(--idea-success)", bd: "var(--idea-success)" },
+    red: { bg: "var(--idea-surface-2)", fg: "var(--idea-danger)", bd: "var(--idea-danger)" },
     muted: { bg: "var(--idea-surface-2)", fg: "var(--idea-text-muted)", bd: "var(--idea-border-neutral)" },
   };
   const c = map[tone];

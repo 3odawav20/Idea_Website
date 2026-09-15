@@ -107,7 +107,7 @@ export function HeroCarousel() {
           <Container className="idea-hero-content" style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", justifyContent: "center", paddingBlockStart: "var(--idea-space-8)", paddingBlockEnd: "var(--idea-space-8)" }}>
             <div style={{ maxWidth: 640 }}>
               <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)", color: "var(--idea-gold-bright)" }}>IDEA · Business Administration</div>
-              <h1 className="idea-hero-title" style={{ fontSize: "clamp(36px, 4.4vw, 64px)", margin: 0, color: "#fff" }}>{slide.headline[locale]}</h1>
+              <h1 className="idea-hero-title" style={{ fontSize: "clamp(36px, 4.4vw, 64px)", margin: 0, color: "var(--idea-on-gold)" }}>{slide.headline[locale]}</h1>
               <p style={{ color: "var(--idea-hero-copy)", fontSize: "var(--idea-text-lg)", lineHeight: 1.6, margin: "var(--idea-space-5) 0 var(--idea-space-6)" }}>{slide.text[locale]}</p>
               <div style={{ display: "flex", gap: "var(--idea-space-4)", flexWrap: "wrap" }}>
                 {slide.buttons.map((button) => <Button key={button.to} variant={button.variant} size="lg" onClick={() => nav(button.to)}>{button.label[locale]}</Button>)}

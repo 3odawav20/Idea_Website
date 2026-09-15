@@ -11,10 +11,10 @@ const METHODS: { key: PaymentMethodKey; tKey: string; marks: () => React.ReactNo
   { key: "card", tKey: "pay.card", marks: () => <><span style={chip}><VisaMark /></span><span style={chip}><MastercardMark /></span><span style={chip}><MeezaMark /></span></> },
   { key: "fawry", tKey: "pay.fawry", marks: () => <span style={chip}><FawryMark /></span> },
   { key: "wallet", tKey: "pay.wallet", marks: () => <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>Vodafone · Orange · e& cash</span> },
-  { key: "applepay", tKey: "pay.applepay", marks: () => <span style={{ ...chip, background: "#000" }}><ApplePayMark /></span> },
+  { key: "applepay", tKey: "pay.applepay", marks: () => <span style={{ ...chip, background: "var(--idea-text)" }}><ApplePayMark /></span> },
   { key: "bank", tKey: "pay.bank", marks: () => <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>Instant transfer</span> },
 ];
-const chip: React.CSSProperties = { background: "#fff", borderRadius: 6, padding: "3px 6px", display: "inline-flex", alignItems: "center" };
+const chip: React.CSSProperties = { background: "var(--idea-surface)", borderRadius: "var(--idea-radius-sm)", padding: "var(--idea-space-1) var(--idea-space-2)", display: "inline-flex", alignItems: "center" };
 
 export function Checkout() {
   const [sp] = useSearchParams();
