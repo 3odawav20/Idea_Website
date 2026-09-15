@@ -32,7 +32,12 @@ function dbRole(role: "buyer" | "supplier" | "admin"): Role { return role === "b
 export function BackendProvider({ children }: { children: ReactNode }) {
   const [db, setDb] = useState<DB>(emptyDb); const [session, setSession] = useState<User | null>(null);
   const refresh = async () => {
-    const client = requireSupabase(); const { data: { user }, error: authError } = await client.auth.getUser(); if (authError) throw authError;
+    const client = requireSupabase(); const { data: { session: restoredSession } } = await client.auth.getSession();
+    // A missing session is the expected public/visitor state, not an error.
+    if (!restoredSession) { setSession(null); setDb(emptyDb()); return; }
+    const { data: { user }, error: authError } = await client.auth.getUser();
+    if (authError?.name === "AuthSessionMissingError") { setSession(null); setDb(emptyDb()); return; }
+    if (authError) throw authError;
     if (!user) { setSession(null); setDb(emptyDb()); return; }
     const [{ data: profile, error: profileError }, { data: roleRow, error: roleError }, { data: members, error: memberError }, { data: notices, error: noticeError }] = await Promise.all([
       client.from("profiles").select("display_name, phone, created_at").eq("id", user.id).single(), client.from("user_roles").select("role").eq("user_id", user.id).single(), client.from("company_members").select("company_id, companies(*)").eq("user_id", user.id), client.from("notifications").select("id, type, title, body, reference_id, read_at, created_at").eq("profile_id", user.id).order("created_at", { ascending: false }),
@@ -43,7 +48,15 @@ export function BackendProvider({ children }: { children: ReactNode }) {
     const businesses = (members || []).map((row: any): Business => { const c = Array.isArray(row.companies) ? row.companies[0] : row.companies; return { id: row.company_id, ownerId: user.id, legalName: c?.legal_name || "", publicName: c?.public_name || "", representative: "", email: c?.email || "", phone: c?.phone || "", governorate: "", serviceAreas: [], companyType: "Supplier", crNumber: "", taxNumber: "", brands: [], categories: [], productIds: [], deliveryCapacityM2: 0, minOrderM2: 0, status: c?.status === "verified" ? "Verified" : "Submitted", rating: 0, createdAt: Date.parse(c?.created_at || user.created_at) }; });
     setSession(current); setDb((old) => ({ ...old, users: [current], businesses, sessionUserId: user.id, messages: (notices || []).map((n) => ({ id: n.id, to: user.id, scope: "customer", kind: n.type, title: n.title, body: n.body, requestId: n.reference_id || undefined, read: Boolean(n.read_at), createdAt: Date.parse(n.created_at) })) }));
   };
-  useEffect(() => { if (!supabase) return; void refresh().catch((e) => console.error("IDEA session restore failed", e)); const { data } = supabase.auth.onAuthStateChange(() => { void refresh().catch((e) => console.error("IDEA auth update failed", e)); }); return () => data.subscription.unsubscribe(); }, []);
+  useEffect(() => {
+    if (!supabase) return;
+    void refresh().catch((error) => console.error("IDEA session restore failed", error));
+    const { data } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (!nextSession) { setSession(null); setDb(emptyDb()); return; }
+      void refresh().catch((error) => console.error("IDEA auth update failed", error));
+    });
+    return () => data.subscription.unsubscribe();
+  }, []);
   const unavailable = (): never => { throw new Error(backendConfigurationError); };
   const api = useMemo<Api>(() => ({
     signIn: unavailable, signOut: () => { void requireSupabase().auth.signOut(); }, setRole: unavailable, createBusiness: unavailable, updateBusinessStatus: unavailable, connectProduct: unavailable,
