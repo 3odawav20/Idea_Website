@@ -81,6 +81,8 @@ export function RoomDesignerEditor() {
   const existing = projectId ? db.roomProjects.find((p) => p.id === projectId) : null;
 
   const [photo, setPhoto] = useState<string | null>(existing?.photo || null);
+  const [photoError, setPhotoError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const [dims, setDims] = useState(existing?.dims || { length: 4, width: 3, height: 2.8, unit: "m" as const });
   const [active, setActive] = useState<SurfaceId>("floor");
   const [assign, setAssign] = useState<Record<SurfaceId, string | null>>({
@@ -117,14 +119,32 @@ export function RoomDesignerEditor() {
 
   const save = () => {
     if (!session) { nav("/login"); return; }
+    if (![dims.length, dims.width, dims.height].every((value) => Number.isFinite(value) && value > 0)) {
+      setFormError("Enter positive length, width and height values before saving.");
+      return;
+    }
+    setFormError(null);
     const proj: RoomProject = {
       id: existing?.id || `room_${Math.random().toString(36).slice(2, 8)}`,
       userId: session.id, name: existing?.name || `Room ${new Date().toLocaleDateString()}`,
       createdAt: existing?.createdAt || Date.now(), photo, dims,
       surfaces: (["floor", "wallA", "wallB"] as SurfaceId[]).map((s) => ({ id: s, label: s, productId: assign[s], estM2: s === "floor" ? Math.round(estM2) : Math.round(dims.length * dims.height) })),
     };
-    api.saveRoomProject(proj);
-    nav("/account/room-projects");
+    try {
+      api.saveRoomProject(proj);
+      nav("/account/room-projects");
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : "Project could not be saved. Please try again.");
+    }
+  };
+
+  const selectPhoto = (file: File | undefined) => {
+    setPhotoError(null);
+    if (!file) return;
+    if (!file.type.startsWith("image/")) { setPhotoError("Choose a JPEG, PNG or WebP image file."); return; }
+    if (file.size > 10 * 1024 * 1024) { setPhotoError("Choose an image smaller than 10 MB."); return; }
+    if (photo?.startsWith("blob:")) URL.revokeObjectURL(photo);
+    setPhoto(URL.createObjectURL(file));
   };
 
   const addAllToQuote = () => {
@@ -171,10 +191,12 @@ export function RoomDesignerEditor() {
               }}>{s === "wallA" ? "Wall A" : s === "wallB" ? "Wall B" : "Floor"}</button>
             ))}
             <label style={{ marginInlineStart: "auto", display: "inline-flex" }}>
-              <input type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) setPhoto(URL.createObjectURL(f)); }} />
+              <input type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={(e) => selectPhoto(e.target.files?.[0])} />
               <span style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-sm)" }}><Upload size={15} /> Photo</span>
             </label>
           </div>
+
+          {photoError && <p role="alert" style={{ margin: "0 0 var(--idea-space-3)", color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{photoError}</p>}
 
           {/* Perspective room box */}
           <div onMouseMove={onDrag} onMouseUp={() => (dragRef.current = null)} onMouseLeave={() => (dragRef.current = null)}
@@ -203,6 +225,7 @@ export function RoomDesignerEditor() {
             <Button size="sm" onClick={save}><Save size={14} /> Save project</Button>
             <Button size="sm" variant="outline" onClick={addAllToQuote}>Add surfaces to quote</Button>
           </div>
+          {formError && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", margin: "var(--idea-space-3) 0 0" }}>{formError}</p>}
 
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, padding: "10px 14px", background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)", borderRadius: "var(--idea-radius-md)", color: "var(--idea-text)", fontSize: "var(--idea-text-xs)" }}>
             <Info size={16} color="var(--idea-gold-bright)" style={{ flexShrink: 0 }} /> {t("room.aiNote")}
