@@ -1,0 +1,175 @@
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Tailwind semantic contract mapped to IDEA design-system variables. */
+  --font-size: var(--idea-text-base);
+  --text-base: var(--idea-text-base);
+  --text-lg: var(--idea-text-lg);
+  --text-xl: var(--idea-text-xl);
+  --text-2xl: var(--idea-text-2xl);
+  --background: var(--idea-bg);
+  --foreground: var(--idea-text);
+  --card: var(--idea-surface);
+  --card-foreground: var(--idea-text);
+  --popover: var(--idea-surface-2);
+  --popover-foreground: var(--idea-text);
+  --primary: var(--idea-gold);
+  --primary-foreground: var(--idea-on-gold);
+  --secondary: var(--idea-bg-2);
+  --secondary-foreground: var(--idea-text);
+  --muted: var(--idea-surface-2);
+  --muted-foreground: var(--idea-text-muted);
+  --accent: var(--idea-gold-soft);
+  --accent-foreground: var(--idea-text);
+  --destructive: var(--idea-danger);
+  --destructive-foreground: var(--idea-text);
+  --border: var(--idea-border);
+  --input: var(--idea-surface-2);
+  --input-background: var(--idea-surface-2);
+  --switch-background: var(--idea-text-faint);
+  --font-weight-medium: 500;
+  --font-weight-normal: 400;
+  --ring: var(--idea-gold-bright);
+  --chart-1: var(--idea-gold);
+  --chart-2: var(--idea-info);
+  --chart-3: var(--idea-success);
+  --chart-4: var(--idea-warning);
+  --chart-5: var(--idea-danger);
+  --radius: var(--idea-radius-md);
+  --sidebar: var(--idea-bg-2);
+  --sidebar-foreground: var(--idea-text);
+  --sidebar-primary: var(--idea-gold);
+  --sidebar-primary-foreground: var(--idea-on-gold);
+  --sidebar-accent: var(--idea-gold-soft);
+  --sidebar-accent-foreground: var(--idea-text);
+  --sidebar-border: var(--idea-border);
+  --sidebar-ring: var(--idea-gold-bright);
+}
+
+.dark {
+  /* Globals owns the dark/light palette through [data-theme]. Preserve Tailwind's contract. */
+  --background: var(--idea-bg);
+  --foreground: var(--idea-text);
+  --card: var(--idea-surface);
+  --card-foreground: var(--idea-text);
+  --popover: var(--idea-surface-2);
+  --popover-foreground: var(--idea-text);
+  --primary: var(--idea-gold);
+  --primary-foreground: var(--idea-on-gold);
+  --secondary: var(--idea-bg-2);
+  --secondary-foreground: var(--idea-text);
+  --muted: var(--idea-surface-2);
+  --muted-foreground: var(--idea-text-muted);
+  --accent: var(--idea-gold-soft);
+  --accent-foreground: var(--idea-text);
+  --destructive: var(--idea-danger);
+  --destructive-foreground: var(--idea-text);
+  --border: var(--idea-border);
+  --input: var(--idea-surface-2);
+  --ring: var(--idea-gold-bright);
+  --sidebar: var(--idea-bg-2);
+  --sidebar-foreground: var(--idea-text);
+  --sidebar-primary: var(--idea-gold);
+  --sidebar-primary-foreground: var(--idea-on-gold);
+  --sidebar-accent: var(--idea-gold-soft);
+  --sidebar-accent-foreground: var(--idea-text);
+  --sidebar-border: var(--idea-border);
+  --sidebar-ring: var(--idea-gold-bright);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-input-background: var(--input-background);
+  --color-switch-background: var(--switch-background);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    font-size: var(--font-size);
+  }
+
+  h1 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h2 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  h4 {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  label {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  button {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-medium);
+    line-height: 1.5;
+  }
+
+  input {
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-normal);
+    line-height: 1.5;
+  }
+}

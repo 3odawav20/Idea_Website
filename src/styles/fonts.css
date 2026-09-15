@@ -1,0 +1,7 @@
+/* ── IDEA design-system fonts ─────────────────────────────────────────────
+   ONLY these font faces should be used across the app.
+   - Oswald → condensed display (headings / hero headline, LTR)
+   - Jost   → clean geometric sans (UI / body, LTR)
+   - Cairo  → Arabic (RTL) headings + body
+--------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Jost:wght@300;400;500;600&family=Cairo:wght@300;400;500;600;700&display=swap');

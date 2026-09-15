@@ -1,0 +1,266 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   IDEA — Luxury Black & Gold design system tokens
+   Edit these variables to re-skin the entire application.
+   All generated UI references these tokens (never raw hex).
+   ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Color: surfaces (dark, layered) ── */
+  --idea-bg: #ffffff;
+  --idea-bg-2: #f4f4f4;
+  --idea-surface: #ffffff;
+  --idea-surface-2: #f4f4f4;
+  --idea-overlay: rgba(255, 255, 255, 0.9);
+  --idea-hero-overlay: linear-gradient(90deg, rgba(22, 22, 22, 0.84) 0%, rgba(22, 22, 22, 0.58) 47%, rgba(22, 22, 22, 0.14) 100%);
+  --idea-hero-copy: rgba(255, 255, 255, 0.9);
+  --idea-hero-control: rgba(255, 255, 255, 0.52);
+  --idea-hero-control-bg: rgba(255, 255, 255, 0.86);
+
+  /* ── Color: gold accent scale (richer in dark mode) ── */
+  --idea-gold: #ff7200;
+  --idea-gold-bright: #ff7200;
+  --idea-gold-deep: #d85d00;
+  --idea-gold-soft: rgba(255, 114, 0, 0.12);
+  --idea-gold-sheen: #fff0e2;
+
+  /* ── Color: text ── */
+  --idea-text: #454545;
+  --idea-text-muted: #686868;
+  --idea-text-faint: #8a8a8a;
+  --idea-on-gold: #ffffff;
+
+  /* ── Color: lines & feedback ── */
+  --idea-border: rgba(69, 69, 69, 0.16);
+  --idea-border-neutral: rgba(69, 69, 69, 0.1);
+  --idea-success: #6bbf7b;
+  --idea-warning: #e0b64b;
+  --idea-danger: #d16a5a;
+  --idea-info: #7fa8d1;
+
+  /* ── Radius ── */
+  --idea-radius-xs: 3px;
+  --idea-radius-sm: 6px;
+  --idea-radius-md: 10px;
+  --idea-radius-lg: 18px;
+  --idea-radius-full: 999px;
+
+  /* ── Spacing scale ── */
+  --idea-space-1: 4px;
+  --idea-space-2: 8px;
+  --idea-space-3: 12px;
+  --idea-space-4: 16px;
+  --idea-space-5: 24px;
+  --idea-space-6: 32px;
+  --idea-space-7: 48px;
+  --idea-space-8: 64px;
+  --idea-space-9: 96px;
+
+  /* ── Borders / elevation ── */
+  --idea-hairline: 1px solid var(--idea-border);
+  --idea-shadow-sm: 0 2px 8px rgba(69, 69, 69, 0.12);
+  --idea-shadow-md: 0 12px 32px rgba(69, 69, 69, 0.16);
+  --idea-shadow-gold: 0 8px 30px rgba(255, 114, 0, 0.18);
+
+  /* ── Typography families ── */
+  --idea-font-display: 'Oswald', 'Jost', system-ui, sans-serif;
+  --idea-font-body: 'Jost', system-ui, sans-serif;
+  --idea-font-arabic: 'Cairo', system-ui, sans-serif;
+
+  /* ── Type scale ── */
+  --idea-text-xs: 12px;
+  --idea-text-sm: 14px;
+  --idea-text-base: 16px;
+  --idea-text-lg: 20px;
+  --idea-text-xl: 26px;
+  --idea-text-2xl: 34px;
+  --idea-text-3xl: 46px;
+  --idea-text-4xl: 64px;
+  --idea-text-hero: clamp(40px, 6vw, 88px);
+
+  --idea-tracking-wide: 0.18em;   /* eyebrow / labels */
+  --idea-tracking: 0.02em;
+}
+
+/* ═══ Light mode — white canvas with dark-blue accent ═══════════════════ */
+[data-theme='dark'] {
+  --idea-bg: #101010;
+  --idea-bg-2: #191919;
+  --idea-surface: #202020;
+  --idea-surface-2: #292929;
+  --idea-overlay: rgba(16, 16, 16, 0.82);
+  --idea-hero-overlay: linear-gradient(90deg, rgba(16, 16, 16, 0.9) 0%, rgba(16, 16, 16, 0.6) 47%, rgba(16, 16, 16, 0.16) 100%);
+  --idea-hero-copy: rgba(255, 255, 255, 0.84);
+  --idea-hero-control: rgba(255, 255, 255, 0.35);
+  --idea-hero-control-bg: rgba(26, 26, 26, 0.68);
+
+  /* the "gold" accent role is replaced by a deep royal blue */
+  --idea-gold: #ff7200;
+  --idea-gold-bright: #ff8a32;
+  --idea-gold-deep: #cf5b00;
+  --idea-gold-soft: rgba(255, 114, 0, 0.16);
+  --idea-gold-sheen: #d9e2ff;
+
+  --idea-text: #f5f5f5;
+  --idea-text-muted: #b1b1b1;
+  --idea-text-faint: #858585;
+  --idea-on-gold: #ffffff;
+
+  --idea-border: rgba(255, 114, 0, 0.18);
+  --idea-border-neutral: rgba(255, 255, 255, 0.1);
+
+  --idea-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
+  --idea-shadow-md: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --idea-shadow-gold: 0 8px 30px rgba(255, 114, 0, 0.18);
+}
+
+/* ── Base element styling bound to the tokens ── */
+html {
+  background: var(--idea-bg);
+  transition: background 0.3s ease;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  background: var(--idea-bg);
+  color: var(--idea-text);
+  font-family: var(--idea-font-body);
+  font-size: var(--idea-text-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* RTL: Arabic uses the Cairo family for everything */
+[dir='rtl'] body,
+[dir='rtl'] .idea-display {
+  font-family: var(--idea-font-arabic);
+}
+
+.idea-display {
+  font-family: var(--idea-font-display);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: var(--idea-tracking);
+}
+
+/* Hero headline — condensed Oswald, uppercase, cinematic */
+.idea-hero-title {
+  font-family: var(--idea-font-display);
+  font-weight: 600;
+  line-height: 1.06;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--idea-text);
+}
+[dir='rtl'] .idea-hero-title {
+  font-family: var(--idea-font-arabic);
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 700;
+}
+
+.idea-eyebrow {
+  font-family: var(--idea-font-body);
+  text-transform: uppercase;
+  letter-spacing: var(--idea-tracking-wide);
+  color: var(--idea-gold);
+  font-size: var(--idea-text-xs);
+  font-weight: 500;
+}
+
+/* thin gold divider used across sections */
+.idea-rule {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--idea-gold) 50%,
+    transparent
+  );
+  opacity: 0.5;
+}
+
+::selection {
+  background: var(--idea-gold);
+  color: var(--idea-on-gold);
+}
+
+/* custom scrollbar to match the dark theme */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--idea-bg); }
+::-webkit-scrollbar-thumb {
+  background: var(--idea-gold-deep);
+  border-radius: var(--idea-radius-full);
+}
+
+
+/* Rich photo treatment is controlled here so the catalog can be tuned globally. */
+.idea-vivid-image {
+  filter: saturate(1.16) contrast(1.06) brightness(1.04);
+}
+
+/* Keep controls clear of the iPhone notch and home indicator. */
+@supports (padding: max(0px)) {
+  header { padding-top: env(safe-area-inset-top); }
+  footer { padding-bottom: env(safe-area-inset-bottom); }
+}
+
+.idea-official-logo {
+  display: block;
+  width: min(100%, 340px);
+  background: transparent;
+}
+
+.idea-official-logo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: transparent;
+}
+
+.idea-official-logo--compact {
+  width: 184px;
+}
+
+@media (max-width: 480px) {
+  .idea-official-logo--compact { width: 148px; }
+}
+
+@media (max-width: 640px) {
+  .idea-official-logo--compact { width: 132px; }
+}
+
+/* Touch-first sizing for iPhone, iPad, and Android viewports. */
+@media (max-width: 1024px) {
+  .idea-container { padding-inline: var(--idea-space-5) !important; }
+}
+
+@media (max-width: 760px) {
+  .idea-container { padding-inline: var(--idea-space-4) !important; }
+  .idea-hero-carousel { height: min(88svh, 680px) !important; }
+  .idea-hero-carousel button { min-height: calc(var(--idea-space-5) + var(--idea-space-4)); }
+  .idea-hero-carousel .idea-hero-arrow { display: none !important; }
+  .idea-hero-content > div { max-width: none !important; text-align: center; }
+  .idea-hero-content > div > div:last-child { justify-content: center; }
+  .idea-hero-content .idea-hero-title { font-size: 34px !important; line-height: 1.04; }
+  .idea-hero-content p { font-size: 18px !important; max-width: 430px; margin-inline: auto !important; }
+}
+
+@media (max-width: 480px) {
+  .idea-container { padding-inline: var(--idea-space-3) !important; }
+  .idea-hero-carousel { height: min(86svh, 640px) !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
