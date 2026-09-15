@@ -1,16 +1,1 @@
-type IdeaLogoProps = {
-  compact?: boolean;
-};
-
-/** The supplied IDEA Business Administration logo, always shown in full. */
-export function IdeaLogo({ compact = false }: IdeaLogoProps) {
-  return (
-    <span
-      className={`idea-official-logo ${compact ? "idea-official-logo--compact" : ""}`}
-      aria-label="IDEA Business Administration"
-      role="img"
-    >
-      <img src="https://i.ibb.co/4wBqQKbz/idea-new-logo.png" alt="IDEA Business Administration" />
-    </span>
-  );
-}
+aW1wb3J0IHsgdXNlU3RhdGUgfSBmcm9tICJyZWFjdCI7Cgp0eXBlIElkZWFMb2dvUHJvcHMgPSB7CiAgY29tcGFjdD86IGJvb2xlYW47Cn07CgovKiogVGhlIHN1cHBsaWVkIElERUEgQnVzaW5lc3MgQWRtaW5pc3RyYXRpb24gbG9nbywgYWx3YXlzIHNob3duIGluIGZ1bGwuICovCmV4cG9ydCBmdW5jdGlvbiBJZGVhTG9nbyh7IGNvbXBhY3QgPSBmYWxzZSB9OiBJZGVhTG9nb1Byb3BzKSB7CiAgY29uc3QgW2ZhaWxlZCwgc2V0RmFpbGVkXSA9IHVzZVN0YXRlKGZhbHNlKTsKCiAgcmV0dXJuICgKICAgIDxzcGFuCiAgICAgIGNsYXNzTmFtZT17YGlkZWEtb2ZmaWNpYWwtbG9nbyAke2NvbXBhY3QgPyAiaWRlYS1vZmZpY2lhbC1sb2dvLS1jb21wYWN0IiA6ICIifWB9CiAgICAgIGFyaWEtbGFiZWw9IklERUEgQnVzaW5lc3MgQWRtaW5pc3RyYXRpb24iCiAgICAgIHJvbGU9ImltZyIKICAgID4KICAgICAge2ZhaWxlZCA/ICgKICAgICAgICA8c3BhbiBjbGFzc05hbWU9ImlkZWEtb2ZmaWNpYWwtbG9nby1mYWxsYmFjayIgYXJpYS1oaWRkZW49InRydWUiPgogICAgICAgICAgPHN0cm9uZz5JREVBPC9zdHJvbmc+CiAgICAgICAgICA8c3Bhbj5CdXNpbmVzcyBBZG1pbmlzdHJhdGlvbjwvc3Bhbj4KICAgICAgICA8L3NwYW4+CiAgICAgICkgOiAoCiAgICAgICAgPGltZwogICAgICAgICAgc3JjPSJodHRwczovL2kuaWJiLmNvLzR3QnFRS2J6L2lkZWEtbmV3LWxvZ28ucG5nIgogICAgICAgICAgYWx0PSJJREVBIEJ1c2luZXNzIEFkbWluaXN0cmF0aW9uIgogICAgICAgICAgb25FcnJvcj17KCkgPT4gc2V0RmFpbGVkKHRydWUpfQogICAgICAgIC8+CiAgICAgICl9CiAgICA8L3NwYW4+CiAgKTsKfQo=
