@@ -1,0 +1,19 @@
+# Dependencies and generated output
+node_modules/
+dist/
+
+# Local deployment and QA state
+.vercel/
+.qa-screens/
+
+# Secrets and local environment configuration
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Local editor and system artifacts
+.DS_Store
+*.log
