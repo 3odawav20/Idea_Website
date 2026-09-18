@@ -67,9 +67,12 @@ export default async function handler(req, res) {
 
     const response = await fetch(target.toString(), {
       headers: {
-        "user-agent": "Mozilla/5.0 (compatible; IDEA-Catalog/1.0; +https://idea-website-two.vercel.app)",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
         "accept": "text/html,application/xhtml+xml",
         "accept-language": "en-US,en;q=0.9",
+        "cache-control": "no-cache",
+        "pragma": "no-cache",
+        "referer": "https://mazloumhome.com/",
       },
       redirect: "follow",
     });
@@ -93,6 +96,8 @@ export default async function handler(req, res) {
     const galleryFromHtml = [
       ...[...html.matchAll(/data-image-large-src=["']([^"']+)["']/gi)].map((m) => m[1]),
       ...[...html.matchAll(/data-full-size-image-url=["']([^"']+)["']/gi)].map((m) => m[1]),
+      ...[...html.matchAll(/<meta[^>]+property=["']og:image(?::secure_url)?["'][^>]+content=["']([^"']+)["']/gi)].map((m) => m[1]),
+      ...[...html.matchAll(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image(?::secure_url)?["']/gi)].map((m) => m[1]),
     ];
     const gallery = [...new Set([...galleryFromLd, ...galleryFromHtml].map((image) => absolutize(image, target.toString())).filter(Boolean))];
 
