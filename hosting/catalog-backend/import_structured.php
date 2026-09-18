@@ -71,6 +71,43 @@ function findAttr(array $attrs, array $needles): ?string {
     return null;
 }
 
+
+function flattenImages($value): array {
+    $out = [];
+    $walk = function ($node) use (&$out, &$walk) {
+        if (is_string($node)) {
+            $v = trim($node);
+            if ($v !== '' && preg_match('#^https?://#i', $v)) $out[] = $v;
+            return;
+        }
+        if (!is_array($node)) return;
+        foreach (['src','url','contentUrl','original','full','large'] as $key) {
+            if (isset($node[$key]) && is_string($node[$key])) $walk($node[$key]);
+        }
+        foreach ($node as $key => $child) {
+            if (in_array((string)$key, ['src','url','contentUrl','original','full','large'], true)) continue;
+            if (is_array($child)) $walk($child);
+        }
+    };
+    $walk($value);
+    return array_values(array_unique($out));
+}
+
+function detectDimensions(string $text): ?string {
+    $values = [];
+    if (preg_match_all('/(?<!\d)(\d{1,4}(?:\.\d+)?)\s*[x×*]\s*(\d{1,4}(?:\.\d+)?)(?:\s*[x×*]\s*(\d{1,4}(?:\.\d+)?))?\s*(mm|cm|m|سم|مم)?/iu', $text, $matches, PREG_SET_ORDER)) {
+        foreach ($matches as $m) {
+            $parts = [$m[1], $m[2]];
+            if (!empty($m[3])) $parts[] = $m[3];
+            $value = implode(' × ', $parts);
+            if (!empty($m[4])) $value .= ' ' . $m[4];
+            $values[] = $value;
+        }
+    }
+    $values = array_values(array_unique($values));
+    return $values ? implode(', ', array_slice($values, 0, 20)) : null;
+}
+
 function inferCollectionSource(array $row, array $attrs): string {
     $parts = [
         $row['category'] ?? '',
@@ -161,7 +198,16 @@ foreach ($files as $file) {
         $description = cleanText((string)($row['description_html'] ?? $row['short_description_html'] ?? ''));
         $category = cleanText((string)($row['category'] ?? ''));
         $collection = inferCollectionSource($row, $attrs);
-        $images = array_values(array_unique(array_filter(array_map('strval', $row['images'] ?? []))));
+        if (!$dimension) {
+            $dimension = detectDimensions(implode(' ', array_filter([
+                $name,
+                $description,
+                $category,
+                implode(' ', array_values($attrs)),
+            ])));
+        }
+        if ($dimension && !isset($attrs['Dimensions'])) $attrs['Dimensions'] = $dimension;
+        $images = flattenImages($row['images'] ?? []);
         $primary = $images[0] ?? null;
         $availability = isset($row['is_in_stock']) ? ($row['is_in_stock'] ? 'in-stock' : 'out-of-stock') : null;
         $slug = $sourceId . '-' . $recordId . '-' . slugifySource($name);
