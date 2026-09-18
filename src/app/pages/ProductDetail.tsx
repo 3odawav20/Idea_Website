@@ -3,6 +3,7 @@ import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Product } from "../data/types";
 import { loadMazloumDetail, applyMazloumDetail } from "../data/mazloumDetails";
+import { applyCatalogProductDetail, catalogIdOf, loadCatalogProductDetail } from "../data/catalogBackendDetails";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
@@ -21,17 +22,28 @@ export function ProductDetail() {
     setResolvedProduct(baseProduct);
     setActiveImg(0);
     setFailedImages([]);
+    if (!baseProduct) return;
 
-    if (baseProduct?.source?.sourceId !== "source-13" || !baseProduct.source.productPageUrl) return;
     let cancelled = false;
 
-    void loadMazloumDetail(baseProduct.source.productPageUrl).then((detail) => {
-      if (!cancelled && detail) {
-        setResolvedProduct(applyMazloumDetail(baseProduct, detail));
+    void (async () => {
+      let resolved = baseProduct;
+      const catalogId = catalogIdOf(baseProduct);
+
+      if (catalogId) {
+        const detail = await loadCatalogProductDetail(baseProduct);
+        if (detail) resolved = applyCatalogProductDetail(resolved, detail);
+      } else if (baseProduct.source?.sourceId === "source-13" && baseProduct.source.productPageUrl) {
+        const detail = await loadMazloumDetail(baseProduct.source.productPageUrl);
+        if (detail) resolved = applyMazloumDetail(resolved, detail);
+      }
+
+      if (!cancelled) {
+        setResolvedProduct(resolved);
         setActiveImg(0);
         setFailedImages([]);
       }
-    });
+    })();
 
     return () => { cancelled = true; };
   }, [baseProduct]);
@@ -44,7 +56,7 @@ export function ProductDetail() {
     );
   }
 
-  const gallery = product.gallery?.length ? [...new Set([product.image, ...product.gallery])] : [product.image];
+  const gallery = [...new Set([product.image, ...(product.gallery ?? [])].filter(Boolean))];
   const unit = product.collection === "ceramics" || product.collection === "porcelain" ? "sqm" : "pieces";
   const fav = isFavorite(product.id);
   const activeImageFailed = failedImages.includes(activeImg);
@@ -109,7 +121,7 @@ export function ProductDetail() {
         <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "var(--idea-space-7)" }} className="idea-pd-grid">
           <div>
             <div style={{ aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", background: "var(--idea-surface)" }}>
-              {activeImageFailed ? (
+              {gallery.length === 0 || activeImageFailed ? (
                 <div className="idea-image-unavailable">Image unavailable from the documented source.</div>
               ) : (
                 <img className="idea-vivid-image" src={gallery[activeImg]} alt={product.name[locale]} onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
