@@ -1,6 +1,8 @@
 import { Link, useParams } from "react-router";
 import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import type { Product } from "../data/types";
+import { loadMazloumDetail, applyMazloumDetail } from "../data/mazloumDetails";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
@@ -10,9 +12,31 @@ export function ProductDetail() {
   const { slug } = useParams();
   const { t, locale } = useI18n();
   const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote } = useStore();
-  const product = products.find((p) => p.slug === slug);
+  const baseProduct = products.find((p) => p.slug === slug);
+  const [resolvedProduct, setResolvedProduct] = useState<Product | undefined>(baseProduct);
   const [activeImg, setActiveImg] = useState(0);
   const [failedImages, setFailedImages] = useState<number[]>([]);
+
+  useEffect(() => {
+    setResolvedProduct(baseProduct);
+    setActiveImg(0);
+    setFailedImages([]);
+
+    if (baseProduct?.source?.sourceId !== "source-13" || !baseProduct.source.productPageUrl) return;
+    let cancelled = false;
+
+    void loadMazloumDetail(baseProduct.source.productPageUrl).then((detail) => {
+      if (!cancelled && detail) {
+        setResolvedProduct(applyMazloumDetail(baseProduct, detail));
+        setActiveImg(0);
+        setFailedImages([]);
+      }
+    });
+
+    return () => { cancelled = true; };
+  }, [baseProduct]);
+
+  const product = resolvedProduct || baseProduct;
 
   if (!product) {
     return (
@@ -56,6 +80,7 @@ export function ProductDetail() {
     ["Finish", product.finish],
     ["Application", product.application],
     ["Weight", product.weight],
+    ["Availability", product.availability],
     ["Packaging", product.packaging],
     ["Pieces / box", product.piecesPerBox ? String(product.piecesPerBox) : undefined],
     ["m² / box", product.squareMetersPerBox ? String(product.squareMetersPerBox) : undefined],
@@ -105,6 +130,20 @@ export function ProductDetail() {
             {product.brand && <div className="idea-eyebrow">{product.brand}</div>}
             <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 var(--idea-space-3)" }}>{product.name[locale]}</h1>
             {(product.series || product.family) && <div style={{ color: "var(--idea-text-muted)", marginBottom: 10 }}>{product.series || product.family}</div>}
+            {(product.priceText || product.compareAtPriceText) && (
+              <div style={{ marginBottom: "var(--idea-space-4)" }}>
+                {product.compareAtPriceText && (
+                  <div style={{ color: "var(--idea-text-faint)", textDecoration: "line-through", fontSize: "var(--idea-text-sm)" }}>
+                    {product.compareAtPriceText}
+                  </div>
+                )}
+                {product.priceText && (
+                  <div style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-xl)", fontWeight: 700 }}>
+                    {product.priceText}
+                  </div>
+                )}
+              </div>
+            )}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-4)" }}>
               {(product.badges ?? []).map((badge) => <Tag key={badge}>{badge}</Tag>)}
               {product.variant && <Tag>{product.variant}</Tag>}
