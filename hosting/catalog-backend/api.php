@@ -39,6 +39,18 @@ if ($action === 'health') {
     reply(['ok' => true, 'service' => 'IDEA Catalog API', 'time' => gmdate('c')]);
 }
 
+if ($action === 'source-feed') {
+    $page=max(1,(int)($_GET['page']??1)); $size=30; $offset=($page-1)*$size;
+    $total=(int)$pdo->query('SELECT COUNT(*) FROM catalog_products WHERE approved=1 AND source_id="source-13"')->fetchColumn();
+    $rows=$pdo->query('SELECT source_record_id,name,source_url,primary_image_url,subcategory,price_text,compare_at_price_text FROM catalog_products WHERE approved=1 AND source_id="source-13" ORDER BY id DESC LIMIT '.$size.' OFFSET '.$offset)->fetchAll();
+    $products=array_map(static fn($r)=>[
+        'id'=>$r['source_record_id'],'name'=>$r['name'],'productUrl'=>$r['source_url'],
+        'image'=>$r['primary_image_url'],'category'=>$r['subcategory'],'price'=>$r['price_text'],
+        'previousPrice'=>$r['compare_at_price_text'],'discount'=>null,'badges'=>[]
+    ],$rows);
+    reply(['ok'=>true,'page'=>$page,'pageSize'=>$size,'total'=>$total,'totalPages'=>max(1,(int)ceil($total/$size)),'products'=>$products]);
+}
+
 if ($action === 'collections') {
     $rows = $pdo->query(
         'SELECT collection_slug, COUNT(*) product_count FROM catalog_products WHERE approved=1 GROUP BY collection_slug ORDER BY collection_slug'
