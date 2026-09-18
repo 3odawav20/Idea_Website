@@ -108,7 +108,9 @@ if ($action === 'products') {
     $count->execute($args);
     $total = (int)$count->fetchColumn();
 
-    $sql = 'SELECT * FROM catalog_products WHERE ' . $whereSql .
+    $sql = 'SELECT id,source_id,source_record_id,slug,name,brand,sku,collection_slug,subcategory,product_type,' .
+        'material,color,dimension_text,price_text,compare_at_price_text,currency,availability,primary_image_url,' .
+        'source_url,last_source_sync_at FROM catalog_products WHERE ' . $whereSql .
         ' ORDER BY updated_at DESC,id DESC LIMIT ' . $perPage . ' OFFSET ' . $offset;
     $stmt = $pdo->prepare($sql);
     $stmt->execute($args);
