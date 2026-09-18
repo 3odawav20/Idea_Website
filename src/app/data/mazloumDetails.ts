@@ -63,6 +63,9 @@ export function loadMazloumDetail(productUrl: string): Promise<MazloumDetail | n
   });
 
   cache.set(productUrl, request);
+  void request.then((result) => {
+    if (!result) cache.delete(productUrl);
+  });
   return request;
 }
 
