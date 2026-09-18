@@ -1,4 +1,4 @@
-const SOURCE_URL = "https://mazloumhome.com/new-products";
+const SOURCE_URL = "https://mazloumhome.com/2-home";
 const PAGE_SIZE = 12;
 
 function decodeHtml(value = "") {
