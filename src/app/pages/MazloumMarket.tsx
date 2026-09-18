@@ -148,11 +148,7 @@ export function MazloumMarket() {
                 background: "var(--idea-surface)", display: "flex", flexDirection: "column"
               }}>
                 <div style={{ aspectRatio: "4/3", overflow: "hidden", background: "var(--idea-bg)", position: "relative" }}>
-                  {product.image ? (
-                    <img src={product.image} alt={product.name} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                  ) : (
-                    <div className="idea-image-unavailable">Image unavailable</div>
-                  )}
+                  <MazloumCardImage product={product} />
                   <div style={{ position: "absolute", top: 10, insetInlineStart: 10, display: "flex", gap: 6, flexWrap: "wrap" }}>
                     {product.discount && <span style={badgeStyle}>{product.discount}</span>}
                     {product.badges.slice(0, 2).map((badge) => <span key={badge} style={badgeStyle}>{badge}</span>)}
@@ -203,6 +199,49 @@ export function MazloumMarket() {
         }
       `}</style>
     </Section>
+  );
+}
+
+
+function MazloumCardImage({ product }: { product: MazloumProduct }) {
+  const [image, setImage] = useState(product.image);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    if (image || failed) return;
+    const controller = new AbortController();
+
+    fetch(`/api/mazloum-detail?url=${encodeURIComponent(product.productUrl)}`, { signal: controller.signal })
+      .then(async (response) => {
+        if (!response.ok) throw new Error("Image lookup failed");
+        const payload = await response.json() as { gallery?: string[] };
+        const sourceImage = payload.gallery?.[0];
+        if (sourceImage) setImage(sourceImage);
+        else setFailed(true);
+      })
+      .catch((reason) => {
+        if (reason?.name !== "AbortError") setFailed(true);
+      });
+
+    return () => controller.abort();
+  }, [product.productUrl, image, failed]);
+
+  if (!image) {
+    return (
+      <div className="idea-image-unavailable" style={{ width: "100%", height: "100%" }}>
+        {failed ? "Image unavailable" : "Loading image…"}
+      </div>
+    );
+  }
+
+  return (
+    <img
+      src={image}
+      alt={product.name}
+      loading="lazy"
+      onError={() => { setImage(null); setFailed(true); }}
+      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+    />
   );
 }
 
