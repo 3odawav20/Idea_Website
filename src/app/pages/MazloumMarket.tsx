@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router";
 import { ExternalLink, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { Container, Section, Tag } from "../components/ui";
 
@@ -165,12 +166,18 @@ export function MazloumMarket() {
                     {product.previousPrice && <span style={{ color: "var(--idea-text-faint)", textDecoration: "line-through", fontSize: "var(--idea-text-xs)" }}>{product.previousPrice}</span>}
                     {product.price && <span style={{ color: "var(--idea-gold-bright)", fontWeight: 700 }}>{product.price}</span>}
                   </div>
+                  <Link to={`/market/mazloum/product?url=${encodeURIComponent(product.productUrl)}`} style={{
+                    display: "inline-flex", justifyContent: "center", alignItems: "center", gap: 7, textDecoration: "none",
+                    color: "var(--idea-on-gold)", background: "var(--idea-gold)", border: "1px solid var(--idea-gold)",
+                    borderRadius: "var(--idea-radius-full)", padding: "8px 12px", fontSize: "var(--idea-text-xs)", marginTop: 4
+                  }}>
+                    View inside IDEA
+                  </Link>
                   <a href={product.productUrl} target="_blank" rel="noreferrer" style={{
                     display: "inline-flex", justifyContent: "center", alignItems: "center", gap: 7, textDecoration: "none",
-                    color: "var(--idea-gold-bright)", border: "1px solid var(--idea-gold)", borderRadius: "var(--idea-radius-full)",
-                    padding: "8px 12px", fontSize: "var(--idea-text-xs)", marginTop: 4
+                    color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)"
                   }}>
-                    Product source <ExternalLink size={13} />
+                    Original source <ExternalLink size={12} />
                   </a>
                 </div>
               </article>
