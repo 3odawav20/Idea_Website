@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
@@ -7,7 +7,7 @@ import { COLLECTIONS } from "../data/catalog";
 import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
-import { SlidersHorizontal, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from "lucide-react";
 
 function uniq<T>(arr: (T | undefined)[]): T[] {
   return [...new Set(arr.filter(Boolean) as T[])];
@@ -71,6 +71,18 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   });
   const activeCount = [finish, size, usage, color, brand, type, material, application].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 30;
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
+  const visibleResults = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  useEffect(() => {
+    setPage(1);
+  }, [fixedCollection, q, finish, size, usage, color, brand, type, material, application, sort]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
   const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); setBrand(null); setType(null); setMaterial(null); setApplication(null); };
 
   const meta = fixedCollection ? COLLECTIONS.find((c) => c.slug === fixedCollection) : null;
@@ -174,8 +186,40 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
               </div>
             ) : (
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
-                {results.map((p) => <ProductCard key={p.id} product={p} />)}
+                {visibleResults.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
+            )}
+
+            {results.length > PAGE_SIZE && (
+              <nav aria-label="Product pagination" style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 10, marginTop: "var(--idea-space-6)", flexWrap: "wrap" }}>
+                <button
+                  disabled={page <= 1}
+                  onClick={() => setPage((current) => Math.max(1, current - 1))}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 6, border: "var(--idea-hairline)",
+                    background: "var(--idea-surface)", color: page <= 1 ? "var(--idea-text-faint)" : "var(--idea-text)",
+                    borderRadius: "var(--idea-radius-full)", padding: "8px 13px", cursor: page <= 1 ? "not-allowed" : "pointer",
+                    opacity: page <= 1 ? .55 : 1,
+                  }}
+                >
+                  <ChevronLeft size={15} /> Previous
+                </button>
+                <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>
+                  {page} / {totalPages}
+                </span>
+                <button
+                  disabled={page >= totalPages}
+                  onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+                  style={{
+                    display: "inline-flex", alignItems: "center", gap: 6, border: "var(--idea-hairline)",
+                    background: "var(--idea-surface)", color: page >= totalPages ? "var(--idea-text-faint)" : "var(--idea-text)",
+                    borderRadius: "var(--idea-radius-full)", padding: "8px 13px", cursor: page >= totalPages ? "not-allowed" : "pointer",
+                    opacity: page >= totalPages ? .55 : 1,
+                  }}
+                >
+                  Next <ChevronRight size={15} />
+                </button>
+              </nav>
             )}
           </div>
         </div>

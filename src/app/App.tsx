@@ -8,8 +8,6 @@ import { useBackend, type Role } from "./backend/db";
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home";
 import { Products } from "./pages/Products";
-import { MazloumMarket } from "./pages/MazloumMarket";
-import { MazloumProduct } from "./pages/MazloumProduct";
 import { Collections, CollectionDetail } from "./pages/Collections";
 import { ProductDetail } from "./pages/ProductDetail";
 import { Favorites } from "./pages/Favorites";
@@ -55,8 +53,8 @@ export default function App() {
               {/* Storefront */}
               <Route index element={<Home />} />
               <Route path="/products" element={<Products />} />
-              <Route path="/market/mazloum" element={<MazloumMarket />} />
-              <Route path="/market/mazloum/product" element={<MazloumProduct />} />
+              <Route path="/market/mazloum" element={<Navigate to="/products" replace />} />
+              <Route path="/market/mazloum/product" element={<Navigate to="/products" replace />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/collections/:slug" element={<CollectionDetail />} />
               <Route path="/product/:slug" element={<ProductDetail />} />

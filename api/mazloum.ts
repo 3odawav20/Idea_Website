@@ -1,5 +1,31 @@
 const SOURCE_URL = "https://mazloumhome.com/2-home";
+const FALLBACK_URL = "https://mazloumhome.com/new-products";
 const PAGE_SIZE = 12;
+
+const SOURCE_HEADERS = {
+  "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "accept": "text/html,application/xhtml+xml",
+  "accept-language": "en-US,en;q=0.9",
+  "cache-control": "no-cache",
+  "pragma": "no-cache",
+  "referer": "https://mazloumhome.com/",
+};
+
+async function fetchCataloguePage(baseUrl, page) {
+  const url = page === 1 ? baseUrl : `${baseUrl}?page=${page}`;
+  let lastResponse = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const response = await fetch(url, { headers: SOURCE_HEADERS, redirect: "follow" });
+      lastResponse = response;
+      if (response.ok) return { response, url };
+    } catch {
+      // Retry transient source/network failures below.
+    }
+    if (attempt < 2) await new Promise((resolve) => setTimeout(resolve, attempt === 0 ? 250 : 700));
+  }
+  return { response: lastResponse, url };
+}
 
 function decodeHtml(value = "") {
   return value
@@ -106,22 +132,18 @@ function parseProducts(html) {
 export default async function handler(req, res) {
   try {
     const requestedPage = Math.max(1, Math.min(200, Number(req.query?.page || 1) || 1));
-    const sourcePage = requestedPage === 1 ? SOURCE_URL : `${SOURCE_URL}?page=${requestedPage}`;
+    let sourceBase = SOURCE_URL;
+    let fetched = await fetchCataloguePage(SOURCE_URL, requestedPage);
 
-    const response = await fetch(sourcePage, {
-      headers: {
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
-        "accept": "text/html,application/xhtml+xml",
-        "accept-language": "en-US,en;q=0.9",
-        "cache-control": "no-cache",
-        "pragma": "no-cache",
-        "referer": "https://mazloumhome.com/",
-      },
-      redirect: "follow",
-    });
+    if (!fetched.response?.ok) {
+      sourceBase = FALLBACK_URL;
+      fetched = await fetchCataloguePage(FALLBACK_URL, requestedPage);
+    }
 
-    if (!response.ok) {
-      res.status(response.status).json({ ok: false, error: `Mazloum source returned HTTP ${response.status}` });
+    const response = fetched.response;
+    if (!response?.ok) {
+      const status = response?.status || 502;
+      res.status(status).json({ ok: false, error: `Mazloum source returned HTTP ${status} after retries and fallback` });
       return;
     }
 
@@ -137,7 +159,7 @@ export default async function handler(req, res) {
       source: {
         id: "source-13",
         name: "Mazloum Home",
-        url: SOURCE_URL,
+        url: sourceBase,
         fetchedAt: new Date().toISOString(),
       },
       page: requestedPage,

@@ -13,7 +13,10 @@ export type CollectionSlug =
   | "bathroom-units"
   | "bathtubs"
   | "shower-units"
-  | "bathroom-accessories";
+  | "bathroom-accessories"
+  | "furniture"
+  | "lighting"
+  | "home-decor";
 
 export interface LocalizedText {
   en: string;
@@ -90,6 +93,10 @@ export interface Product {
   piecesPerBox?: number;
   squareMetersPerBox?: number;
   weight?: string;
+  priceText?: string;
+  compareAtPriceText?: string;
+  currency?: string;
+  availability?: string;
   specificationGroups?: ProductSpecificationGroup[];
   sourcePdf?: string;
   sourcePage?: number;
@@ -133,5 +140,5 @@ export interface CollectionMeta {
   title: LocalizedText;
   blurb: LocalizedText;
   image: string;
-  group: "ceramics" | "porcelain" | "sanitary";
+  group: "ceramics" | "porcelain" | "sanitary" | "furniture" | "lighting" | "decor";
 }

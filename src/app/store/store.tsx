@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
+import { loadMazloumProducts } from "../data/mazloumImport";
 import { useBackend } from "../backend/db";
 import { requireSupabase } from "../backend/supabaseClient";
 
@@ -53,6 +54,21 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     fetchAbaElMozahemProducts()
       .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => product.approved && !current.some((existing) => existing.id === product.id))]))
       .catch(() => { /* Source remains staged in registry; keep verified local catalogue available. */ });
+
+    const controller = new AbortController();
+    void loadMazloumProducts((incoming) => {
+      setProducts((current) => {
+        const next = new Map(current.map((product) => [product.id, product]));
+        for (const product of incoming) {
+          if (product.approved) next.set(product.id, product);
+        }
+        return [...next.values()];
+      });
+    }, controller.signal).catch(() => {
+      /* Keep the verified local catalogue available when the remote source is temporarily unavailable. */
+    });
+
+    return () => controller.abort();
   }, []);
   const { session } = useBackend();
   const [favorites, setFavorites] = useState<string[]>([]);
