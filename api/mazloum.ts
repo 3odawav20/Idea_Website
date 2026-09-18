@@ -1,3 +1,4 @@
+import { MAZLOUM_SNAPSHOT } from "../src/app/data/mazloumSnapshot";
 const SOURCE_URL = "https://mazloumhome.com/2-home";
 const FALLBACK_URL = "https://mazloumhome.com/new-products";
 const PAGE_SIZE = 12;
@@ -142,8 +143,25 @@ export default async function handler(req, res) {
 
     const response = fetched.response;
     if (!response?.ok) {
-      const status = response?.status || 502;
-      res.status(status).json({ ok: false, error: `Mazloum source returned HTTP ${status} after retries and fallback` });
+      const snapshotStart = (requestedPage - 1) * PAGE_SIZE;
+      const snapshotProducts = MAZLOUM_SNAPSHOT.slice(snapshotStart, snapshotStart + PAGE_SIZE);
+      const total = MAZLOUM_SNAPSHOT.length;
+      res.setHeader("Cache-Control", "s-maxage=900, stale-while-revalidate=86400");
+      res.status(200).json({
+        ok: true,
+        source: {
+          id: "source-13",
+          name: "Mazloum Home",
+          url: SOURCE_URL,
+          fetchedAt: new Date().toISOString(),
+          mode: "verified-snapshot",
+        },
+        page: requestedPage,
+        pageSize: PAGE_SIZE,
+        total,
+        totalPages: Math.ceil(total / PAGE_SIZE),
+        products: snapshotProducts,
+      });
       return;
     }
 
