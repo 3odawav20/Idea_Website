@@ -2,11 +2,12 @@
 declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
-
-$dsn = getenv('IDEA_DB_DSN') ?: '';
-$dbUser = getenv('IDEA_DB_USER') ?: '';
-$dbPassword = getenv('IDEA_DB_PASSWORD') ?: '';
-$allowedOrigin = getenv('IDEA_CORS_ORIGIN') ?: 'https://idea-website-two.vercel.app';
+require __DIR__ . '/bootstrap.php';
+$config = ideaCatalogConfig();
+$dsn = $config['db_dsn'];
+$dbUser = $config['db_user'];
+$dbPassword = $config['db_password'];
+$allowedOrigin = $config['cors_origin'];
 
 if ($dsn === '' || $dbUser === '') {
     http_response_code(503);
