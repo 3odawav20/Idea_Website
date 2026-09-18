@@ -1,3 +1,30 @@
+
+const SOURCE_HEADERS = {
+  "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
+  "accept": "text/html,application/xhtml+xml",
+  "accept-language": "en-US,en;q=0.9",
+  "cache-control": "no-cache",
+  "pragma": "no-cache",
+  "referer": "https://mazloumhome.com/",
+};
+
+async function fetchMazloumPage(url) {
+  let lastResponse = null;
+  for (let attempt = 0; attempt < 3; attempt += 1) {
+    try {
+      const response = await fetch(url, { headers: SOURCE_HEADERS, redirect: "follow" });
+      lastResponse = response;
+      if (response.ok || response.status < 500) return response;
+    } catch (error) {
+      if (attempt === 2) throw error;
+    }
+    if (attempt < 2) {
+      await new Promise((resolve) => setTimeout(resolve, attempt === 0 ? 250 : 700));
+    }
+  }
+  return lastResponse;
+}
+
 function decodeHtml(value = "") {
   return value
     .replace(/&nbsp;/g, " ")
@@ -65,20 +92,13 @@ export default async function handler(req, res) {
       return;
     }
 
-    const response = await fetch(target.toString(), {
-      headers: {
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
-        "accept": "text/html,application/xhtml+xml",
-        "accept-language": "en-US,en;q=0.9",
-        "cache-control": "no-cache",
-        "pragma": "no-cache",
-        "referer": "https://mazloumhome.com/",
-      },
-      redirect: "follow",
-    });
+    const fetchTarget = new URL(target.toString());
+    fetchTarget.hash = "";
+    const response = await fetchMazloumPage(fetchTarget.toString());
 
-    if (!response.ok) {
-      res.status(response.status).json({ ok: false, error: `Mazloum source returned HTTP ${response.status}` });
+    if (!response || !response.ok) {
+      const status = response?.status || 502;
+      res.status(status).json({ ok: false, error: `Mazloum source returned HTTP ${status} after retries` });
       return;
     }
 

@@ -3,6 +3,47 @@ import { Link } from "react-router";
 import { ExternalLink, ChevronLeft, ChevronRight, RefreshCw } from "lucide-react";
 import { Container, Section, Tag } from "../components/ui";
 
+
+const MAZLOUM_DETAIL_CONCURRENCY = 3;
+let activeMazloumDetailRequests = 0;
+const mazloumDetailQueue: Array<() => void> = [];
+const mazloumImageCache = new Map<string, Promise<string | null>>();
+
+function runNextMazloumDetailRequest() {
+  if (activeMazloumDetailRequests >= MAZLOUM_DETAIL_CONCURRENCY) return;
+  const next = mazloumDetailQueue.shift();
+  if (next) next();
+}
+
+function resolveMazloumImage(productUrl: string): Promise<string | null> {
+  const cached = mazloumImageCache.get(productUrl);
+  if (cached) return cached;
+
+  const request = new Promise<string | null>((resolve) => {
+    const run = () => {
+      activeMazloumDetailRequests += 1;
+      fetch(`/api/mazloum-detail?url=${encodeURIComponent(productUrl)}`)
+        .then(async (response) => {
+          if (!response.ok) return null;
+          const payload = await response.json() as { gallery?: string[] };
+          return payload.gallery?.[0] || null;
+        })
+        .then(resolve)
+        .catch(() => resolve(null))
+        .finally(() => {
+          activeMazloumDetailRequests = Math.max(0, activeMazloumDetailRequests - 1);
+          runNextMazloumDetailRequest();
+        });
+    };
+
+    if (activeMazloumDetailRequests < MAZLOUM_DETAIL_CONCURRENCY) run();
+    else mazloumDetailQueue.push(run);
+  });
+
+  mazloumImageCache.set(productUrl, request);
+  return request;
+}
+
 interface MazloumProduct {
   id: string;
   name: string;
@@ -209,21 +250,16 @@ function MazloumCardImage({ product }: { product: MazloumProduct }) {
 
   useEffect(() => {
     if (image || failed) return;
-    const controller = new AbortController();
+    let cancelled = false;
 
-    fetch(`/api/mazloum-detail?url=${encodeURIComponent(product.productUrl)}`, { signal: controller.signal })
-      .then(async (response) => {
-        if (!response.ok) throw new Error("Image lookup failed");
-        const payload = await response.json() as { gallery?: string[] };
-        const sourceImage = payload.gallery?.[0];
+    resolveMazloumImage(product.productUrl)
+      .then((sourceImage) => {
+        if (cancelled) return;
         if (sourceImage) setImage(sourceImage);
         else setFailed(true);
-      })
-      .catch((reason) => {
-        if (reason?.name !== "AbortError") setFailed(true);
       });
 
-    return () => controller.abort();
+    return () => { cancelled = true; };
   }, [product.productUrl, image, failed]);
 
   if (!image) {
