@@ -51,3 +51,47 @@ if ($action === 'product') {
     if (!$product) reply(['ok' => false, 'error' => 'Product not found'], 404);
     reply(['ok' => true, 'product' => $product]);
 }
+
+if ($action === 'products') {
+    $page = max(1, (int)($_GET['page'] ?? 1));
+    $perPage = min(100, max(1, (int)($_GET['per_page'] ?? 30)));
+    $offset = ($page - 1) * $perPage;
+    $where = ['approved=1'];
+    $args = [];
+
+    foreach (['source_id' => 'source', 'collection_slug' => 'collection', 'brand' => 'brand'] as $column => $key) {
+        $value = trim((string)($_GET[$key] ?? ''));
+        if ($value !== '') {
+            $where[] = $column . '=?';
+            $args[] = $value;
+        }
+    }
+
+    $q = trim((string)($_GET['q'] ?? ''));
+    if ($q !== '') {
+        $where[] = '(name LIKE ? OR brand LIKE ? OR sku LIKE ? OR subcategory LIKE ?)';
+        $needle = '%' . $q . '%';
+        array_push($args, $needle, $needle, $needle, $needle);
+    }
+
+    $whereSql = implode(' AND ', $where);
+    $count = $pdo->prepare('SELECT COUNT(*) FROM catalog_products WHERE ' . $whereSql);
+    $count->execute($args);
+    $total = (int)$count->fetchColumn();
+
+    $sql = 'SELECT * FROM catalog_products WHERE ' . $whereSql .
+        ' ORDER BY updated_at DESC,id DESC LIMIT ' . $perPage . ' OFFSET ' . $offset;
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($args);
+
+    reply([
+        'ok' => true,
+        'page' => $page,
+        'perPage' => $perPage,
+        'total' => $total,
+        'totalPages' => max(1, (int)ceil($total / $perPage)),
+        'products' => $stmt->fetchAll(),
+    ]);
+}
+
+reply(['ok' => false, 'error' => 'Unknown action'], 404);
