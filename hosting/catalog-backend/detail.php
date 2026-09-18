@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');
-
-$dsn=getenv('IDEA_DB_DSN')?:''; $user=getenv('IDEA_DB_USER')?:''; $password=getenv('IDEA_DB_PASSWORD')?:'';
+require __DIR__ . '/bootstrap.php';
+$config=ideaCatalogConfig();
+$dsn=$config['db_dsn']; $user=$config['db_user']; $password=$config['db_password'];
 if($dsn===''||$user===''){http_response_code(503);echo json_encode(['ok'=>false,'error'=>'Backend not configured']);exit;}
-$origin=$_SERVER['HTTP_ORIGIN']??''; $allowed=getenv('IDEA_CORS_ORIGIN')?:'https://idea-website-two.vercel.app';
+$origin=$_SERVER['HTTP_ORIGIN']??''; $allowed=$config['cors_origin'];
 if($origin===$allowed){header('Access-Control-Allow-Origin: '.$origin);header('Vary: Origin');}
 $pdo=new PDO($dsn,$user,$password,[PDO::ATTR_ERRMODE=>PDO::ERRMODE_EXCEPTION,PDO::ATTR_DEFAULT_FETCH_MODE=>PDO::FETCH_ASSOC]);
 
