@@ -12,6 +12,9 @@ export function Collections() {
     { key: "ceramics", label: t("home.ceramicPorcelain") },
     { key: "porcelain", label: "Porcelain" },
     { key: "sanitary", label: t("home.sanitary") },
+    { key: "furniture", label: locale === "ar" ? "أثاث" : locale === "fr" ? "Mobilier" : "Furniture" },
+    { key: "lighting", label: locale === "ar" ? "إضاءة" : locale === "fr" ? "Éclairage" : "Lighting" },
+    { key: "decor", label: locale === "ar" ? "ديكور منزلي" : locale === "fr" ? "Décoration" : "Home Decor" },
   ];
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
