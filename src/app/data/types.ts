@@ -16,7 +16,8 @@ export type CollectionSlug =
   | "bathroom-accessories"
   | "furniture"
   | "lighting"
-  | "home-decor";
+  | "home-decor"
+  | "plumbing-products";
 
 export interface LocalizedText {
   en: string;
