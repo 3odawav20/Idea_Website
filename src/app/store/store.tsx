@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
-import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
 import { loadMazloumProducts } from "../data/mazloumImport";
+import { loadUnifiedCatalog } from "../data/catalogBackendImport";
 import { useBackend } from "../backend/db";
 import { requireSupabase } from "../backend/supabaseClient";
 
@@ -51,21 +51,20 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   // Products imported from the source export. Unconfirmed fields stay empty.
   const [products, setProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS.filter((product) => product.approved));
   useEffect(() => {
-    fetchAbaElMozahemProducts()
-      .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => product.approved && !current.some((existing) => existing.id === product.id))]))
-      .catch(() => { /* Source remains staged in registry; keep verified local catalogue available. */ });
-
     const controller = new AbortController();
+
+    // Preserve the existing source-13 fallback while the durable catalogue is being populated.
     void loadMazloumProducts((incoming) => {
-      setProducts((current) => {
-        const next = new Map(current.map((product) => [product.id, product]));
-        for (const product of incoming) {
-          if (product.approved) next.set(product.id, product);
-        }
-        return [...next.values()];
-      });
+      setProducts((current) => mergeCatalogue(current, incoming));
     }, controller.signal).catch(() => {
-      /* Keep the verified local catalogue available when the remote source is temporarily unavailable. */
+      /* The unified catalogue below remains the primary public data source. */
+    });
+
+    // Primary catalogue: normalized records stored on IDEA's cPanel backend.
+    void loadUnifiedCatalog((incoming) => {
+      setProducts((current) => mergeCatalogue(current, incoming));
+    }, controller.signal).catch((error) => {
+      console.error("IDEA unified catalogue load failed", error);
     });
 
     return () => controller.abort();
