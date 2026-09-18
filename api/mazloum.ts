@@ -1,4 +1,4 @@
-import { MAZLOUM_SNAPSHOT } from "./mazloum-snapshot";
+import { MAZLOUM_SNAPSHOT } from "../src/app/data/mazloumSnapshot";
 const SOURCE_URL = "https://mazloumhome.com/2-home";
 const FALLBACK_URL = "https://mazloumhome.com/new-products";
 const PAGE_SIZE = 12;
