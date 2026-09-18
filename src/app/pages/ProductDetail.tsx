@@ -3,6 +3,7 @@ import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Product } from "../data/types";
 import { loadMazloumDetail, applyMazloumDetail } from "../data/mazloumDetails";
+import { isLiveCatalogProduct, loadLiveCatalogDetail } from "../data/liveCatalogDetails";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
@@ -22,16 +23,26 @@ export function ProductDetail() {
     setActiveImg(0);
     setFailedImages([]);
 
-    if (baseProduct?.source?.sourceId !== "source-13" || !baseProduct.source.productPageUrl) return;
+    if (!baseProduct) return;
     let cancelled = false;
 
-    void loadMazloumDetail(baseProduct.source.productPageUrl).then((detail) => {
-      if (!cancelled && detail) {
-        setResolvedProduct(applyMazloumDetail(baseProduct, detail));
-        setActiveImg(0);
-        setFailedImages([]);
-      }
-    });
+    if (baseProduct.source?.sourceId === "source-13" && baseProduct.source.productPageUrl) {
+      void loadMazloumDetail(baseProduct.source.productPageUrl).then((detail) => {
+        if (!cancelled && detail) {
+          setResolvedProduct(applyMazloumDetail(baseProduct, detail));
+          setActiveImg(0);
+          setFailedImages([]);
+        }
+      });
+    } else if (isLiveCatalogProduct(baseProduct)) {
+      void loadLiveCatalogDetail(baseProduct).then((detail) => {
+        if (!cancelled && detail) {
+          setResolvedProduct(detail);
+          setActiveImg(0);
+          setFailedImages([]);
+        }
+      });
+    }
 
     return () => { cancelled = true; };
   }, [baseProduct]);

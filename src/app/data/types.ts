@@ -7,6 +7,7 @@ export type Locale = "en" | "ar" | "fr";
 export type CollectionSlug =
   | "ceramics"
   | "porcelain"
+  | "marble"
   | "sanitary-ware"
   | "faucets"
   | "bathroom-sets"
@@ -14,6 +15,7 @@ export type CollectionSlug =
   | "bathtubs"
   | "shower-units"
   | "bathroom-accessories"
+  | "plumbing-products"
   | "furniture"
   | "lighting"
   | "home-decor";
@@ -140,5 +142,5 @@ export interface CollectionMeta {
   title: LocalizedText;
   blurb: LocalizedText;
   image: string;
-  group: "ceramics" | "porcelain" | "sanitary" | "furniture" | "lighting" | "decor";
+  group: "ceramics" | "porcelain" | "marble" | "sanitary" | "plumbing" | "furniture" | "lighting" | "decor";
 }

@@ -31,8 +31,8 @@ function CollectionTile({ slug }: { slug: string }) {
 export function Home() {
   const { t } = useI18n();
   const { products } = useStore();
-  const ceramicPorcelain = ["ceramics", "porcelain", "sanitary-ware", "faucets"];
-  const sanitary = ["bathroom-sets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories"];
+  const ceramicPorcelain = ["ceramics", "porcelain", "marble", "sanitary-ware", "faucets"];
+  const sanitary = ["bathroom-sets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
   const featured = products.slice(0, 4);
 
   return (

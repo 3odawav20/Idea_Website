@@ -65,12 +65,25 @@ if ($action === 'product') {
     $stmt->execute([$id]);
     $product = $stmt->fetch();
     if (!$product) reply(['ok' => false, 'error' => 'Product not found'], 404);
-    reply(['ok' => true, 'product' => $product]);
+
+    $imageStmt = $pdo->prepare(
+        'SELECT source_url, local_url, position FROM catalog_product_images WHERE product_id=? ORDER BY position,id'
+    );
+    $imageStmt->execute([$id]);
+    $images = $imageStmt->fetchAll();
+
+    $attrStmt = $pdo->prepare(
+        'SELECT attribute_key,attribute_value,source_value,position FROM catalog_product_attributes WHERE product_id=? ORDER BY position,id'
+    );
+    $attrStmt->execute([$id]);
+    $attributes = $attrStmt->fetchAll();
+
+    reply(['ok' => true, 'product' => $product, 'images' => $images, 'attributes' => $attributes]);
 }
 
 if ($action === 'products') {
     $page = max(1, (int)($_GET['page'] ?? 1));
-    $perPage = min(100, max(1, (int)($_GET['per_page'] ?? 30)));
+    $perPage = min(500, max(1, (int)($_GET['per_page'] ?? 30)));
     $offset = ($page - 1) * $perPage;
     $where = ['approved=1'];
     $args = [];

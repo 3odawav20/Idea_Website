@@ -1,8 +1,10 @@
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
 
 const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "https://api.fuzzycell.com/idea-catalog").replace(/\/$/, "");
+const PAGE_SIZE = 500;
+const PAGE_CONCURRENCY = 6;
 
-const COLLECTIONS: CollectionSlug[] = [
+const SOURCE_COLLECTIONS = [
   "ceramics",
   "porcelain",
   "sanitary-ware",
@@ -14,7 +16,25 @@ const COLLECTIONS: CollectionSlug[] = [
   "furniture",
   "lighting",
   "home-decor",
-];
+  "plumbing",
+  "plumbing-products",
+] as const;
+
+const DISPLAY_COLLECTIONS = new Set<CollectionSlug>([
+  "ceramics",
+  "porcelain",
+  "marble",
+  "sanitary-ware",
+  "faucets",
+  "bathroom-units",
+  "bathtubs",
+  "shower-units",
+  "bathroom-accessories",
+  "plumbing-products",
+  "furniture",
+  "lighting",
+  "home-decor",
+]);
 
 const SKIP_SOURCES = new Set(["source-13", "source-20"]);
 
@@ -44,7 +64,10 @@ interface CatalogRow {
 
 interface ProductPage {
   ok: boolean;
+  page: number;
+  perPage: number;
   total: number;
+  totalPages: number;
   products: CatalogRow[];
 }
 
@@ -66,9 +89,27 @@ function displayPrice(value?: string | null, currency?: string | null) {
   return [currency, raw].filter(Boolean).join(" ");
 }
 
+function normalizedCollection(row: CatalogRow): CollectionSlug | null {
+  const raw = row.collection_slug;
+  if (raw === "plumbing" || raw === "plumbing-products") return "plumbing-products";
+
+  const sourceTaxonomy = `${row.subcategory || ""} ${row.product_type || ""}`.toLowerCase();
+  if (
+    (raw === "ceramics" || raw === "porcelain") &&
+    /(^|\b)(marble|natural stone)(\b|$)|رخام|حجر طبيعي/u.test(sourceTaxonomy)
+  ) {
+    return "marble";
+  }
+
+  if (DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) return raw as CollectionSlug;
+  return null;
+}
+
 function mapRow(row: CatalogRow): Product | null {
   if (SKIP_SOURCES.has(row.source_id)) return null;
-  if (!COLLECTIONS.includes(row.collection_slug as CollectionSlug)) return null;
+
+  const collection = normalizedCollection(row);
+  if (!collection) return null;
 
   const name = clean(row.name);
   if (!name) return null;
@@ -93,7 +134,7 @@ function mapRow(row: CatalogRow): Product | null {
     id: `catalog:${row.source_id}:${row.source_record_id}`,
     slug: row.slug || `${row.source_id}-${row.source_record_id}`,
     name: { en: name, ar: name, fr: name },
-    collection: row.collection_slug as CollectionSlug,
+    collection,
     subcategory,
     brand,
     code: clean(row.sku),
@@ -126,18 +167,23 @@ function mapRow(row: CatalogRow): Product | null {
       sourceCategory: subcategory,
       sourceSubcategory: subcategory,
       sourceProductType: type,
+      rawRecord: { catalogId: row.id },
     },
     approved: true,
     status: "imported",
   };
 }
 
-async function fetchCollection(collection: CollectionSlug, signal?: AbortSignal) {
-  const url = `${API_BASE}/api.php?action=products&collection=${encodeURIComponent(collection)}&per_page=100&page=1`;
+async function fetchPage(collection: string, page: number, signal?: AbortSignal): Promise<ProductPage> {
+  const url = `${API_BASE}/api.php?action=products&collection=${encodeURIComponent(collection)}&per_page=${PAGE_SIZE}&page=${page}`;
   const response = await fetch(url, { signal, headers: { Accept: "application/json" } });
   if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
   const payload = await response.json() as ProductPage;
   if (!payload.ok) throw new Error("Catalog request failed");
+  return payload;
+}
+
+function mappedProducts(payload: ProductPage) {
   return payload.products.map(mapRow).filter(Boolean) as Product[];
 }
 
@@ -145,8 +191,36 @@ export async function loadLiveCatalog(
   onBatch: (products: Product[]) => void,
   signal?: AbortSignal
 ): Promise<void> {
-  const settled = await Promise.allSettled(COLLECTIONS.map((collection) => fetchCollection(collection, signal)));
-  for (const result of settled) {
-    if (result.status === "fulfilled" && result.value.length) onBatch(result.value);
+  const firstPages = await Promise.allSettled(
+    SOURCE_COLLECTIONS.map(async (collection) => ({ collection, payload: await fetchPage(collection, 1, signal) }))
+  );
+
+  const remaining: Array<{ collection: string; page: number }> = [];
+  for (const result of firstPages) {
+    if (result.status !== "fulfilled") continue;
+    const { collection, payload } = result.value;
+    const firstBatch = mappedProducts(payload);
+    if (firstBatch.length) onBatch(firstBatch);
+    for (let page = 2; page <= Math.max(1, payload.totalPages || 1); page += 1) {
+      remaining.push({ collection, page });
+    }
   }
+
+  let cursor = 0;
+  const worker = async () => {
+    while (cursor < remaining.length) {
+      if (signal?.aborted) return;
+      const task = remaining[cursor++];
+      try {
+        const payload = await fetchPage(task.collection, task.page, signal);
+        const batch = mappedProducts(payload);
+        if (batch.length) onBatch(batch);
+      } catch (error) {
+        if ((error as { name?: string })?.name === "AbortError") return;
+        // Keep the already-visible catalogue and continue loading other pages.
+      }
+    }
+  };
+
+  await Promise.all(Array.from({ length: Math.min(PAGE_CONCURRENCY, remaining.length) }, () => worker()));
 }
