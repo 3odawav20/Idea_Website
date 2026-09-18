@@ -18,6 +18,7 @@ export interface MazloumDetail {
   fetchedAt?: string;
 }
 
+const CATALOG_API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "").replace(/\/$/, "");
 const cache = new Map<string, Promise<MazloumDetail | null>>();
 const queue: Array<() => void> = [];
 const CONCURRENCY = 3;
@@ -44,7 +45,10 @@ export function loadMazloumDetail(productUrl: string): Promise<MazloumDetail | n
   const request = new Promise<MazloumDetail | null>((resolve) => {
     const run = () => {
       active += 1;
-      fetch(`/api/mazloum-detail?url=${encodeURIComponent(productUrl)}`)
+      const endpoint = CATALOG_API_BASE
+        ? `${CATALOG_API_BASE}/detail.php?url=${encodeURIComponent(productUrl)}`
+        : `/api/mazloum-detail?url=${encodeURIComponent(productUrl)}`;
+      fetch(endpoint)
         .then(async (response) => {
           const payload = await response.json() as MazloumDetail;
           if (!response.ok || !payload.ok) return null;
