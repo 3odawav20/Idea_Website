@@ -61,16 +61,24 @@ if ($action === 'collections') {
 
 if ($action === 'product') {
     $id = (int)($_GET['id'] ?? 0);
-    $stmt = $pdo->prepare('SELECT * FROM catalog_products WHERE id=? AND approved=1 LIMIT 1');
+    $stmt = $pdo->prepare('SELECT id,source_id,source_record_id,slug,name,brand,sku,collection_slug,subcategory,product_type,description,material,color,dimension_text,price_text,compare_at_price_text,currency,availability,primary_image_url,source_url,last_source_sync_at FROM catalog_products WHERE id=? AND approved=1 LIMIT 1');
     $stmt->execute([$id]);
     $product = $stmt->fetch();
     if (!$product) reply(['ok' => false, 'error' => 'Product not found'], 404);
+
+    $images = $pdo->prepare('SELECT COALESCE(local_url,source_url) url,position FROM catalog_product_images WHERE product_id=? ORDER BY position,id');
+    $images->execute([$id]);
+    $attributes = $pdo->prepare('SELECT attribute_key,attribute_value,position FROM catalog_product_attributes WHERE product_id=? ORDER BY position,id');
+    $attributes->execute([$id]);
+    $product['images'] = $images->fetchAll();
+    $product['attributes'] = $attributes->fetchAll();
+
     reply(['ok' => true, 'product' => $product]);
 }
 
 if ($action === 'products') {
     $page = max(1, (int)($_GET['page'] ?? 1));
-    $perPage = min(100, max(1, (int)($_GET['per_page'] ?? 30)));
+    $perPage = min(500, max(1, (int)($_GET['per_page'] ?? 60)));
     $offset = ($page - 1) * $perPage;
     $where = ['approved=1'];
     $args = [];
@@ -95,7 +103,8 @@ if ($action === 'products') {
     $count->execute($args);
     $total = (int)$count->fetchColumn();
 
-    $sql = 'SELECT * FROM catalog_products WHERE ' . $whereSql .
+    $sql = 'SELECT id,source_id,source_record_id,slug,name,brand,sku,collection_slug,subcategory,product_type,description,material,color,dimension_text,price_text,compare_at_price_text,currency,availability,primary_image_url,source_url,last_source_sync_at
+        FROM catalog_products WHERE ' . $whereSql .
         ' ORDER BY updated_at DESC,id DESC LIMIT ' . $perPage . ' OFFSET ' . $offset;
     $stmt = $pdo->prepare($sql);
     $stmt->execute($args);
