@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
@@ -16,6 +16,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const { t, locale } = useI18n();
   const { products } = useStore();
   const [params] = useSearchParams();
+  const populatedCollections = COLLECTIONS.map((collection) => ({ ...collection, count: products.filter((product) => product.collection === collection.slug).length })).filter((collection) => collection.count > 0);
   const q = (params.get("q") ?? "").trim().toLowerCase();
 
   const scope = useMemo(
@@ -94,6 +95,11 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
             </p>
           )}
         </div>
+
+        <nav aria-label={locale === "ar" ? "أقسام المنتجات" : "Product categories"} style={{ display: "flex", flexWrap: "wrap", gap: "var(--idea-space-3)", marginBottom: "var(--idea-space-5)" }}>
+          <Link to="/products" aria-current={!fixedCollection ? "page" : undefined} style={{ color: !fixedCollection ? "var(--idea-gold)" : "var(--idea-text-muted)" }}>{locale === "ar" ? "كل المنتجات" : locale === "fr" ? "Tous les produits" : "All products"} ({products.length})</Link>
+          {populatedCollections.map((collection) => <Link key={collection.slug} to={`/collections/${collection.slug}`} aria-current={fixedCollection === collection.slug ? "page" : undefined} style={{ color: fixedCollection === collection.slug ? "var(--idea-gold)" : "var(--idea-text-muted)" }}>{collection.title[locale]} ({collection.count})</Link>)}
+        </nav>
 
         {/* Mobile filter toolbar */}
         <div className="idea-filter-toolbar" style={{ display: "none", justifyContent: "space-between", alignItems: "center", gap: "var(--idea-space-3)", marginBottom: "var(--idea-space-4)" }}>

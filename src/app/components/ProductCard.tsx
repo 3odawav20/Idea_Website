@@ -1,3 +1,4 @@
+import { COLLECTIONS } from "../data/catalog";
 import { Link } from "react-router";
 import { Heart, GitCompare, FileText } from "lucide-react";
 import { useState } from "react";
@@ -44,6 +45,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         {product.brand && <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>}
+        <Link to={`/collections/${product.collection}`} style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{COLLECTIONS.find((collection) => collection.slug === product.collection)?.title[locale]}</Link>
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {product.name[locale]}
         </Link>
