@@ -30,6 +30,7 @@ export function ProductCard({ product }: { product: Product }) {
         )}
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
           {product.type && <span style={badgeStyle}>{product.type}</span>}
+          {product.featured && <span style={badgeStyle}>{locale === "ar" ? "مميز" : locale === "fr" ? "En vedette" : "Featured"}</span>}
         </div>
         <div style={{ position: "absolute", top: 12, insetInlineEnd: 12, display: "flex", gap: 6 }}>
           <button aria-label={t("action.favorite")} onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }} style={roundBtn(fav)}>
@@ -42,7 +43,7 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>
+        {product.brand && <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>}
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {product.name[locale]}
         </Link>
@@ -50,6 +51,8 @@ export function ProductCard({ product }: { product: Product }) {
           {product.sizes[0] && <Tag>{product.sizes[0].label}</Tag>}
           {product.finish && <Tag>{product.finish}</Tag>}
           {product.variant && <Tag>{product.variant}</Tag>}
+          {product.series && <Tag>{product.series}</Tag>}
+          {product.colors?.filter((color) => color !== product.variant).map((color) => <Tag key={color}>{color}</Tag>)}
         </div>
         <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{t("price.hidden")}</span>

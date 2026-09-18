@@ -66,7 +66,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<StoreCtx>(
     () => ({
-      products,
+      products: products.filter((product) => product.approved && product.status !== "staged"),
       favorites,
       quote,
       compare,

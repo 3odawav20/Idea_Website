@@ -1,3 +1,4 @@
+import { normalizeSize } from "./merchandising";
 import type { Product } from "./types";
 import artceramic from "./artceramic.json";
 
@@ -40,28 +41,6 @@ function applicationFromSource(types: string[]) {
   return undefined;
 }
 
-function sizeFromSource(id: string, rawSize: string): Product["sizes"][number] {
-  const compact = rawSize.replace(/\s+/g, "");
-  const match = compact.match(/^(\d+(?:\.\d+)?)x(\d+(?:\.\d+)?)(?:cm)?$/i);
-  if (!match) return {
-    id: `${id}-size-1`,
-    originalSourceValue: rawSize,
-    normalizedDisplayValue: rawSize.trim(),
-    label: rawSize.trim(),
-  };
-
-  const widthCm = Number(match[1]);
-  const heightCm = Number(match[2]);
-  return {
-    id: `${id}-size-1`,
-    originalSourceValue: rawSize,
-    normalizedDisplayValue: `${widthCm} × ${heightCm} cm`,
-    label: `${widthCm} × ${heightCm} cm`,
-    widthMm: Math.round(widthCm * 10),
-    heightMm: Math.round(heightCm * 10),
-    sourceUnit: "cm",
-  };
-}
 
 function cleanGallery(image: string, tiles: string[]) {
   return [...new Set([image, ...tiles].filter(Boolean))];
@@ -86,11 +65,13 @@ function mapProduct(source: RawArtCeramicProduct): Product {
     // Catalogue-level affiliation only; the export has no per-record brand/model fields.
     brand: "Art Ceramic",
     finish: finishFromSource(source.texture),
+    surface: source.texture || undefined,
+    featured: source.featured,
     variant: source.color ?? undefined,
     usage,
     application: applicationFromSource(usage),
     colors,
-    sizes: [sizeFromSource(source.id, source.size)],
+    sizes: [normalizeSize(`${source.id}-size-1`, source.size, "cm")],
     image: source.image,
     gallery,
     source: {
