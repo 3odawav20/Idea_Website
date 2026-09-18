@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Heart, GitCompare, FileText } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
@@ -12,24 +12,48 @@ export function ProductCard({ product }: { product: Product }) {
   const fav = isFavorite(product.id);
   const inCompare = compare.includes(product.id);
   const [imageFailed, setImageFailed] = useState(false);
+  const [hovered, setHovered] = useState(false);
   const unit = product.collection === "ceramics" || product.collection === "porcelain" ? "sqm" : "pieces";
 
+  const secondaryImage = useMemo(
+    () => product.gallery?.find((image) => image && image !== product.image),
+    [product.gallery, product.image]
+  );
+  const cardImage = hovered && secondaryImage ? secondaryImage : product.image;
+  const primarySize = product.sizes[0]?.normalizedDisplayValue || product.sizes[0]?.label;
+  const commercialMeta = [
+    primarySize,
+    product.finish,
+    product.colors?.[0],
+    product.series || product.family,
+  ].filter(Boolean).slice(0, 3) as string[];
+
   return (
-    <div className="idea-product-card" style={{
-      background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
-      overflow: "hidden", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
-    }}
-      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}
-      onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
+    <article
+      className="idea-product-card"
+      style={{
+        background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
+        overflow: "hidden", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
+      }}
+      onMouseEnter={(e) => { setHovered(true); e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}
+      onMouseLeave={(e) => { setHovered(false); e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
     >
       <Link to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
         {imageFailed ? (
           <span className="idea-image-unavailable">Image unavailable</span>
         ) : (
-          <img className="idea-product-img idea-vivid-image" src={product.image} alt={product.name[locale]} loading="lazy" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
+          <img
+            className="idea-product-img idea-vivid-image"
+            src={cardImage}
+            alt={product.name[locale]}
+            loading="lazy"
+            onError={() => setImageFailed(true)}
+            style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1), opacity .2s" }}
+          />
         )}
-        <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
+        <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6, flexWrap: "wrap" }}>
           {product.type && <span style={badgeStyle}>{product.type}</span>}
+          {(product.badges ?? []).slice(0, 2).map((badge) => <span key={badge} style={badgeStyle}>{badge}</span>)}
         </div>
         <div style={{ position: "absolute", top: 12, insetInlineEnd: 12, display: "flex", gap: 6 }}>
           <button aria-label={t("action.favorite")} onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }} style={roundBtn(fav)}>
@@ -42,15 +66,20 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>
+        {product.brand && <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>}
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {product.name[locale]}
         </Link>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
-          {product.sizes[0] && <Tag>{product.sizes[0].label}</Tag>}
-          {product.finish && <Tag>{product.finish}</Tag>}
-          {product.variant && <Tag>{product.variant}</Tag>}
-        </div>
+        {(product.subcategory || product.collection) && (
+          <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", textTransform: "capitalize" }}>
+            {(product.subcategory || product.collection).replaceAll("-", " ")}
+          </div>
+        )}
+        {commercialMeta.length > 0 && (
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
+            {commercialMeta.map((value) => <Tag key={value}>{value}</Tag>)}
+          </div>
+        )}
         <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{t("price.hidden")}</span>
           <button onClick={() => addToQuote(product.id, unit)} style={{
@@ -62,10 +91,10 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       </div>
       <style>{`
-        .idea-product-card:hover .idea-product-img { transform: scale(1.06); }
+        .idea-product-card:hover .idea-product-img { transform: scale(1.045); }
         @media (prefers-reduced-motion: reduce) { .idea-product-img { transition: none !important; } }
       `}</style>
-    </div>
+    </article>
   );
 }
 

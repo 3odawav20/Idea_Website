@@ -48,10 +48,10 @@ function usePersisted<T>(key: string, initial: T): [T, React.Dispatch<React.SetS
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   // Products imported from the source export. Unconfirmed fields stay empty.
-  const [products, setProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS.filter((product) => product.approved));
   useEffect(() => {
     fetchAbaElMozahemProducts()
-      .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => !current.some((existing) => existing.id === product.id))]))
+      .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => product.approved && !current.some((existing) => existing.id === product.id))]))
       .catch(() => { /* Source remains staged in registry; keep verified local catalogue available. */ });
   }, []);
   const { session } = useBackend();

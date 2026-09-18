@@ -29,6 +29,11 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const [size, setSize] = useState<string | null>(params.get("size"));
   const [usage, setUsage] = useState<string | null>(params.get("usage"));
   const [color, setColor] = useState<string | null>(params.get("color"));
+  const [brand, setBrand] = useState<string | null>(params.get("brand"));
+  const [type, setType] = useState<string | null>(params.get("type"));
+  const [material, setMaterial] = useState<string | null>(params.get("material"));
+  const [application, setApplication] = useState<string | null>(params.get("application"));
+  const [sort, setSort] = useState<"name" | "brand" | "collection">("name");
 
   // Only build filter groups from values that actually exist (no empty filters).
   const facets = useMemo(() => ({
@@ -36,6 +41,10 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     size: uniq(scope.flatMap((p) => p.sizes.map((s) => s.label))),
     usage: uniq(scope.flatMap((p) => p.usage ?? [])),
     color: uniq(scope.flatMap((p) => p.colors ?? [])),
+    brand: uniq(scope.map((p) => p.brand)),
+    type: uniq(scope.map((p) => p.type)),
+    material: uniq(scope.map((p) => p.material)),
+    application: uniq(scope.map((p) => p.application)),
   }), [scope]);
 
   const matches = (p: Product) => {
@@ -43,18 +52,26 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     if (size && !p.sizes.some((s) => s.label === size)) return false;
     if (usage && !(p.usage ?? []).includes(usage)) return false;
     if (color && !(p.colors ?? []).includes(color)) return false;
+    if (brand && p.brand !== brand) return false;
+    if (type && p.type !== type) return false;
+    if (material && p.material !== material) return false;
+    if (application && p.application !== application) return false;
     if (q) {
-      const hay = [p.name[locale], p.name.en, p.brand, p.model, p.code, p.collection, p.origin, ...(p.colors ?? []), ...p.sizes.map((s) => s.label)]
+      const hay = [p.name[locale], p.name.en, p.brand, p.model, p.code, p.collection, p.subcategory, p.series, p.origin, p.type, p.material, p.finish, p.texture, p.application, ...(p.colors ?? []), ...(p.usage ?? []), ...p.sizes.map((s) => s.normalizedDisplayValue || s.label)]
         .join(" ").toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
   };
 
-  const results = scope.filter(matches);
-  const activeCount = [finish, size, usage, color].filter(Boolean).length;
+  const results = scope.filter(matches).toSorted((a, b) => {
+    if (sort === "brand") return (a.brand || "").localeCompare(b.brand || "") || a.name[locale].localeCompare(b.name[locale]);
+    if (sort === "collection") return a.collection.localeCompare(b.collection) || a.name[locale].localeCompare(b.name[locale]);
+    return a.name[locale].localeCompare(b.name[locale]);
+  });
+  const activeCount = [finish, size, usage, color, brand, type, material, application].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); };
+  const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); setBrand(null); setType(null); setMaterial(null); setApplication(null); };
 
   const meta = fixedCollection ? COLLECTIONS.find((c) => c.slug === fixedCollection) : null;
   const catalogueSummary = locale === "ar"
@@ -119,10 +136,14 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
               <span className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{t("filters.title")}</span>
               <button onClick={clear} style={{ background: "none", border: "none", color: "var(--idea-gold)", cursor: "pointer", fontSize: "var(--idea-text-xs)" }}>{t("filters.clear")}</button>
             </div>
+            {group("Brand", facets.brand, brand, setBrand)}
+            {group("Product type", facets.type, type, setType)}
             {group(t("filters.finish"), facets.finish, finish, setFinish)}
             {group(t("filters.size"), facets.size, size, setSize)}
             {group(t("label.usage"), facets.usage, usage, setUsage)}
             {group("Color", facets.color, color, setColor)}
+            {group("Material", facets.material, material, setMaterial)}
+            {group("Application", facets.application, application, setApplication)}
             <button className="idea-filter-show" onClick={() => setMobileOpen(false)}
               style={{
                 display: "none", width: "100%", marginTop: "var(--idea-space-4)", padding: "12px 20px",
@@ -136,8 +157,16 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
 
           {/* Results */}
           <div>
-            <div style={{ color: "var(--idea-text-muted)", marginBottom: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)" }}>
-              {results.length} {t("label.results")}
+            <div style={{ color: "var(--idea-text-muted)", marginBottom: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
+              <span>{results.length} {t("label.results")}</span>
+              <label style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                <span>Sort</span>
+                <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} style={{ background: "var(--idea-surface)", color: "var(--idea-text)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)", padding: "7px 10px" }}>
+                  <option value="name">Product name</option>
+                  <option value="brand">Brand</option>
+                  <option value="collection">Category</option>
+                </select>
+              </label>
             </div>
             {results.length === 0 ? (
               <div style={{ padding: "var(--idea-space-8)", textAlign: "center", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", color: "var(--idea-text-muted)", lineHeight: 1.7 }}>

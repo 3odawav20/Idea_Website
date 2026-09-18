@@ -1,7 +1,6 @@
 // ── IDEA domain model ─────────────────────────────────────────────────────
-// Every product field maps to a source-of-truth value that (in production)
-// originates from an approved PDF catalogue import. Public prices are NEVER
-// stored here — only private internal tiers on the admin/staging side.
+// Product fields preserve source truth while allowing normalized commercial
+// presentation. Public UI must omit missing fields instead of fabricating data.
 
 export type Locale = "en" | "ar" | "fr";
 
@@ -37,27 +36,61 @@ export interface ProductSize {
   sourcePage?: number;
 }
 
+export interface ProductVariant {
+  id: string;
+  label: string;
+  sku?: string;
+  available?: boolean;
+  image?: string;
+  originalSourceValue?: string;
+  attributes?: Record<string, string>;
+}
+
+export interface ProductSpecificationItem {
+  label: string;
+  value: string;
+  originalSourceValue?: string;
+  normalizedValue?: string;
+}
+
+export interface ProductSpecificationGroup {
+  title: string;
+  items: ProductSpecificationItem[];
+}
+
 export interface Product {
   id: string;
   slug: string;
   name: LocalizedText;
   collection: CollectionSlug;
+  subcategory?: string;
   brand: string;
-  model: string;
+  series?: string;
+  model?: string;
   code?: string; // exact source code only; never generated from an internal ID
   origin?: string; // country of origin
-  texture?: string; // Marble / Wood / Stone …
-  finish?: string; // Matte / Glossy / Semi-Matte …
-  type?: string; // Ceramic / Porcelain / Laser Cut …
+  texture?: string;
+  material?: string;
+  surface?: string;
+  pattern?: string;
+  finish?: string;
+  type?: string;
   description?: string;
-  variant?: string; // Light / Dark / Décor / Skirting …
-  usage?: string[]; // Kitchen / Bathroom / Facade …
-  application?: string; // Wall / Floor / Wall and Floor
+  variant?: string;
+  variants?: ProductVariant[];
+  usage?: string[];
+  application?: string;
   colors?: string[];
   sizes: ProductSize[];
   image: string;
   gallery?: string[];
-  family?: string; // collection/family key linking variants
+  family?: string;
+  badges?: string[];
+  packaging?: string;
+  piecesPerBox?: number;
+  squareMetersPerBox?: number;
+  weight?: string;
+  specificationGroups?: ProductSpecificationGroup[];
   sourcePdf?: string;
   sourcePage?: number;
   source?: {
@@ -69,6 +102,13 @@ export interface Product {
     extractionTimestamp?: string;
     reviewStatus: "source-imported" | "needs-human-review";
     originalSurface?: string;
+    sourceCategory?: string;
+    sourceSubcategory?: string;
+    sourceCollection?: string;
+    sourceBreadcrumb?: string[];
+    sourceProductType?: string;
+    sourceVariantStructure?: string[];
+    sourceSpecificationGroups?: string[];
     original?: {
       id: string;
       slug: string;
@@ -84,7 +124,7 @@ export interface Product {
     };
     rawRecord?: unknown;
   };
-  approved: boolean; // only approved products render publicly
+  approved: boolean;
   status: "sample" | "imported" | "staged";
 }
 
