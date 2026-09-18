@@ -3,24 +3,27 @@ declare(strict_types=1);
 
 header('Content-Type: application/json; charset=utf-8');
 
-$configPath = __DIR__ . '/config.local.php';
-if (!is_file($configPath)) {
+$dsn = getenv('IDEA_DB_DSN') ?: '';
+$dbUser = getenv('IDEA_DB_USER') ?: '';
+$dbPassword = getenv('IDEA_DB_PASSWORD') ?: '';
+$allowedOrigin = getenv('IDEA_CORS_ORIGIN') ?: 'https://idea-website-two.vercel.app';
+
+if ($dsn === '' || $dbUser === '') {
     http_response_code(503);
     echo json_encode(['ok' => false, 'error' => 'Backend not configured']);
     exit;
 }
 
-$config = require $configPath;
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if ($origin && in_array($origin, $config['cors_origins'] ?? [], true)) {
+if ($origin === $allowedOrigin) {
     header('Access-Control-Allow-Origin: ' . $origin);
     header('Vary: Origin');
 }
 
 $pdo = new PDO(
-    $config['db_dsn'],
-    $config['db_user'],
-    $config['db_pass'],
+    $dsn,
+    $dbUser,
+    $dbPassword,
     [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC]
 );
 
