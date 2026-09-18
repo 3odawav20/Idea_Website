@@ -1,10 +1,9 @@
 import { useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
 import { SlidersHorizontal, X } from "lucide-react";
@@ -17,6 +16,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const { t, locale } = useI18n();
   const { products } = useStore();
   const [params] = useSearchParams();
+  const populatedCollections = COLLECTIONS.map((collection) => ({ ...collection, count: products.filter((product) => product.collection === collection.slug).length })).filter((collection) => collection.count > 0);
   const q = (params.get("q") ?? "").trim().toLowerCase();
 
   const scope = useMemo(
@@ -30,8 +30,15 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const [usage, setUsage] = useState<string | null>(params.get("usage"));
   const [color, setColor] = useState<string | null>(params.get("color"));
 
+  const [brand, setBrand] = useState<string | null>(null);
+  const [material, setMaterial] = useState<string | null>(null);
+  const [series, setSeries] = useState<string | null>(null);
+
   // Only build filter groups from values that actually exist (no empty filters).
   const facets = useMemo(() => ({
+    brand: uniq(scope.map((p) => p.brand)),
+    material: uniq(scope.map((p) => p.material)),
+    series: uniq(scope.map((p) => p.series)),
     finish: uniq(scope.map((p) => p.finish)),
     size: uniq(scope.flatMap((p) => p.sizes.map((s) => s.label))),
     usage: uniq(scope.flatMap((p) => p.usage ?? [])),
@@ -39,12 +46,15 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   }), [scope]);
 
   const matches = (p: Product) => {
+    if (brand && p.brand !== brand) return false;
+    if (material && p.material !== material) return false;
+    if (series && p.series !== series) return false;
     if (finish && p.finish !== finish) return false;
     if (size && !p.sizes.some((s) => s.label === size)) return false;
     if (usage && !(p.usage ?? []).includes(usage)) return false;
     if (color && !(p.colors ?? []).includes(color)) return false;
     if (q) {
-      const hay = [p.name[locale], p.name.en, p.brand, p.model, p.code, p.collection, p.origin, ...(p.colors ?? []), ...p.sizes.map((s) => s.label)]
+      const hay = [p.name[locale], p.name.en, p.brand, p.model, p.code, p.collection, p.origin, p.description, p.material, p.surface, p.series, p.finish, ...(p.usage ?? []), ...(p.colors ?? []), ...p.sizes.map((s) => s.label)]
         .join(" ").toLowerCase();
       if (!hay.includes(q)) return false;
     }
@@ -52,16 +62,12 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   };
 
   const results = scope.filter(matches);
-  const activeCount = [finish, size, usage, color].filter(Boolean).length;
+  const activeCount = [finish, size, usage, color, brand, material, series].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); };
+  const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); setBrand(null); setMaterial(null); setSeries(null); };
 
   const meta = fixedCollection ? COLLECTIONS.find((c) => c.slug === fixedCollection) : null;
-  const catalogueSummary = locale === "ar"
-    ? `${products.length} منتجًا في الكتالوج الحالي · ${ART_CERAMIC_CATALOGUE.totalImages} مرجع صورة لـ Art Ceramic`
-    : locale === "fr"
-      ? `${products.length} produits dans le catalogue actuel · ${ART_CERAMIC_CATALOGUE.totalImages} références d’images Art Ceramic`
-      : `${products.length} products in the current catalogue · ${ART_CERAMIC_CATALOGUE.totalImages} Art Ceramic gallery image references`;
+  const catalogueSummary = locale === "ar" ? `${scope.length} منتجًا` : locale === "fr" ? `${scope.length} produits` : `${scope.length} products`;
 
   const group = (label: string, values: string[], val: string | null, set: (v: string | null) => void) =>
     values.length > 1 && (
@@ -89,6 +95,11 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
             </p>
           )}
         </div>
+
+        <nav aria-label={locale === "ar" ? "أقسام المنتجات" : "Product categories"} style={{ display: "flex", flexWrap: "wrap", gap: "var(--idea-space-3)", marginBottom: "var(--idea-space-5)" }}>
+          <Link to="/products" aria-current={!fixedCollection ? "page" : undefined} style={{ color: !fixedCollection ? "var(--idea-gold)" : "var(--idea-text-muted)" }}>{locale === "ar" ? "كل المنتجات" : locale === "fr" ? "Tous les produits" : "All products"} ({products.length})</Link>
+          {populatedCollections.map((collection) => <Link key={collection.slug} to={`/collections/${collection.slug}`} aria-current={fixedCollection === collection.slug ? "page" : undefined} style={{ color: fixedCollection === collection.slug ? "var(--idea-gold)" : "var(--idea-text-muted)" }}>{collection.title[locale]} ({collection.count})</Link>)}
+        </nav>
 
         {/* Mobile filter toolbar */}
         <div className="idea-filter-toolbar" style={{ display: "none", justifyContent: "space-between", alignItems: "center", gap: "var(--idea-space-3)", marginBottom: "var(--idea-space-4)" }}>
@@ -122,7 +133,10 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
             {group(t("filters.finish"), facets.finish, finish, setFinish)}
             {group(t("filters.size"), facets.size, size, setSize)}
             {group(t("label.usage"), facets.usage, usage, setUsage)}
-            {group("Color", facets.color, color, setColor)}
+            {group(locale === "ar" ? "الألوان" : locale === "fr" ? "Couleurs" : "Colors", facets.color, color, setColor)}
+            {group(locale === "ar" ? "الماركة" : "Brand", facets.brand, brand, setBrand)}
+            {group(locale === "ar" ? "الخامة" : "Material", facets.material, material, setMaterial)}
+            {group(locale === "ar" ? "المجموعة" : "Collection", facets.series, series, setSeries)}
             <button className="idea-filter-show" onClick={() => setMobileOpen(false)}
               style={{
                 display: "none", width: "100%", marginTop: "var(--idea-space-4)", padding: "12px 20px",

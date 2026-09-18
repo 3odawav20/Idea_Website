@@ -43,13 +43,20 @@ export interface Product {
   name: LocalizedText;
   collection: CollectionSlug;
   brand: string;
-  model: string;
+  model?: string;
   code?: string; // exact source code only; never generated from an internal ID
   origin?: string; // country of origin
   texture?: string; // Marble / Wood / Stone …
   finish?: string; // Matte / Glossy / Semi-Matte …
   type?: string; // Ceramic / Porcelain / Laser Cut …
   description?: string;
+  series?: string;
+  material?: string;
+  surface?: string;
+  specificationGroups?: { title: string; attributes: { label: string; value: string }[] }[];
+  options?: { name: string; values: string[] }[];
+  variants?: { id: string; title: string; sku?: string; available?: boolean; options: Record<string, string> }[];
+  featured?: boolean;
   variant?: string; // Light / Dark / Décor / Skirting …
   usage?: string[]; // Kitchen / Bathroom / Facade …
   application?: string; // Wall / Floor / Wall and Floor
