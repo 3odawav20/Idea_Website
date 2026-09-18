@@ -54,7 +54,6 @@ export function Header() {
   const links = [
     { to: "/collections", label: t("nav.collections") },
     { to: "/products", label: t("nav.products") },
-    { to: "/market/mazloum", label: "Mazloum Market" },
     { to: "/room-designer", label: t("nav.roomDesigner") },
     { to: "/subscriptions", label: t("nav.subscriptions") },
     { to: "/how-it-works", label: t("nav.how") },
