@@ -1,4 +1,4 @@
-const SOURCE_URL = "https://mazloumhome.com/2-home";
+const SOURCE_URL = "https://mazloumhome.com/new-products";
 const PAGE_SIZE = 12;
 
 function decodeHtml(value = "") {
@@ -103,9 +103,12 @@ export default async function handler(req, res) {
 
     const response = await fetch(sourcePage, {
       headers: {
-        "user-agent": "Mozilla/5.0 (compatible; IDEA-Catalog/1.0; +https://idea-website-two.vercel.app)",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36",
         "accept": "text/html,application/xhtml+xml",
         "accept-language": "en-US,en;q=0.9",
+        "cache-control": "no-cache",
+        "pragma": "no-cache",
+        "referer": "https://mazloumhome.com/",
       },
       redirect: "follow",
     });
