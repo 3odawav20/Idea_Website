@@ -43,11 +43,18 @@ function productFromArticle(article) {
     /<h\d[^>]*>([A-Z0-9][\s\S]*?)<\/h\d>/i,
   ]);
 
-  const image = absoluteUrl(firstMatch(article, [
+  const imageCandidate = firstMatch(article, [
     /<img[^>]*data-full-size-image-url=["']([^"']+)["']/i,
+    /<img[^>]*data-original=["']([^"']+)["']/i,
+    /<img[^>]*data-lazy-src=["']([^"']+)["']/i,
     /<img[^>]*data-src=["']([^"']+)["']/i,
     /<img[^>]*src=["']([^"']+)["']/i,
-  ]));
+    /<(?:img|source)[^>]*(?:data-srcset|srcset)=["']\s*([^,"'\s]+)[^"']*["']/i,
+    /<(?:meta|link)[^>]*(?:itemprop|property)=["'](?:image|og:image)["'][^>]*(?:content|href)=["']([^"']+)["']/i,
+    /<(?:meta|link)[^>]*(?:content|href)=["']([^"']+)["'][^>]*(?:itemprop|property)=["'](?:image|og:image)["']/i,
+    /background-image\s*:\s*url\((?:["']?)([^)"']+)(?:["']?)\)/i,
+  ]);
+  const image = absoluteUrl(imageCandidate);
 
   const priceTexts = [...article.matchAll(/<span[^>]*class=["'][^"']*(?:price|regular-price)[^"']*["'][^>]*>([\s\S]*?)<\/span>/gi)]
     .map((match) => stripTags(match[1]))
