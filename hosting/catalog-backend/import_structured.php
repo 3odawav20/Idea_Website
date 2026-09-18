@@ -5,7 +5,11 @@ require __DIR__ . '/bootstrap.php';
 $config = ideaCatalogConfig();
 
 $importDir = __DIR__ . '/imports';
-$files = glob($importDir . '/source-*.json') ?: [];
+$files = array_values(array_unique(array_merge(
+    glob($importDir . '/source-*.json') ?: [],
+    glob($importDir . '/source-*.json.gz') ?: []
+)));
+sort($files);
 if (!$files) {
     fwrite(STDERR, "No structured source snapshots found.\n");
     exit(2);
@@ -169,7 +173,13 @@ $insertAttr = $pdo->prepare(
 
 $summary = [];
 foreach ($files as $file) {
-    $payload = json_decode(file_get_contents($file), true);
+    $raw = file_get_contents($file);
+    if ($raw === false) continue;
+    if (str_ends_with($file, '.gz')) {
+        $raw = gzdecode($raw);
+        if ($raw === false) continue;
+    }
+    $payload = json_decode($raw, true);
     if (!is_array($payload) || empty($payload['source_id']) || !is_array($payload['products'] ?? null)) continue;
 
     $sourceId = (string)$payload['source_id'];
