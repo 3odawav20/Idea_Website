@@ -61,6 +61,9 @@ export const COLLECTIONS: CollectionMeta[] = [
   { slug: "home-decor", group: "decor", image: IMG.mazloumDecor,
     title: { en: "Home Decor", ar: "ديكور منزلي", fr: "Décoration" },
     blurb: { en: "Vases, wall objects, mirrors, decorative pieces and textiles.", ar: "فازات وديكور حائط ومرايات وقطع ديكور ومنسوجات.", fr: "Vases, objets muraux, miroirs, décoration et textiles." } },
+  { slug: "plumbing-products", group: "sanitary", image: IMG.faucet2,
+    title: { en: "Plumbing Products", ar: "منتجات السباكة", fr: "Produits de plomberie" },
+    blurb: { en: "Pipes, valves, traps, connectors and installation products.", ar: "مواسير ومحابس وسيفونات ووصلات ومستلزمات التركيب.", fr: "Tuyaux, vannes, siphons, raccords et produits d'installation." } },
 ];
 
 // ── STAGING SAMPLE DATA ────────────────────────────────────────────────────
