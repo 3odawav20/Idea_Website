@@ -3,7 +3,8 @@ import type { CollectionSlug, Product } from "./types";
 const SOURCE_ID = "source-13";
 const SOURCE_PROVIDER = "Mazloum Home catalogue";
 const SOURCE_URL = "https://mazloumhome.com/";
-const CACHE_KEY = "idea.source-13.catalogue.v3";
+const CACHE_KEY = "idea.source-13.catalogue.v4";
+const CATALOG_API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "").replace(/\/$/, "");
 const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 
 interface RawMazloumProduct {
@@ -106,7 +107,10 @@ async function fetchPage(page: number, signal?: AbortSignal): Promise<MazloumPag
   let lastError: unknown;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
-      const response = await fetch(`/api/mazloum?page=${page}`, { signal });
+      const endpoint = CATALOG_API_BASE
+        ? `${CATALOG_API_BASE}/api.php?action=source-feed&page=${page}`
+        : `/api/mazloum?page=${page}`;
+      const response = await fetch(endpoint, { signal });
       const payload = await response.json() as MazloumPageResponse;
       if (response.ok && payload.ok) return payload;
       lastError = new Error(payload.error || `Mazloum page ${page} failed`);
