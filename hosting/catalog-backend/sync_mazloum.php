@@ -1,14 +1,16 @@
 <?php
 declare(strict_types=1);
 
-$dsn = getenv('IDEA_DB_DSN') ?: '';
-$dbUser = getenv('IDEA_DB_USER') ?: '';
-$dbPassword = getenv('IDEA_DB_PASSWORD') ?: '';
-$listingApi = rtrim(getenv('IDEA_SOURCE_LISTING_API') ?: 'https://idea-website-two.vercel.app/api/mazloum', '?&');
-$detailApi = getenv('IDEA_SOURCE_DETAIL_API') ?: 'https://idea-website-two.vercel.app/api/mazloum-detail?url=';
-$mediaDir = getenv('IDEA_MEDIA_DIR') ?: (__DIR__ . '/media');
-$mediaBase = rtrim(getenv('IDEA_MEDIA_PUBLIC_BASE') ?: '', '/');
-$detailBatch = max(0, min(300, (int)(getenv('IDEA_DETAIL_BATCH') ?: 60)));
+require __DIR__ . '/bootstrap.php';
+$config = ideaCatalogConfig();
+$dsn = $config['db_dsn'];
+$dbUser = $config['db_user'];
+$dbPassword = $config['db_password'];
+$listingApi = rtrim($config['listing_api'], '?&');
+$detailApi = $config['detail_api'];
+$mediaDir = $config['media_dir'];
+$mediaBase = rtrim($config['media_public_base'], '/');
+$detailBatch = max(0, min(300, (int)$config['detail_batch']));
 
 if ($dsn === '' || $dbUser === '') {
     fwrite(STDERR, "Missing IDEA_DB_DSN or IDEA_DB_USER.\n");
