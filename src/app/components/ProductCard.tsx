@@ -3,6 +3,7 @@ import { Heart, GitCompare, FileText } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import type { Product } from "../data/types";
 import { loadMazloumDetail, applyMazloumDetail } from "../data/mazloumDetails";
+import { catalogIdOf } from "../data/catalogBackendDetails";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
@@ -11,14 +12,14 @@ export function ProductCard({ product }: { product: Product }) {
   const { t, locale } = useI18n();
   const { isFavorite, toggleFavorite, toggleCompare, compare, addToQuote } = useStore();
   const [resolved, setResolved] = useState(product);
-  const [sourceLoading, setSourceLoading] = useState(product.source?.sourceId === "source-13");
+  const [sourceLoading, setSourceLoading] = useState(product.source?.sourceId === "source-13" && !catalogIdOf(product));
   const [imageFailed, setImageFailed] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     setResolved(product);
     setImageFailed(false);
-    if (product.source?.sourceId !== "source-13" || !product.source.productPageUrl) {
+    if (catalogIdOf(product) || product.source?.sourceId !== "source-13" || !product.source.productPageUrl) {
       setSourceLoading(false);
       return;
     }
