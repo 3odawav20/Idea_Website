@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router";
 import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
@@ -25,7 +25,7 @@ export function ProductDetail() {
   const fav = isFavorite(product.id);
   const activeImageFailed = failedImages.includes(activeImg);
 
-  const related = useMemo(() => {
+  const related = (() => {
     const score = (candidate: typeof product) => {
       let value = 0;
       if (candidate.family && candidate.family === product.family) value += 5;
@@ -42,7 +42,7 @@ export function ProductDetail() {
       .sort((a, b) => b.score - a.score || a.candidate.name.en.localeCompare(b.candidate.name.en))
       .slice(0, 4)
       .map((item) => item.candidate);
-  }, [products, product]);
+  })();
 
   const primarySpecs = [
     ["Model", product.model],
