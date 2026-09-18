@@ -11,7 +11,9 @@ export function Collections() {
   const groups: { key: string; label: string }[] = [
     { key: "ceramics", label: t("home.ceramicPorcelain") },
     { key: "porcelain", label: "Porcelain" },
+    { key: "marble", label: locale === "ar" ? "رخام وحجر" : locale === "fr" ? "Marbre & pierre" : "Marble & Stone" },
     { key: "sanitary", label: t("home.sanitary") },
+    { key: "plumbing", label: locale === "ar" ? "سباكة" : locale === "fr" ? "Plomberie" : "Plumbing" },
     { key: "furniture", label: locale === "ar" ? "أثاث" : locale === "fr" ? "Mobilier" : "Furniture" },
     { key: "lighting", label: locale === "ar" ? "إضاءة" : locale === "fr" ? "Éclairage" : "Lighting" },
     { key: "decor", label: locale === "ar" ? "ديكور منزلي" : locale === "fr" ? "Décoration" : "Home Decor" },
