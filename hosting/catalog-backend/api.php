@@ -61,10 +61,21 @@ if ($action === 'collections') {
 
 if ($action === 'product') {
     $id = (int)($_GET['id'] ?? 0);
-    $stmt = $pdo->prepare('SELECT * FROM catalog_products WHERE id=? AND approved=1 LIMIT 1');
-    $stmt->execute([$id]);
+    $slug = trim((string)($_GET['slug'] ?? ''));
+
+    if ($id > 0) {
+        $stmt = $pdo->prepare('SELECT * FROM catalog_products WHERE id=? AND approved=1 LIMIT 1');
+        $stmt->execute([$id]);
+    } elseif ($slug !== '') {
+        $stmt = $pdo->prepare('SELECT * FROM catalog_products WHERE slug=? AND approved=1 LIMIT 1');
+        $stmt->execute([$slug]);
+    } else {
+        reply(['ok' => false, 'error' => 'Product id or slug is required'], 400);
+    }
+
     $product = $stmt->fetch();
     if (!$product) reply(['ok' => false, 'error' => 'Product not found'], 404);
+    $id = (int)$product['id'];
 
     $imageStmt = $pdo->prepare(
         'SELECT source_url, local_url, position FROM catalog_product_images WHERE product_id=? ORDER BY position,id'
