@@ -4,6 +4,7 @@ const ARABIC_RE = /[\u0600-\u06FF]/u;
 const LATIN_RE = /[A-Za-z]/u;
 const ARABIC_CHAR_RE = /[\u0600-\u06FF]/u;
 const LATIN_CHAR_RE = /[A-Za-z]/u;
+const MOJIBAKE_RE = /[�ÃÂÐÑØÙ╪╣╚╔║├┤┘┐└┬┴│─]/u;
 
 export function hasArabic(value?: string | null) {
   return Boolean(value && ARABIC_RE.test(value));
@@ -62,14 +63,17 @@ function cleanLocalizedTokens(value: string, locale: Locale) {
 
 export function localizedProductName(product: Product, locale: Locale) {
   const direct = (product.name[locale] || "").trim();
-  if (textMatchesLocale(direct, locale, false)) return direct;
+  if (direct && !MOJIBAKE_RE.test(direct) && textMatchesLocale(direct, locale, false)) return direct;
 
-  const sourceCandidates = [direct, product.name.en, product.name.ar, product.name.fr].filter(Boolean);
+  // For Arabic we may safely keep only the Arabic source words and neutral dimensions.
+  // For English/French, do not fabricate a title out of fragments from a mixed-language source.
+  if (locale !== "ar") return undefined;
+
+  const sourceCandidates = [direct, product.name.ar, product.name.en, product.name.fr].filter(Boolean);
   for (const candidate of sourceCandidates) {
+    if (MOJIBAKE_RE.test(candidate)) continue;
     const cleaned = cleanLocalizedTokens(candidate, locale);
-    const letterCount = [...cleaned].filter((char) =>
-      locale === "ar" ? ARABIC_CHAR_RE.test(char) : LATIN_CHAR_RE.test(char)
-    ).length;
+    const letterCount = [...cleaned].filter((char) => ARABIC_CHAR_RE.test(char)).length;
     if (letterCount >= 3 && textMatchesLocale(cleaned, locale, true)) return cleaned;
   }
   return undefined;
@@ -77,7 +81,7 @@ export function localizedProductName(product: Product, locale: Locale) {
 
 export function localizedOptional(value: string | undefined | null, locale: Locale, allowNeutral = true) {
   const text = (value || "").trim();
-  if (!text) return undefined;
+  if (!text || MOJIBAKE_RE.test(text)) return undefined;
   if (textMatchesLocale(text, locale, allowNeutral)) return text;
 
   const cleaned = cleanLocalizedTokens(text, locale);
@@ -93,9 +97,13 @@ export function productMatchesLocale(product: Product, locale: Locale) {
 
 export function localizedPrice(value: string | undefined, locale: Locale) {
   if (!value) return value;
-  return locale === "ar"
-    ? value.replace(/^EGP\s*/i, "ج.م ")
-    : value.replace(/^ج\.م\s*/u, "EGP ");
+  let price = value.trim()
+    .replace(/^(EGP\s*){2,}/i, "EGP ")
+    .replace(/^(ج\.م\s*){2,}/u, "ج.م ");
+  price = locale === "ar"
+    ? price.replace(/^EGP\s*/i, "ج.م ")
+    : price.replace(/^ج\.م\s*/u, "EGP ");
+  return price;
 }
 
 export function isPresentableImageUrl(value?: string | null) {
