@@ -1,7 +1,8 @@
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
 import { isPresentableImageUrl } from "./catalogPresentation";
 
-const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "https://api.fuzzycell.com/idea-catalog").replace(/\/$/, "");
+const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "").replace(/\/$/, "");
+const catalogUrl = (query: string) => API_BASE ? `${API_BASE}/api.php?${query}` : `/api/catalog?${query}`;
 const PAGE_SIZE = 500;
 const PAGE_CONCURRENCY = 6;
 
@@ -199,7 +200,7 @@ function mapRow(row: CatalogRow): Product | null {
 }
 
 async function fetchPage(collection: string, page: number, signal?: AbortSignal): Promise<ProductPage> {
-  const url = `${API_BASE}/api.php?action=products&collection=${encodeURIComponent(collection)}&per_page=${PAGE_SIZE}&page=${page}`;
+  const url = catalogUrl(`action=products&collection=${encodeURIComponent(collection)}&per_page=${PAGE_SIZE}&page=${page}`);
   const response = await fetch(url, { signal, headers: { Accept: "application/json" } });
   if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
   const payload = await response.json() as ProductPage;
