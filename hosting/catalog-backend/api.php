@@ -16,7 +16,8 @@ if ($dsn === '' || $dbUser === '') {
 }
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-if ($origin === $allowedOrigin) {
+$isPreviewOrigin = (bool)preg_match('#^https://[a-z0-9-]+\.vercel\.app$#i', $origin);
+if ($origin === $allowedOrigin || $isPreviewOrigin) {
     header('Access-Control-Allow-Origin: ' . $origin);
     header('Vary: Origin');
 }
