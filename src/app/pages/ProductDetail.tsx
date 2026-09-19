@@ -3,7 +3,7 @@ import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Product } from "../data/types";
 import { loadMazloumDetail, applyMazloumDetail } from "../data/mazloumDetails";
-import { isLiveCatalogProduct, loadLiveCatalogDetail } from "../data/liveCatalogDetails";
+import { isLiveCatalogProduct, loadLiveCatalogDetail, loadLiveCatalogProductBySlug } from "../data/liveCatalogDetails";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
@@ -19,14 +19,32 @@ export function ProductDetail() {
   const [resolvedProduct, setResolvedProduct] = useState<Product | undefined>(baseProduct);
   const [activeImg, setActiveImg] = useState(0);
   const [failedImages, setFailedImages] = useState<number[]>([]);
+  const [lookupPending, setLookupPending] = useState(!baseProduct);
 
   useEffect(() => {
-    setResolvedProduct(baseProduct);
+    let cancelled = false;
     setActiveImg(0);
     setFailedImages([]);
 
-    if (!baseProduct) return;
-    let cancelled = false;
+    if (!baseProduct) {
+      setResolvedProduct(undefined);
+      if (!slug) {
+        setLookupPending(false);
+        return;
+      }
+      setLookupPending(true);
+      void loadLiveCatalogProductBySlug(slug)
+        .then((detail) => {
+          if (!cancelled) setResolvedProduct(detail || undefined);
+        })
+        .finally(() => {
+          if (!cancelled) setLookupPending(false);
+        });
+      return () => { cancelled = true; };
+    }
+
+    setLookupPending(false);
+    setResolvedProduct(baseProduct);
 
     if (isLiveCatalogProduct(baseProduct)) {
       void loadLiveCatalogDetail(baseProduct).then((detail) => {
@@ -47,9 +65,22 @@ export function ProductDetail() {
     }
 
     return () => { cancelled = true; };
-  }, [baseProduct]);
+  }, [baseProduct, slug]);
 
   const product = resolvedProduct || baseProduct;
+
+  if (lookupPending) {
+    return (
+      <Section>
+        <Container>
+          <div className="idea-product-loading">
+            <span />
+            <p>{t("product.loading")}</p>
+          </div>
+        </Container>
+      </Section>
+    );
+  }
 
   if (!product || !productMatchesLocale(product, locale)) {
     return (
