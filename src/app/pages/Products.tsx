@@ -4,10 +4,10 @@ import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
 import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from "lucide-react";
+import { dedupeProductsForLocale, localizedOptional, localizedProductName } from "../data/catalogPresentation";
 
 function uniq<T>(arr: (T | undefined)[]): T[] {
   return [...new Set(arr.filter(Boolean) as T[])];
@@ -20,8 +20,11 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const q = (params.get("q") ?? "").trim().toLowerCase();
 
   const scope = useMemo(
-    () => (fixedCollection ? products.filter((p) => p.collection === fixedCollection) : products),
-    [products, fixedCollection]
+    () => {
+      const collectionScope = fixedCollection ? products.filter((p) => p.collection === fixedCollection) : products;
+      return dedupeProductsForLocale(collectionScope, locale);
+    },
+    [products, fixedCollection, locale]
   );
 
   // Seed filters from the hero search panel (?color=&size=&usage=&finish=).
@@ -37,37 +40,57 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
 
   // Only build filter groups from values that actually exist (no empty filters).
   const facets = useMemo(() => ({
-    finish: uniq(scope.map((p) => p.finish)),
+    finish: uniq(scope.map((p) => localizedOptional(p.finish, locale))),
     size: uniq(scope.flatMap((p) => p.sizes.map((s) => s.label))),
-    usage: uniq(scope.flatMap((p) => p.usage ?? [])),
-    color: uniq(scope.flatMap((p) => p.colors ?? [])),
-    brand: uniq(scope.map((p) => p.brand)),
-    type: uniq(scope.map((p) => p.type)),
-    material: uniq(scope.map((p) => p.material)),
-    application: uniq(scope.map((p) => p.application)),
+    usage: uniq(scope.flatMap((p) => (p.usage ?? []).map((value) => localizedOptional(value, locale)))),
+    color: uniq(scope.flatMap((p) => (p.colors ?? []).map((value) => localizedOptional(value, locale)))),
+    brand: uniq(scope.map((p) => localizedOptional(p.brand, locale, false))),
+    type: uniq(scope.map((p) => localizedOptional(p.type, locale))),
+    material: uniq(scope.map((p) => localizedOptional(p.material, locale))),
+    application: uniq(scope.map((p) => localizedOptional(p.application, locale))),
   }), [scope]);
 
   const matches = (p: Product) => {
-    if (finish && p.finish !== finish) return false;
+    if (finish && localizedOptional(p.finish, locale) !== finish) return false;
     if (size && !p.sizes.some((s) => s.label === size)) return false;
-    if (usage && !(p.usage ?? []).includes(usage)) return false;
-    if (color && !(p.colors ?? []).includes(color)) return false;
-    if (brand && p.brand !== brand) return false;
-    if (type && p.type !== type) return false;
-    if (material && p.material !== material) return false;
-    if (application && p.application !== application) return false;
+    if (usage && !(p.usage ?? []).some((value) => localizedOptional(value, locale) === usage)) return false;
+    if (color && !(p.colors ?? []).some((value) => localizedOptional(value, locale) === color)) return false;
+    if (brand && localizedOptional(p.brand, locale, false) !== brand) return false;
+    if (type && localizedOptional(p.type, locale) !== type) return false;
+    if (material && localizedOptional(p.material, locale) !== material) return false;
+    if (application && localizedOptional(p.application, locale) !== application) return false;
     if (q) {
-      const hay = [p.name[locale], p.name.en, p.brand, p.model, p.code, p.collection, p.subcategory, p.series, p.origin, p.type, p.material, p.finish, p.texture, p.application, ...(p.colors ?? []), ...(p.usage ?? []), ...p.sizes.map((s) => s.normalizedDisplayValue || s.label)]
-        .join(" ").toLowerCase();
+      const hay = [
+        localizedProductName(p, locale),
+        localizedOptional(p.brand, locale, false),
+        localizedOptional(p.model, locale),
+        p.code,
+        p.collection,
+        localizedOptional(p.subcategory, locale),
+        localizedOptional(p.series, locale),
+        localizedOptional(p.origin, locale),
+        localizedOptional(p.type, locale),
+        localizedOptional(p.material, locale),
+        localizedOptional(p.finish, locale),
+        localizedOptional(p.texture, locale),
+        localizedOptional(p.application, locale),
+        ...(p.colors ?? []).map((value) => localizedOptional(value, locale)),
+        ...(p.usage ?? []).map((value) => localizedOptional(value, locale)),
+        ...p.sizes.map((s) => s.normalizedDisplayValue || s.label),
+      ].filter(Boolean).join(" ").toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
   };
 
   const results = scope.filter(matches).toSorted((a, b) => {
-    if (sort === "brand") return (a.brand || "").localeCompare(b.brand || "") || a.name[locale].localeCompare(b.name[locale]);
-    if (sort === "collection") return a.collection.localeCompare(b.collection) || a.name[locale].localeCompare(b.name[locale]);
-    return a.name[locale].localeCompare(b.name[locale]);
+    const nameA = localizedProductName(a, locale) || "";
+    const nameB = localizedProductName(b, locale) || "";
+    const brandA = localizedOptional(a.brand, locale, false) || "";
+    const brandB = localizedOptional(b.brand, locale, false) || "";
+    if (sort === "brand") return brandA.localeCompare(brandB) || nameA.localeCompare(nameB);
+    if (sort === "collection") return a.collection.localeCompare(b.collection) || nameA.localeCompare(nameB);
+    return nameA.localeCompare(nameB);
   });
   const activeCount = [finish, size, usage, color, brand, type, material, application].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -87,10 +110,10 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
 
   const meta = fixedCollection ? COLLECTIONS.find((c) => c.slug === fixedCollection) : null;
   const catalogueSummary = locale === "ar"
-    ? `${products.length} منتجًا في الكتالوج الحالي · ${ART_CERAMIC_CATALOGUE.totalImages} مرجع صورة لـ Art Ceramic`
+    ? `${scope.length} منتجًا متاحًا في المعرض`
     : locale === "fr"
-      ? `${products.length} produits dans le catalogue actuel · ${ART_CERAMIC_CATALOGUE.totalImages} références d’images Art Ceramic`
-      : `${products.length} products in the current catalogue · ${ART_CERAMIC_CATALOGUE.totalImages} Art Ceramic gallery image references`;
+      ? `${scope.length} produits disponibles dans la galerie`
+      : `${scope.length} products available in the gallery`;
 
   const group = (label: string, values: string[], val: string | null, set: (v: string | null) => void) =>
     values.length > 1 && (
@@ -107,7 +130,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
       <Container>
         {/* Page heading */}
         <div style={{ marginBottom: "var(--idea-space-6)" }}>
-          <div className="idea-eyebrow">{meta ? COLLECTIONS.find((c) => c.slug === fixedCollection)?.group : "Gallery"}</div>
+          <div className="idea-eyebrow">{meta ? t("nav.collections") : t("nav.products")}</div>
           <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 0" }}>
             {meta ? meta.title[locale] : t("nav.products")}
           </h1>
@@ -148,14 +171,14 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
               <span className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{t("filters.title")}</span>
               <button onClick={clear} style={{ background: "none", border: "none", color: "var(--idea-gold)", cursor: "pointer", fontSize: "var(--idea-text-xs)" }}>{t("filters.clear")}</button>
             </div>
-            {group("Brand", facets.brand, brand, setBrand)}
-            {group("Product type", facets.type, type, setType)}
+            {group(t("filters.brand"), facets.brand, brand, setBrand)}
+            {group(t("filters.productType"), facets.type, type, setType)}
             {group(t("filters.finish"), facets.finish, finish, setFinish)}
             {group(t("filters.size"), facets.size, size, setSize)}
             {group(t("label.usage"), facets.usage, usage, setUsage)}
-            {group("Color", facets.color, color, setColor)}
-            {group("Material", facets.material, material, setMaterial)}
-            {group("Application", facets.application, application, setApplication)}
+            {group(t("filters.color"), facets.color, color, setColor)}
+            {group(t("filters.material"), facets.material, material, setMaterial)}
+            {group(t("filters.application"), facets.application, application, setApplication)}
             <button className="idea-filter-show" onClick={() => setMobileOpen(false)}
               style={{
                 display: "none", width: "100%", marginTop: "var(--idea-space-4)", padding: "12px 20px",
@@ -172,11 +195,11 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
             <div style={{ color: "var(--idea-text-muted)", marginBottom: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}>
               <span>{results.length} {t("label.results")}</span>
               <label style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
-                <span>Sort</span>
+                <span>{t("sort.label")}</span>
                 <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} style={{ background: "var(--idea-surface)", color: "var(--idea-text)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)", padding: "7px 10px" }}>
-                  <option value="name">Product name</option>
-                  <option value="brand">Brand</option>
-                  <option value="collection">Category</option>
+                  <option value="name">{t("sort.name")}</option>
+                  <option value="brand">{t("sort.brand")}</option>
+                  <option value="collection">{t("sort.category")}</option>
                 </select>
               </label>
             </div>
@@ -202,7 +225,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                     opacity: page <= 1 ? .55 : 1,
                   }}
                 >
-                  <ChevronLeft size={15} /> Previous
+                  <ChevronLeft size={15} /> {t("pagination.previous")}
                 </button>
                 <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>
                   {page} / {totalPages}
@@ -217,7 +240,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                     opacity: page >= totalPages ? .55 : 1,
                   }}
                 >
-                  Next <ChevronRight size={15} />
+                  {t("pagination.next")} <ChevronRight size={15} />
                 </button>
               </nav>
             )}

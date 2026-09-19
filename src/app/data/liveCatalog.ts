@@ -1,4 +1,5 @@
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
+import { isPresentableImageUrl } from "./catalogPresentation";
 
 const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "https://api.fuzzycell.com/idea-catalog").replace(/\/$/, "");
 const PAGE_SIZE = 500;
@@ -36,7 +37,7 @@ const DISPLAY_COLLECTIONS = new Set<CollectionSlug>([
   "home-decor",
 ]);
 
-const SKIP_SOURCES = new Set(["source-20"]);
+const SKIP_SOURCES = new Set(["source-02", "source-05", "source-10", "source-20"]);
 
 interface CatalogRow {
   id: number;
@@ -91,18 +92,33 @@ function displayPrice(value?: string | null, currency?: string | null) {
 
 function normalizedCollection(row: CatalogRow): CollectionSlug | null {
   const raw = row.collection_slug;
-  if (raw === "plumbing" || raw === "plumbing-products") return "plumbing-products";
+  const text = `${row.name || ""} ${row.subcategory || ""} ${row.product_type || ""}`.toLowerCase();
 
-  const sourceTaxonomy = `${row.subcategory || ""} ${row.product_type || ""}`.toLowerCase();
-  if (
-    (raw === "ceramics" || raw === "porcelain") &&
-    /(^|\b)(marble|natural stone)(\b|$)|رخام|حجر طبيعي/u.test(sourceTaxonomy)
-  ) {
-    return "marble";
+  if (/faucet|mixer|tap|خلاط|حنفيه|حنفية/u.test(text)) return "faucets";
+  if (/bathtub|bath tub|jacuzzi|بانيو|جاكوزي/u.test(text)) return "bathtubs";
+  if (/shower|shower system|دش|شاور/u.test(text)) return "shower-units";
+  if (/basin|wash ?basin|sink|toilet|\bwc\b|sanitary|حوض|مرحاض|تواليت|قاعدة حمام|كومبنيشن/u.test(text)) return "sanitary-ware";
+  if (/vanity|bathroom unit|bathroom furniture|وحدة حمام|اثاث حمام|أثاث حمام/u.test(text)) return "bathroom-units";
+  if (/pipe|fitting|valve|plumbing|مواسير|ماسورة|وصلة|محبس|سباكة/u.test(text)) return "plumbing-products";
+  if (/marble|natural stone|رخام|حجر طبيعي/u.test(text)) return "marble";
+  if (/porcelain|بورسلين/u.test(text)) return "porcelain";
+  if (/ceramic|tiles?|سيراميك|بلاط/u.test(text)) return "ceramics";
+
+  // Mazloum's furniture / lighting / decor taxonomy is already source-verified.
+  if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) {
+    return raw as CollectionSlug;
   }
 
-  if (DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) return raw as CollectionSlug;
+  // Do not guess ambiguous products into a commercial category.
   return null;
+}
+
+function cleanImageUrl(value?: string | null) {
+  const image = (value || "").trim();
+  if (!isPresentableImageUrl(image)) return "";
+  if (/\b(array|null|undefined)\b/i.test(image)) return "";
+  if (/[-_](?:80|100|120|150|180|200)x(?:80|100|120|150|180|200)(?:\.|-)/i.test(image)) return "";
+  return image;
 }
 
 function mapRow(row: CatalogRow): Product | null {
@@ -120,7 +136,8 @@ function mapRow(row: CatalogRow): Product | null {
   const subcategory = clean(row.subcategory);
   const type = clean(row.product_type) || subcategory;
   const brand = clean(row.brand) || "";
-  const image = row.primary_image_url && row.primary_image_url !== "Array" ? row.primary_image_url : "";
+  const image = cleanImageUrl(row.primary_image_url);
+  if (!image) return null;
 
   const specs: ProductSpecificationItem[] = [
     dimension ? { label: "Dimensions", value: dimension, originalSourceValue: dimension, normalizedValue: dimension } : null,
@@ -183,6 +200,19 @@ async function fetchPage(collection: string, page: number, signal?: AbortSignal)
   return payload;
 }
 
+function productIdentity(product: Product) {
+  const sku = (product.code || "").trim().toLowerCase();
+  if (sku) return `sku:${product.brand.toLowerCase()}:${sku}`;
+  return `name:${product.brand.toLowerCase()}:${product.name.en.trim().toLowerCase()}`;
+}
+
+function normalizedImageKey(value: string) {
+  return value
+    .replace(/([?&])(width|height|w|h|quality|q)=\d+/gi, "$1")
+    .replace(/[?&]+$/g, "")
+    .toLowerCase();
+}
+
 function mappedProducts(payload: ProductPage) {
   return payload.products.map(mapRow).filter(Boolean) as Product[];
 }
@@ -191,6 +221,22 @@ export async function loadLiveCatalog(
   onBatch: (products: Product[]) => void,
   signal?: AbortSignal
 ): Promise<void> {
+  const seenImages = new Set<string>();
+  const seenProducts = new Set<string>();
+
+  const publish = (products: Product[]) => {
+    const cleanProducts = products.filter((product) => {
+      if (!product.image) return false;
+      const imageKey = normalizedImageKey(product.image);
+      const identity = productIdentity(product);
+      if (seenImages.has(imageKey) || seenProducts.has(identity)) return false;
+      seenImages.add(imageKey);
+      seenProducts.add(identity);
+      return true;
+    });
+    if (cleanProducts.length) onBatch(cleanProducts);
+  };
+
   const firstPages = await Promise.allSettled(
     SOURCE_COLLECTIONS.map(async (collection) => ({ collection, payload: await fetchPage(collection, 1, signal) }))
   );
@@ -200,7 +246,7 @@ export async function loadLiveCatalog(
     if (result.status !== "fulfilled") continue;
     const { collection, payload } = result.value;
     const firstBatch = mappedProducts(payload);
-    if (firstBatch.length) onBatch(firstBatch);
+    if (firstBatch.length) publish(firstBatch);
     for (let page = 2; page <= Math.max(1, payload.totalPages || 1); page += 1) {
       remaining.push({ collection, page });
     }
@@ -214,7 +260,7 @@ export async function loadLiveCatalog(
       try {
         const payload = await fetchPage(task.collection, task.page, signal);
         const batch = mappedProducts(payload);
-        if (batch.length) onBatch(batch);
+        if (batch.length) publish(batch);
       } catch (error) {
         if ((error as { name?: string })?.name === "AbortError") return;
         // Keep the already-visible catalogue and continue loading other pages.

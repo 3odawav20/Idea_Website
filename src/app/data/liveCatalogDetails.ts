@@ -1,4 +1,5 @@
 import type { Product, ProductSpecificationItem } from "./types";
+import { isPresentableImageUrl } from "./catalogPresentation";
 
 const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "https://api.fuzzycell.com/idea-catalog").replace(/\/$/, "");
 
@@ -70,7 +71,7 @@ export async function loadLiveCatalogDetail(product: Product): Promise<Product |
   const gallery = [...new Set(
     (payload.images || [])
       .map((image) => clean(image.local_url) || clean(image.source_url))
-      .filter(Boolean) as string[]
+      .filter((value): value is string => Boolean(value && isPresentableImageUrl(value)))
   )];
 
   const dimension =
