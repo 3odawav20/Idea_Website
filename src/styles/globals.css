@@ -632,3 +632,45 @@ a, button {
     animation: none !important;
   }
 }
+
+
+/* iPhone / small-screen reliability */
+@media (max-width: 760px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  button,
+  [role="button"] {
+    min-height: 44px;
+  }
+
+  .idea-header-actions > a,
+  .idea-header-actions > button {
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .idea-header-actions {
+    gap: 4px !important;
+  }
+
+  .idea-collections-title {
+    font-size: clamp(38px, 12vw, 58px);
+  }
+
+  .idea-hero-pagination {
+    bottom: max(24px, env(safe-area-inset-bottom)) !important;
+  }
+}
+
+@supports (padding: max(0px)) {
+  .idea-hero-content {
+    padding-left: max(var(--idea-space-4), env(safe-area-inset-left)) !important;
+    padding-right: max(var(--idea-space-4), env(safe-area-inset-right)) !important;
+  }
+}
