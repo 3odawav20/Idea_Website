@@ -130,13 +130,33 @@ function presentationImageKey(value: string) {
     .toLowerCase();
 }
 
+export function hasPublicProductDetails(product: Product) {
+  return Boolean(
+    product.brand?.trim() ||
+    product.subcategory?.trim() ||
+    product.type?.trim() ||
+    product.description?.trim() ||
+    product.code?.trim() ||
+    product.model?.trim() ||
+    product.material?.trim() ||
+    product.finish?.trim() ||
+    product.application?.trim() ||
+    product.priceText?.trim() ||
+    product.sizes.length ||
+    (product.colors?.length ?? 0) ||
+    (product.usage?.length ?? 0) ||
+    (product.variants?.length ?? 0) ||
+    product.specificationGroups?.some((group) => group.items.length > 0)
+  );
+}
+
 export function dedupeProductsForLocale(products: Product[], locale: Locale) {
   const seenImages = new Set<string>();
   const seenProducts = new Set<string>();
 
   return products.filter((product) => {
     const name = localizedProductName(product, locale);
-    if (!name || !product.image || !isPresentableImageUrl(product.image)) return false;
+    if (!product.approved || !name || !product.image || !isPresentableImageUrl(product.image) || !hasPublicProductDetails(product)) return false;
 
     const imageKey = presentationImageKey(product.image);
     const brand = localizedOptional(product.brand, locale, false) || "";
