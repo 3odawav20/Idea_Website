@@ -3,16 +3,19 @@ import { useNavigate } from "react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { Button, Container } from "./ui";
-import imgLivingRoom from "../../imports/Modern_luxury_living_room_ambiance.png";
-import imgMarbleGold from "../../imports/Luxurious_modern_interiors_with_marble_and_gold.png";
-import imgTriptych from "../../imports/Luxurious_modern_interior_triptych_design.png";
+import imgLivingRoom from "../../imports/idea-hero-luxe-living-4k.webp";
+import imgLivingRoom2k from "../../imports/idea-hero-luxe-living-2k.webp";
+import imgSpaBath from "../../imports/idea-hero-spa-bath-4k.webp";
+import imgSpaBath2k from "../../imports/idea-hero-spa-bath-2k.webp";
 
 interface Slide {
   id: string;
   headline: { en: string; ar: string; fr: string };
   text: { en: string; ar: string; fr: string };
   image: string;
+  mobileImage: string;
   position?: string;
+  motion: "left" | "right";
   buttons: { label: { en: string; ar: string; fr: string }; to: string; variant: "gold" | "outline" }[];
 }
 
@@ -20,7 +23,9 @@ const SLIDES: Slide[] = [
   {
     id: "signature-interiors",
     image: imgLivingRoom,
+    mobileImage: imgLivingRoom2k,
     position: "center center",
+    motion: "left",
     headline: {
       en: "Exceptional Materials. Exceptional Interiors.",
       ar: "خامات استثنائية لمساحات استثنائية",
@@ -38,45 +43,28 @@ const SLIDES: Slide[] = [
   },
   {
     id: "marble-architecture",
-    image: imgMarbleGold,
+    image: imgSpaBath,
+    mobileImage: imgSpaBath2k,
     position: "center 45%",
+    motion: "right",
     headline: {
-      en: "Luxury Is In The Detail",
-      ar: "الفخامة تبدأ من التفاصيل",
-      fr: "Le luxe se révèle dans les détails",
+      en: "The Art of the Bath",
+      ar: "فنّ الحمام الراقي",
+      fr: "L’art de la salle de bain",
     },
     text: {
-      en: "Discover statement surfaces, refined finishes and architectural bathroom pieces selected for premium projects.",
-      ar: "اكتشف الأسطح المميزة والتشطيبات الراقية وقطع الحمامات المعمارية المختارة للمشروعات المتميزة.",
-      fr: "Découvrez des surfaces signature, des finitions raffinées et des pièces de salle de bain architecturales.",
+      en: "Architectural sanitary ware, refined faucets and porcelain surfaces composed for premium bathroom spaces.",
+      ar: "أدوات صحية معمارية وخلاطات راقية وأسطح بورسلين مختارة لتكوين حمامات فاخرة متكاملة.",
+      fr: "Sanitaires architecturaux, robinetterie raffinée et surfaces en porcelaine pour des salles de bain premium.",
     },
     buttons: [
-      { label: { en: "Explore Porcelain", ar: "استكشف البورسلين", fr: "Explorer la porcelaine" }, to: "/collections/porcelain", variant: "gold" },
-      { label: { en: "Marble & Stone", ar: "الرخام والحجر", fr: "Marbre & pierre" }, to: "/collections/marble", variant: "outline" },
-    ],
-  },
-  {
-    id: "complete-project",
-    image: imgTriptych,
-    position: "center center",
-    headline: {
-      en: "One Destination For The Complete Project",
-      ar: "وجهة واحدة لكل تفاصيل مشروعك",
-      fr: "Une destination pour l’ensemble du projet",
-    },
-    text: {
-      en: "From surfaces and sanitary ware to faucets, bathtubs, showers, lighting and furniture — composed as one premium marketplace.",
-      ar: "من الأسطح والأدوات الصحية إلى الخلاطات والبانيوهات والدش والإضاءة والأثاث — في متجر واحد متكامل وراقي.",
-      fr: "Des surfaces et sanitaires aux robinets, baignoires, douches, luminaires et meubles — dans une marketplace premium.",
-    },
-    buttons: [
-      { label: { en: "Shop The Marketplace", ar: "تصفح المتجر", fr: "Explorer la marketplace" }, to: "/products", variant: "gold" },
-      { label: { en: "Visualize Your Room", ar: "صمّم مساحتك", fr: "Visualiser votre pièce" }, to: "/room-designer/new", variant: "outline" },
+      { label: { en: "Explore Bathrooms", ar: "استكشف الحمامات", fr: "Explorer les salles de bain" }, to: "/collections/sanitary-ware", variant: "gold" },
+      { label: { en: "Faucets & Fixtures", ar: "الخلاطات والتجهيزات", fr: "Robinets & équipements" }, to: "/collections/faucets", variant: "outline" },
     ],
   },
 ];
 
-const INTERVAL = 7200;
+const INTERVAL = 8500;
 
 export function HeroCarousel() {
   const { locale } = useI18n();
@@ -104,7 +92,7 @@ export function HeroCarousel() {
     return () => window.clearInterval(timer);
   }, [next, paused]);
 
-  const fallbackImages = [imgLivingRoom, imgMarbleGold, imgTriptych];
+  const fallbackImages = [imgLivingRoom, imgSpaBath];
 
   return (
     <section
@@ -158,8 +146,12 @@ export function HeroCarousel() {
             }}
           >
             <img
-              className={active ? "idea-vivid-image idea-hero-image idea-hero-image--active" : "idea-vivid-image idea-hero-image"}
+              className={active
+                ? `idea-vivid-image idea-hero-image idea-hero-image--active idea-hero-image--${slide.motion}`
+                : `idea-vivid-image idea-hero-image idea-hero-image--${slide.motion}`}
               src={failedSlides.includes(slideIndex) ? fallbackImages[(slideIndex + 1) % fallbackImages.length] : slide.image}
+              srcSet={failedSlides.includes(slideIndex) ? undefined : `${slide.mobileImage} 1920w, ${slide.image} 3840w`}
+              sizes="100vw"
               alt=""
               aria-hidden="true"
               loading={slideIndex === 0 ? "eager" : "lazy"}
@@ -178,6 +170,8 @@ export function HeroCarousel() {
             />
             <div className="idea-hero-depth" aria-hidden="true" />
             <div className="idea-hero-film" aria-hidden="true" />
+            <div className="idea-hero-grain" aria-hidden="true" />
+            <div className="idea-hero-letterbox" aria-hidden="true" />
             <div className="idea-hero-overlay" aria-hidden="true" />
 
             <Container
