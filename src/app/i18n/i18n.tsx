@@ -59,6 +59,7 @@ const T: Dict = {
   "pagination.next": { en: "Next", ar: "التالي", fr: "Suivant" },
   "image.unavailable": { en: "Image unavailable", ar: "الصورة غير متاحة", fr: "Image indisponible" },
   "product.notFound": { en: "Product not found.", ar: "المنتج غير متاح.", fr: "Produit introuvable." },
+  "product.loading": { en: "Loading product details…", ar: "جارٍ تحميل تفاصيل المنتج…", fr: "Chargement des détails du produit…" },
   "product.backGallery": { en: "Back to gallery", ar: "العودة للمعرض", fr: "Retour à la galerie" },
   "product.colorsFinishes": { en: "Colors / finishes", ar: "الألوان / التشطيبات", fr: "Couleurs / finitions" },
   "product.variants": { en: "Available variants", ar: "الخيارات المتاحة", fr: "Variantes disponibles" },
