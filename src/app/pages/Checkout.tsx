@@ -32,7 +32,7 @@ export function Checkout() {
   const amount = order ? order.total : plan ? (interval === "annual" ? plan.annual : plan.monthly) : 0;
   const cfg = db.payments.find((p) => p.key === method);
 
-  if (!session) return <Navigate to={"/login?next=" + encodeURIComponent(window.location.pathname + window.location.search)} replace />;
+  if (!session) return <Navigate to={"/login?next=" + encodeURIComponent("/checkout?" + sp.toString())} replace />;
   if (plan && amount < 0) return (
     <Section style={{ paddingTop: "var(--idea-space-8)" }}>
       <Container style={{ maxWidth: 560 }}>
