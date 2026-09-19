@@ -26,18 +26,18 @@ export function ProductDetail() {
     if (!baseProduct) return;
     let cancelled = false;
 
-    if (baseProduct.source?.sourceId === "source-13" && baseProduct.source.productPageUrl) {
-      void loadMazloumDetail(baseProduct.source.productPageUrl).then((detail) => {
+    if (isLiveCatalogProduct(baseProduct)) {
+      void loadLiveCatalogDetail(baseProduct).then((detail) => {
         if (!cancelled && detail) {
-          setResolvedProduct(applyMazloumDetail(baseProduct, detail));
+          setResolvedProduct(detail);
           setActiveImg(0);
           setFailedImages([]);
         }
       });
-    } else if (isLiveCatalogProduct(baseProduct)) {
-      void loadLiveCatalogDetail(baseProduct).then((detail) => {
+    } else if (baseProduct.source?.sourceId === "source-13" && baseProduct.source.productPageUrl) {
+      void loadMazloumDetail(baseProduct.source.productPageUrl).then((detail) => {
         if (!cancelled && detail) {
-          setResolvedProduct(detail);
+          setResolvedProduct(applyMazloumDetail(baseProduct, detail));
           setActiveImg(0);
           setFailedImages([]);
         }
