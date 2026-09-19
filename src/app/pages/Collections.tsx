@@ -37,7 +37,8 @@ export function Collections() {
     .filter(Boolean) as Array<{ collection: (typeof COLLECTIONS)[number]; count: number }>;
 
   return (
-    <Section className="idea-collections-page" style={{ paddingTop: "var(--idea-space-8)" }}>
+    <Section style={{ paddingTop: "var(--idea-space-8)" }}>
+      <div className="idea-collections-page">
       <Container>
         <header className="idea-collections-intro">
           <div>
@@ -69,6 +70,7 @@ export function Collections() {
           ))}
         </div>
       </Container>
+      </div>
     </Section>
   );
 }
