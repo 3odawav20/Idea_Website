@@ -19,7 +19,7 @@ function PlanCard({ plan, interval, current, onChoose }: { plan: Plan; interval:
         {current && <StatusBadge text="Current" tone="gold" />}
       </div>
       <div style={{ margin: "var(--idea-space-3) 0" }}>
-        <span className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-gold-bright)" }}>{price === 0 ? "Free" : price.toLocaleString()}</span>
+        <span className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-gold-bright)" }}>{price < 0 ? "Price on request" : price === 0 ? "Free" : price.toLocaleString()}</span>
         {price > 0 && <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}> EGP / {interval === "annual" ? "yr" : "mo"}</span>}
       </div>
       {plan.trialDays > 0 && <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginBottom: 10 }}>{plan.trialDays}-day free trial</div>}
@@ -30,7 +30,7 @@ function PlanCard({ plan, interval, current, onChoose }: { plan: Plan; interval:
           </li>
         ))}
       </ul>
-      <Button variant={current ? "ghost" : "gold"} onClick={onChoose} disabled={current}>{current ? "Active plan" : price === 0 ? "Select" : "Subscribe"}</Button>
+      <Button variant={current ? "ghost" : "gold"} onClick={onChoose} disabled={current}>{current ? "Active plan" : price < 0 ? "Request plan" : price === 0 ? "Activate free plan" : "Subscribe"}</Button>
     </div>
   );
 }
@@ -38,13 +38,24 @@ function PlanCard({ plan, interval, current, onChoose }: { plan: Plan; interval:
 function PlanGrid({ audience }: { audience: "customer" | "business" }) {
   const { db, session, api } = useBackend();
   const [interval, setInterval] = useState<"monthly" | "annual">("monthly");
+  const [message, setMessage] = useState("");
   const nav = useNavigate();
   const plans = db.plans.filter((p) => p.audience === audience);
   const sub = db.subscriptions.find((s) => s.userId === session?.id && s.status === "active");
   const choose = (plan: Plan) => {
-    if (!session) { nav("/login"); return; }
-    if (plan.monthly === 0 && plan.annual === 0) { api.subscribe(plan.id, interval, true); nav(audience === "business" ? "/business/subscription" : "/account/subscription"); return; }
-    nav(`/checkout?plan=${plan.id}&interval=${interval}`);
+    if (!session) { nav("/login?next=" + encodeURIComponent(location.pathname)); return; }
+    const price = interval === "annual" ? plan.annual : plan.monthly;
+    if (price < 0) {
+      api.requestSubscription(plan.id, interval);
+      setMessage("Request received for " + plan.name + ". We will contact you to confirm pricing and activation.");
+      return;
+    }
+    if (price === 0) {
+      api.subscribe(plan.id, interval, true);
+      nav(audience === "business" ? "/business/subscription" : "/account/subscription");
+      return;
+    }
+    nav("/checkout?plan=" + encodeURIComponent(plan.id) + "&interval=" + interval);
   };
   return (
     <>
@@ -57,7 +68,8 @@ function PlanGrid({ audience }: { audience: "customer" | "business" }) {
           }}>{x}</button>
         ))}
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: "var(--idea-space-4)" }}>
+      {message && <div role="status" style={{ margin: "0 auto var(--idea-space-4)", maxWidth: 720, padding: "12px 14px", border: "1px solid var(--idea-gold)", borderRadius: "var(--idea-radius-md)", background: "var(--idea-gold-soft)", color: "var(--idea-text)", fontSize: "var(--idea-text-sm)" }}>{message}</div>}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "var(--idea-space-4)" }}>
         {plans.map((p) => <PlanCard key={p.id} plan={p} interval={interval} current={sub?.planId === p.id} onChoose={() => choose(p)} />)}
       </div>
     </>
