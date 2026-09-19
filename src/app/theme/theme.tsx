@@ -10,7 +10,7 @@ const Ctx = createContext<ThemeCtx | null>(null);
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<Mode>(() => {
     try {
-      return (localStorage.getItem("idea.theme") as Mode) || "light";
+      return (localStorage.getItem("idea.theme.v2") as Mode) || "light";
     } catch {
       return "dark";
     }
@@ -19,7 +19,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", mode);
     try {
-      localStorage.setItem("idea.theme", mode);
+      localStorage.setItem("idea.theme.v2", mode);
     } catch {
       /* ignore */
     }
