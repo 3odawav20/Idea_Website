@@ -222,7 +222,7 @@ export function HeroCarousel() {
                 >
                   {slide.text[locale]}
                 </p>
-                <div className="idea-hero-reveal idea-hero-reveal--four" style={{ display: "flex", gap: "var(--idea-space-4)", flexWrap: "wrap" }}>
+                <div className="idea-hero-reveal idea-hero-reveal--four idea-hero-actions" style={{ display: "flex", gap: "var(--idea-space-4)", flexWrap: "wrap" }}>
                   {slide.buttons.map((button) => (
                     <Button key={button.to} variant={button.variant} size="lg" onClick={() => nav(button.to)}>
                       {button.label[locale]}
