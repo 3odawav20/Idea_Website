@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User } from "lucide-react";
+import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User, House } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import { useStore } from "../store/store";
@@ -101,6 +101,8 @@ export function Header() {
               }}>{l.label}</button>
             ))}
           </div>
+
+          <IconLink to="/" label={t("nav.home")}><House size={20} /></IconLink>
 
           <button onClick={toggle} aria-label="Toggle theme" style={{
             background: "none", border: "none", cursor: "pointer", color: "var(--idea-gold-bright)", display: "inline-flex",

@@ -6,6 +6,7 @@ type Dict = Record<string, { en: string; ar: string; fr: string }>;
 // UI strings only — product data is localized on the Product objects themselves.
 const T: Dict = {
   tagline: { en: "When you have an idea… We are the IDEA.", ar: "عندما تكون لديك فكرة… نحن IDEA.", fr: "Quand vous avez une idée… Nous sommes IDEA." },
+  "nav.home": { en: "Home", ar: "الرئيسية", fr: "Accueil" },
   "nav.collections": { en: "Collections", ar: "المجموعات", fr: "Collections" },
   "nav.products": { en: "All Products", ar: "كل المنتجات", fr: "Tous les produits" },
   "nav.visualizer": { en: "AI Visualizer", ar: "المحاكي الذكي", fr: "Visualiseur IA" },
@@ -120,6 +121,13 @@ const T: Dict = {
   "auth.secure": { en: "Secure sign-in. We never store your password.", ar: "دخول آمن. لا نخزن كلمة المرور أبداً.", fr: "Connexion sécurisée. Aucun mot de passe stocké." },
   "auth.noAccount": { en: "New to IDEA?", ar: "جديد على IDEA؟", fr: "Nouveau sur IDEA ?" },
   "auth.haveAccount": { en: "Already have an account?", ar: "لديك حساب بالفعل؟", fr: "Vous avez déjà un compte ?" },
+  "auth.name": { en: "Name", ar: "الاسم", fr: "Nom" },
+  "auth.password": { en: "Password", ar: "كلمة المرور", fr: "Mot de passe" },
+  "auth.working": { en: "Working…", ar: "جارٍ التنفيذ…", fr: "Traitement…" },
+  "auth.resetPassword": { en: "Reset password", ar: "إعادة تعيين كلمة المرور", fr: "Réinitialiser le mot de passe" },
+  "auth.resetSent": { en: "Password reset instructions were sent to your email.", ar: "تم إرسال تعليمات إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.", fr: "Les instructions de réinitialisation ont été envoyées par e-mail." },
+  "auth.checkEmail": { en: "Check your email to confirm your account, then sign in.", ar: "راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجّل الدخول.", fr: "Consultez votre e-mail pour confirmer votre compte, puis connectez-vous." },
+  "auth.buyerDefault": { en: "New accounts are buyers by default. Supplier and admin access is assigned securely by the system.", ar: "الحسابات الجديدة تُنشأ كحسابات مشترين افتراضيًا، ويتم منح صلاحيات المورد والإدارة بشكل آمن من النظام.", fr: "Les nouveaux comptes sont acheteurs par défaut. Les accès fournisseur et administrateur sont attribués de façon sécurisée." },
 
   /* role */
   "role.question": { en: "How will you use IDEA?", ar: "كيف ستستخدم IDEA؟", fr: "Comment utiliserez-vous IDEA ?" },
@@ -180,6 +188,30 @@ const T: Dict = {
   "pay.wallet": { en: "Mobile Wallet", ar: "محفظة إلكترونية", fr: "Portefeuille mobile" },
   "pay.applepay": { en: "Apple Pay", ar: "Apple Pay", fr: "Apple Pay" },
   "pay.bank": { en: "Bank / Instant Transfer", ar: "تحويل بنكي / فوري", fr: "Virement bancaire" },
+  "checkout.secure": { en: "Secure checkout", ar: "دفع آمن", fr: "Paiement sécurisé" },
+  "checkout.confirmPay": { en: "Confirm & Pay", ar: "تأكيد والدفع", fr: "Confirmer et payer" },
+  "checkout.subscribe": { en: "Subscribe", ar: "اشتراك", fr: "S’abonner" },
+  "checkout.paymentMethod": { en: "Payment method", ar: "طريقة الدفع", fr: "Mode de paiement" },
+  "checkout.notConfigured": { en: "not configured", ar: "غير مفعّل", fr: "non configuré" },
+  "checkout.instantTransfer": { en: "Instant transfer", ar: "تحويل فوري", fr: "Virement instantané" },
+  "checkout.pay": { en: "Pay", ar: "ادفع", fr: "Payer" },
+  "checkout.sandbox": { en: "Sandbox", ar: "وضع تجريبي", fr: "Bac à sable" },
+  "checkout.sandboxNote": { en: "Sandbox environment · no real charge · card data is never stored", ar: "بيئة تجريبية · لا يتم خصم أموال حقيقية · لا يتم تخزين بيانات البطاقة", fr: "Environnement de test · aucun débit réel · les données de carte ne sont jamais stockées" },
+  "checkout.nothingTitle": { en: "Nothing to pay", ar: "لا توجد عملية دفع", fr: "Aucun paiement" },
+  "checkout.nothingSub": { en: "Accept an offer or choose a subscription plan.", ar: "اقبل عرضًا أو اختر خطة اشتراك للمتابعة.", fr: "Acceptez une offre ou choisissez un abonnement." },
+  "checkout.authorized": { en: "Sandbox payment authorized", ar: "تم اعتماد الدفع التجريبي", fr: "Paiement de test autorisé" },
+  "checkout.failed": { en: "Payment could not be completed", ar: "تعذر إتمام عملية الدفع", fr: "Le paiement n’a pas pu être effectué" },
+  "checkout.orderReady": { en: "Your order is now preparing and an invoice was generated.", ar: "تم تأكيد الطلب وهو الآن قيد التجهيز، وتم إنشاء الفاتورة.", fr: "Votre commande est en préparation et une facture a été générée." },
+  "checkout.subscriptionActive": { en: "Your subscription is now active.", ar: "تم تفعيل اشتراكك.", fr: "Votre abonnement est maintenant actif." },
+  "checkout.merchantMissing": { en: "This payment method is not configured for live authorization yet.", ar: "طريقة الدفع هذه غير مهيأة بعد للاعتماد الفعلي.", fr: "Ce mode de paiement n’est pas encore configuré pour une autorisation réelle." },
+  "checkout.viewOrders": { en: "View orders", ar: "عرض الطلبات", fr: "Voir les commandes" },
+  "checkout.viewSubscription": { en: "View subscription", ar: "عرض الاشتراك", fr: "Voir l’abonnement" },
+  "checkout.backHome": { en: "Back to Home", ar: "العودة للرئيسية", fr: "Retour à l’accueil" },
+  "footer.company": { en: "Company", ar: "الشركة", fr: "Entreprise" },
+  "footer.securePayment": { en: "Secure Payment", ar: "دفع آمن", fr: "Paiement sécurisé" },
+  "footer.paymentNote": { en: "EGP · Available with configured and tested merchant credentials.", ar: "ج.م · متاح بعد إعداد واختبار بيانات التاجر.", fr: "EGP · Disponible avec des identifiants marchands configurés et testés." },
+  "footer.rights": { en: "All rights reserved.", ar: "جميع الحقوق محفوظة.", fr: "Tous droits réservés." },
+  "footer.privateOffers": { en: "Public prices are never shown — request private offers.", ar: "الأسعار العامة لا تُعرض — اطلب عروض أسعار خاصة.", fr: "Les prix publics ne sont pas affichés — demandez des offres privées." },
   "common.egp": { en: "EGP", ar: "ج.م", fr: "EGP" },
   "common.save": { en: "Save", ar: "حفظ", fr: "Enregistrer" },
   "common.monthly": { en: "Monthly", ar: "شهري", fr: "Mensuel" },
@@ -196,12 +228,24 @@ interface I18nCtx {
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>("en");
+  const [locale, setLocale] = useState<Locale>(() => {
+    try {
+      const saved = localStorage.getItem("idea.locale");
+      return saved === "ar" || saved === "fr" || saved === "en" ? saved : "en";
+    } catch {
+      return "en";
+    }
+  });
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
     document.documentElement.dir = dir;
     document.documentElement.lang = locale;
+    try {
+      localStorage.setItem("idea.locale", locale);
+    } catch {
+      /* ignore */
+    }
   }, [dir, locale]);
 
   const t = (key: string) => T[key]?.[locale] ?? key;
