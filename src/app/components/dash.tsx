@@ -34,7 +34,7 @@ export function Field({ label, children }: { label: string; children: ReactNode 
 
 export const inputStyle: CSSProperties = {
   width: "100%", background: "var(--idea-surface-2)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)",
-  padding: "10px 14px", color: "var(--idea-text)", fontFamily: "var(--idea-font-body)", fontSize: "var(--idea-text-sm)", outline: "none",
+  padding: "11px 14px", color: "var(--idea-text)", fontFamily: "var(--idea-font-body)", fontSize: "16px", outline: "none",
 };
 
 export function EmptyState({ title, sub }: { title: string; sub?: string }) {
