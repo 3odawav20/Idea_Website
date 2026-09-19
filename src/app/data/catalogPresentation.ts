@@ -14,8 +14,21 @@ export function hasLatin(value?: string | null) {
   return Boolean(value && LATIN_RE.test(value));
 }
 
+export function cleanCatalogText(value?: string | null) {
+  return (value || "")
+    .replace(/&nbsp;|&#160;/gi, " ")
+    .replace(/&amp;|&#38;/gi, "&")
+    .replace(/&quot;|&#34;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&ndash;|&#8211;/gi, "–")
+    .replace(/&mdash;|&#8212;/gi, "—")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
 export function textMatchesLocale(value: string | undefined | null, locale: Locale, allowNeutral = true) {
-  const text = (value || "").trim();
+  const text = cleanCatalogText(value);
   if (!text) return false;
   const arabic = hasArabic(text);
   const latin = hasLatin(text);
@@ -62,7 +75,7 @@ function cleanLocalizedTokens(value: string, locale: Locale) {
 }
 
 export function localizedProductName(product: Product, locale: Locale) {
-  const direct = (product.name[locale] || "").trim();
+  const direct = cleanCatalogText(product.name[locale]);
   if (direct && !MOJIBAKE_RE.test(direct) && textMatchesLocale(direct, locale, false)) return direct;
 
   // For Arabic we may safely keep only the Arabic source words and neutral dimensions.
@@ -80,7 +93,7 @@ export function localizedProductName(product: Product, locale: Locale) {
 }
 
 export function localizedOptional(value: string | undefined | null, locale: Locale, allowNeutral = true) {
-  const text = (value || "").trim();
+  const text = cleanCatalogText(value);
   if (!text || MOJIBAKE_RE.test(text)) return undefined;
   if (textMatchesLocale(text, locale, allowNeutral)) return text;
 
@@ -150,13 +163,60 @@ export function hasPublicProductDetails(product: Product) {
   );
 }
 
+export function marketplaceProductQuality(product: Product, locale: Locale) {
+  const name = localizedProductName(product, locale);
+  if (!name || !product.approved || !product.image || !isPresentableImageUrl(product.image)) return -1000;
+
+  let score = 40;
+  if (localizedOptional(product.brand, locale, false)) score += 10;
+  if (localizedOptional(product.subcategory, locale)) score += 8;
+  if (localizedOptional(product.type, locale)) score += 5;
+  if (product.code?.trim()) score += 8;
+  if (localizedOptional(product.material, locale)) score += 6;
+  if (localizedOptional(product.finish, locale)) score += 4;
+  if (product.sizes.length) score += 7;
+  if (product.colors?.length) score += 5;
+  if (product.priceText?.trim()) score += 8;
+  if (product.availability?.trim()) score += 3;
+  if (product.description?.trim()) score += 5;
+  if ((product.gallery?.filter((image) => image !== product.image).length ?? 0) > 0) score += 3;
+  if (product.specificationGroups?.some((group) => group.items.length >= 2)) score += 5;
+  if (product.source?.productPageUrl) score += 3;
+  return score;
+}
+
+export function isMarketplaceReadyProduct(product: Product, locale: Locale) {
+  if (!product.approved || !localizedProductName(product, locale) || !product.image || !isPresentableImageUrl(product.image)) return false;
+
+  const meaningfulSignals = [
+    localizedOptional(product.brand, locale, false),
+    localizedOptional(product.subcategory, locale),
+    localizedOptional(product.type, locale),
+    product.code?.trim(),
+    localizedOptional(product.material, locale),
+    localizedOptional(product.finish, locale),
+    product.sizes.length ? "size" : "",
+    product.colors?.length ? "color" : "",
+    product.priceText?.trim(),
+    product.availability?.trim(),
+    product.description?.trim(),
+    product.variants?.length ? "variants" : "",
+    product.specificationGroups?.some((group) => group.items.length) ? "specs" : "",
+  ].filter(Boolean).length;
+
+  return meaningfulSignals >= 2;
+}
+
 export function dedupeProductsForLocale(products: Product[], locale: Locale) {
   const seenImages = new Set<string>();
   const seenProducts = new Set<string>();
+  const ranked = [...products].sort((a, b) =>
+    marketplaceProductQuality(b, locale) - marketplaceProductQuality(a, locale)
+  );
 
-  return products.filter((product) => {
+  return ranked.filter((product) => {
     const name = localizedProductName(product, locale);
-    if (!product.approved || !name || !product.image || !isPresentableImageUrl(product.image) || !hasPublicProductDetails(product)) return false;
+    if (!name || !isMarketplaceReadyProduct(product, locale)) return false;
 
     const imageKey = presentationImageKey(product.image);
     const brand = localizedOptional(product.brand, locale, false) || "";

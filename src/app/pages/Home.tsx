@@ -11,12 +11,20 @@ import { Button, Container, Section, SectionHeader } from "../components/ui";
 import { Reveal, Stagger, StaggerItem, ShimmerText, AnimatedWords } from "../components/motion";
 import visualizerImage from "../../imports/Modern_luxury_living_room_ambiance.png";
 
-function CollectionTile({ slug }: { slug: string }) {
+function CollectionTile({ slug, image }: { slug: string; image?: string }) {
   const { locale } = useI18n();
   const c = COLLECTIONS.find((x) => x.slug === slug)!;
   return (
     <Link to={`/collections/${c.slug}`} className="idea-home-collection-tile">
-      <img className="idea-vivid-image idea-home-collection-tile__image" src={c.image} alt={c.title[locale]} loading="lazy" />
+      <img
+        className="idea-vivid-image idea-home-collection-tile__image"
+        src={image || c.image}
+        alt={c.title[locale]}
+        loading="lazy"
+        onError={(event) => {
+          if (event.currentTarget.src !== c.image) event.currentTarget.src = c.image;
+        }}
+      />
       <div className="idea-home-collection-tile__wash" aria-hidden="true" />
       <div className="idea-home-collection-tile__content">
         <div className="idea-display idea-home-collection-tile__title">{c.title[locale]}</div>
@@ -36,7 +44,9 @@ export function Home() {
   const sanitary = ["sanitary-ware", "faucets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
   const visibleProducts = dedupeProductsForLocale(products.filter((product) => productMatchesLocale(product, locale)), locale);
   const featured = visibleProducts.slice(0, 4);
-  const visibleCollections = (slugs: string[]) => slugs.filter((slug) => visibleProducts.some((product) => product.collection === slug));
+  const visibleCollections = (slugs: string[]) => slugs
+    .map((slug) => ({ slug, image: visibleProducts.find((product) => product.collection === slug)?.image }))
+    .filter((item) => Boolean(item.image));
 
   return (
     <>
@@ -48,7 +58,7 @@ export function Home() {
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.ceramicPorcelain")} />
           <div className="idea-home-category-grid idea-home-category-grid--three">
-            {visibleCollections(ceramicPorcelain).map((s) => <CollectionTile key={s} slug={s} />)}
+            {visibleCollections(ceramicPorcelain).map((item) => <CollectionTile key={item.slug} slug={item.slug} image={item.image} />)}
           </div>
         </Container>
       </Section>
@@ -92,7 +102,7 @@ export function Home() {
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.sanitary")} />
           <div className="idea-home-category-grid idea-home-category-grid--four">
-            {visibleCollections(sanitary).map((s) => <CollectionTile key={s} slug={s} />)}
+            {visibleCollections(sanitary).map((item) => <CollectionTile key={item.slug} slug={item.slug} image={item.image} />)}
           </div>
         </Container>
       </Section>

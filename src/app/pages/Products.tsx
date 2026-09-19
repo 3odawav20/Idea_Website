@@ -7,7 +7,7 @@ import { COLLECTIONS } from "../data/catalog";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
 import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from "lucide-react";
-import { dedupeProductsForLocale, localizedOptional, localizedProductName } from "../data/catalogPresentation";
+import { dedupeProductsForLocale, localizedOptional, localizedProductName, marketplaceProductQuality } from "../data/catalogPresentation";
 
 function uniq<T>(arr: (T | undefined)[]): T[] {
   return [...new Set(arr.filter(Boolean) as T[])];
@@ -36,7 +36,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const [type, setType] = useState<string | null>(params.get("type"));
   const [material, setMaterial] = useState<string | null>(params.get("material"));
   const [application, setApplication] = useState<string | null>(params.get("application"));
-  const [sort, setSort] = useState<"name" | "brand" | "collection">("name");
+  const [sort, setSort] = useState<"recommended" | "name" | "brand" | "collection">("recommended");
 
   // Only build filter groups from values that actually exist (no empty filters).
   const facets = useMemo(() => ({
@@ -88,6 +88,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     const nameB = localizedProductName(b, locale) || "";
     const brandA = localizedOptional(a.brand, locale, false) || "";
     const brandB = localizedOptional(b.brand, locale, false) || "";
+    if (sort === "recommended") return marketplaceProductQuality(b, locale) - marketplaceProductQuality(a, locale) || nameA.localeCompare(nameB);
     if (sort === "brand") return brandA.localeCompare(brandB) || nameA.localeCompare(nameB);
     if (sort === "collection") return a.collection.localeCompare(b.collection) || nameA.localeCompare(nameB);
     return nameA.localeCompare(nameB);
@@ -197,6 +198,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
               <label style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
                 <span>{t("sort.label")}</span>
                 <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} style={{ background: "var(--idea-surface)", color: "var(--idea-text)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)", padding: "7px 10px" }}>
+                  <option value="recommended">{locale === "ar" ? "الأفضل عرضًا" : locale === "fr" ? "Recommandés" : "Recommended"}</option>
                   <option value="name">{t("sort.name")}</option>
                   <option value="brand">{t("sort.brand")}</option>
                   <option value="collection">{t("sort.category")}</option>

@@ -1,10 +1,10 @@
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
-import { isPresentableImageUrl } from "./catalogPresentation";
+import { cleanCatalogText, isPresentableImageUrl } from "./catalogPresentation";
 
 const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "").replace(/\/$/, "");
 const catalogUrl = (query: string) => API_BASE ? `${API_BASE}/api.php?${query}` : `/api/catalog?${query}`;
 const PAGE_SIZE = 500;
-const PAGE_CONCURRENCY = 6;
+const PAGE_CONCURRENCY = 3;
 
 const SOURCE_COLLECTIONS = [
   "ceramics",
@@ -74,7 +74,7 @@ interface ProductPage {
 }
 
 function clean(value?: string | null) {
-  const text = (value || "").trim().replace(/\s+/g, " ");
+  const text = cleanCatalogText(value);
   return text || undefined;
 }
 
@@ -93,32 +93,89 @@ function displayPrice(value?: string | null, currency?: string | null) {
 }
 
 function normalizedCollection(row: CatalogRow): CollectionSlug | null {
-  const raw = row.collection_slug;
-  const text = `${row.name || ""} ${row.subcategory || ""} ${row.product_type || ""}`.toLowerCase();
+  const raw = clean(row.collection_slug) || "";
+  const text = clean([row.name, row.subcategory, row.product_type].filter(Boolean).join(" "))?.toLowerCase() || "";
+  const bathroomSource = new Set(["source-04", "source-12", "source-22", "source-36"]).has(row.source_id);
 
-  // Consumables, tools and promotional/commercial accessory records are not core gallery products.
   if (
-    /\b(?:adhesive|grout|cement|sealant|cleaner|paint|masking|tape|tool|tools)\b/i.test(text) ||
-    /لاصق|روبة|اسمنت|أسمنت|سيلانت|منظف|دهان|شريط|أداة|اداة/u.test(text)
+    /(?:adhesive|grout|cement|sealant|cleaner|paint(?:s)?|masking|tape|tool|tools|spare part|spare parts)/i.test(text) ||
+    /لاصق|روبة|اسمنت|أسمنت|سيلانت|منظف|دهان|شريط|أداة|اداة|قطع غيار/u.test(text)
   ) return null;
 
-  if (/\b(?:faucet|mixer|tap)\b/i.test(text) || /خلاط|حنفيه|حنفية/u.test(text)) return "faucets";
-  if (/\b(?:bathtub|bath tub|jacuzzi)\b/i.test(text) || /بانيو|جاكوزي/u.test(text)) return "bathtubs";
-  if (/\b(?:shower|shower system)\b/i.test(text) || /دش|شاور/u.test(text)) return "shower-units";
-  if (/\b(?:vanity|bathroom unit|bathroom furniture)\b/i.test(text) || /وحدة حمام|اثاث حمام|أثاث حمام/u.test(text)) return "bathroom-units";
-  if (/\b(?:basin|wash ?basin|sink|toilet|wc|sanitary)\b/i.test(text) || /حوض|مرحاض|تواليت|قاعدة حمام|كومبنيشن/u.test(text)) return "sanitary-ware";
-  if (/\b(?:pipe|fitting|valve|plumbing)\b/i.test(text) || /مواسير|ماسورة|وصلة|محبس|سباكة/u.test(text)) return "plumbing-products";
-  if (/\b(?:marble|natural stone)\b/i.test(text) || /رخام|حجر طبيعي/u.test(text)) return "marble";
-  if (/\bporcelain\b/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
-  if (/\b(?:ceramic|tiles?)\b/i.test(text) || /سيراميك|بلاط/u.test(text)) return "ceramics";
+  if (/(?:faucet|mixer|tap|tapware)/i.test(text) || /خلاط|خلاطات|حنفيه|حنفية|حنفيات/u.test(text)) return "faucets";
+  if (/(?:bathroom accessories?|towel (?:rail|ring|holder)|soap (?:dish|holder)|robe hook|toilet brush|paper holder)/i.test(text) ||
+      /اكسسوار(?:ات)? حمام|إكسسوار(?:ات)? حمام|حامل فوط|حامل فوطة|حامل صابون|صبانة|حامل ورق|فرشاة تواليت/u.test(text) ||
+      (bathroomSource && /اكسسوار|إكسسوار|accessor/i.test(text))) return "bathroom-accessories";
+  if (/(?:bathtub|bath tub|jacuzzi|freestanding bath|spa bath)/i.test(text) || /بانيو|جاكوزي|حوض استحمام/u.test(text)) return "bathtubs";
+  if (/(?:shower enclosure|shower cabin|shower tray|shower column|shower system|shower set|shower)/i.test(text) || /كابينة دش|كابينه دش|دش|شاور/u.test(text)) return "shower-units";
+  if (/(?:vanity|bathroom unit|bathroom furniture|bathroom cabinet)/i.test(text) || /وحدة حمام|وحدات حمام|اثاث حمام|أثاث حمام|خزانة حمام/u.test(text)) return "bathroom-units";
+  if (/(?:basin|wash ?basin|sink|toilet|wc|bidet|urinal|sanitary ware|sanitary)/i.test(text) || /حوض|احواض|أحواض|مرحاض|تواليت|قاعدة حمام|قواعد حمام|بيديه|مبولة|ادوات صحية|أدوات صحية|كومبنيشن/u.test(text)) return "sanitary-ware";
+  if (/(?:pipe|fitting|valve|plumbing|trap|siphon|drain|floor drain|connector)/i.test(text) || /مواسير|ماسورة|وصلة|وصلات|محبس|محابس|سباكة|سيفون|صرف|بلف/u.test(text)) return "plumbing-products";
 
-  // Mazloum's furniture / lighting / decor taxonomy is already source-verified.
+  if (/(?:chandelier|pendant lamp|pendent lamp|ceiling lamp|wall lamp|floor lamp|table lamp|lighting|light fixture|lamp)/i.test(text) ||
+      /نجفة|نجف|إضاءة|اضاءة|أباجورة|اباجورة|لمبة|وحدة إضاءة/u.test(text)) return "lighting";
+  if (/(?:sofa|sofachair|armchair|chair|dining room|living room|bed room|bedroom|bed|occasional table|occassional table|coffee table|side table|console table|desk|cabinet|wardrobe|bench|stool|furniture)/i.test(text) ||
+      /أثاث|اثاث|كنبة|كنب|كرسي|كراسي|ترابيزة|ترابيزات|طاولة|طاولات|سرير|غرفة نوم|غرف نوم|سفرة|كونسول|خزانة|دولاب/u.test(text)) return "furniture";
+  if (/(?:vase|statue|decorative object|candle holder|wall object|painting|mirror|rug|carpet|cushion|throw|textile|wallpaper|wall covering|home decor|decoration)/i.test(text) ||
+      /فازة|فازات|تمثال|ديكور|شمعدان|لوحة|لوحات|مراية|مرآة|سجادة|سجاد|وسادة|ورق حائط/u.test(text)) return "home-decor";
+
+  if (/(?:marble|natural stone|travertine|granite)/i.test(text) || /رخام|حجر طبيعي|ترافرتين|جرانيت/u.test(text)) return "marble";
+  if (/porcelain/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
+  if (/(?:ceramic|tiles?|wall tile|floor tile)/i.test(text) || /سيراميك|بلاط|حوائط|أرضيات|ارضيات/u.test(text)) return "ceramics";
+
   if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) {
     return raw as CollectionSlug;
   }
-
-  // Do not guess ambiguous products into a commercial category.
   return null;
+}
+
+function normalizedSubcategory(row: CatalogRow, collection: CollectionSlug) {
+  const sourceValue = clean(row.subcategory) || clean(row.product_type);
+  const text = clean([row.name, sourceValue].filter(Boolean).join(" "))?.toLowerCase() || "";
+  const sourceIsArabic = Boolean(sourceValue && /[\u0600-\u06FF]/u.test(sourceValue));
+  const nameIsArabic = /[\u0600-\u06FF]/u.test(row.name || "");
+  if (sourceIsArabic) return sourceValue;
+  if (!sourceValue && nameIsArabic) return undefined;
+
+  if (collection === "faucets") {
+    if (/kitchen|مطبخ/u.test(text)) return "Kitchen Mixers";
+    if (/basin|lavatory|حوض/u.test(text)) return "Basin Mixers";
+    if (/bath|بانيو/u.test(text)) return "Bath Mixers";
+    if (/shower|دش|شاور/u.test(text)) return "Shower Mixers";
+    return sourceValue || "Mixers";
+  }
+  if (collection === "sanitary-ware") {
+    if (/toilet|wc|مرحاض|تواليت|قاعدة/u.test(text)) return "Toilets";
+    if (/bidet|بيديه/u.test(text)) return "Bidets";
+    if (/urinal|مبولة/u.test(text)) return "Urinals";
+    if (/basin|sink|حوض|احواض|أحواض/u.test(text)) return "Basins & Sinks";
+  }
+  if (collection === "lighting") {
+    if (/chandelier|نجف/u.test(text)) return "Chandeliers";
+    if (/pendant|pendent/u.test(text)) return "Pendant Lights";
+    if (/wall lamp/u.test(text)) return "Wall Lights";
+    if (/floor lamp/u.test(text)) return "Floor Lamps";
+    if (/table lamp/u.test(text)) return "Table Lamps";
+    if (/ceiling lamp/u.test(text)) return "Ceiling Lights";
+  }
+  if (collection === "furniture") {
+    if (/sofa|sofachair|living room|كنب|كنبة/u.test(text)) return "Living Room";
+    if (/dining|سفرة/u.test(text)) return "Dining Room";
+    if (/bed room|bedroom|سرير|غرفة نوم/u.test(text)) return "Bedroom";
+    if (/table|ترابيزة|طاولة/u.test(text)) return "Tables";
+    if (/chair|كرسي/u.test(text)) return "Chairs";
+  }
+  if (collection === "home-decor") {
+    if (/vase|فاز/u.test(text)) return "Vases";
+    if (/mirror|مراية|مرآة/u.test(text)) return "Mirrors";
+    if (/painting|لوح/u.test(text)) return "Wall Art";
+    if (/wallpaper|wall covering|ورق حائط/u.test(text)) return "Wall Coverings";
+  }
+  if (collection === "ceramics" || collection === "porcelain" || collection === "marble") {
+    if (/wall|حوائط/u.test(text)) return "Wall Surfaces";
+    if (/floor|أرضيات|ارضيات/u.test(text)) return "Floor Surfaces";
+  }
+  return sourceValue;
 }
 
 function cleanImageUrl(value?: string | null) {
@@ -141,8 +198,10 @@ function mapRow(row: CatalogRow): Product | null {
   const dimension = clean(row.dimension_text);
   const color = clean(row.color);
   const material = clean(row.material);
-  const subcategory = clean(row.subcategory);
-  const type = clean(row.product_type) || subcategory;
+  const sourceSubcategory = clean(row.subcategory);
+  const sourceType = clean(row.product_type);
+  const subcategory = normalizedSubcategory(row, collection);
+  const type = subcategory || sourceType;
   const brand = clean(row.brand) || "";
   const image = cleanImageUrl(row.primary_image_url);
   if (!image) return null;
@@ -189,9 +248,9 @@ function mapRow(row: CatalogRow): Product | null {
       productPageUrl: row.source_url,
       extractionTimestamp: row.last_source_sync_at || undefined,
       reviewStatus: "source-imported",
-      sourceCategory: subcategory,
-      sourceSubcategory: subcategory,
-      sourceProductType: type,
+      sourceCategory: sourceSubcategory,
+      sourceSubcategory,
+      sourceProductType: sourceType,
       rawRecord: { catalogId: row.id },
     },
     approved: true,
@@ -201,24 +260,28 @@ function mapRow(row: CatalogRow): Product | null {
 
 async function fetchPage(collection: string, page: number, signal?: AbortSignal): Promise<ProductPage> {
   const url = catalogUrl(`action=products&collection=${encodeURIComponent(collection)}&per_page=${PAGE_SIZE}&page=${page}`);
-  const response = await fetch(url, { signal, headers: { Accept: "application/json" } });
-  if (!response.ok) throw new Error(`Catalog request failed: ${response.status}`);
-  const payload = await response.json() as ProductPage;
-  if (!payload.ok) throw new Error("Catalog request failed");
-  return payload;
+  let lastStatus: number | string = "network";
+
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+    const response = await fetch(url, { signal, headers: { Accept: "application/json" } });
+    lastStatus = response.status;
+    if (response.ok) {
+      const payload = await response.json() as ProductPage;
+      if (!payload.ok) throw new Error("Catalog request failed");
+      return payload;
+    }
+    if (response.status !== 429 && response.status < 500) break;
+    await new Promise((resolve) => window.setTimeout(resolve, 300 * (2 ** attempt)));
+  }
+
+  throw new Error(`Catalog request failed: ${lastStatus}`);
 }
 
 function productIdentity(product: Product) {
   const sku = (product.code || "").trim().toLowerCase();
   if (sku) return `sku:${product.brand.toLowerCase()}:${sku}`;
   return `name:${product.brand.toLowerCase()}:${product.name.en.trim().toLowerCase()}`;
-}
-
-function normalizedImageKey(value: string) {
-  return value
-    .replace(/([?&])(width|height|w|h|quality|q)=\d+/gi, "$1")
-    .replace(/[?&]+$/g, "")
-    .toLowerCase();
 }
 
 function mappedProducts(payload: ProductPage) {
@@ -229,16 +292,13 @@ export async function loadLiveCatalog(
   onBatch: (products: Product[]) => void,
   signal?: AbortSignal
 ): Promise<void> {
-  const seenImages = new Set<string>();
   const seenProducts = new Set<string>();
 
   const publish = (products: Product[]) => {
     const cleanProducts = products.filter((product) => {
       if (!product.image) return false;
-      const imageKey = normalizedImageKey(product.image);
       const identity = productIdentity(product);
-      if (seenImages.has(imageKey) || seenProducts.has(identity)) return false;
-      seenImages.add(imageKey);
+      if (seenProducts.has(identity)) return false;
       seenProducts.add(identity);
       return true;
     });
