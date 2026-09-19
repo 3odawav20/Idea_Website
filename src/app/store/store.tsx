@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
-import { loadMazloumProducts } from "../data/mazloumImport";
 import { loadLiveCatalog } from "../data/liveCatalog";
 import { useBackend } from "../backend/db";
 import { requireSupabase } from "../backend/supabaseClient";
@@ -71,18 +70,6 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       });
     }, controller.signal).catch(() => {
       /* Keep locally imported catalogue visible if the live cPanel catalogue is temporarily unavailable. */
-    });
-
-    void loadMazloumProducts((incoming) => {
-      setProducts((current) => {
-        const next = new Map(current.map((product) => [product.id, product]));
-        for (const product of incoming) {
-          if (product.approved) next.set(product.id, product);
-        }
-        return [...next.values()];
-      });
-    }, controller.signal).catch(() => {
-      /* Keep the verified local catalogue available when the remote source is temporarily unavailable. */
     });
 
     return () => controller.abort();
