@@ -18,11 +18,11 @@ function CollectionTile({ slug }: { slug: string }) {
     <Link to={`/collections/${c.slug}`} className="idea-home-collection-tile" style={{ position: "relative", display: "block", aspectRatio: "4/5", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", boxShadow: "var(--idea-shadow-sm)" }}>
       <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "")} />
-      <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay)" }} />
-      <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-4)", display: "grid", gridTemplateRows: "2.3em minmax(2.8em, auto)", alignItems: "end" }}>
-        <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", display: "flex", alignItems: "end" }}>{c.title[locale]}</div>
-        <div style={{ color: "var(--idea-gold)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 6, marginTop: 4, lineHeight: 1.45 }}>
-          <ArrowRight size={13} /> {c.blurb[locale]}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,.02) 24%, rgba(0,0,0,.18) 54%, rgba(0,0,0,.84) 100%)" }} />
+      <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-5)" }}>
+        <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: "#fff", textShadow: "0 5px 18px rgba(0,0,0,.7)" }}>{c.title[locale]}</div>
+        <div style={{ color: "rgba(255,255,255,.88)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 7, marginTop: 8, lineHeight: 1.5, textShadow: "0 4px 14px rgba(0,0,0,.76)" }}>
+          <ArrowRight size={13} color="#ff8a32" /> {c.blurb[locale]}
         </div>
       </div>
     </Link>
