@@ -15,14 +15,14 @@ function CollectionTile({ slug }: { slug: string }) {
   const { locale } = useI18n();
   const c = COLLECTIONS.find((x) => x.slug === slug)!;
   return (
-    <Link to={`/collections/${c.slug}`} className="idea-home-collection-tile" style={{ position: "relative", display: "block", aspectRatio: "4/5", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", boxShadow: "var(--idea-shadow-sm)" }}>
-      <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
-        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "")} />
-      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,.02) 24%, rgba(0,0,0,.18) 54%, rgba(0,0,0,.84) 100%)" }} />
-      <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-5)" }}>
-        <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: "#fff", textShadow: "0 5px 18px rgba(0,0,0,.7)" }}>{c.title[locale]}</div>
-        <div style={{ color: "rgba(255,255,255,.88)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 7, marginTop: 8, lineHeight: 1.5, textShadow: "0 4px 14px rgba(0,0,0,.76)" }}>
-          <ArrowRight size={13} color="#ff8a32" /> {c.blurb[locale]}
+    <Link to={`/collections/${c.slug}`} className="idea-home-collection-tile">
+      <img className="idea-vivid-image idea-home-collection-tile__image" src={c.image} alt={c.title[locale]} loading="lazy" />
+      <div className="idea-home-collection-tile__wash" aria-hidden="true" />
+      <div className="idea-home-collection-tile__content">
+        <div className="idea-display idea-home-collection-tile__title">{c.title[locale]}</div>
+        <div className="idea-home-collection-tile__description">
+          <ArrowRight size={13} />
+          <span>{c.blurb[locale]}</span>
         </div>
       </div>
     </Link>
@@ -47,7 +47,7 @@ export function Home() {
       <Section>
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.ceramicPorcelain")} />
-          <div className="idea-ceramic-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-4)" }}>
+          <div className="idea-home-category-grid idea-home-category-grid--three">
             {visibleCollections(ceramicPorcelain).map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
@@ -91,7 +91,7 @@ export function Home() {
       <Section alt>
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.sanitary")} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "var(--idea-space-4)" }}>
+          <div className="idea-home-category-grid idea-home-category-grid--four">
             {visibleCollections(sanitary).map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
@@ -113,10 +113,10 @@ export function Home() {
       </Section>
 
       <style>{`
-        @media (max-width: 1000px){ .idea-ceramic-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
-        @media (max-width: 820px){ .idea-split{ grid-template-columns: 1fr !important; } }
-        @media (max-width: 560px){ .idea-ceramic-grid{ grid-template-columns: 1fr !important; } }
-      `}</style>
+@media (max-width: 820px){ .idea-split{ grid-template-columns: 1fr !important; } }
+`}</style>
     </>
   );
 }
+
+[executed on device: RAKAN-DOD (6a82d06b-428a-4784-9cdc-9a48cc90678f)]
