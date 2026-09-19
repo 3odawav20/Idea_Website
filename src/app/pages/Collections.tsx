@@ -1,87 +1,77 @@
-import { useParams } from "react-router";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
+import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
+import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
+import { productMatchesLocale } from "../data/catalogPresentation";
 import type { CollectionSlug } from "../data/types";
-import { Container, Section, SectionHeader } from "../components/ui";
+import { Container, Section } from "../components/ui";
 import { Products } from "./Products";
+
+const ORDER: CollectionSlug[] = [
+  "ceramics",
+  "porcelain",
+  "marble",
+  "sanitary-ware",
+  "faucets",
+  "bathtubs",
+  "shower-units",
+  "bathroom-units",
+  "bathroom-accessories",
+  "plumbing-products",
+  "furniture",
+  "lighting",
+  "home-decor",
+];
 
 export function Collections() {
   const { locale, t } = useI18n();
-  const groups: { key: string; label: string }[] = [
-    { key: "ceramics", label: t("collection.ceramics") },
-    { key: "porcelain", label: t("collection.porcelain") },
-    { key: "marble", label: t("collection.marble") },
-    { key: "sanitary", label: t("home.sanitary") },
-    { key: "plumbing", label: t("collection.plumbing") },
-    { key: "furniture", label: locale === "ar" ? "أثاث" : locale === "fr" ? "Mobilier" : "Furniture" },
-    { key: "lighting", label: locale === "ar" ? "إضاءة" : locale === "fr" ? "Éclairage" : "Lighting" },
-    { key: "decor", label: locale === "ar" ? "ديكور منزلي" : locale === "fr" ? "Décoration" : "Home Decor" },
-  ];
+  const { products } = useStore();
+
+  const available = ORDER
+    .map((slug) => {
+      const collection = COLLECTIONS.find((item) => item.slug === slug);
+      if (!collection) return null;
+      const count = products.filter((product) => product.collection === slug && product.approved && product.image && productMatchesLocale(product, locale)).length;
+      return count > 0 ? { collection, count } : null;
+    })
+    .filter(Boolean) as Array<{ collection: (typeof COLLECTIONS)[number]; count: number }>;
+
   return (
-    <Section style={{ paddingTop: "var(--idea-space-7)" }}>
+    <Section style={{ paddingTop: "var(--idea-space-8)" }}>
+      <div className="idea-collections-page">
       <Container>
-        <SectionHeader eyebrow={t("common.browse")} title={t("nav.collections")} sub={t("tagline")} />
-        {groups.map((g) => {
-          const items = COLLECTIONS.filter((c) => c.group === g.key);
-          if (!items.length) return null;
-          return (
-            <div key={g.key} style={{ marginBottom: "var(--idea-space-7)" }}>
-              <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{g.label}</div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-4)" }}>
-                {items.map((c) => (
-                  <Link
-                    key={c.slug}
-                    to={`/collections/${c.slug}`}
-                    style={{
-                      position: "relative",
-                      aspectRatio: "4/3",
-                      borderRadius: "var(--idea-radius-lg)",
-                      overflow: "hidden",
-                      border: "var(--idea-hairline)",
-                      display: "block",
-                      boxShadow: "var(--idea-shadow-sm)",
-                    }}
-                  >
-                    <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <div
-                      aria-hidden="true"
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        background: "linear-gradient(180deg, rgba(6,6,8,0.02) 24%, rgba(6,6,8,0.28) 58%, rgba(6,6,8,0.88) 100%)",
-                      }}
-                    />
-                    <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-4)" }}>
-                      <div
-                        className="idea-display"
-                        style={{
-                          fontSize: "var(--idea-text-lg)",
-                          color: "#fff",
-                          textShadow: "0 2px 12px rgba(0,0,0,0.78)",
-                        }}
-                      >
-                        {c.title[locale]}
-                      </div>
-                      <div
-                        style={{
-                          color: "rgba(255,255,255,0.9)",
-                          fontSize: "var(--idea-text-xs)",
-                          lineHeight: 1.5,
-                          marginTop: 6,
-                          textShadow: "0 2px 12px rgba(0,0,0,0.82)",
-                        }}
-                      >
-                        {c.blurb[locale]}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+        <header className="idea-collections-intro">
+          <div>
+            <div className="idea-eyebrow">{t("common.browse")}</div>
+            <h1 className="idea-display idea-collections-title">{t("nav.collections")}</h1>
+          </div>
+          <p>{t("tagline")}</p>
+        </header>
+
+        <div className="idea-collections-grid">
+          {available.map(({ collection: c, count }) => (
+            <Link key={c.slug} to={`/collections/${c.slug}`} className="idea-collection-card">
+              <img
+                className="idea-vivid-image"
+                src={c.image}
+                alt={c.title[locale]}
+                loading="lazy"
+              />
+              <div className="idea-collection-card__wash" aria-hidden="true" />
+              <div className="idea-collection-card__content">
+                <div className="idea-collection-card__meta">
+                  <span>{String(count).padStart(2, "0")}</span>
+                  <ArrowUpRight size={15} />
+                </div>
+                <h2 className="idea-display">{c.title[locale]}</h2>
+                <p>{c.blurb[locale]}</p>
               </div>
-            </div>
-          );
-        })}
+            </Link>
+          ))}
+        </div>
       </Container>
+      </div>
     </Section>
   );
 }

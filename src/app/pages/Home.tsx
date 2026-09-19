@@ -3,6 +3,7 @@ import { ArrowRight, Clock, Sparkles } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
+import { dedupeProductsForLocale, productMatchesLocale } from "../data/catalogPresentation";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
@@ -14,14 +15,14 @@ function CollectionTile({ slug }: { slug: string }) {
   const { locale } = useI18n();
   const c = COLLECTIONS.find((x) => x.slug === slug)!;
   return (
-    <Link to={`/collections/${c.slug}`} style={{ position: "relative", display: "block", aspectRatio: "3/4", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)" }}>
+    <Link to={`/collections/${c.slug}`} className="idea-home-collection-tile" style={{ position: "relative", display: "block", aspectRatio: "4/5", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", boxShadow: "var(--idea-shadow-sm)" }}>
       <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "")} />
-      <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay)" }} />
-      <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-4)", display: "grid", gridTemplateRows: "2.3em minmax(2.8em, auto)", alignItems: "end" }}>
-        <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", display: "flex", alignItems: "end" }}>{c.title[locale]}</div>
-        <div style={{ color: "var(--idea-gold)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 6, marginTop: 4, lineHeight: 1.45 }}>
-          <ArrowRight size={13} /> {c.blurb[locale]}
+      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,.02) 24%, rgba(0,0,0,.18) 54%, rgba(0,0,0,.84) 100%)" }} />
+      <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-5)" }}>
+        <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: "#fff", textShadow: "0 5px 18px rgba(0,0,0,.7)" }}>{c.title[locale]}</div>
+        <div style={{ color: "rgba(255,255,255,.88)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 7, marginTop: 8, lineHeight: 1.5, textShadow: "0 4px 14px rgba(0,0,0,.76)" }}>
+          <ArrowRight size={13} color="#ff8a32" /> {c.blurb[locale]}
         </div>
       </div>
     </Link>
@@ -29,11 +30,13 @@ function CollectionTile({ slug }: { slug: string }) {
 }
 
 export function Home() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { products } = useStore();
-  const ceramicPorcelain = ["ceramics", "porcelain", "marble", "sanitary-ware", "faucets"];
-  const sanitary = ["bathroom-sets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
-  const featured = products.slice(0, 4);
+  const ceramicPorcelain = ["ceramics", "porcelain", "marble"];
+  const sanitary = ["sanitary-ware", "faucets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
+  const visibleProducts = dedupeProductsForLocale(products.filter((product) => productMatchesLocale(product, locale)), locale);
+  const featured = visibleProducts.slice(0, 4);
+  const visibleCollections = (slugs: string[]) => slugs.filter((slug) => visibleProducts.some((product) => product.collection === slug));
 
   return (
     <>
@@ -45,7 +48,7 @@ export function Home() {
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.ceramicPorcelain")} />
           <div className="idea-ceramic-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-4)" }}>
-            {ceramicPorcelain.map((s) => <CollectionTile key={s} slug={s} />)}
+            {visibleCollections(ceramicPorcelain).map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
       </Section>
@@ -54,7 +57,7 @@ export function Home() {
       <Section alt>
         <Container>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
-            <SectionHeader eyebrow="Curated" title={t("home.featured")} />
+            <SectionHeader eyebrow={t("home.curated")} title={t("home.featured")} />
             <Link to="/products" style={{ marginBottom: "var(--idea-space-7)" }}><Button variant="outline">{t("action.browseAll")}</Button></Link>
           </div>
           <Stagger style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
@@ -70,10 +73,10 @@ export function Home() {
             <div style={{ padding: "var(--idea-space-7)" }}>
               <div className="idea-eyebrow" style={{ display: "flex", alignItems: "center", gap: 8 }}><Sparkles size={14} /> {t("nav.visualizer")}</div>
               <h2 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-3) 0 var(--idea-space-4)" }}>
-                <AnimatedWords text="See It Inside Your Space Before You Buy" />
+                <AnimatedWords text={t("home.visualizerTitle")} />
               </h2>
               <p style={{ color: "var(--idea-text-muted)", lineHeight: 1.7, marginBottom: "var(--idea-space-5)" }}>
-                Upload your room, select a real IDEA surface, and preview the finished result with accurate scale and lighting.
+                {t("home.visualizerBody")}
               </p>
               <Link to="/room-designer/new"><Button size="lg">{t("action.startAi")}</Button></Link>
             </div>
@@ -89,7 +92,7 @@ export function Home() {
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.sanitary")} />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "var(--idea-space-4)" }}>
-            {sanitary.map((s) => <CollectionTile key={s} slug={s} />)}
+            {visibleCollections(sanitary).map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
       </Section>

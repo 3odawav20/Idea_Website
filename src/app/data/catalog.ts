@@ -1,4 +1,7 @@
 import type { CollectionMeta, Product } from "./types";
+import imgLivingRoom from "../../imports/Modern_luxury_living_room_ambiance.png";
+import imgMarbleGold from "../../imports/Luxurious_modern_interiors_with_marble_and_gold.png";
+import imgTriptych from "../../imports/Luxurious_modern_interior_triptych_design.png";
 
 // ── Imagery (Unsplash) ────────────────────────────────────────────────────
 const IMG = {
@@ -17,9 +20,9 @@ const IMG = {
   faucet2: "https://images.unsplash.com/photo-1638815401319-702d3b5dfd2a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900",
   sink: "https://images.unsplash.com/photo-1576698483491-8c43f0862543?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900",
   vanity: "https://images.unsplash.com/photo-1782805134559-825155d2ba98?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900",
-  mazloumFurniture: "https://mazloum-img.s3-eu-west-1.amazonaws.com/img/p/1/0/3/7/2/10372-home_default.jpg",
-  mazloumLighting: "https://mazloum-img.s3-eu-west-1.amazonaws.com/img/p/5/3/8/3/5383-home_default.jpg",
-  mazloumDecor: "https://mazloum-img.s3-eu-west-1.amazonaws.com/img/p/9/0/1/6/9016-home_default.jpg",
+  mazloumFurniture: imgLivingRoom,
+  mazloumLighting: imgMarbleGold,
+  mazloumDecor: imgTriptych,
 };
 
 export const HERO_IMAGES = IMG;
@@ -52,7 +55,7 @@ export const COLLECTIONS: CollectionMeta[] = [
   { slug: "shower-units", group: "sanitary", image: IMG.bath4,
     title: { en: "Shower Units", ar: "وحدات دش", fr: "Cabines de douche" },
     blurb: { en: "Shower systems & enclosures.", ar: "أنظمة وكبائن دش.", fr: "Systèmes et cabines de douche." } },
-  { slug: "bathroom-accessories", group: "sanitary", image: IMG.faucet2,
+  { slug: "bathroom-accessories", group: "sanitary", image: IMG.bath1,
     title: { en: "Accessories", ar: "إكسسوارات", fr: "Accessoires" },
     blurb: { en: "Glass & stainless steel accessories.", ar: "إكسسوارات زجاج وستانلس ستيل.", fr: "Accessoires en verre et acier inoxydable." } },
   { slug: "plumbing-products", group: "plumbing", image: IMG.faucet2,
