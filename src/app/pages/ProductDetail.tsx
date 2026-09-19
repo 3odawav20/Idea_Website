@@ -8,6 +8,8 @@ import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
+import { COLLECTIONS } from "../data/catalog";
+import { localizedOptional, localizedPrice, productMatchesLocale } from "../data/catalogPresentation";
 
 export function ProductDetail() {
   const { slug } = useParams();
@@ -49,14 +51,28 @@ export function ProductDetail() {
 
   const product = resolvedProduct || baseProduct;
 
-  if (!product) {
+  if (!product || !productMatchesLocale(product, locale)) {
     return (
-      <Section><Container><p style={{ color: "var(--idea-text-muted)" }}>Product not found. <Link to="/products" style={{ color: "var(--idea-gold)" }}>Back to gallery</Link></p></Container></Section>
+      <Section><Container><p style={{ color: "var(--idea-text-muted)" }}>{t("product.notFound")} <Link to="/products" style={{ color: "var(--idea-gold)" }}>{t("product.backGallery")}</Link></p></Container></Section>
     );
   }
 
-  const gallery = product.gallery?.length ? [...new Set([product.image, ...product.gallery])] : [product.image];
-  const unit = product.collection === "ceramics" || product.collection === "porcelain" ? "sqm" : "pieces";
+  const gallery = (product.gallery?.length ? [...new Set([product.image, ...product.gallery])] : [product.image]).filter(Boolean);
+  const unit = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble" ? "sqm" : "pieces";
+  const collectionTitle = COLLECTIONS.find((item) => item.slug === product.collection)?.title[locale] || product.collection.replaceAll("-", " ");
+  const visibleSubcategory = localizedOptional(product.subcategory, locale);
+  const visibleSeries = localizedOptional(product.series, locale);
+  const visibleFamily = localizedOptional(product.family, locale);
+  const visibleDescription = localizedOptional(product.description, locale);
+  const visibleBrand = localizedOptional(product.brand, locale, false);
+  const visibleVariant = localizedOptional(product.variant, locale);
+  const visibleApplication = localizedOptional(product.application, locale);
+  const visibleUsage = (product.usage ?? []).map((value) => localizedOptional(value, locale)).filter(Boolean) as string[];
+  const visibleColors = (product.colors ?? []).map((value) => localizedOptional(value, locale)).filter(Boolean) as string[];
+  const visibleFinish = localizedOptional(product.finish, locale);
+  const visibleBadges = (product.badges ?? []).map((value) => localizedOptional(value, locale)).filter(Boolean) as string[];
+  const displayPrice = localizedPrice(product.priceText, locale);
+  const displayComparePrice = localizedPrice(product.compareAtPriceText, locale);
   const fav = isFavorite(product.id);
   const activeImageFailed = failedImages.includes(activeImg);
 
@@ -71,7 +87,7 @@ export function ProductDetail() {
       return value;
     };
     return products
-      .filter((candidate) => candidate.id !== product.id)
+      .filter((candidate) => candidate.id !== product.id && Boolean(candidate.image) && productMatchesLocale(candidate, locale))
       .map((candidate) => ({ candidate, score: score(candidate) }))
       .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score || a.candidate.name.en.localeCompare(b.candidate.name.en))
@@ -80,21 +96,21 @@ export function ProductDetail() {
   })();
 
   const primarySpecs = [
-    ["Model", product.model],
+    [t("label.model"), product.model],
     ["SKU", product.code],
-    ["Origin", product.origin],
-    ["Type", product.type],
-    ["Material", product.material],
-    ["Surface", product.surface],
-    ["Texture", product.texture],
-    ["Pattern", product.pattern],
-    ["Finish", product.finish],
-    ["Application", product.application],
-    ["Weight", product.weight],
-    ["Availability", product.availability],
-    ["Packaging", product.packaging],
-    ["Pieces / box", product.piecesPerBox ? String(product.piecesPerBox) : undefined],
-    ["m² / box", product.squareMetersPerBox ? String(product.squareMetersPerBox) : undefined],
+    [t("label.origin"), localizedOptional(product.origin, locale)],
+    [t("label.type"), localizedOptional(product.type, locale)],
+    [t("label.material"), localizedOptional(product.material, locale)],
+    [t("label.surface"), localizedOptional(product.surface, locale)],
+    [t("label.texture"), localizedOptional(product.texture, locale)],
+    [t("label.pattern"), localizedOptional(product.pattern, locale)],
+    [t("label.finish"), visibleFinish],
+    [t("filters.application"), visibleApplication],
+    [t("label.weight"), localizedOptional(product.weight, locale)],
+    [t("label.availability"), localizedOptional(product.availability, locale)],
+    [t("label.packaging"), localizedOptional(product.packaging, locale)],
+    [t("label.piecesBox"), product.piecesPerBox ? String(product.piecesPerBox) : undefined],
+    [t("label.sqmBox"), product.squareMetersPerBox ? String(product.squareMetersPerBox) : undefined],
   ].filter((entry): entry is [string, string] => Boolean(entry[1]));
 
   const spec = (label: string, value: string) => (
@@ -110,9 +126,9 @@ export function ProductDetail() {
         <nav aria-label="Breadcrumb" style={{ display: "flex", alignItems: "center", gap: 8, color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginBottom: "var(--idea-space-5)", flexWrap: "wrap" }}>
           <Link to="/collections" style={{ color: "inherit", textDecoration: "none" }}>{t("nav.collections")}</Link>
           <ChevronRight size={12} />
-          <Link to={`/collections/${product.collection}`} style={{ color: "inherit", textDecoration: "none", textTransform: "capitalize" }}>{product.collection.replaceAll("-", " ")}</Link>
-          {product.subcategory && <><ChevronRight size={12} /><span>{product.subcategory}</span></>}
-          {product.series && <><ChevronRight size={12} /><span>{product.series}</span></>}
+          <Link to={`/collections/${product.collection}`} style={{ color: "inherit", textDecoration: "none" }}>{collectionTitle}</Link>
+          {visibleSubcategory && <><ChevronRight size={12} /><span>{visibleSubcategory}</span></>}
+          {visibleSeries && <><ChevronRight size={12} /><span>{visibleSeries}</span></>}
           <ChevronRight size={12} />
           <span style={{ color: "var(--idea-gold)" }}>{product.name[locale]}</span>
         </nav>
@@ -121,7 +137,7 @@ export function ProductDetail() {
           <div>
             <div style={{ aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", background: "var(--idea-surface)" }}>
               {activeImageFailed ? (
-                <div className="idea-image-unavailable">Image unavailable from the documented source.</div>
+                <div className="idea-image-unavailable">{t("image.unavailable")}</div>
               ) : (
                 <img className="idea-vivid-image" src={gallery[activeImg]} alt={product.name[locale]} onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               )}
@@ -129,8 +145,8 @@ export function ProductDetail() {
             {gallery.length > 1 && (
               <div style={{ display: "flex", gap: 10, marginTop: 12, overflowX: "auto", paddingBottom: 4 }}>
                 {gallery.map((g, i) => (
-                  <button key={g} onClick={() => setActiveImg(i)} aria-label={`Show image ${i + 1}`} style={{ width: 80, height: 60, flex: "0 0 auto", borderRadius: "var(--idea-radius-sm)", overflow: "hidden", border: `1px solid ${i === activeImg ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`, padding: 0, cursor: "pointer" }}>
-                    {failedImages.includes(i) ? <span className="idea-image-unavailable idea-image-unavailable--thumb">Unavailable</span> : <img className="idea-vivid-image" src={g} alt="" onError={() => setFailedImages((current) => current.includes(i) ? current : [...current, i])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                  <button key={g} onClick={() => setActiveImg(i)} aria-label={`${t("product.showImage")} ${i + 1}`} style={{ width: 80, height: 60, flex: "0 0 auto", borderRadius: "var(--idea-radius-sm)", overflow: "hidden", border: `1px solid ${i === activeImg ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`, padding: 0, cursor: "pointer" }}>
+                    {failedImages.includes(i) ? <span className="idea-image-unavailable idea-image-unavailable--thumb">{t("product.unavailable")}</span> : <img className="idea-vivid-image" src={g} alt="" onError={() => setFailedImages((current) => current.includes(i) ? current : [...current, i])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
                   </button>
                 ))}
               </div>
@@ -138,33 +154,33 @@ export function ProductDetail() {
           </div>
 
           <div>
-            {product.brand && <div className="idea-eyebrow">{product.brand}</div>}
+            {visibleBrand && <div className="idea-eyebrow">{visibleBrand}</div>}
             <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 var(--idea-space-3)" }}>{product.name[locale]}</h1>
-            {(product.series || product.family) && <div style={{ color: "var(--idea-text-muted)", marginBottom: 10 }}>{product.series || product.family}</div>}
-            {(product.priceText || product.compareAtPriceText) && (
+            {(visibleSeries || visibleFamily) && <div style={{ color: "var(--idea-text-muted)", marginBottom: 10 }}>{visibleSeries || visibleFamily}</div>}
+            {(displayPrice || displayComparePrice) && (
               <div style={{ marginBottom: "var(--idea-space-4)" }}>
-                {product.compareAtPriceText && (
+                {displayComparePrice && (
                   <div style={{ color: "var(--idea-text-faint)", textDecoration: "line-through", fontSize: "var(--idea-text-sm)" }}>
-                    {product.compareAtPriceText}
+                    {displayComparePrice}
                   </div>
                 )}
-                {product.priceText && (
+                {displayPrice && (
                   <div style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-xl)", fontWeight: 700 }}>
-                    {product.priceText}
+                    {displayPrice}
                   </div>
                 )}
               </div>
             )}
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-4)" }}>
-              {(product.badges ?? []).map((badge) => <Tag key={badge}>{badge}</Tag>)}
-              {product.variant && <Tag>{product.variant}</Tag>}
-              {product.application && <Tag>{product.application}</Tag>}
-              {(product.usage ?? []).map((u) => <Tag key={u}>{u}</Tag>)}
+              {visibleBadges.map((badge) => <Tag key={badge}>{badge}</Tag>)}
+              {visibleVariant && <Tag>{visibleVariant}</Tag>}
+              {visibleApplication && <Tag>{visibleApplication}</Tag>}
+              {visibleUsage.map((u) => <Tag key={u}>{u}</Tag>)}
             </div>
 
-            {product.description && (
+            {visibleDescription && (
               <p style={{ color: "var(--idea-text-muted)", lineHeight: 1.8, marginBottom: "var(--idea-space-5)", whiteSpace: "pre-line" }}>
-                {product.description}
+                {visibleDescription}
               </p>
             )}
 
@@ -181,21 +197,21 @@ export function ProductDetail() {
               </div>
             </>}
 
-            {(product.colors?.length ?? 0) > 0 && <>
-              <div className="idea-eyebrow" style={{ marginBottom: 10 }}>Colors / finishes</div>
+            {(visibleColors.length > 0 || visibleFinish) && <>
+              <div className="idea-eyebrow" style={{ marginBottom: 10 }}>{t("product.colorsFinishes")}</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-5)" }}>
-                {product.colors!.map((color) => <Tag key={color}>{color}</Tag>)}
-                {product.finish && !product.colors!.includes(product.finish) && <Tag>{product.finish}</Tag>}
+                {visibleColors.map((color) => <Tag key={color}>{color}</Tag>)}
+                {visibleFinish && !visibleColors.includes(visibleFinish) && <Tag>{visibleFinish}</Tag>}
               </div>
             </>}
 
             {(product.variants?.length ?? 0) > 0 && <>
-              <div className="idea-eyebrow" style={{ marginBottom: 10 }}>Available variants</div>
+              <div className="idea-eyebrow" style={{ marginBottom: 10 }}>{t("product.variants")}</div>
               <div style={{ display: "grid", gap: 8, marginBottom: "var(--idea-space-5)" }}>
                 {product.variants!.map((variant) => (
                   <div key={variant.id} style={{ border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)", padding: "10px 12px", display: "flex", justifyContent: "space-between", gap: 12 }}>
                     <span style={{ color: "var(--idea-text)" }}>{variant.label}</span>
-                    <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{variant.sku || (variant.available === false ? "Unavailable" : "")}</span>
+                    <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{variant.sku || (variant.available === false ? t("product.unavailable") : "")}</span>
                   </div>
                 ))}
               </div>
@@ -214,7 +230,7 @@ export function ProductDetail() {
 
         {(product.specificationGroups?.length ?? 0) > 0 && (
           <div style={{ marginTop: "var(--idea-space-8)" }}>
-            <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>Technical specifications</div>
+            <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{t("product.technicalSpecs")}</div>
             <div style={{ display: "grid", gap: "var(--idea-space-4)", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>
               {product.specificationGroups!.map((group) => (
                 <section key={group.title} style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-4) var(--idea-space-5)" }}>
@@ -228,7 +244,7 @@ export function ProductDetail() {
 
         {related.length > 0 && (
           <div style={{ marginTop: "var(--idea-space-8)" }}>
-            <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>Related products</div>
+            <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{t("product.related")}</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
               {related.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
