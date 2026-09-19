@@ -16,8 +16,8 @@ export function hasPublicProductContent(product: Product) {
     || (product.usage?.length ?? 0) > 0
     || (product.variants?.length ?? 0) > 0
     || (product.specificationGroups?.some((group) => group.items.length > 0) ?? false)
-    || text(product.source?.provider)
-    || text(product.source?.productPageUrl);
+    || text(product.priceText)
+    || text(product.compareAtPriceText);
 
   return product.approved && hasName && hasImage && hasStructuredDetails;
 }

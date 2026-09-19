@@ -4,9 +4,15 @@ import { COLLECTIONS } from "../data/catalog";
 import type { CollectionSlug } from "../data/types";
 import { Container, Section, SectionHeader } from "../components/ui";
 import { Products } from "./Products";
+import { useStore } from "../store/store";
+import { hasPublicProductContent } from "../data/catalogQuality";
 
 export function Collections() {
   const { locale, t } = useI18n();
+  const { products } = useStore();
+  const visibleCollections = COLLECTIONS.filter((collection) =>
+    products.some((product) => product.collection === collection.slug && hasPublicProductContent(product))
+  );
 
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
@@ -14,7 +20,7 @@ export function Collections() {
         <SectionHeader eyebrow="Browse" title={t("nav.collections")} sub={t("tagline")} />
 
         <div className="idea-collection-selector-grid">
-          {COLLECTIONS.map((c) => (
+          {visibleCollections.map((c) => (
             <Link key={c.slug} to={`/collections/${c.slug}`} className="idea-collection-selector-card">
               <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" />
               <div className="idea-collection-selector-wash" aria-hidden="true" />
@@ -82,8 +88,12 @@ export function Collections() {
           .idea-collection-selector-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
         }
         @media (max-width: 520px){
-          .idea-collection-selector-grid{ grid-template-columns:1fr; }
-          .idea-collection-selector-card{ aspect-ratio:4/3.1; }
+          .idea-collection-selector-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+          .idea-collection-selector-card{ aspect-ratio:1/1; border-radius:14px; }
+          .idea-collection-selector-copy{ padding:10px; }
+          .idea-collection-selector-group{ font-size:9px; margin-bottom:4px; letter-spacing:.08em; }
+          .idea-collection-selector-title{ font-size:16px; line-height:1.08; }
+          .idea-collection-selector-blurb{ display:none; }
         }
       `}</style>
     </Section>
