@@ -113,6 +113,36 @@ export function isPresentableImageUrl(value?: string | null) {
   return !/(?:banner|slider|promo(?:tion)?|offer|sale|facebook|instagram|story|post[-_ ]?ad|feed[-_ ]?ad|advert|whatsapp|screen[-_ ]?shot|screenshot|logo|placeholder|no[-_ ]?image|category[-_ ]?default|copy[-_ ]of)/i.test(image);
 }
 
+function isPresentableDisplayName(value?: string | null) {
+  const text = (value || "").trim();
+  if (!text || MOJIBAKE_RE.test(text)) return false;
+  return text.length >= 2;
+}
+
+export function hasDisplayableProductName(product: Product) {
+  return isPresentableDisplayName(product.name.en)
+    || isPresentableDisplayName(product.name.ar)
+    || isPresentableDisplayName(product.name.fr);
+}
+
+export function presentableProductImages(product: Product) {
+  return [...new Set([product.image, ...(product.gallery || [])])]
+    .filter((value): value is string => isPresentableImageUrl(value));
+}
+
+export function isDisplayableProduct(product: Product) {
+  return Boolean(
+    product.id?.trim()
+    && product.slug?.trim()
+    && hasDisplayableProductName(product)
+    && presentableProductImages(product).length > 0
+  );
+}
+
+export function filterDisplayableProducts(products: Product[]) {
+  return products.filter(isDisplayableProduct);
+}
+
 
 export function localizedMeasurement(value: string, locale: Locale) {
   if (locale !== "ar") return value;
@@ -134,11 +164,12 @@ export function dedupeProductsForLocale(products: Product[], locale: Locale) {
   const seenImages = new Set<string>();
   const seenProducts = new Set<string>();
 
-  return products.filter((product) => {
+  return filterDisplayableProducts(products).filter((product) => {
     const name = localizedProductName(product, locale);
-    if (!name || !product.image || !isPresentableImageUrl(product.image)) return false;
+    const images = presentableProductImages(product);
+    if (!name || images.length === 0) return false;
 
-    const imageKey = presentationImageKey(product.image);
+    const imageKey = presentationImageKey(images[0]);
     const brand = localizedOptional(product.brand, locale, false) || "";
     const sku = (product.code || "").trim().toLowerCase();
     const identity = sku
