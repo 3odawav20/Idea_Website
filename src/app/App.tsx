@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router";
 import "../styles/index.css";
+import { Analytics } from "@vercel/analytics/react";
 import { I18nProvider } from "./i18n/i18n";
 import { ThemeProvider } from "./theme/theme";
 import { StoreProvider } from "./store/store";
@@ -43,105 +44,108 @@ export default function App() {
     // (mandatory sidebar rail, lavender canvas) conflict with the requested luxury
     // Black & Gold marketplace. Per user direction the storefront is built on a
     // custom, fully token-driven design system defined in src/styles/globals.css.
-    <ThemeProvider>
-    <I18nProvider>
-      <BackendProvider>
-      <StoreProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Layout />}>
-              {/* Storefront */}
-              <Route index element={<Home />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/market/mazloum" element={<Navigate to="/products" replace />} />
-              <Route path="/market/mazloum/product" element={<Navigate to="/products" replace />} />
-              <Route path="/collections" element={<Collections />} />
-              <Route path="/collections/:slug" element={<CollectionDetail />} />
-              <Route path="/product/:slug" element={<ProductDetail />} />
-              <Route path="/favorites" element={<Favorites />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/ai-room-visualizer" element={<AiVisualizer />} />
+    <>
+      <ThemeProvider>
+      <I18nProvider>
+        <BackendProvider>
+        <StoreProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Layout />}>
+                {/* Storefront */}
+                <Route index element={<Home />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/market/mazloum" element={<Navigate to="/products" replace />} />
+                <Route path="/market/mazloum/product" element={<Navigate to="/products" replace />} />
+                <Route path="/collections" element={<Collections />} />
+                <Route path="/collections/:slug" element={<CollectionDetail />} />
+                <Route path="/product/:slug" element={<ProductDetail />} />
+                <Route path="/favorites" element={<Favorites />} />
+                <Route path="/how-it-works" element={<HowItWorks />} />
+                <Route path="/ai-room-visualizer" element={<AiVisualizer />} />
 
-              {/* RFQ */}
-              <Route path="/request-quote" element={<Navigate to="/request-quote/new" replace />} />
-              <Route path="/request-quote/new" element={<RequestQuote />} />
+                {/* RFQ */}
+                <Route path="/request-quote" element={<Navigate to="/request-quote/new" replace />} />
+                <Route path="/request-quote/new" element={<RequestQuote />} />
 
-              {/* Auth */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/register/customer" element={<RegisterCustomer />} />
-              <Route path="/register/business" element={<RegisterBusiness />} />
-              <Route path="/onboarding/role" element={<RoleSelect />} />
+                {/* Auth */}
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/register/customer" element={<RegisterCustomer />} />
+                <Route path="/register/business" element={<RegisterBusiness />} />
+                <Route path="/onboarding/role" element={<RoleSelect />} />
 
-              {/* Subscriptions + checkout */}
-              <Route path="/subscriptions" element={<SubscriptionsHome />} />
-              <Route path="/subscriptions/customers" element={<SubscriptionsCustomers />} />
-              <Route path="/subscriptions/businesses" element={<SubscriptionsBusinesses />} />
-              <Route path="/checkout" element={<Checkout />} />
+                {/* Subscriptions + checkout */}
+                <Route path="/subscriptions" element={<SubscriptionsHome />} />
+                <Route path="/subscriptions/customers" element={<SubscriptionsCustomers />} />
+                <Route path="/subscriptions/businesses" element={<SubscriptionsBusinesses />} />
+                <Route path="/checkout" element={<Checkout />} />
 
-              {/* Room designer */}
-              <Route path="/room-designer" element={<RoomDesignerHome />} />
-              <Route path="/room-designer/photo-guide" element={<PhotoGuide />} />
-              <Route path="/room-designer/new" element={<RoomDesignerEditor />} />
-              <Route path="/room-designer/project/:projectId" element={<RoomDesignerEditor />} />
+                {/* Room designer */}
+                <Route path="/room-designer" element={<RoomDesignerHome />} />
+                <Route path="/room-designer/photo-guide" element={<PhotoGuide />} />
+                <Route path="/room-designer/new" element={<RoomDesignerEditor />} />
+                <Route path="/room-designer/project/:projectId" element={<RoomDesignerEditor />} />
 
-              {/* Customer account */}
-              <Route element={<ProtectedRoute roles={["customer", "designer", "contractor"]} />}>
-              <Route path="/account" element={<AccountLayout />}>
-                <Route index element={<AccountProfile />} />
-                <Route path="profile" element={<AccountProfile />} />
-                <Route path="inbox" element={<AccountInbox />} />
-                <Route path="requests" element={<AccountRequests />} />
-                <Route path="requests/:requestId" element={<AccountRequestOffers />} />
-                <Route path="requests/:requestId/offers" element={<AccountRequestOffers />} />
-                <Route path="orders" element={<AccountOrders />} />
-                <Route path="orders/:orderId" element={<AccountOrders />} />
-                <Route path="invoices" element={<AccountInvoices />} />
-                <Route path="favorites" element={<AccountFavorites />} />
-                <Route path="compare" element={<AccountCompare />} />
-                <Route path="room-projects" element={<AccountRoomProjects />} />
-                <Route path="subscription" element={<AccountSubscription />} />
-                <Route path="notifications" element={<AccountNotifications />} />
-                <Route path="settings" element={<AccountSettings />} />
+                {/* Customer account */}
+                <Route element={<ProtectedRoute roles={["customer", "designer", "contractor"]} />}>
+                <Route path="/account" element={<AccountLayout />}>
+                  <Route index element={<AccountProfile />} />
+                  <Route path="profile" element={<AccountProfile />} />
+                  <Route path="inbox" element={<AccountInbox />} />
+                  <Route path="requests" element={<AccountRequests />} />
+                  <Route path="requests/:requestId" element={<AccountRequestOffers />} />
+                  <Route path="requests/:requestId/offers" element={<AccountRequestOffers />} />
+                  <Route path="orders" element={<AccountOrders />} />
+                  <Route path="orders/:orderId" element={<AccountOrders />} />
+                  <Route path="invoices" element={<AccountInvoices />} />
+                  <Route path="favorites" element={<AccountFavorites />} />
+                  <Route path="compare" element={<AccountCompare />} />
+                  <Route path="room-projects" element={<AccountRoomProjects />} />
+                  <Route path="subscription" element={<AccountSubscription />} />
+                  <Route path="notifications" element={<AccountNotifications />} />
+                  <Route path="settings" element={<AccountSettings />} />
+                </Route>
+                </Route>
+
+                {/* Business */}
+                <Route element={<ProtectedRoute roles={["business"]} />}>
+                <Route path="/business/onboarding" element={<BusinessOnboarding />} />
+                <Route path="/business" element={<BusinessLayout />}>
+                  <Route index element={<BusinessOverview />} />
+                  <Route path="verification" element={<BusinessVerification />} />
+                  <Route path="inbox" element={<BusinessInbox />} />
+                  <Route path="requests" element={<BusinessRequests />} />
+                  <Route path="requests/:requestId" element={<BusinessRequestDetail />} />
+                  <Route path="offers" element={<BusinessOffers />} />
+                  <Route path="offers/:offerId" element={<BusinessOffers />} />
+                  <Route path="orders" element={<BusinessOrders />} />
+                  <Route path="products" element={<BusinessProducts />} />
+                  <Route path="subscription" element={<BusinessSubscriptionPage />} />
+                  <Route path="reports" element={<BusinessReports />} />
+                  <Route path="team" element={<BusinessReports />} />
+                  <Route path="settings" element={<BusinessSettings />} />
+                </Route>
+                </Route>
+
+                {/* Admin */}
+                <Route element={<ProtectedRoute roles={["admin"]} />}>
+                <Route path="/admin" element={<AdminLayout />}>
+                  <Route index element={<AdminOverview />} />
+                  <Route path="subscriptions" element={<AdminSubscriptions />} />
+                  <Route path="settings/payments" element={<AdminPayments />} />
+                </Route>
+                </Route>
+
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Route>
-              </Route>
-
-              {/* Business */}
-              <Route element={<ProtectedRoute roles={["business"]} />}>
-              <Route path="/business/onboarding" element={<BusinessOnboarding />} />
-              <Route path="/business" element={<BusinessLayout />}>
-                <Route index element={<BusinessOverview />} />
-                <Route path="verification" element={<BusinessVerification />} />
-                <Route path="inbox" element={<BusinessInbox />} />
-                <Route path="requests" element={<BusinessRequests />} />
-                <Route path="requests/:requestId" element={<BusinessRequestDetail />} />
-                <Route path="offers" element={<BusinessOffers />} />
-                <Route path="offers/:offerId" element={<BusinessOffers />} />
-                <Route path="orders" element={<BusinessOrders />} />
-                <Route path="products" element={<BusinessProducts />} />
-                <Route path="subscription" element={<BusinessSubscriptionPage />} />
-                <Route path="reports" element={<BusinessReports />} />
-                <Route path="team" element={<BusinessReports />} />
-                <Route path="settings" element={<BusinessSettings />} />
-              </Route>
-              </Route>
-
-              {/* Admin */}
-              <Route element={<ProtectedRoute roles={["admin"]} />}>
-              <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminOverview />} />
-                <Route path="subscriptions" element={<AdminSubscriptions />} />
-                <Route path="settings/payments" element={<AdminPayments />} />
-              </Route>
-              </Route>
-
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </StoreProvider>
-      </BackendProvider>
-    </I18nProvider>
-    </ThemeProvider>
+            </Routes>
+          </BrowserRouter>
+        </StoreProvider>
+        </BackendProvider>
+      </I18nProvider>
+      </ThemeProvider>
+      <Analytics />
+    </>
   );
 }
