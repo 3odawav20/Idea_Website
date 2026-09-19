@@ -95,15 +95,21 @@ function normalizedCollection(row: CatalogRow): CollectionSlug | null {
   const raw = row.collection_slug;
   const text = `${row.name || ""} ${row.subcategory || ""} ${row.product_type || ""}`.toLowerCase();
 
-  if (/faucet|mixer|tap|خلاط|حنفيه|حنفية/u.test(text)) return "faucets";
-  if (/bathtub|bath tub|jacuzzi|بانيو|جاكوزي/u.test(text)) return "bathtubs";
-  if (/shower|shower system|دش|شاور/u.test(text)) return "shower-units";
-  if (/basin|wash ?basin|sink|toilet|\bwc\b|sanitary|حوض|مرحاض|تواليت|قاعدة حمام|كومبنيشن/u.test(text)) return "sanitary-ware";
-  if (/vanity|bathroom unit|bathroom furniture|وحدة حمام|اثاث حمام|أثاث حمام/u.test(text)) return "bathroom-units";
-  if (/pipe|fitting|valve|plumbing|مواسير|ماسورة|وصلة|محبس|سباكة/u.test(text)) return "plumbing-products";
-  if (/marble|natural stone|رخام|حجر طبيعي/u.test(text)) return "marble";
-  if (/porcelain|بورسلين/u.test(text)) return "porcelain";
-  if (/ceramic|tiles?|سيراميك|بلاط/u.test(text)) return "ceramics";
+  // Consumables, tools and promotional/commercial accessory records are not core gallery products.
+  if (
+    /\b(?:adhesive|grout|cement|sealant|cleaner|paint|masking|tape|tool|tools)\b/i.test(text) ||
+    /لاصق|روبة|اسمنت|أسمنت|سيلانت|منظف|دهان|شريط|أداة|اداة/u.test(text)
+  ) return null;
+
+  if (/\b(?:faucet|mixer|tap)\b/i.test(text) || /خلاط|حنفيه|حنفية/u.test(text)) return "faucets";
+  if (/\b(?:bathtub|bath tub|jacuzzi)\b/i.test(text) || /بانيو|جاكوزي/u.test(text)) return "bathtubs";
+  if (/\b(?:shower|shower system)\b/i.test(text) || /دش|شاور/u.test(text)) return "shower-units";
+  if (/\b(?:vanity|bathroom unit|bathroom furniture)\b/i.test(text) || /وحدة حمام|اثاث حمام|أثاث حمام/u.test(text)) return "bathroom-units";
+  if (/\b(?:basin|wash ?basin|sink|toilet|wc|sanitary)\b/i.test(text) || /حوض|مرحاض|تواليت|قاعدة حمام|كومبنيشن/u.test(text)) return "sanitary-ware";
+  if (/\b(?:pipe|fitting|valve|plumbing)\b/i.test(text) || /مواسير|ماسورة|وصلة|محبس|سباكة/u.test(text)) return "plumbing-products";
+  if (/\b(?:marble|natural stone)\b/i.test(text) || /رخام|حجر طبيعي/u.test(text)) return "marble";
+  if (/\bporcelain\b/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
+  if (/\b(?:ceramic|tiles?)\b/i.test(text) || /سيراميك|بلاط/u.test(text)) return "ceramics";
 
   // Mazloum's furniture / lighting / decor taxonomy is already source-verified.
   if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) {
