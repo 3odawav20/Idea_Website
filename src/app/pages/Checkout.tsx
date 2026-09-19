@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams, useNavigate } from "react-router";
+import { useSearchParams, useNavigate, Navigate } from "react-router";
 import { ShieldCheck, Lock, House } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useBackend, type PaymentMethodKey } from "../backend/db";
@@ -32,7 +32,18 @@ export function Checkout() {
   const amount = order ? order.total : plan ? (interval === "annual" ? plan.annual : plan.monthly) : 0;
   const cfg = db.payments.find((p) => p.key === method);
 
-  if (!session) { nav("/login"); return null; }
+  if (!session) return <Navigate to={"/login?next=" + encodeURIComponent(window.location.pathname + window.location.search)} replace />;
+  if (plan && amount < 0) return (
+    <Section style={{ paddingTop: "var(--idea-space-8)" }}>
+      <Container style={{ maxWidth: 560 }}>
+        <EmptyState title="Custom pricing" sub="This plan is activated by the IDEA team after pricing is confirmed." />
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "var(--idea-space-4)" }}>
+          <Button variant="outline" onClick={() => nav("/subscriptions")}>Back to subscriptions</Button>
+        </div>
+      </Container>
+    </Section>
+  );
+
   if (!order && !plan) return (
     <Section style={{ paddingTop: "var(--idea-space-8)" }}>
       <Container style={{ maxWidth: 560 }}>
@@ -45,11 +56,11 @@ export function Checkout() {
   );
 
   const pay = () => {
-    // Sandbox only: a method must be enabled with configured merchant creds to "authorize".
-    const ok = !!cfg?.merchantConfigured;
-    if (order) api.sandboxPay(order.id, ok);
-    if (plan) api.subscribe(plan.id, interval, ok);
-    setDone(ok ? "ok" : "fail");
+    const ok = Boolean(cfg?.enabled && cfg?.merchantConfigured);
+    if (!ok) { setDone("fail"); return; }
+    if (order) api.sandboxPay(order.id, true);
+    if (plan) api.subscribe(plan.id, interval, true);
+    setDone("ok");
   };
 
   if (done) {
@@ -92,8 +103,8 @@ export function Checkout() {
               const mc = db.payments.find((p) => p.key === m.key);
               const active = method === m.key;
               return (
-                <button key={m.key} onClick={() => setMethod(m.key)} style={{
-                  display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, cursor: "pointer",
+                <button key={m.key} disabled={!mc?.enabled || !mc?.merchantConfigured} onClick={() => setMethod(m.key)} style={{
+                  display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, cursor: mc?.enabled && mc?.merchantConfigured ? "pointer" : "not-allowed", opacity: mc?.enabled && mc?.merchantConfigured ? 1 : .58,
                   padding: "12px 14px", borderRadius: "var(--idea-radius-md)", textAlign: "start",
                   border: `1px solid ${active ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
                   background: active ? "var(--idea-gold-soft)" : "var(--idea-surface-2)",
@@ -110,7 +121,7 @@ export function Checkout() {
               );
             })}
           </div>
-          <Button style={{ width: "100%", marginTop: "var(--idea-space-5)" }} onClick={pay}><Lock size={15} /> {t("checkout.pay")} {amount.toLocaleString()} {t("common.egp")} · {t("checkout.sandbox")}</Button>
+          <Button style={{ width: "100%", marginTop: "var(--idea-space-5)" }} disabled={!cfg?.enabled || !cfg?.merchantConfigured} onClick={pay}><Lock size={15} /> {cfg?.enabled && cfg?.merchantConfigured ? t("checkout.pay") + " " + amount.toLocaleString() + " " + t("common.egp") : "Payment activation pending"}</Button>
           <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center", marginTop: 12, color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>
             <ShieldCheck size={13} color="var(--idea-gold)" /> {t("checkout.sandboxNote")}
           </div>
