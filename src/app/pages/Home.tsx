@@ -14,7 +14,7 @@ function CollectionTile({ slug }: { slug: string }) {
   const { locale } = useI18n();
   const c = COLLECTIONS.find((x) => x.slug === slug)!;
   return (
-    <Link to={`/collections/${c.slug}`} style={{ position: "relative", display: "block", aspectRatio: "3/4", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)" }}>
+    <Link to={`/collections/${c.slug}`} className="idea-home-collection-tile" style={{ position: "relative", display: "block", aspectRatio: "4/5", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", boxShadow: "var(--idea-shadow-sm)" }}>
       <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "")} />
       <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay)" }} />
@@ -29,10 +29,10 @@ function CollectionTile({ slug }: { slug: string }) {
 }
 
 export function Home() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { products } = useStore();
   const ceramicPorcelain = ["ceramics", "porcelain", "marble", "sanitary-ware", "faucets"];
-  const sanitary = ["bathroom-sets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
+  const sanitary = ["sanitary-ware", "faucets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
   const featured = products.slice(0, 4);
 
   return (
@@ -54,7 +54,7 @@ export function Home() {
       <Section alt>
         <Container>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
-            <SectionHeader eyebrow="Curated" title={t("home.featured")} />
+            <SectionHeader eyebrow={t("home.curated")} title={t("home.featured")} />
             <Link to="/products" style={{ marginBottom: "var(--idea-space-7)" }}><Button variant="outline">{t("action.browseAll")}</Button></Link>
           </div>
           <Stagger style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
@@ -70,10 +70,10 @@ export function Home() {
             <div style={{ padding: "var(--idea-space-7)" }}>
               <div className="idea-eyebrow" style={{ display: "flex", alignItems: "center", gap: 8 }}><Sparkles size={14} /> {t("nav.visualizer")}</div>
               <h2 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-3) 0 var(--idea-space-4)" }}>
-                <AnimatedWords text="See It Inside Your Space Before You Buy" />
+                <AnimatedWords text={t("home.visualizerTitle")} />
               </h2>
               <p style={{ color: "var(--idea-text-muted)", lineHeight: 1.7, marginBottom: "var(--idea-space-5)" }}>
-                Upload your room, select a real IDEA surface, and preview the finished result with accurate scale and lighting.
+                {t("home.visualizerBody")}
               </p>
               <Link to="/room-designer/new"><Button size="lg">{t("action.startAi")}</Button></Link>
             </div>
