@@ -326,8 +326,13 @@ textarea:disabled {
 @media (max-width: 760px) {
   .idea-container { padding-inline: var(--idea-space-4) !important; }
   .idea-hero-carousel { height: min(88svh, 680px) !important; }
-  .idea-hero-carousel button { min-height: calc(var(--idea-space-5) + var(--idea-space-4)); }
+  .idea-hero-actions button, .idea-hero-arrow { min-height: 44px; }
+  .idea-hero-dot { min-height: 3px !important; max-height: 3px !important; padding: 0 !important; }
   .idea-hero-carousel .idea-hero-arrow { display: none !important; }
+  .idea-hero-content { padding-block-start: 44px !important; padding-block-end: 96px !important; }
+  .idea-hero-actions { flex-direction: column; align-items: stretch; gap: 12px !important; width: min(100%, 390px); margin-inline: auto; }
+  .idea-hero-actions button { width: 100%; min-height: 50px; }
+  .idea-hero-pagination { bottom: 18px !important; }
   .idea-hero-content > div { max-width: none !important; text-align: center; }
   .idea-hero-content > div > div:last-child { justify-content: center; }
   .idea-hero-content .idea-hero-title { font-size: 34px !important; line-height: 1.04; }
@@ -823,19 +828,30 @@ a, button {
   }
 }
 @media (max-width: 560px) {
-  .idea-collections-grid,
+  .idea-collections-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
   .idea-home-category-grid--three,
   .idea-home-category-grid--four {
     grid-template-columns: 1fr;
   }
-  .idea-collection-card,
-  .idea-home-collection-tile {
-    aspect-ratio: 4 / 4.15;
+  .idea-collection-card {
+    aspect-ratio: 1 / 1;
+    min-height: 0;
+    border-radius: 14px;
   }
-  .idea-collection-card__content,
-  .idea-home-collection-tile__content {
-    padding-inline: 20px;
+  .idea-home-collection-tile { aspect-ratio: 4 / 4.15; }
+  .idea-collection-card__content {
+    height: auto;
+    grid-template-rows: 16px auto;
+    row-gap: 5px;
+    padding: 0 10px 10px;
   }
+  .idea-collection-card__meta { font-size: 9px; margin-bottom: 0; }
+  .idea-collection-card__content h2 { height: auto; font-size: 16px; line-height: 1.08; }
+  .idea-collection-card__content p { display: none; }
+  .idea-home-collection-tile__content { padding-inline: 20px; }
 }
 
 

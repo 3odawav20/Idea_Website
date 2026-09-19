@@ -95,7 +95,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const activeCount = [finish, size, usage, color, brand, type, material, application].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const PAGE_SIZE = 30;
+  const PAGE_SIZE = 24;
   const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
   const visibleResults = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
@@ -159,7 +159,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{results.length} {t("label.results")}</span>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "var(--idea-space-6)", alignItems: "start" }} className="idea-gallery-grid">
+        <div style={{ display: "grid", gridTemplateColumns: "230px minmax(0, 1fr)", gap: "var(--idea-space-5)", alignItems: "start" }} className="idea-gallery-grid">
           {/* Filters */}
           {mobileOpen && <div onClick={() => setMobileOpen(false)} className="idea-filter-scrim" style={{ display: "none", position: "fixed", inset: 0, zIndex: 60, background: "var(--idea-scrim)" }} />}
           <aside className={`idea-filters-panel${mobileOpen ? " is-open" : ""}`} style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)", padding: "var(--idea-space-5)", position: "sticky", top: 90 }}>
@@ -208,7 +208,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                 {t("empty.products")}
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
+              <div className="idea-products-grid">
                 {visibleResults.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
             )}
@@ -248,6 +248,17 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
         </div>
       </Container>
       <style>{`
+        .idea-products-grid{
+          display:grid;
+          grid-template-columns:repeat(4,minmax(0,1fr));
+          gap:20px;
+          grid-auto-rows:1fr;
+          align-items:stretch;
+        }
+        .idea-products-grid > .idea-product-card{ height:100%; min-width:0; }
+        @media (max-width: 1160px){
+          .idea-products-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+        }
         @media (max-width: 860px){
           .idea-gallery-grid{ grid-template-columns: 1fr !important; }
           .idea-filter-toolbar{ display: flex !important; }
@@ -267,6 +278,10 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           [dir="rtl"] .idea-filters-panel:not(.is-open){ transform: translate3d(calc(100% + 2px), 0, 0) !important; }
           .idea-filters-panel.is-open{ visibility: visible; }
           .idea-filter-close, .idea-filter-show{ display: block !important; }
+          .idea-products-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+        }
+        @media (max-width: 560px){
+          .idea-products-grid{ grid-template-columns:1fr; }
         }
       `}</style>
     </Section>
