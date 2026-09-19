@@ -61,6 +61,8 @@ const T: Dict = {
   "product.variants": { en: "Available variants", ar: "الخيارات المتاحة", fr: "Variantes disponibles" },
   "product.technicalSpecs": { en: "Technical specifications", ar: "المواصفات الفنية", fr: "Spécifications techniques" },
   "product.related": { en: "Related products", ar: "منتجات ذات صلة", fr: "Produits associés" },
+  "product.unavailable": { en: "Unavailable", ar: "غير متاح", fr: "Indisponible" },
+  "product.showImage": { en: "Show image", ar: "عرض الصورة", fr: "Afficher l’image" },
   "label.surface": { en: "Surface", ar: "السطح", fr: "Surface" },
   "label.material": { en: "Material", ar: "الخامة", fr: "Matériau" },
   "label.pattern": { en: "Pattern", ar: "النقشة", fr: "Motif" },
