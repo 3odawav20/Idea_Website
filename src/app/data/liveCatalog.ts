@@ -36,7 +36,7 @@ const DISPLAY_COLLECTIONS = new Set<CollectionSlug>([
   "home-decor",
 ]);
 
-const SKIP_SOURCES = new Set(["source-13", "source-20"]);
+const SKIP_SOURCES = new Set(["source-20"]);
 
 interface CatalogRow {
   id: number;
