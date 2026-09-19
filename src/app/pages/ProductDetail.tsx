@@ -3,6 +3,7 @@ import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Product } from "../data/types";
 import { loadMazloumDetail, applyMazloumDetail } from "../data/mazloumDetails";
+import { hasPublicProductContent } from "../data/catalogQuality";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
@@ -60,7 +61,7 @@ export function ProductDetail() {
       return value;
     };
     return products
-      .filter((candidate) => candidate.id !== product.id)
+      .filter((candidate) => candidate.id !== product.id && hasPublicProductContent(candidate))
       .map((candidate) => ({ candidate, score: score(candidate) }))
       .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score || a.candidate.name.en.localeCompare(b.candidate.name.en))
@@ -69,6 +70,9 @@ export function ProductDetail() {
   })();
 
   const primarySpecs = [
+    ["Category", product.collection.replaceAll("-", " ")],
+    ["Subcategory", product.subcategory],
+    ["Brand", product.brand],
     ["Model", product.model],
     ["SKU", product.code],
     ["Origin", product.origin],
@@ -84,6 +88,8 @@ export function ProductDetail() {
     ["Packaging", product.packaging],
     ["Pieces / box", product.piecesPerBox ? String(product.piecesPerBox) : undefined],
     ["m² / box", product.squareMetersPerBox ? String(product.squareMetersPerBox) : undefined],
+    ["Source", product.source?.provider],
+    ["Source reference", product.source?.recordId],
   ].filter((entry): entry is [string, string] => Boolean(entry[1]));
 
   const spec = (label: string, value: string) => (
@@ -218,13 +224,19 @@ export function ProductDetail() {
         {related.length > 0 && (
           <div style={{ marginTop: "var(--idea-space-8)" }}>
             <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>Related products</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
+            <div className="idea-related-products-grid">
               {related.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </div>
         )}
       </Container>
-      <style>{`@media (max-width: 860px){ .idea-pd-grid{ grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`
+        .idea-related-products-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; align-items:stretch; }
+        .idea-related-products-grid > .idea-product-card{ height:100%; min-width:0; }
+        @media (max-width: 1040px){ .idea-related-products-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+        @media (max-width: 860px){ .idea-pd-grid{ grid-template-columns:1fr !important; } .idea-related-products-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+        @media (max-width: 560px){ .idea-related-products-grid{ grid-template-columns:1fr; } }
+      `}</style>
     </Section>
   );
 }

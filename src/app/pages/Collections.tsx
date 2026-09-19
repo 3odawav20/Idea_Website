@@ -1,5 +1,4 @@
-import { useParams } from "react-router";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { useI18n } from "../i18n/i18n";
 import { COLLECTIONS } from "../data/catalog";
 import type { CollectionSlug } from "../data/types";
@@ -8,40 +7,85 @@ import { Products } from "./Products";
 
 export function Collections() {
   const { locale, t } = useI18n();
-  const groups: { key: string; label: string }[] = [
-    { key: "ceramics", label: t("home.ceramicPorcelain") },
-    { key: "porcelain", label: "Porcelain" },
-    { key: "sanitary", label: t("home.sanitary") },
-    { key: "furniture", label: locale === "ar" ? "أثاث" : locale === "fr" ? "Mobilier" : "Furniture" },
-    { key: "lighting", label: locale === "ar" ? "إضاءة" : locale === "fr" ? "Éclairage" : "Lighting" },
-    { key: "decor", label: locale === "ar" ? "ديكور منزلي" : locale === "fr" ? "Décoration" : "Home Decor" },
-  ];
+
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container>
         <SectionHeader eyebrow="Browse" title={t("nav.collections")} sub={t("tagline")} />
-        {groups.map((g) => {
-          const items = COLLECTIONS.filter((c) => c.group === g.key);
-          if (!items.length) return null;
-          return (
-            <div key={g.key} style={{ marginBottom: "var(--idea-space-7)" }}>
-              <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{g.label}</div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-4)" }}>
-                {items.map((c) => (
-                  <Link key={c.slug} to={`/collections/${c.slug}`} style={{ position: "relative", aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", display: "block" }}>
-                    <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay-soft)" }} />
-                    <div style={{ position: "absolute", bottom: 0, padding: "var(--idea-space-4)" }}>
-                      <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "#fff", fontWeight: 600, textShadow: "0 4px 18px rgba(0,0,0,.95)" }}>{c.title[locale]}</div>
-                      <div style={{ color: "rgba(255,255,255,.94)", fontSize: "var(--idea-text-xs)", marginTop: 4, textShadow: "0 3px 12px rgba(0,0,0,.95)" }}>{c.blurb[locale]}</div>
-                    </div>
-                  </Link>
-                ))}
+
+        <div className="idea-collection-selector-grid">
+          {COLLECTIONS.map((c) => (
+            <Link key={c.slug} to={`/collections/${c.slug}`} className="idea-collection-selector-card">
+              <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" />
+              <div className="idea-collection-selector-wash" aria-hidden="true" />
+              <div className="idea-collection-selector-copy">
+                <div className="idea-eyebrow idea-collection-selector-group">{c.group}</div>
+                <div className="idea-display idea-collection-selector-title">{c.title[locale]}</div>
+                <div className="idea-collection-selector-blurb">{c.blurb[locale]}</div>
               </div>
-            </div>
-          );
-        })}
+            </Link>
+          ))}
+        </div>
       </Container>
+
+      <style>{`
+        .idea-collection-selector-grid{
+          display:grid;
+          grid-template-columns:repeat(4,minmax(0,1fr));
+          gap:20px;
+          align-items:stretch;
+        }
+        .idea-collection-selector-card{
+          position:relative;
+          display:block;
+          aspect-ratio:4/3;
+          overflow:hidden;
+          border:var(--idea-hairline);
+          border-radius:var(--idea-radius-lg);
+          background:#111;
+          text-decoration:none;
+          box-shadow:var(--idea-shadow-sm);
+        }
+        .idea-collection-selector-card > img{
+          position:absolute;
+          inset:0;
+          width:100%;
+          height:100%;
+          object-fit:cover;
+          transition:transform .5s ease;
+        }
+        .idea-collection-selector-card:hover > img{ transform:scale(1.045); }
+        .idea-collection-selector-wash{
+          position:absolute;
+          inset:0;
+          background:var(--idea-image-overlay-soft);
+        }
+        .idea-collection-selector-copy{
+          position:absolute;
+          inset-inline:0;
+          bottom:0;
+          padding:18px;
+        }
+        .idea-collection-selector-group{ color:#ff9a4d; margin-bottom:7px; text-shadow:0 3px 12px rgba(0,0,0,.95); }
+        .idea-collection-selector-title{ color:#fff; font-size:22px; font-weight:600; text-shadow:0 4px 18px rgba(0,0,0,.95); }
+        .idea-collection-selector-blurb{
+          margin-top:6px;
+          color:rgba(255,255,255,.94);
+          font-size:12px;
+          line-height:1.45;
+          text-shadow:0 3px 12px rgba(0,0,0,.95);
+        }
+        @media (max-width: 1040px){
+          .idea-collection-selector-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+        }
+        @media (max-width: 760px){
+          .idea-collection-selector-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+        }
+        @media (max-width: 520px){
+          .idea-collection-selector-grid{ grid-template-columns:1fr; }
+          .idea-collection-selector-card{ aspect-ratio:4/3.1; }
+        }
+      `}</style>
     </Section>
   );
 }

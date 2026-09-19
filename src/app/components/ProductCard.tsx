@@ -108,7 +108,7 @@ export function ProductCard({ product }: { product: Product }) {
             {commercialMeta.map((value) => <Tag key={value}>{value}</Tag>)}
           </div>
         )}
-        <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
+        <div className="idea-product-card-actions" style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
           <div>
             {p.compareAtPriceText && (
               <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", textDecoration: "line-through" }}>
@@ -121,7 +121,7 @@ export function ProductCard({ product }: { product: Product }) {
               <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{t("price.hidden")}</span>
             )}
           </div>
-          <button onClick={() => addToQuote(p.id, unit)} style={{
+          <button className="idea-product-card-quote" onClick={() => addToQuote(p.id, unit)} style={{
             display: "inline-flex", alignItems: "center", gap: 6, background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)",
             color: "var(--idea-gold-bright)", borderRadius: "var(--idea-radius-full)", padding: "6px 14px", cursor: "pointer", fontSize: "var(--idea-text-xs)", textTransform: "uppercase", letterSpacing: "0.05em",
           }}>
@@ -131,6 +131,12 @@ export function ProductCard({ product }: { product: Product }) {
       </div>
       <style>{`
         .idea-product-card:hover .idea-product-img { transform: scale(1.045); }
+        @media (max-width: 560px) {
+          .idea-product-card button { min-height: 44px; }
+          .idea-product-card button[aria-label] { min-width: 44px; }
+          .idea-product-card-actions { align-items: stretch !important; flex-direction: column; }
+          .idea-product-card-quote { width: 100%; justify-content: center; }
+        }
         @media (prefers-reduced-motion: reduce) { .idea-product-img { transition: none !important; } }
       `}</style>
     </article>
