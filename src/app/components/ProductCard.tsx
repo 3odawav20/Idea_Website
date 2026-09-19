@@ -7,7 +7,7 @@ import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
 import { COLLECTIONS } from "../data/catalog";
-import { localizedOptional, localizedPrice } from "../data/catalogPresentation";
+import { isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName } from "../data/catalogPresentation";
 
 export function ProductCard({ product }: { product: Product }) {
   const { t, locale } = useI18n();
@@ -40,15 +40,17 @@ export function ProductCard({ product }: { product: Product }) {
   }, [product]);
 
   const p = resolved;
-  if (!p.image || imageFailed) return null;
+  const displayName = localizedProductName(p, locale);
+  if (!displayName || !p.image || !isPresentableImageUrl(p.image) || imageFailed) return null;
 
   const fav = isFavorite(p.id);
   const inCompare = compare.includes(p.id);
-  const unit = p.collection === "ceramics" || p.collection === "porcelain" ? "sqm" : "pieces";
+  const unit = p.collection === "ceramics" || p.collection === "porcelain" || p.collection === "marble" ? "sqm" : "pieces";
 
-  const secondaryImage = p.gallery?.find((image) => image && image !== p.image);
+  const secondaryImage = p.gallery?.find((image) => image && image !== p.image && isPresentableImageUrl(image));
   const cardImage = hovered && secondaryImage ? secondaryImage : p.image;
-  const primarySize = p.sizes[0]?.normalizedDisplayValue || p.sizes[0]?.label;
+  const primarySizeRaw = p.sizes[0]?.normalizedDisplayValue || p.sizes[0]?.label;
+  const primarySize = primarySizeRaw ? localizedMeasurement(primarySizeRaw, locale) : undefined;
   const commercialMeta = [
     primarySize,
     localizedOptional(p.material, locale),
@@ -77,9 +79,13 @@ export function ProductCard({ product }: { product: Product }) {
         <img
             className="idea-product-img idea-vivid-image"
             src={cardImage}
-            alt={p.name[locale]}
+            alt={displayName}
             loading="lazy"
             onError={() => setImageFailed(true)}
+            onLoad={(event) => {
+              const image = event.currentTarget;
+              if (image.naturalWidth < 480 || image.naturalHeight < 300) setImageFailed(true);
+            }}
             style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1), opacity .2s" }}
           />
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6, flexWrap: "wrap" }}>
@@ -97,7 +103,9 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        {visibleBrand && <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{visibleBrand}</div>}
+        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)", minHeight: 14 }}>
+          {visibleBrand || " "}
+        </div>
         <Link
           to={`/product/${p.slug}`}
           className="idea-display"
@@ -112,18 +120,16 @@ export function ProductCard({ product }: { product: Product }) {
             overflow: "hidden",
           }}
         >
-          {p.name[locale]}
+          {displayName}
         </Link>
         {visibleSubcategory && (
           <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", textTransform: "capitalize", minHeight: 18 }}>
             {visibleSubcategory}
           </div>
         )}
-        {commercialMeta.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
-            {commercialMeta.map((value) => <Tag key={value}>{value}</Tag>)}
-          </div>
-        )}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2, minHeight: 28, alignContent: "flex-start" }}>
+          {commercialMeta.map((value) => <Tag key={value}>{value}</Tag>)}
+        </div>
         <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
           <div>
             {compareAtPriceText && (
