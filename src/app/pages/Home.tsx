@@ -3,6 +3,7 @@ import { ArrowRight, Clock, Sparkles } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
+import { dedupeProductsForLocale, productMatchesLocale } from "../data/catalogPresentation";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
@@ -33,7 +34,9 @@ export function Home() {
   const { products } = useStore();
   const ceramicPorcelain = ["ceramics", "porcelain", "marble", "sanitary-ware", "faucets"];
   const sanitary = ["sanitary-ware", "faucets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
-  const featured = products.slice(0, 4);
+  const visibleProducts = dedupeProductsForLocale(products.filter((product) => productMatchesLocale(product, locale)), locale);
+  const featured = visibleProducts.slice(0, 4);
+  const visibleCollections = (slugs: string[]) => slugs.filter((slug) => visibleProducts.some((product) => product.collection === slug));
 
   return (
     <>
@@ -45,7 +48,7 @@ export function Home() {
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.ceramicPorcelain")} />
           <div className="idea-ceramic-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-4)" }}>
-            {ceramicPorcelain.map((s) => <CollectionTile key={s} slug={s} />)}
+            {visibleCollections(ceramicPorcelain).map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
       </Section>
@@ -89,7 +92,7 @@ export function Home() {
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.sanitary")} />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "var(--idea-space-4)" }}>
-            {sanitary.map((s) => <CollectionTile key={s} slug={s} />)}
+            {visibleCollections(sanitary).map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
       </Section>
