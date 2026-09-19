@@ -12,8 +12,8 @@
   --idea-surface-2: #f4f4f4;
   --idea-overlay: rgba(255, 255, 255, 0.9);
   --idea-scrim: rgba(0, 0, 0, 0.6);
-  --idea-image-overlay: linear-gradient(0deg, rgba(6, 6, 8, 0.9), transparent 60%);
-  --idea-image-overlay-soft: linear-gradient(0deg, rgba(6, 6, 8, 0.85), transparent 55%);
+  --idea-image-overlay: linear-gradient(0deg, rgba(6, 6, 8, 0.96) 0%, rgba(6, 6, 8, 0.72) 38%, rgba(6, 6, 8, 0.18) 68%, transparent 100%);
+  --idea-image-overlay-soft: linear-gradient(0deg, rgba(6, 6, 8, 0.94) 0%, rgba(6, 6, 8, 0.62) 42%, rgba(6, 6, 8, 0.12) 72%, transparent 100%);
   --idea-search-panel: rgba(14, 13, 17, 0.86);
   --idea-search-tab-muted: rgba(246, 241, 230, 0.6);
   --idea-hero-overlay: linear-gradient(90deg, rgba(22, 22, 22, 0.84) 0%, rgba(22, 22, 22, 0.58) 47%, rgba(22, 22, 22, 0.14) 100%);
@@ -102,8 +102,8 @@
   --idea-surface-2: #292929;
   --idea-overlay: rgba(16, 16, 16, 0.82);
   --idea-scrim: rgba(0, 0, 0, 0.6);
-  --idea-image-overlay: linear-gradient(0deg, rgba(6, 6, 8, 0.9), transparent 60%);
-  --idea-image-overlay-soft: linear-gradient(0deg, rgba(6, 6, 8, 0.85), transparent 55%);
+  --idea-image-overlay: linear-gradient(0deg, rgba(6, 6, 8, 0.96) 0%, rgba(6, 6, 8, 0.72) 38%, rgba(6, 6, 8, 0.18) 68%, transparent 100%);
+  --idea-image-overlay-soft: linear-gradient(0deg, rgba(6, 6, 8, 0.94) 0%, rgba(6, 6, 8, 0.62) 42%, rgba(6, 6, 8, 0.12) 72%, transparent 100%);
   --idea-search-panel: rgba(14, 13, 17, 0.86);
   --idea-search-tab-muted: rgba(246, 241, 230, 0.6);
   --idea-hero-overlay: linear-gradient(90deg, rgba(16, 16, 16, 0.9) 0%, rgba(16, 16, 16, 0.6) 47%, rgba(16, 16, 16, 0.16) 100%);
@@ -326,8 +326,15 @@ textarea:disabled {
 @media (max-width: 760px) {
   .idea-container { padding-inline: var(--idea-space-4) !important; }
   .idea-hero-carousel { height: min(88svh, 680px) !important; }
-  .idea-hero-carousel button { min-height: calc(var(--idea-space-5) + var(--idea-space-4)); }
+  .idea-hero-actions button, .idea-hero-arrow { min-height: 44px; }
+  .idea-hero-pagination button { min-height: 4px !important; max-height: 4px !important; padding-block: 0 !important; }
   .idea-hero-carousel .idea-hero-arrow { display: none !important; }
+  .idea-hero-content { padding-block-start: 44px !important; padding-block-end: 96px !important; }
+  .idea-hero-actions { flex-direction: column; align-items: stretch; gap: 12px !important; width: min(100%, 390px); margin-inline: auto; }
+  .idea-hero-actions button { width: 100%; min-height: 50px; }
+  .idea-hero-pagination { bottom: 18px !important; }
+  .idea-hero-title { text-shadow: 0 5px 24px rgba(0,0,0,.95) !important; }
+  .idea-hero-content p { color: #fff !important; text-shadow: 0 4px 18px rgba(0,0,0,.96) !important; }
   .idea-hero-content > div { max-width: none !important; text-align: center; }
   .idea-hero-content > div > div:last-child { justify-content: center; }
   .idea-hero-content .idea-hero-title { font-size: 34px !important; line-height: 1.04; }

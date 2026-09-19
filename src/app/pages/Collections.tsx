@@ -32,8 +32,8 @@ export function Collections() {
                     <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                     <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay-soft)" }} />
                     <div style={{ position: "absolute", bottom: 0, padding: "var(--idea-space-4)" }}>
-                      <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{c.title[locale]}</div>
-                      <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", marginTop: 4 }}>{c.blurb[locale]}</div>
+                      <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "#fff", fontWeight: 600, textShadow: "0 4px 18px rgba(0,0,0,.95)" }}>{c.title[locale]}</div>
+                      <div style={{ color: "rgba(255,255,255,.94)", fontSize: "var(--idea-text-xs)", marginTop: 4, textShadow: "0 3px 12px rgba(0,0,0,.95)" }}>{c.blurb[locale]}</div>
                     </div>
                   </Link>
                 ))}

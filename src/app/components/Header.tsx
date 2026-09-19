@@ -17,7 +17,7 @@ const LOCALES: { code: Locale; label: string }[] = [
 
 function IconLink({ to, label, count, children }: { to: string; label: string; count?: number; children: React.ReactNode }) {
   return (
-    <Link to={to} aria-label={label} style={{ position: "relative", color: "var(--idea-text)", display: "inline-flex" }}>
+    <Link className="idea-header-icon-link" to={to} aria-label={label} style={{ position: "relative", color: "var(--idea-text)", display: "inline-flex" }}>
       {children}
       {count ? (
         <span style={{
@@ -60,11 +60,11 @@ export function Header() {
   ];
 
   return (
-    <header style={{
+    <header className="idea-site-header" style={{
       position: "sticky", top: 0, zIndex: 50, background: "var(--idea-overlay)",
       backdropFilter: "blur(14px)", borderBottom: "var(--idea-hairline)",
     }}>
-      <Container style={{ display: "flex", alignItems: "center", gap: "var(--idea-space-4)", height: 78 }}>
+      <Container className="idea-header-shell" style={{ display: "flex", alignItems: "center", gap: "var(--idea-space-4)", height: 78 }}>
         {/* Logo */}
         <Link to="/" aria-label="IDEA Business Administration — Home" style={{ display: "inline-flex", lineHeight: 1, textDecoration: "none", flexShrink: 0 }}>
           <IdeaLogo compact />
@@ -92,17 +92,17 @@ export function Header() {
           </form>
 
           {/* Language */}
-          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <div className="idea-language-switcher" style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <Globe size={16} color="var(--idea-text-muted)" />
             {LOCALES.map((l) => (
-              <button key={l.code} onClick={() => setLocale(l.code)} style={{
+              <button className="idea-language-btn" key={l.code} onClick={() => setLocale(l.code)} style={{
                 background: "none", border: "none", cursor: "pointer", fontSize: "var(--idea-text-xs)", fontWeight: 600, padding: 2,
                 color: locale === l.code ? "var(--idea-gold-bright)" : "var(--idea-text-faint)",
               }}>{l.label}</button>
             ))}
           </div>
 
-          <button onClick={toggle} aria-label="Toggle theme" style={{
+          <button className="idea-theme-btn" onClick={toggle} aria-label="Toggle theme" style={{
             background: "none", border: "none", cursor: "pointer", color: "var(--idea-gold-bright)", display: "inline-flex",
           }}>
             {mode === "dark" ? <Sun size={20} /> : <Moon size={20} />}
@@ -151,8 +151,26 @@ export function Header() {
           .idea-menu-btn { display: inline-flex !important; }
         }
         @media (max-width: 640px) {
-          .idea-header-actions { gap: 8px !important; }
+          .idea-site-header { background: var(--idea-bg) !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; box-shadow: 0 6px 20px rgba(0,0,0,.10); }
+          .idea-header-shell { height: 68px !important; gap: 6px !important; padding-inline: 10px !important; }
+          .idea-official-logo--compact { width: 116px !important; }
+          .idea-header-actions { gap: 2px !important; flex: 1 1 auto; min-width: 0; justify-content: flex-end; }
           .idea-mobile-optional { display: none; }
+          .idea-language-switcher { gap: 1px !important; white-space: nowrap; flex: 0 0 auto; }
+          .idea-language-switcher > svg { width: 15px; height: 15px; margin-inline-end: 2px; }
+          .idea-language-btn { min-width: 0 !important; min-height: 36px !important; padding: 4px 3px !important; font-size: 11px !important; }
+          .idea-header-icon-link, .idea-theme-btn, .idea-menu-btn { width: 38px; height: 38px; min-width: 38px; min-height: 38px; align-items: center; justify-content: center; flex: 0 0 38px; padding: 0 !important; }
+        }
+        @media (max-width: 390px) {
+          .idea-header-shell { gap: 3px !important; padding-inline: 8px !important; }
+          .idea-official-logo--compact { width: 104px !important; }
+          .idea-language-switcher > svg { display: none; }
+          .idea-language-btn { padding-inline: 2px !important; font-size: 10.5px !important; }
+          .idea-header-icon-link, .idea-theme-btn, .idea-menu-btn { width: 36px; min-width: 36px; flex-basis: 36px; }
+        }
+        @media (max-width: 350px) {
+          .idea-official-logo--compact { width: 94px !important; }
+          .idea-theme-btn { display: none !important; }
         }
       `}</style>
     </header>

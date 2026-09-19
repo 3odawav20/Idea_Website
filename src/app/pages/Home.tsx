@@ -19,8 +19,8 @@ function CollectionTile({ slug }: { slug: string }) {
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "")} />
       <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay)" }} />
       <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-4)", display: "grid", gridTemplateRows: "2.3em minmax(2.8em, auto)", alignItems: "end" }}>
-        <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", display: "flex", alignItems: "end" }}>{c.title[locale]}</div>
-        <div style={{ color: "var(--idea-gold)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 6, marginTop: 4, lineHeight: 1.45 }}>
+        <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "#fff", textShadow: "0 4px 18px rgba(0,0,0,.95)", display: "flex", alignItems: "end", fontWeight: 600 }}>{c.title[locale]}</div>
+        <div style={{ color: "#ff9a4d", textShadow: "0 3px 12px rgba(0,0,0,.95)", fontWeight: 500, fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 6, marginTop: 4, lineHeight: 1.45 }}>
           <ArrowRight size={13} /> {c.blurb[locale]}
         </div>
       </div>
