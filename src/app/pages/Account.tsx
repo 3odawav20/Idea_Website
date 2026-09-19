@@ -1,8 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams, Link } from "react-router";
 import { Inbox, Package, FileText, Heart, GitCompare, CreditCard, Home as HomeIcon } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useBackend } from "../backend/db";
+import { requireSupabase } from "../backend/supabaseClient";
 import { useStore } from "../store/store";
 import { Button } from "../components/ui";
 import { DashLayout, Panel, StatusBadge, EmptyState, Field, inputStyle } from "../components/dash";
@@ -286,12 +287,39 @@ export function AccountNotifications() { return <AccountInbox />; }
 export function AccountSettings() {
   const { session } = useBackend();
   const { t } = useI18n();
+  const [name, setName] = useState(session?.name || "");
+  const [email, setEmail] = useState(session?.email || "");
+  const [phone, setPhone] = useState(session?.phone || "");
+  const [message, setMessage] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setName(session?.name || "");
+    setEmail(session?.email || "");
+    setPhone(session?.phone || "");
+  }, [session?.id, session?.name, session?.email, session?.phone]);
+
+  const save = async () => {
+    if (!session || !name.trim()) return;
+    setSaving(true);
+    setMessage("");
+    const client = requireSupabase();
+    const { error: profileError } = await client.from("profiles").update({ display_name: name.trim(), phone: phone.trim() || null, updated_at: new Date().toISOString() }).eq("id", session.id);
+    if (profileError) { setSaving(false); setMessage(profileError.message); return; }
+    const authPatch: { email?: string; data?: Record<string, unknown> } = { data: { display_name: name.trim() } };
+    if (email.trim() && email.trim() !== session.email) authPatch.email = email.trim();
+    const { error: authError } = await client.auth.updateUser(authPatch);
+    setSaving(false);
+    setMessage(authError ? authError.message : authPatch.email ? "Profile saved. Check your new email address to confirm the change." : "Profile saved.");
+  };
+
   return (
     <Panel>
-      <Field label={t("acct.profile")}><input style={inputStyle} defaultValue={session?.name} /></Field>
-      <Field label={t("auth.email")}><input style={inputStyle} defaultValue={session?.email || ""} /></Field>
-      <Field label={t("auth.phone")}><input style={inputStyle} defaultValue={session?.phone || ""} /></Field>
-      <Button size="sm">{t("common.save")}</Button>
+      <Field label={t("acct.profile")}><input style={inputStyle} value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" /></Field>
+      <Field label={t("auth.email")}><input style={inputStyle} type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></Field>
+      <Field label={t("auth.phone")}><input style={inputStyle} value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" /></Field>
+      {message && <p role="status" style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{message}</p>}
+      <Button size="sm" disabled={saving || !name.trim()} onClick={() => void save()}>{saving ? "Saving…" : t("common.save")}</Button>
     </Panel>
   );
 }
