@@ -32,7 +32,7 @@ function CollectionTile({ slug }: { slug: string }) {
 export function Home() {
   const { t, locale } = useI18n();
   const { products } = useStore();
-  const ceramicPorcelain = ["ceramics", "porcelain", "marble", "sanitary-ware", "faucets"];
+  const ceramicPorcelain = ["ceramics", "porcelain", "marble"];
   const sanitary = ["sanitary-ware", "faucets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
   const visibleProducts = dedupeProductsForLocale(products.filter((product) => productMatchesLocale(product, locale)), locale);
   const featured = visibleProducts.slice(0, 4);
