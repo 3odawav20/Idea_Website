@@ -4,11 +4,10 @@ import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
 import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from "lucide-react";
-import { localizedOptional, productMatchesLocale } from "../data/catalogPresentation";
+import { dedupeProductsForLocale, localizedOptional, localizedProductName } from "../data/catalogPresentation";
 
 function uniq<T>(arr: (T | undefined)[]): T[] {
   return [...new Set(arr.filter(Boolean) as T[])];
@@ -23,7 +22,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const scope = useMemo(
     () => {
       const collectionScope = fixedCollection ? products.filter((p) => p.collection === fixedCollection) : products;
-      return collectionScope.filter((product) => productMatchesLocale(product, locale));
+      return dedupeProductsForLocale(collectionScope, locale);
     },
     [products, fixedCollection, locale]
   );
@@ -61,17 +60,37 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     if (material && localizedOptional(p.material, locale) !== material) return false;
     if (application && localizedOptional(p.application, locale) !== application) return false;
     if (q) {
-      const hay = [p.name[locale], p.name.en, p.brand, p.model, p.code, p.collection, p.subcategory, p.series, p.origin, p.type, p.material, p.finish, p.texture, p.application, ...(p.colors ?? []), ...(p.usage ?? []), ...p.sizes.map((s) => s.normalizedDisplayValue || s.label)]
-        .join(" ").toLowerCase();
+      const hay = [
+        localizedProductName(p, locale),
+        localizedOptional(p.brand, locale, false),
+        localizedOptional(p.model, locale),
+        p.code,
+        p.collection,
+        localizedOptional(p.subcategory, locale),
+        localizedOptional(p.series, locale),
+        localizedOptional(p.origin, locale),
+        localizedOptional(p.type, locale),
+        localizedOptional(p.material, locale),
+        localizedOptional(p.finish, locale),
+        localizedOptional(p.texture, locale),
+        localizedOptional(p.application, locale),
+        ...(p.colors ?? []).map((value) => localizedOptional(value, locale)),
+        ...(p.usage ?? []).map((value) => localizedOptional(value, locale)),
+        ...p.sizes.map((s) => s.normalizedDisplayValue || s.label),
+      ].filter(Boolean).join(" ").toLowerCase();
       if (!hay.includes(q)) return false;
     }
     return true;
   };
 
   const results = scope.filter(matches).toSorted((a, b) => {
-    if (sort === "brand") return (a.brand || "").localeCompare(b.brand || "") || a.name[locale].localeCompare(b.name[locale]);
-    if (sort === "collection") return a.collection.localeCompare(b.collection) || a.name[locale].localeCompare(b.name[locale]);
-    return a.name[locale].localeCompare(b.name[locale]);
+    const nameA = localizedProductName(a, locale) || "";
+    const nameB = localizedProductName(b, locale) || "";
+    const brandA = localizedOptional(a.brand, locale, false) || "";
+    const brandB = localizedOptional(b.brand, locale, false) || "";
+    if (sort === "brand") return brandA.localeCompare(brandB) || nameA.localeCompare(nameB);
+    if (sort === "collection") return a.collection.localeCompare(b.collection) || nameA.localeCompare(nameB);
+    return nameA.localeCompare(nameB);
   });
   const activeCount = [finish, size, usage, color, brand, type, material, application].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -91,10 +110,10 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
 
   const meta = fixedCollection ? COLLECTIONS.find((c) => c.slug === fixedCollection) : null;
   const catalogueSummary = locale === "ar"
-    ? `${products.length} منتجًا في الكتالوج الحالي · ${ART_CERAMIC_CATALOGUE.totalImages} مرجع صورة لـ Art Ceramic`
+    ? `${scope.length} منتجًا متاحًا في المعرض`
     : locale === "fr"
-      ? `${products.length} produits dans le catalogue actuel · ${ART_CERAMIC_CATALOGUE.totalImages} références d’images Art Ceramic`
-      : `${products.length} products in the current catalogue · ${ART_CERAMIC_CATALOGUE.totalImages} Art Ceramic gallery image references`;
+      ? `${scope.length} produits disponibles dans la galerie`
+      : `${scope.length} products available in the gallery`;
 
   const group = (label: string, values: string[], val: string | null, set: (v: string | null) => void) =>
     values.length > 1 && (
