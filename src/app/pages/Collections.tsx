@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
+import { productMatchesLocale } from "../data/catalogPresentation";
 import type { CollectionSlug } from "../data/types";
 import { Container, Section } from "../components/ui";
 import { Products } from "./Products";
@@ -31,7 +32,7 @@ export function Collections() {
     .map((slug) => {
       const collection = COLLECTIONS.find((item) => item.slug === slug);
       if (!collection) return null;
-      const count = products.filter((product) => product.collection === slug && product.approved && product.image).length;
+      const count = products.filter((product) => product.collection === slug && product.approved && product.image && productMatchesLocale(product, locale)).length;
       return count > 0 ? { collection, count } : null;
     })
     .filter(Boolean) as Array<{ collection: (typeof COLLECTIONS)[number]; count: number }>;
