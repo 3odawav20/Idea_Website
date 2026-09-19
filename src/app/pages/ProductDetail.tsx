@@ -9,7 +9,7 @@ import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
 import { COLLECTIONS } from "../data/catalog";
-import { isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName, productMatchesLocale } from "../data/catalogPresentation";
+import { hasPublicProductDetails, isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName, productMatchesLocale } from "../data/catalogPresentation";
 
 export function ProductDetail() {
   const { slug } = useParams();
@@ -82,7 +82,7 @@ export function ProductDetail() {
     );
   }
 
-  if (!product || !productMatchesLocale(product, locale)) {
+  if (!product || !productMatchesLocale(product, locale) || !hasPublicProductDetails(product)) {
     return (
       <Section><Container><p style={{ color: "var(--idea-text-muted)" }}>{t("product.notFound")} <Link to="/products" style={{ color: "var(--idea-gold)" }}>{t("product.backGallery")}</Link></p></Container></Section>
     );
@@ -126,7 +126,7 @@ export function ProductDetail() {
       return value;
     };
     return products
-      .filter((candidate) => candidate.id !== product.id && Boolean(candidate.image) && productMatchesLocale(candidate, locale))
+      .filter((candidate) => candidate.id !== product.id && Boolean(candidate.image) && isPresentableImageUrl(candidate.image) && productMatchesLocale(candidate, locale) && hasPublicProductDetails(candidate))
       .map((candidate) => ({ candidate, score: score(candidate) }))
       .filter((item) => item.score > 0)
       .sort((a, b) => b.score - a.score || a.candidate.name.en.localeCompare(b.candidate.name.en))
@@ -135,6 +135,9 @@ export function ProductDetail() {
   })();
 
   const primarySpecs = [
+    [locale === "ar" ? "المجموعة" : locale === "fr" ? "Collection" : "Collection", collectionTitle],
+    [locale === "ar" ? "القسم" : locale === "fr" ? "Sous-catégorie" : "Subcategory", visibleSubcategory],
+    [t("filters.brand"), visibleBrand],
     [t("label.model"), product.model],
     ["SKU", product.code],
     [t("label.origin"), localizedOptional(product.origin, locale)],
@@ -315,13 +318,19 @@ export function ProductDetail() {
         {related.length > 0 && (
           <div style={{ marginTop: "var(--idea-space-8)" }}>
             <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{t("product.related")}</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
+            <div className="idea-related-products-grid">
               {related.map((p) => <ProductCard key={p.id} product={p} />)}
             </div>
           </div>
         )}
       </Container>
-      <style>{`@media (max-width: 860px){ .idea-pd-grid{ grid-template-columns: 1fr !important; } }`}</style>
+      <style>{`
+        .idea-related-products-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;align-items:stretch}
+        .idea-related-products-grid>.idea-product-card{height:100%;min-width:0}
+        @media(max-width:1040px){.idea-related-products-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+        @media(max-width:860px){.idea-pd-grid{grid-template-columns:1fr!important}.idea-related-products-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+        @media(max-width:560px){.idea-related-products-grid{grid-template-columns:1fr}}
+      `}</style>
     </Section>
   );
 }
