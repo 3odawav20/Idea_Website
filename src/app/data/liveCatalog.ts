@@ -37,7 +37,7 @@ const DISPLAY_COLLECTIONS = new Set<CollectionSlug>([
   "home-decor",
 ]);
 
-const SKIP_SOURCES = new Set(["source-02", "source-05", "source-10", "source-20"]);
+const SKIP_SOURCES = new Set(["source-02", "source-05", "source-07", "source-10", "source-20", "source-26", "source-34"]);
 
 interface CatalogRow {
   id: number;
@@ -87,6 +87,7 @@ function displayPrice(value?: string | null, currency?: string | null) {
       maximumFractionDigits: 2,
     })}`;
   }
+  if (currency && raw.toLowerCase().startsWith(currency.toLowerCase())) return raw;
   return [currency, raw].filter(Boolean).join(" ");
 }
 
