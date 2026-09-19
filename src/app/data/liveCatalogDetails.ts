@@ -1,7 +1,8 @@
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
 import { isPresentableImageUrl } from "./catalogPresentation";
 
-const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "https://api.fuzzycell.com/idea-catalog").replace(/\/$/, "");
+const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "").replace(/\/$/, "");
+const catalogUrl = (query: string) => API_BASE ? `${API_BASE}/api.php?${query}` : `/api/catalog?${query}`;
 
 interface DetailAttribute {
   attribute_key: string;
@@ -168,7 +169,7 @@ export async function loadLiveCatalogDetail(product: Product): Promise<Product |
   const id = catalogId(product);
   if (!id) return null;
 
-  const response = await fetch(`${API_BASE}/api.php?action=product&id=${id}`, {
+  const response = await fetch(catalogUrl(`action=product&id=${id}`), {
     headers: { Accept: "application/json" },
   });
   if (!response.ok) return null;
@@ -179,7 +180,7 @@ export async function loadLiveCatalogDetail(product: Product): Promise<Product |
 }
 
 export async function loadLiveCatalogProductBySlug(slug: string): Promise<Product | null> {
-  const response = await fetch(`${API_BASE}/api.php?action=product&slug=${encodeURIComponent(slug)}`, {
+  const response = await fetch(catalogUrl(`action=product&slug=${encodeURIComponent(slug)}`), {
     headers: { Accept: "application/json" },
   });
   if (!response.ok) return null;
