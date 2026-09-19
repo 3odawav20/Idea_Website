@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { Heart, GitCompare, FileText } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { Product } from "../data/types";
 import { loadMazloumDetail, applyMazloumDetail } from "../data/mazloumDetails";
 import { useI18n } from "../i18n/i18n";
@@ -46,10 +46,7 @@ export function ProductCard({ product }: { product: Product }) {
   const inCompare = compare.includes(p.id);
   const unit = p.collection === "ceramics" || p.collection === "porcelain" ? "sqm" : "pieces";
 
-  const secondaryImage = useMemo(
-    () => p.gallery?.find((image) => image && image !== p.image),
-    [p.gallery, p.image]
-  );
+  const secondaryImage = p.gallery?.find((image) => image && image !== p.image);
   const cardImage = hovered && secondaryImage ? secondaryImage : p.image;
   const primarySize = p.sizes[0]?.normalizedDisplayValue || p.sizes[0]?.label;
   const commercialMeta = [
