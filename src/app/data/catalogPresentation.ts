@@ -78,16 +78,22 @@ export function localizedProductName(product: Product, locale: Locale) {
   const direct = cleanCatalogText(product.name[locale]);
   if (direct && !MOJIBAKE_RE.test(direct) && textMatchesLocale(direct, locale, false)) return direct;
 
-  // For Arabic we may safely keep only the Arabic source words and neutral dimensions.
-  // For English/French, do not fabricate a title out of fragments from a mixed-language source.
-  if (locale !== "ar") return undefined;
+  const sourceCandidates = [direct, product.name[locale], product.name.en, product.name.ar, product.name.fr].filter(Boolean);
 
-  const sourceCandidates = [direct, product.name.ar, product.name.en, product.name.fr].filter(Boolean);
+  if (locale === "ar") {
+    for (const candidate of sourceCandidates) {
+      if (MOJIBAKE_RE.test(candidate)) continue;
+      const cleaned = cleanLocalizedTokens(candidate, locale);
+      const letterCount = [...cleaned].filter((char) => ARABIC_CHAR_RE.test(char)).length;
+      if (letterCount >= 3 && textMatchesLocale(cleaned, locale, true)) return cleaned;
+    }
+  }
+
+  // If the source has no translation for the selected UI language, keep the
+  // exact clean source title instead of hiding a valid marketplace product.
   for (const candidate of sourceCandidates) {
-    if (MOJIBAKE_RE.test(candidate)) continue;
-    const cleaned = cleanLocalizedTokens(candidate, locale);
-    const letterCount = [...cleaned].filter((char) => ARABIC_CHAR_RE.test(char)).length;
-    if (letterCount >= 3 && textMatchesLocale(cleaned, locale, true)) return cleaned;
+    const cleaned = cleanCatalogText(candidate);
+    if (cleaned && !MOJIBAKE_RE.test(cleaned) && (hasArabic(cleaned) || hasLatin(cleaned))) return cleaned;
   }
   return undefined;
 }
@@ -168,12 +174,12 @@ export function marketplaceProductQuality(product: Product, locale: Locale) {
   if (!name || !product.approved || !product.image || !isPresentableImageUrl(product.image)) return -1000;
 
   let score = 40;
-  if (localizedOptional(product.brand, locale, false)) score += 10;
-  if (localizedOptional(product.subcategory, locale)) score += 8;
-  if (localizedOptional(product.type, locale)) score += 5;
+  if (cleanCatalogText(product.brand)) score += 10;
+  if (cleanCatalogText(product.subcategory)) score += 8;
+  if (cleanCatalogText(product.type)) score += 5;
   if (product.code?.trim()) score += 8;
-  if (localizedOptional(product.material, locale)) score += 6;
-  if (localizedOptional(product.finish, locale)) score += 4;
+  if (cleanCatalogText(product.material)) score += 6;
+  if (cleanCatalogText(product.finish)) score += 4;
   if (product.sizes.length) score += 7;
   if (product.colors?.length) score += 5;
   if (product.priceText?.trim()) score += 8;
@@ -189,12 +195,12 @@ export function isMarketplaceReadyProduct(product: Product, locale: Locale) {
   if (!product.approved || !localizedProductName(product, locale) || !product.image || !isPresentableImageUrl(product.image)) return false;
 
   const meaningfulSignals = [
-    localizedOptional(product.brand, locale, false),
-    localizedOptional(product.subcategory, locale),
-    localizedOptional(product.type, locale),
+    cleanCatalogText(product.brand),
+    cleanCatalogText(product.subcategory),
+    cleanCatalogText(product.type),
     product.code?.trim(),
-    localizedOptional(product.material, locale),
-    localizedOptional(product.finish, locale),
+    cleanCatalogText(product.material),
+    cleanCatalogText(product.finish),
     product.sizes.length ? "size" : "",
     product.colors?.length ? "color" : "",
     product.priceText?.trim(),
@@ -219,7 +225,7 @@ export function dedupeProductsForLocale(products: Product[], locale: Locale) {
     if (!name || !isMarketplaceReadyProduct(product, locale)) return false;
 
     const imageKey = presentationImageKey(product.image);
-    const brand = localizedOptional(product.brand, locale, false) || "";
+    const brand = cleanCatalogText(product.brand);
     const sku = (product.code || "").trim().toLowerCase();
     const identity = sku
       ? `sku:${brand.toLowerCase()}:${sku}`
