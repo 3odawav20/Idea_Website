@@ -6,20 +6,15 @@ const catalogUrl = (query: string) => API_BASE ? `${API_BASE}/api.php?${query}` 
 const PAGE_SIZE = 500;
 const PAGE_CONCURRENCY = 3;
 
-const SOURCE_COLLECTIONS = [
-  "ceramics",
-  "porcelain",
-  "sanitary-ware",
-  "faucets",
-  "bathroom-units",
-  "bathtubs",
-  "shower-units",
-  "bathroom-accessories",
-  "furniture",
-  "lighting",
-  "home-decor",
-  "plumbing",
-  "plumbing-products",
+const SOURCE_FEEDS = [
+  "source-04",
+  "source-06",
+  "source-08",
+  "source-12",
+  "source-13",
+  "source-22",
+  "source-25",
+  "source-36",
 ] as const;
 
 const DISPLAY_COLLECTIONS = new Set<CollectionSlug>([
@@ -258,8 +253,8 @@ function mapRow(row: CatalogRow): Product | null {
   };
 }
 
-async function fetchPage(collection: string, page: number, signal?: AbortSignal): Promise<ProductPage> {
-  const url = catalogUrl(`action=products&collection=${encodeURIComponent(collection)}&per_page=${PAGE_SIZE}&page=${page}`);
+async function fetchPage(source: string, page: number, signal?: AbortSignal): Promise<ProductPage> {
+  const url = catalogUrl(`action=products&source=${encodeURIComponent(source)}&per_page=${PAGE_SIZE}&page=${page}`);
   let lastStatus: number | string = "network";
 
   for (let attempt = 0; attempt < 4; attempt += 1) {
@@ -306,17 +301,17 @@ export async function loadLiveCatalog(
   };
 
   const firstPages = await Promise.allSettled(
-    SOURCE_COLLECTIONS.map(async (collection) => ({ collection, payload: await fetchPage(collection, 1, signal) }))
+    SOURCE_FEEDS.map(async (source) => ({ source, payload: await fetchPage(source, 1, signal) }))
   );
 
-  const remaining: Array<{ collection: string; page: number }> = [];
+  const remaining: Array<{ source: string; page: number }> = [];
   for (const result of firstPages) {
     if (result.status !== "fulfilled") continue;
-    const { collection, payload } = result.value;
+    const { source, payload } = result.value;
     const firstBatch = mappedProducts(payload);
     if (firstBatch.length) publish(firstBatch);
     for (let page = 2; page <= Math.max(1, payload.totalPages || 1); page += 1) {
-      remaining.push({ collection, page });
+      remaining.push({ source, page });
     }
   }
 
@@ -326,7 +321,7 @@ export async function loadLiveCatalog(
       if (signal?.aborted) return;
       const task = remaining[cursor++];
       try {
-        const payload = await fetchPage(task.collection, task.page, signal);
+        const payload = await fetchPage(task.source, task.page, signal);
         const batch = mappedProducts(payload);
         if (batch.length) publish(batch);
       } catch (error) {
