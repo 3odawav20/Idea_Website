@@ -9,7 +9,7 @@ import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
 import { COLLECTIONS } from "../data/catalog";
-import { localizedOptional, localizedPrice, productMatchesLocale } from "../data/catalogPresentation";
+import { isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName, productMatchesLocale } from "../data/catalogPresentation";
 
 export function ProductDetail() {
   const { slug } = useParams();
@@ -57,7 +57,9 @@ export function ProductDetail() {
     );
   }
 
-  const gallery = (product.gallery?.length ? [...new Set([product.image, ...product.gallery])] : [product.image]).filter(Boolean);
+  const displayName = localizedProductName(product, locale);
+  const gallery = (product.gallery?.length ? [...new Set([product.image, ...product.gallery])] : [product.image])
+    .filter((value): value is string => Boolean(value && isPresentableImageUrl(value)));
   const unit = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble" ? "sqm" : "pieces";
   const collectionTitle = COLLECTIONS.find((item) => item.slug === product.collection)?.title[locale] || product.collection.replaceAll("-", " ");
   const visibleSubcategory = localizedOptional(product.subcategory, locale);
@@ -73,6 +75,12 @@ export function ProductDetail() {
   const visibleBadges = (product.badges ?? []).map((value) => localizedOptional(value, locale)).filter(Boolean) as string[];
   const displayPrice = localizedPrice(product.priceText, locale);
   const displayComparePrice = localizedPrice(product.compareAtPriceText, locale);
+  if (!displayName || gallery.length === 0) {
+    return (
+      <Section><Container><p style={{ color: "var(--idea-text-muted)" }}>{t("product.notFound")} <Link to="/products" style={{ color: "var(--idea-gold)" }}>{t("product.backGallery")}</Link></p></Container></Section>
+    );
+  }
+
   const fav = isFavorite(product.id);
   const activeImageFailed = failedImages.includes(activeImg);
 
@@ -113,6 +121,37 @@ export function ProductDetail() {
     [t("label.sqmBox"), product.squareMetersPerBox ? String(product.squareMetersPerBox) : undefined],
   ].filter((entry): entry is [string, string] => Boolean(entry[1]));
 
+  const localizedSpecLabel = (label: string) => {
+    const key = label.trim().toLowerCase();
+    if (/dimension|size|measure|مقاس|أبعاد|ابعاد/.test(key)) return t("label.sizes");
+    if (/material|خامة/.test(key)) return t("label.material");
+    if (/color|colour|لون/.test(key)) return t("filters.color");
+    if (/finish|surface|texture|تشطيب|ملمس/.test(key)) return t("label.finish");
+    if (/availability|stock|توفر|مخزون/.test(key)) return t("label.availability");
+    if (/sku|product code|reference|كود/.test(key)) return locale === "ar" ? "كود المنتج" : "SKU / Product code";
+    if (/origin|country|منشأ/.test(key)) return t("label.origin");
+    if (/weight|وزن/.test(key)) return t("label.weight");
+    if (/pack|box|عبوة|كرتونة/.test(key)) return t("label.packaging");
+    if (/usage|application|استخدام/.test(key)) return t("filters.application");
+    return localizedOptional(label, locale, false);
+  };
+
+  const visibleSpecificationGroups = (product.specificationGroups ?? [])
+    .map((group) => ({
+      title: t("product.technicalSpecs"),
+      items: group.items
+        .map((item) => {
+          const label = localizedSpecLabel(item.label);
+          const rawValue = item.normalizedValue || item.value;
+          const value = /dimension|size|measure|مقاس|أبعاد|ابعاد/i.test(item.label)
+            ? localizedMeasurement(rawValue, locale)
+            : localizedOptional(rawValue, locale) || (/^[\d\s×x*./_-]+$/u.test(rawValue) ? rawValue : undefined);
+          return label && value ? { label, value } : null;
+        })
+        .filter((item): item is { label: string; value: string } => Boolean(item)),
+    }))
+    .filter((group) => group.items.length > 0);
+
   const spec = (label: string, value: string) => (
     <div key={label} style={{ display: "flex", justifyContent: "space-between", gap: 20, padding: "10px 0", borderBottom: "1px solid var(--idea-border-neutral)" }}>
       <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{label}</span>
@@ -130,7 +169,7 @@ export function ProductDetail() {
           {visibleSubcategory && <><ChevronRight size={12} /><span>{visibleSubcategory}</span></>}
           {visibleSeries && <><ChevronRight size={12} /><span>{visibleSeries}</span></>}
           <ChevronRight size={12} />
-          <span style={{ color: "var(--idea-gold)" }}>{product.name[locale]}</span>
+          <span style={{ color: "var(--idea-gold)" }}>{displayName}</span>
         </nav>
 
         <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "var(--idea-space-7)" }} className="idea-pd-grid">
@@ -139,7 +178,7 @@ export function ProductDetail() {
               {activeImageFailed ? (
                 <div className="idea-image-unavailable">{t("image.unavailable")}</div>
               ) : (
-                <img className="idea-vivid-image" src={gallery[activeImg]} alt={product.name[locale]} onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img className="idea-vivid-image" src={gallery[activeImg]} alt={displayName} onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
               )}
             </div>
             {gallery.length > 1 && (
@@ -155,7 +194,7 @@ export function ProductDetail() {
 
           <div>
             {visibleBrand && <div className="idea-eyebrow">{visibleBrand}</div>}
-            <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 var(--idea-space-3)" }}>{product.name[locale]}</h1>
+            <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 var(--idea-space-3)" }}>{displayName}</h1>
             {(visibleSeries || visibleFamily) && <div style={{ color: "var(--idea-text-muted)", marginBottom: 10 }}>{visibleSeries || visibleFamily}</div>}
             {(displayPrice || displayComparePrice) && (
               <div style={{ marginBottom: "var(--idea-space-4)" }}>
@@ -193,7 +232,7 @@ export function ProductDetail() {
             {product.sizes.length > 0 && <>
               <div className="idea-eyebrow" style={{ marginBottom: 10 }}>{t("label.sizes")}</div>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-5)" }}>
-                {product.sizes.map((s) => <Tag key={s.id}>{s.normalizedDisplayValue || s.label}</Tag>)}
+                {product.sizes.map((s) => <Tag key={s.id}>{localizedMeasurement(s.normalizedDisplayValue || s.label, locale)}</Tag>)}
               </div>
             </>}
 
@@ -210,7 +249,7 @@ export function ProductDetail() {
               <div style={{ display: "grid", gap: 8, marginBottom: "var(--idea-space-5)" }}>
                 {product.variants!.map((variant) => (
                   <div key={variant.id} style={{ border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)", padding: "10px 12px", display: "flex", justifyContent: "space-between", gap: 12 }}>
-                    <span style={{ color: "var(--idea-text)" }}>{variant.label}</span>
+                    <span style={{ color: "var(--idea-text)" }}>{localizedOptional(variant.label, locale) || localizedMeasurement(variant.label, locale)}</span>
                     <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{variant.sku || (variant.available === false ? t("product.unavailable") : "")}</span>
                   </div>
                 ))}
@@ -228,14 +267,14 @@ export function ProductDetail() {
           </div>
         </div>
 
-        {(product.specificationGroups?.length ?? 0) > 0 && (
+        {visibleSpecificationGroups.length > 0 && (
           <div style={{ marginTop: "var(--idea-space-8)" }}>
             <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{t("product.technicalSpecs")}</div>
             <div style={{ display: "grid", gap: "var(--idea-space-4)", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))" }}>
-              {product.specificationGroups!.map((group) => (
+              {visibleSpecificationGroups.map((group) => (
                 <section key={group.title} style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-4) var(--idea-space-5)" }}>
                   <h2 className="idea-display" style={{ fontSize: "var(--idea-text-md)", margin: "0 0 8px", color: "var(--idea-text)" }}>{group.title}</h2>
-                  {group.items.map((item) => spec(item.label, item.normalizedValue || item.value))}
+                  {group.items.map((item) => spec(item.label, item.value))}
                 </section>
               ))}
             </div>
