@@ -1,4 +1,5 @@
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
+import { isPresentableImageUrl } from "./catalogPresentation";
 
 const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "https://api.fuzzycell.com/idea-catalog").replace(/\/$/, "");
 const PAGE_SIZE = 500;
@@ -36,7 +37,7 @@ const DISPLAY_COLLECTIONS = new Set<CollectionSlug>([
   "home-decor",
 ]);
 
-const SKIP_SOURCES = new Set(["source-20"]);
+const SKIP_SOURCES = new Set(["source-02", "source-05", "source-10", "source-20"]);
 
 interface CatalogRow {
   id: number;
@@ -95,24 +96,27 @@ function normalizedCollection(row: CatalogRow): CollectionSlug | null {
 
   if (/faucet|mixer|tap|خلاط|حنفيه|حنفية/u.test(text)) return "faucets";
   if (/bathtub|bath tub|jacuzzi|بانيو|جاكوزي/u.test(text)) return "bathtubs";
-  if (/shower|دش|شاور/u.test(text)) return "shower-units";
-  if (/basin|wash ?basin|sink|toilet|\bwc\b|sanitary|حوض|مرحاض|تواليت|قاعدة حمام/u.test(text)) return "sanitary-ware";
+  if (/shower|shower system|دش|شاور/u.test(text)) return "shower-units";
+  if (/basin|wash ?basin|sink|toilet|\bwc\b|sanitary|حوض|مرحاض|تواليت|قاعدة حمام|كومبنيشن/u.test(text)) return "sanitary-ware";
   if (/vanity|bathroom unit|bathroom furniture|وحدة حمام|اثاث حمام|أثاث حمام/u.test(text)) return "bathroom-units";
   if (/pipe|fitting|valve|plumbing|مواسير|ماسورة|وصلة|محبس|سباكة/u.test(text)) return "plumbing-products";
   if (/marble|natural stone|رخام|حجر طبيعي/u.test(text)) return "marble";
   if (/porcelain|بورسلين/u.test(text)) return "porcelain";
   if (/ceramic|tiles?|سيراميك|بلاط/u.test(text)) return "ceramics";
 
-  if (raw === "plumbing" || raw === "plumbing-products") return "plumbing-products";
-  if (DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) return raw as CollectionSlug;
+  // Mazloum's furniture / lighting / decor taxonomy is already source-verified.
+  if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) {
+    return raw as CollectionSlug;
+  }
+
+  // Do not guess ambiguous products into a commercial category.
   return null;
 }
 
 function cleanImageUrl(value?: string | null) {
   const image = (value || "").trim();
-  if (!/^https?:\/\//i.test(image)) return "";
+  if (!isPresentableImageUrl(image)) return "";
   if (/\b(array|null|undefined)\b/i.test(image)) return "";
-  if (/(banner|slider|promo|promotion|offer|sale|facebook|instagram|feed-ad|whatsapp|logo|placeholder|no[-_ ]?image|category[-_ ]?default)/i.test(image)) return "";
   if (/[-_](?:80|100|120|150|180|200)x(?:80|100|120|150|180|200)(?:\.|-)/i.test(image)) return "";
   return image;
 }
