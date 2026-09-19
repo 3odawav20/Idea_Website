@@ -25,7 +25,7 @@ export function Footer() {
           </div>
         </div>
         <div>
-          <div className="idea-eyebrow">Company</div>
+          <div className="idea-eyebrow">{t("footer.company")}</div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8, marginTop: "var(--idea-space-4)" }}>
             <Link to="/how-it-works" style={{ color: "var(--idea-text-muted)", textDecoration: "none", fontSize: "var(--idea-text-sm)" }}>{t("nav.how")}</Link>
             <Link to="/room-designer" style={{ color: "var(--idea-text-muted)", textDecoration: "none", fontSize: "var(--idea-text-sm)" }}>{t("nav.roomDesigner")}</Link>
@@ -34,20 +34,20 @@ export function Footer() {
           </div>
         </div>
         <div>
-          <div className="idea-eyebrow">Secure Payment</div>
+          <div className="idea-eyebrow">{t("footer.securePayment")}</div>
           <div style={{ display: "flex", gap: 8, marginTop: "var(--idea-space-4)", flexWrap: "wrap" }}>
             <span style={payChip}><VisaMark /></span><span style={payChip}><MastercardMark /></span>
             <span style={payChip}><MeezaMark /></span><span style={payChip}><FawryMark /></span>
           </div>
           <p style={{ color: "var(--idea-text-faint)", marginTop: "var(--idea-space-2)", fontSize: "var(--idea-text-xs)", lineHeight: 1.7 }}>
-            EGP · Enabled only with configured & tested merchant credentials.
+            {t("footer.paymentNote")}
           </p>
         </div>
       </Container>
       <div className="idea-rule" />
       <Container style={{ padding: "var(--idea-space-4) var(--idea-space-5)", display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-        <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>© {new Date().getFullYear()} IDEA. All rights reserved.</span>
-        <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>Public prices are never shown — request private offers.</span>
+        <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>© {new Date().getFullYear()} IDEA. {t("footer.rights")}</span>
+        <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{t("footer.privateOffers")}</span>
       </Container>
     </footer>
   );
