@@ -109,6 +109,10 @@ function normalizedCollection(row: CatalogRow): CollectionSlug | null {
 
   if (/(?:chandelier|pendant lamp|pendent lamp|ceiling lamp|wall lamp|floor lamp|table lamp|lighting|light fixture|lamp)/i.test(text) ||
       /نجفة|نجف|إضاءة|اضاءة|أباجورة|اباجورة|لمبة|وحدة إضاءة/u.test(text)) return "lighting";
+  // General construction/cabinet hardware is not furniture inventory.
+  if (/\b(?:door hardware|kitchen hardware|furniture handle|cabinet handle|closet hardware|dressing hardware)\b/i.test(text) ||
+      /مقبض أثاث|مقبض اثاث|اكسسوارات مطابخ|إكسسوارات مطابخ/u.test(text)) return null;
+
   if (/(?:sofa|sofachair|armchair|chair|dining room|living room|bed room|bedroom|bed|occasional table|occassional table|coffee table|side table|console table|desk|cabinet|wardrobe|bench|stool|furniture)/i.test(text) ||
       /أثاث|اثاث|كنبة|كنب|كرسي|كراسي|ترابيزة|ترابيزات|طاولة|طاولات|سرير|غرفة نوم|غرف نوم|سفرة|كونسول|خزانة|دولاب/u.test(text)) return "furniture";
   if (/(?:vase|statue|decorative object|candle holder|wall object|painting|mirror|rug|carpet|cushion|throw|textile|wallpaper|wall covering|home decor|decoration)/i.test(text) ||

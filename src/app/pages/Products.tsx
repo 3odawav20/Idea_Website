@@ -70,7 +70,9 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     usage: uniq(scope.flatMap((p) => (p.usage ?? []).map((value) => localizedOptional(value, locale)))),
     color: uniq(scope.flatMap((p) => (p.colors ?? []).map((value) => localizedOptional(value, locale)))),
     brand: uniq(scope.map((p) => localizedOptional(p.brand, locale, false))),
-    category: uniq(scope.map((p) => COLLECTIONS.find((collection) => collection.slug === p.collection)?.title[locale])),
+    category: COLLECTIONS
+      .filter((collection) => scope.some((product) => product.collection === collection.slug))
+      .map((collection) => collection.title[locale]),
     type: uniq(scope.map((p) => localizedOptional(p.type, locale))),
     material: uniq(scope.map((p) => localizedOptional(p.material, locale))),
     application: uniq(scope.map((p) => localizedOptional(p.application, locale))),

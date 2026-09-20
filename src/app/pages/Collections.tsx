@@ -65,7 +65,7 @@ export function Collections() {
               <div className="idea-collection-card__wash" aria-hidden="true" />
               <div className="idea-collection-card__content">
                 <div className="idea-collection-card__meta">
-                  <span>{String(count).padStart(2, "0")}</span>
+                  <span>{count.toLocaleString(locale === "ar" ? "ar-EG" : locale === "fr" ? "fr-FR" : "en-US")}</span>
                   <ArrowUpRight size={15} />
                 </div>
                 <h2 className="idea-display">{c.title[locale]}</h2>
