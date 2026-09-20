@@ -106,6 +106,13 @@ function normalizedCollection(row: CatalogRow): CollectionSlug | null {
     /\b(?:mdf|hdf|wood panel|wood board|spc wall panel|spc flooring|wall panel|cladding sheet|door hardware|kitchen hardware|closet hardware|dressing hardware|furniture handle|cabinet handle)\b/i.test(text)
   ) return null;
 
+  // Drain covers and drain channels can mention ceramic/porcelain because a
+  // tile is inserted into the cover. They are plumbing products, not surfaces.
+  if (
+    /\b(?:drain cover|wall drain|linear drain|shower drain|floor drain|drain channel)\b/i.test(text) ||
+    /نقطة صرف|غطاء بيبه|غطاء بيبة|مجرى شاور|مجرى دش|غطاء صرف|صرف خطي|بلاعة|صفاية/u.test(text)
+  ) return "plumbing-products";
+
   // The actual surface material takes precedence over a decorative effect
   // mentioned later in the product name.
   if (/\bporcelain\b/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
