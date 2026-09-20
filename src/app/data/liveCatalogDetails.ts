@@ -1,6 +1,7 @@
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
 import { isPresentableImageUrl } from "./catalogPresentation";
 import { sourceProviderName } from "./catalogSources";
+import { normalizeLiveCatalogCollection } from "./liveCatalog";
 
 const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "").replace(/\/$/, "");
 const catalogUrl = (query: string) => API_BASE ? `${API_BASE}/api.php?${query}` : `/api/catalog?${query}`;
@@ -151,11 +152,6 @@ function inferredWarranty(description?: string | null) {
 function clean(value?: string | null) {
   const text = (value || "").trim().replace(/\s+/g, " ");
   return text || undefined;
-}
-
-function normalizeCollection(value: string): CollectionSlug | null {
-  if (value === "plumbing") return "plumbing-products";
-  return VALID_COLLECTIONS.has(value as CollectionSlug) ? value as CollectionSlug : null;
 }
 
 function dimensionFromName(name?: string | null) {
@@ -326,16 +322,33 @@ export async function loadLiveCatalogDetail(product: Product): Promise<Product |
 }
 
 export async function loadLiveCatalogProductBySlug(slug: string): Promise<Product | null> {
-  const response = await fetch(catalogUrl(`action=product&slug=${encodeURIComponent(slug)}`), {
-    headers: { Accept: "application/json" },
-  });
-  if (!response.ok) return null;
+  const decoded = (() => {
+    try { return decodeURIComponent(slug); } catch { return slug; }
+  })();
+  const encodedSourceSlug = encodeURIComponent(decoded).toLowerCase();
+  const candidates = [...new Set([slug, decoded, encodedSourceSlug])];
 
-  const payload = await response.json() as DetailResponse;
-  if (!payload.ok || !payload.product) return null;
+  let payload: DetailResponse | null = null;
+  for (const candidate of candidates) {
+    try {
+      const response = await fetch(catalogUrl(`action=product&slug=${encodeURIComponent(candidate)}`), {
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) continue;
+      const candidatePayload = await response.json() as DetailResponse;
+      if (candidatePayload.ok && candidatePayload.product) {
+        payload = candidatePayload;
+        break;
+      }
+    } catch {
+      // Try the next slug representation.
+    }
+  }
+
+  if (!payload?.product) return null;
 
   const row = payload.product;
-  const collection = normalizeCollection(row.collection_slug);
+  const collection = normalizeLiveCatalogCollection(row);
   const name = clean(row.name);
   const gallery = galleryFromPayload(payload);
   const primaryImage = gallery[0] || clean(row.primary_image_url);
@@ -345,6 +358,7 @@ export async function loadLiveCatalogProductBySlug(slug: string): Promise<Produc
   const dimension =
     clean(row.dimension_text) ||
     clean(findAttribute(payload.attributes || [], /size|dimension|measure|مقاس|أبعاد|ابعاد/i)) ||
+    sourceDimensions(parseSourceRaw(row)) ||
     dimensionFromName(row.name);
   const color =
     clean(row.color) ||
@@ -357,11 +371,11 @@ export async function loadLiveCatalogProductBySlug(slug: string): Promise<Produc
     name: { en: name, ar: name, fr: name },
     collection,
     subcategory: clean(row.subcategory),
-    brand: clean(row.brand) || "",
+    brand: sourceBrand(parseSourceRaw(row)) || "",
     code: clean(row.sku),
     type: clean(row.product_type),
     description: clean(row.description),
-    material: clean(row.material),
+    material: clean(row.material) || inferredMaterial(row.description),
     colors: color ? [color] : undefined,
     sizes: dimension
       ? [{
