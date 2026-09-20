@@ -95,44 +95,66 @@ function normalizedCollection(row: CatalogRow): CollectionSlug | null {
   const bathroomSource = new Set(["source-04", "source-12", "source-22", "source-36"]).has(row.source_id);
 
   if (
-    /(?:adhesive|grout|cement|sealant|cleaner|paint(?:s)?|masking|tape|tool|tools|spare part|spare parts|gift card)/i.test(text) ||
-    /لاصق|روبة|اسمنت|أسمنت|سيلانت|منظف|دهان|شريط|أداة|اداة|قطع غيار|كارت هدية/u.test(text)
+    /\b(?:adhesive|grout|cement|sealant|cleaner|paint(?:s)?|masking|tape|tool|tools|spare part|spare parts|gift card|smart lock|door lock|switch|socket|cover frame|kitchen hood|extractor hood|water heater)\b/i.test(text) ||
+    /لاصق|روبة|اسمنت|أسمنت|سيلانت|منظف|دهان|شريط|أداة|اداة|قطع غيار|كارت هدية|قفل ذكي|كالون|مفتاح كهرباء|بريزة|شفاط مطبخ|سخان مياه/u.test(text)
   ) return null;
 
-  // Source 25 also contains building materials outside the current IDEA marketplace scope.
-  if (row.source_id === "source-25" && /(?:mdf|wood panel|kitchen wood board|door hardware|kitchen hardware|closet hardware|dressing hardware)/i.test(text)) return null;
+  // Source 25 includes construction/cabinet materials that do not belong in
+  // the current consumer marketplace taxonomy.
+  if (
+    row.source_id === "source-25" &&
+    /\b(?:mdf|hdf|wood panel|wood board|spc wall panel|spc flooring|wall panel|cladding sheet|door hardware|kitchen hardware|closet hardware|dressing hardware|furniture handle|cabinet handle)\b/i.test(text)
+  ) return null;
 
-  // A kitchen sink may be sold with a mixer included. Keep it under sanitary ware
-  // when the product itself is clearly a sink; "basin mixer" products still map to faucets.
-  if (/^(?:kitchen\s+sink|sink|حوض(?:\s+مطبخ)?)/iu.test(nameText)) return "sanitary-ware";
-  if (/(?:faucet|mixer|tap|tapware)/i.test(text) || /خلاط|خلاطات|حنفيه|حنفية|حنفيات/u.test(text)) return "faucets";
-  if (/(?:bathroom accessories?|towel (?:rail|ring|holder)|soap (?:dish|holder)|robe hook|toilet brush|paper holder)/i.test(text) ||
-      /اكسسوار(?:ات)? حمام|إكسسوار(?:ات)? حمام|حامل فوط|حامل فوطة|حامل صابون|صبانة|حامل ورق|فرشاة تواليت/u.test(text) ||
-      (bathroomSource && /اكسسوار|إكسسوار|accessor/i.test(text))) return "bathroom-accessories";
-  if (/(?:bathtub|bath tub|jacuzzi|freestanding bath|spa bath)/i.test(text) || /بانيو|جاكوزي|حوض استحمام/u.test(text)) return "bathtubs";
-  if (/(?:shower enclosure|shower cabin|shower tray|shower column|shower system|shower set|shower)/i.test(text) || /كابينة دش|كابينه دش|دش|شاور/u.test(text)) return "shower-units";
-  if (/(?:vanity|bathroom unit|bathroom furniture|bathroom cabinet)/i.test(text) || /وحدة حمام|وحدات حمام|اثاث حمام|أثاث حمام|خزانة حمام/u.test(text)) return "bathroom-units";
-  if (/(?:basin|wash ?basin|sink|toilet|wc|bidet|urinal|sanitary ware|sanitary)/i.test(text) || /حوض|احواض|أحواض|مرحاض|تواليت|قاعدة حمام|قواعد حمام|بيديه|مبولة|ادوات صحية|أدوات صحية|كومبنيشن/u.test(text)) return "sanitary-ware";
-  if (/(?:pipe|fitting|valve|plumbing|trap|siphon|drain|floor drain|connector)/i.test(text) || /مواسير|ماسورة|وصلة|وصلات|محبس|محابس|سباكة|سيفون|صرف|بلف/u.test(text)) return "plumbing-products";
+  // The actual surface material takes precedence over a decorative effect
+  // mentioned later in the product name.
+  if (/\bporcelain\b/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
+  if (/\b(?:ceramic|ceramic tile|ceramic tiles)\b/i.test(text) || /سيراميك/u.test(text)) return "ceramics";
 
-  if (/(?:chandelier|pendant lamp|pendent lamp|ceiling lamp|wall lamp|floor lamp|table lamp|lighting|light fixture|lamp)/i.test(text) ||
+  // A sink may mention mixer holes, but the product itself is still a sink.
+  if (/^(?:kitchen\s+sink|sink\b|basin\b|wash\s*basin\b)/i.test(nameText) || /^(?:حوض|احواض|أحواض)\b/u.test(nameText)) {
+    return "sanitary-ware";
+  }
+
+  // Complete sanitary sets must stay under sanitary ware even when a shower is included.
+  if (
+    /^(?:bathroom set|sanitary set|combination)\b/i.test(nameText) ||
+    /^(?:طقم حمام|أطقم حمام|طقم حمامات|اطقم حمامات|كمبنيشن|كومبنيشن)/u.test(nameText)
+  ) return "sanitary-ware";
+
+  // Drainage products are plumbing products, not shower systems.
+  if (
+    /\b(?:concealed cistern|flush tank|wall drain|linear drain|shower drain|floor drain|drain channel)\b/i.test(text) ||
+    /خزان دفن|خزانات الدفن|مجرى شاور|مجرى دش|غطاء صرف|صرف خطي/u.test(text)
+  ) return "plumbing-products";
+
+  if (/\b(?:faucet|mixer|tap|tapware|health faucet|bidet spray)\b/i.test(text) || /خلاط|خلاطات|حنفيه|حنفية|حنفيات|شطاف/u.test(text)) return "faucets";
+  if (
+    /\b(?:bathroom accessories?|towel (?:rail|ring|holder)|soap (?:dish|holder)|robe hook|toilet brush|paper holder)\b/i.test(text) ||
+    /اكسسوار(?:ات)? حمام|إكسسوار(?:ات)? حمام|حامل فوط|حامل فوطة|حامل صابون|صبانة|حامل ورق|فرشاة تواليت/u.test(text) ||
+    (bathroomSource && /اكسسوار|إكسسوار|accessor/i.test(text))
+  ) return "bathroom-accessories";
+  if (/\b(?:bathtub|bath tub|jacuzzi|freestanding bath|spa bath)\b/i.test(text) || /بانيو|جاكوزي|حوض استحمام/u.test(text)) return "bathtubs";
+  if (/\b(?:shower enclosure|shower cabin|shower tray|shower column|shower system|shower set|shower panel|shower)\b/i.test(text) || /كابينة دش|كابينه دش|عمود دش|شاور بانل|دش|شاور/u.test(text)) return "shower-units";
+  if (/\b(?:vanity|bathroom unit|bathroom furniture|bathroom cabinet)\b/i.test(text) || /وحدة حمام|وحدات حمام|اثاث حمام|أثاث حمام|خزانة حمام/u.test(text)) return "bathroom-units";
+  if (/\b(?:basin|wash ?basin|sink|toilet|wc|bidet|urinal|sanitary ware|sanitary)\b/i.test(text) || /حوض|احواض|أحواض|مرحاض|تواليت|قاعدة حمام|قواعد حمام|بيديه|مبولة|ادوات صحية|أدوات صحية|كومبنيشن/u.test(text)) return "sanitary-ware";
+  if (/\b(?:pipe|fitting|valve|plumbing|trap|siphon|drain|connector)\b/i.test(text) || /مواسير|ماسورة|وصلة|وصلات|محبس|محابس|سباكة|سيفون|صرف|بلف/u.test(text)) return "plumbing-products";
+
+  if (/\b(?:chandelier|pendant lamp|pendent lamp|ceiling lamp|wall lamp|floor lamp|table lamp|lighting|light fixture|lamp)\b/i.test(text) ||
       /نجفة|نجف|إضاءة|اضاءة|أباجورة|اباجورة|لمبة|وحدة إضاءة/u.test(text)) return "lighting";
-  // General construction/cabinet hardware is not furniture inventory.
+
   if (/\b(?:door hardware|kitchen hardware|furniture handle|cabinet handle|closet hardware|dressing hardware)\b/i.test(text) ||
       /مقبض أثاث|مقبض اثاث|اكسسوارات مطابخ|إكسسوارات مطابخ/u.test(text)) return null;
 
-  if (/(?:sofa|sofachair|armchair|chair|dining room|living room|bed room|bedroom|bed|occasional table|occassional table|coffee table|side table|console table|desk|cabinet|wardrobe|bench|stool|furniture)/i.test(text) ||
+  if (/\b(?:sofa|sofachair|armchair|chair|dining room|living room|bed room|bedroom|bed|occasional table|occassional table|coffee table|side table|console table|desk|cabinet|wardrobe|bench|stool|furniture)\b/i.test(text) ||
       /أثاث|اثاث|كنبة|كنب|كرسي|كراسي|ترابيزة|ترابيزات|طاولة|طاولات|سرير|غرفة نوم|غرف نوم|سفرة|كونسول|خزانة|دولاب/u.test(text)) return "furniture";
-  if (/(?:vase|statue|decorative object|candle holder|wall object|painting|mirror|rug|carpet|cushion|throw|textile|wallpaper|wall covering|home decor|decoration)/i.test(text) ||
+  if (/\b(?:vase|statue|decorative object|candle holder|wall object|painting|mirror|rug|carpet|cushion|throw|textile|wallpaper|wall covering|home decor|decoration)\b/i.test(text) ||
       /فازة|فازات|تمثال|ديكور|شمعدان|لوحة|لوحات|مراية|مرآة|سجادة|سجاد|وسادة|ورق حائط/u.test(text)) return "home-decor";
 
-  if (/(?:marble|natural stone|travertine|granite)/i.test(text) || /رخام|حجر طبيعي|ترافرتين|جرانيت/u.test(text)) return "marble";
-  if (/porcelain/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
-  if (/(?:ceramic|tiles?|wall tile|floor tile)/i.test(text) || /سيراميك|بلاط|حوائط|أرضيات|ارضيات/u.test(text)) return "ceramics";
+  if (/\b(?:marble|natural stone|travertine|granite)\b/i.test(text) || /رخام|حجر طبيعي|ترافرتين|جرانيت(?!و)/u.test(text)) return "marble";
+  if (/\b(?:tiles?|wall tile|floor tile)\b/i.test(text) || /بلاط|حوائط|أرضيات|ارضيات/u.test(text)) return "ceramics";
 
-  if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) {
-    return raw as CollectionSlug;
-  }
+  if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) return raw as CollectionSlug;
   return null;
 }
 
@@ -235,6 +257,15 @@ function cleanImageUrl(value?: string | null) {
   return image;
 }
 
+function codeFromName(name: string) {
+  return name.match(/(?:\bsku\b|\bcode\b|كود)\s*[:#-]?\s*([A-Z0-9][A-Z0-9._/-]{2,})/iu)?.[1]?.trim();
+}
+
+function hasProfessionalMetadata(values: Array<string | undefined>) {
+  const unique = new Set(values.map((value) => clean(value)?.toLowerCase()).filter(Boolean));
+  return unique.size >= 2;
+}
+
 function mapRow(row: CatalogRow): Product | null {
   if (SKIP_SOURCES.has(row.source_id)) return null;
 
@@ -253,14 +284,19 @@ function mapRow(row: CatalogRow): Product | null {
   const subcategory = normalizedSubcategory(row, collection);
   const type = subcategory || sourceType;
   const brand = clean(row.brand) || brandFromName(name) || "";
+  const code = clean(row.sku) || codeFromName(name);
   const image = cleanImageUrl(row.primary_image_url);
   if (!image) return null;
+
+  // Never publish an image-only card. A visible marketplace product needs
+  // at least two independent product-specific data signals from the source.
+  if (!hasProfessionalMetadata([brand, code, sourceSubcategory, sourceType, material, color, dimension, finish])) return null;
 
   const specs: ProductSpecificationItem[] = [
     dimension ? { label: "Dimensions", value: dimension, originalSourceValue: dimension, normalizedValue: dimension } : null,
     material ? { label: "Material", value: material, originalSourceValue: material, normalizedValue: material } : null,
     color ? { label: "Color", value: color, originalSourceValue: color, normalizedValue: color } : null,
-    row.sku ? { label: "SKU / Product code", value: row.sku, originalSourceValue: row.sku, normalizedValue: row.sku } : null,
+    code ? { label: "SKU / Product code", value: code, originalSourceValue: code, normalizedValue: code } : null,
     row.availability ? { label: "Availability", value: row.availability, originalSourceValue: row.availability, normalizedValue: row.availability } : null,
   ].filter(Boolean) as ProductSpecificationItem[];
 
@@ -271,7 +307,7 @@ function mapRow(row: CatalogRow): Product | null {
     collection,
     subcategory,
     brand,
-    code: clean(row.sku),
+    code,
     type,
     description: clean(row.description),
     material,
