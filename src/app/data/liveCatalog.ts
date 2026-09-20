@@ -1,6 +1,7 @@
+[Reading 373 lines from start (total: 373 lines, 0 remaining)]
+
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
 import { cleanCatalogText, isPresentableImageUrl } from "./catalogPresentation";
-import { sourceProviderName } from "./catalogSources";
 
 const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "").replace(/\/$/, "");
 const catalogUrl = (query: string) => API_BASE ? `${API_BASE}/api.php?${query}` : `/api/catalog?${query}`;
@@ -90,49 +91,49 @@ function displayPrice(value?: string | null, currency?: string | null) {
 
 function normalizedCollection(row: CatalogRow): CollectionSlug | null {
   const raw = clean(row.collection_slug) || "";
-  const nameText = clean(row.name)?.toLowerCase() || "";
+  const name = clean(row.name)?.toLowerCase() || "";
   const text = clean([row.name, row.subcategory, row.product_type].filter(Boolean).join(" "))?.toLowerCase() || "";
   const bathroomSource = new Set(["source-04", "source-12", "source-22", "source-36"]).has(row.source_id);
 
   if (
-    /(?:adhesive|grout|cement|sealant|cleaner|paint(?:s)?|masking|tape|tool|tools|spare part|spare parts|gift card)/i.test(text) ||
-    /لاصق|روبة|اسمنت|أسمنت|سيلانت|منظف|دهان|شريط|أداة|اداة|قطع غيار|كارت هدية/u.test(text)
+    /\b(?:adhesive|grout|cement|sealant|cleaner|paint(?:s)?|masking|tape|tool|tools|spare part|spare parts|smart lock|door lock|switch|socket|cover frame|kitchen hood|extractor hood|water heater)\b/i.test(text) ||
+    /لاصق|روبة|اسمنت|أسمنت|سيلانت|منظف|دهان|شريط|أداة|اداة|قطع غيار|قفل ذكي|كالون|مفتاح كهرباء|بريزة|شفاط مطبخ|سخان مياه/u.test(text)
   ) return null;
 
-  // Source 25 also contains building materials outside the current IDEA marketplace scope.
-  if (row.source_id === "source-25" && /(?:mdf|wood panel|kitchen wood board|door hardware|kitchen hardware|closet hardware|dressing hardware)/i.test(text)) return null;
+  // Strong material terms take precedence over decorative wording.
+  if (/\bporcelain\b/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
+  if (/\b(?:ceramic|ceramic tile|ceramic tiles)\b/i.test(text) || /سيراميك/u.test(text)) return "ceramics";
 
-  // A kitchen sink may be sold with a mixer included. Keep it under sanitary ware
-  // when the product itself is clearly a sink; "basin mixer" products still map to faucets.
-  if (/^(?:kitchen\s+sink|sink|حوض(?:\s+مطبخ)?)/iu.test(nameText)) return "sanitary-ware";
-  if (/(?:faucet|mixer|tap|tapware)/i.test(text) || /خلاط|خلاطات|حنفيه|حنفية|حنفيات/u.test(text)) return "faucets";
-  if (/(?:bathroom accessories?|towel (?:rail|ring|holder)|soap (?:dish|holder)|robe hook|toilet brush|paper holder)/i.test(text) ||
+  // Classify by the product noun, not an incidental fitting mentioned in the title.
+  if (/^(?:kitchen sink|sink\b|basin\b|wash ?basin\b)/i.test(name) || /^(?:حوض|احواض|أحواض)\b/u.test(name)) return "sanitary-ware";
+  if (/\b(?:bathroom set|sanitary set)\b/i.test(text) || /طقم حمام|أطقم حمام|طقم حمامات|اطقم حمامات/u.test(text)) return "sanitary-ware";
+  if (/\b(?:concealed cistern|flush tank|shower drain|floor drain)\b/i.test(text) || /خزان دفن|خزانات الدفن|مجرى شاور|مجرى دش|غطاء صرف/u.test(text)) return "plumbing-products";
+
+  if (/\b(?:faucet|mixer|tap|tapware|health faucet|bidet spray)\b/i.test(text) || /خلاط|خلاطات|حنفيه|حنفية|حنفيات|شطاف/u.test(text)) return "faucets";
+  if (/\b(?:bathroom accessories?|towel (?:rail|ring|holder)|soap (?:dish|holder)|robe hook|toilet brush|paper holder)\b/i.test(text) ||
       /اكسسوار(?:ات)? حمام|إكسسوار(?:ات)? حمام|حامل فوط|حامل فوطة|حامل صابون|صبانة|حامل ورق|فرشاة تواليت/u.test(text) ||
       (bathroomSource && /اكسسوار|إكسسوار|accessor/i.test(text))) return "bathroom-accessories";
-  if (/(?:bathtub|bath tub|jacuzzi|freestanding bath|spa bath)/i.test(text) || /بانيو|جاكوزي|حوض استحمام/u.test(text)) return "bathtubs";
-  if (/(?:shower enclosure|shower cabin|shower tray|shower column|shower system|shower set|shower)/i.test(text) || /كابينة دش|كابينه دش|دش|شاور/u.test(text)) return "shower-units";
-  if (/(?:vanity|bathroom unit|bathroom furniture|bathroom cabinet)/i.test(text) || /وحدة حمام|وحدات حمام|اثاث حمام|أثاث حمام|خزانة حمام/u.test(text)) return "bathroom-units";
-  if (/(?:basin|wash ?basin|sink|toilet|wc|bidet|urinal|sanitary ware|sanitary)/i.test(text) || /حوض|احواض|أحواض|مرحاض|تواليت|قاعدة حمام|قواعد حمام|بيديه|مبولة|ادوات صحية|أدوات صحية|كومبنيشن/u.test(text)) return "sanitary-ware";
-  if (/(?:pipe|fitting|valve|plumbing|trap|siphon|drain|floor drain|connector)/i.test(text) || /مواسير|ماسورة|وصلة|وصلات|محبس|محابس|سباكة|سيفون|صرف|بلف/u.test(text)) return "plumbing-products";
+  if (/\b(?:bathtub|bath tub|jacuzzi|freestanding bath|spa bath)\b/i.test(text) || /بانيو|جاكوزي|حوض استحمام/u.test(text)) return "bathtubs";
+  if (/\b(?:shower enclosure|shower cabin|shower tray|shower column|shower system|shower set|shower)\b/i.test(text) || /كابينة دش|كابينه دش|دش|شاور/u.test(text)) return "shower-units";
+  if (/\b(?:vanity|bathroom unit|bathroom furniture|bathroom cabinet)\b/i.test(text) || /وحدة حمام|وحدات حمام|اثاث حمام|أثاث حمام|خزانة حمام/u.test(text)) return "bathroom-units";
+  if (/\b(?:basin|wash ?basin|sink|toilet|wc|bidet|urinal|sanitary ware|sanitary)\b/i.test(text) || /حوض|احواض|أحواض|مرحاض|تواليت|قاعدة حمام|قواعد حمام|بيديه|مبولة|ادوات صحية|أدوات صحية|كومبنيشن/u.test(text)) return "sanitary-ware";
+  if (/\b(?:pipe|fitting|valve|plumbing|trap|siphon|drain|floor drain|connector)\b/i.test(text) || /مواسير|ماسورة|وصلة|وصلات|محبس|محابس|سباكة|سيفون|صرف|بلف/u.test(text)) return "plumbing-products";
 
-  if (/(?:chandelier|pendant lamp|pendent lamp|ceiling lamp|wall lamp|floor lamp|table lamp|lighting|light fixture|lamp)/i.test(text) ||
+  if (/\b(?:chandelier|pendant lamp|pendent lamp|ceiling lamp|wall lamp|floor lamp|table lamp|lighting|light fixture|lamp)\b/i.test(text) ||
       /نجفة|نجف|إضاءة|اضاءة|أباجورة|اباجورة|لمبة|وحدة إضاءة/u.test(text)) return "lighting";
-  // General construction/cabinet hardware is not furniture inventory.
+
   if (/\b(?:door hardware|kitchen hardware|furniture handle|cabinet handle|closet hardware|dressing hardware)\b/i.test(text) ||
       /مقبض أثاث|مقبض اثاث|اكسسوارات مطابخ|إكسسوارات مطابخ/u.test(text)) return null;
 
-  if (/(?:sofa|sofachair|armchair|chair|dining room|living room|bed room|bedroom|bed|occasional table|occassional table|coffee table|side table|console table|desk|cabinet|wardrobe|bench|stool|furniture)/i.test(text) ||
+  if (/\b(?:sofa|sofachair|armchair|chair|dining room|living room|bed room|bedroom|bed|occasional table|occassional table|coffee table|side table|console table|desk|cabinet|wardrobe|bench|stool|furniture)\b/i.test(text) ||
       /أثاث|اثاث|كنبة|كنب|كرسي|كراسي|ترابيزة|ترابيزات|طاولة|طاولات|سرير|غرفة نوم|غرف نوم|سفرة|كونسول|خزانة|دولاب/u.test(text)) return "furniture";
-  if (/(?:vase|statue|decorative object|candle holder|wall object|painting|mirror|rug|carpet|cushion|throw|textile|wallpaper|wall covering|home decor|decoration)/i.test(text) ||
+  if (/\b(?:vase|statue|decorative object|candle holder|wall object|painting|mirror|rug|carpet|cushion|throw|textile|wallpaper|wall covering|home decor|decoration)\b/i.test(text) ||
       /فازة|فازات|تمثال|ديكور|شمعدان|لوحة|لوحات|مراية|مرآة|سجادة|سجاد|وسادة|ورق حائط/u.test(text)) return "home-decor";
 
-  if (/(?:marble|natural stone|travertine|granite)/i.test(text) || /رخام|حجر طبيعي|ترافرتين|جرانيت/u.test(text)) return "marble";
-  if (/porcelain/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
-  if (/(?:ceramic|tiles?|wall tile|floor tile)/i.test(text) || /سيراميك|بلاط|حوائط|أرضيات|ارضيات/u.test(text)) return "ceramics";
+  if (/\b(?:marble|natural stone|travertine|granite)\b/i.test(text) || /رخام|حجر طبيعي|ترافرتين|جرانيت(?!و)/u.test(text)) return "marble";
+  if (/\b(?:tiles?|wall tile|floor tile)\b/i.test(text) || /بلاط|حوائط|أرضيات|ارضيات/u.test(text)) return "ceramics";
 
-  if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) {
-    return raw as CollectionSlug;
-  }
+  if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) return raw as CollectionSlug;
   return null;
 }
 
@@ -152,8 +153,6 @@ function normalizedSubcategory(row: CatalogRow, collection: CollectionSlug) {
     return sourceValue || "Mixers";
   }
   if (collection === "sanitary-ware") {
-    if (/kitchen sink|حوض مطبخ/u.test(text)) return "Kitchen Sinks";
-    if (/bathroom set|complete set|طقم حمام|أطقم حمام/u.test(text)) return "Bathroom Sets";
     if (/toilet|wc|مرحاض|تواليت|قاعدة/u.test(text)) return "Toilets";
     if (/bidet|بيديه/u.test(text)) return "Bidets";
     if (/urinal|مبولة/u.test(text)) return "Urinals";
@@ -177,13 +176,8 @@ function normalizedSubcategory(row: CatalogRow, collection: CollectionSlug) {
   if (collection === "home-decor") {
     if (/vase|فاز/u.test(text)) return "Vases";
     if (/mirror|مراية|مرآة/u.test(text)) return "Mirrors";
-    if (/painting|photo frame|لوح|برواز/u.test(text)) return "Wall Art & Frames";
+    if (/painting|لوح/u.test(text)) return "Wall Art";
     if (/wallpaper|wall covering|ورق حائط/u.test(text)) return "Wall Coverings";
-    if (/statue|decorative object|bookend|تمثال/u.test(text)) return "Decorative Objects";
-    if (/candle holder|hurricane|شمعدان/u.test(text)) return "Candle Holders";
-    if (/tray|bowl|صينية|طبق ديكور/u.test(text)) return "Trays & Bowls";
-    if (/planter|زرع|أصيص/u.test(text)) return "Planters";
-    if (/textile|cushion|throw|وسادة|منسوج/u.test(text)) return "Textiles";
   }
   if (collection === "ceramics" || collection === "porcelain" || collection === "marble") {
     if (/wall|حوائط/u.test(text)) return "Wall Surfaces";
@@ -192,47 +186,37 @@ function normalizedSubcategory(row: CatalogRow, collection: CollectionSlug) {
   return sourceValue;
 }
 
-
-
-function dimensionFromName(name: string) {
-  const match = name.match(/(\d{1,4}(?:\.\d+)?)\s*[×x*]\s*(\d{1,4}(?:\.\d+)?)(?:\s*[×x*]\s*(\d{1,4}(?:\.\d+)?))?\s*(سم|cm|مم|mm)?/iu);
-  if (!match) return undefined;
-  const values = [match[1], match[2], match[3]].filter(Boolean);
-  const unit = match[4]?.toLowerCase();
-  return values.join(" × ") + (unit ? " " + unit : "");
-}
-
-function finishFromName(name: string) {
-  if (/(?:glossy|polished)/i.test(name) || /لامع/u.test(name)) return "Glossy";
-  if (/(?:matt|matte)/i.test(name) || /(?:^|\s)مط(?:\s|$)/u.test(name)) return "Matte";
-  return undefined;
-}
-
-function materialFromName(name: string) {
-  if (/stainless\s*steel/i.test(name) || /ستانلس/u.test(name)) return "Stainless Steel";
-  if (/brass/i.test(name) || /نحاس/u.test(name)) return "Brass";
-  if (/acrylic/i.test(name) || /أكريليك|اكريليك/u.test(name)) return "Acrylic";
-  return undefined;
-}
-
-function brandFromName(name: string) {
-  const brands: Array<[RegExp, string]> = [
-    [/ideal standard|ايديال ستاندرد/iu, "Ideal Standard"],
-    [/duravit|ديورافيت/iu, "Duravit"],
-    [/cleopatra|كليوباترا/iu, "Cleopatra"],
-    [/sanipure|ساني بيور|سانى بيور/iu, "Sanipure"],
-    [/grohe|جروهي/iu, "Grohe"],
-    [/villeroy\s*&\s*boch/iu, "Villeroy & Boch"],
-  ];
-  return brands.find(([pattern]) => pattern.test(name))?.[1];
-}
-
 function cleanImageUrl(value?: string | null) {
   const image = (value || "").trim();
   if (!isPresentableImageUrl(image)) return "";
   if (/\b(array|null|undefined)\b/i.test(image)) return "";
   if (/[-_](?:80|100|120|150|180|200)x(?:80|100|120|150|180|200)(?:\.|-)/i.test(image)) return "";
   return image;
+}
+
+function dimensionFromSource(row: CatalogRow) {
+  const direct = clean(row.dimension_text);
+  if (direct) return direct;
+  const name = clean(row.name) || "";
+  const match = name.match(/(\d{1,4}(?:[.,]\d+)?)\s*[x×*]\s*(\d{1,4}(?:[.,]\d+)?)(?:\s*(cm|mm|سم|مم))?/i);
+  if (!match) return undefined;
+  const width = match[1].replace(",", ".");
+  const height = match[2].replace(",", ".");
+  const unit = match[3] || "";
+  return `${width} × ${height}${unit ? ` ${unit}` : ""}`;
+}
+
+function skuFromSource(row: CatalogRow) {
+  const direct = clean(row.sku);
+  if (direct) return direct;
+  const name = clean(row.name) || "";
+  const match = name.match(/(?:\bsku\b|\bcode\b|كود)\s*[:#-]?\s*([A-Z0-9][A-Z0-9._/-]{2,})/iu);
+  return match?.[1]?.trim();
+}
+
+function hasProfessionalMetadata(values: Array<string | undefined>) {
+  const unique = new Set(values.map((value) => clean(value)?.toLowerCase()).filter(Boolean));
+  return unique.size >= 2;
 }
 
 function mapRow(row: CatalogRow): Product | null {
@@ -244,23 +228,24 @@ function mapRow(row: CatalogRow): Product | null {
   const name = clean(row.name);
   if (!name) return null;
 
-  const dimension = clean(row.dimension_text) || dimensionFromName(name);
+  const dimension = dimensionFromSource(row);
   const color = clean(row.color);
-  const material = clean(row.material) || materialFromName(name);
-  const finish = finishFromName(name);
+  const material = clean(row.material);
   const sourceSubcategory = clean(row.subcategory);
   const sourceType = clean(row.product_type);
   const subcategory = normalizedSubcategory(row, collection);
   const type = subcategory || sourceType;
-  const brand = clean(row.brand) || brandFromName(name) || "";
+  const brand = clean(row.brand) || "";
+  const code = skuFromSource(row);
   const image = cleanImageUrl(row.primary_image_url);
   if (!image) return null;
+  if (!hasProfessionalMetadata([brand, code, sourceSubcategory, sourceType, material, color, dimension])) return null;
 
   const specs: ProductSpecificationItem[] = [
     dimension ? { label: "Dimensions", value: dimension, originalSourceValue: dimension, normalizedValue: dimension } : null,
     material ? { label: "Material", value: material, originalSourceValue: material, normalizedValue: material } : null,
     color ? { label: "Color", value: color, originalSourceValue: color, normalizedValue: color } : null,
-    row.sku ? { label: "SKU / Product code", value: row.sku, originalSourceValue: row.sku, normalizedValue: row.sku } : null,
+    code ? { label: "SKU / Product code", value: code, originalSourceValue: code, normalizedValue: code } : null,
     row.availability ? { label: "Availability", value: row.availability, originalSourceValue: row.availability, normalizedValue: row.availability } : null,
   ].filter(Boolean) as ProductSpecificationItem[];
 
@@ -271,11 +256,10 @@ function mapRow(row: CatalogRow): Product | null {
     collection,
     subcategory,
     brand,
-    code: clean(row.sku),
+    code,
     type,
     description: clean(row.description),
     material,
-    finish,
     colors: color ? [color] : undefined,
     sizes: dimension
       ? [{
@@ -294,7 +278,7 @@ function mapRow(row: CatalogRow): Product | null {
     specificationGroups: specs.length ? [{ title: "Product information", items: specs }] : undefined,
     source: {
       sourceId: row.source_id,
-      provider: sourceProviderName(row.source_id) || "IDEA catalog source",
+      provider: "IDEA catalog source",
       recordId: row.source_record_id,
       productPageUrl: row.source_url,
       extractionTimestamp: row.last_source_sync_at || undefined,
@@ -389,3 +373,5 @@ export async function loadLiveCatalog(
 
   await Promise.all(Array.from({ length: Math.min(PAGE_CONCURRENCY, remaining.length) }, () => worker()));
 }
+
+[executed on device: RAKAN-DOD (6a82d06b-428a-4784-9cdc-9a48cc90678f)]
