@@ -60,10 +60,19 @@ export function ProductCard({ product }: { product: Product }) {
   ].filter(Boolean).slice(0, 3) as string[];
 
   const collectionTitle = COLLECTIONS.find((item) => item.slug === p.collection)?.title[locale];
-  const visibleSubcategory = localizedOptional(p.subcategory, locale) || collectionTitle;
   const visibleType = localizedOptional(p.type, locale);
   const visibleBrand = localizedOptional(p.brand, locale, false);
   const visibleSource = productSourceLabel(p.source);
+  const cardEyebrow = visibleBrand || visibleSource || collectionTitle;
+  const visibleSubcategoryRaw = localizedOptional(p.subcategory, locale);
+  const visibleSubcategory = visibleSubcategoryRaw && visibleSubcategoryRaw !== visibleType && visibleSubcategoryRaw !== cardEyebrow
+    ? visibleSubcategoryRaw
+    : !visibleType || visibleType === cardEyebrow
+      ? collectionTitle !== cardEyebrow ? collectionTitle : undefined
+      : visibleType;
+  const visibleTypeBadge = visibleType && visibleType !== cardEyebrow && visibleType !== visibleSubcategory
+    ? visibleType
+    : undefined;
   const visibleBadges = (p.badges ?? []).filter((badge) => localizedOptional(badge, locale));
   const priceText = localizedPrice(p.priceText, locale);
   const compareAtPriceText = localizedPrice(p.compareAtPriceText, locale);
@@ -92,7 +101,7 @@ export function ProductCard({ product }: { product: Product }) {
             style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1), opacity .2s" }}
           />
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {visibleType && <span style={badgeStyle}>{visibleType}</span>}
+          {visibleTypeBadge && <span style={badgeStyle}>{visibleTypeBadge}</span>}
           {visibleBadges.slice(0, 2).map((badge) => <span key={badge} style={badgeStyle}>{badge}</span>)}
         </div>
         <div style={{ position: "absolute", top: 12, insetInlineEnd: 12, display: "flex", gap: 6 }}>
@@ -107,7 +116,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)", minHeight: 14 }}>
-          {visibleBrand || visibleSource || " "}
+          {cardEyebrow || " "}
         </div>
         <Link
           to={`/product/${p.slug}`}
