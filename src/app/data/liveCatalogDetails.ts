@@ -326,7 +326,9 @@ export async function loadLiveCatalogProductBySlug(slug: string): Promise<Produc
     try { return decodeURIComponent(slug); } catch { return slug; }
   })();
   const encodedSourceSlug = encodeURIComponent(decoded).toLowerCase();
-  const candidates = [...new Set([slug, decoded, encodedSourceSlug])];
+  // The catalog stores many WooCommerce slugs as literal percent-encoded text.
+  // Try that representation first to avoid a predictable 404 on direct loads.
+  const candidates = [...new Set([encodedSourceSlug, slug, decoded])];
 
   let payload: DetailResponse | null = null;
   for (const candidate of candidates) {
