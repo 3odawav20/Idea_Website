@@ -22,6 +22,10 @@ export function cleanCatalogText(value?: string | null) {
     .replace(/&#39;|&apos;/gi, "'")
     .replace(/&ndash;|&#8211;/gi, "–")
     .replace(/&mdash;|&#8212;/gi, "—")
+    .replace(/&#(\d+);/g, (_match, code: string) => {
+      const point = Number(code);
+      return Number.isFinite(point) && point > 0 && point <= 0x10ffff ? String.fromCodePoint(point) : " ";
+    })
     .replace(/<[^>]*>/g, " ")
     .replace(/\s+/g, " ")
     .trim();
