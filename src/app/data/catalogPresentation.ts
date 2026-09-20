@@ -6,6 +6,32 @@ const ARABIC_CHAR_RE = /[\u0600-\u06FF]/u;
 const LATIN_CHAR_RE = /[A-Za-z]/u;
 const MOJIBAKE_RE = /[�ÃÂÐÑØÙ╪╣╚╔║├┤┘┐└┬┴│─]/u;
 
+const CATALOG_VALUE_TRANSLATIONS: Record<string, { en: string; fr: string; ar: string }> = {
+  "اسود": { en: "Black", fr: "Noir", ar: "أسود" },
+  "أسود": { en: "Black", fr: "Noir", ar: "أسود" },
+  "ابيض": { en: "White", fr: "Blanc", ar: "أبيض" },
+  "أبيض": { en: "White", fr: "Blanc", ar: "أبيض" },
+  "بيج": { en: "Beige", fr: "Beige", ar: "بيج" },
+  "بني": { en: "Brown", fr: "Marron", ar: "بني" },
+  "زيتوني": { en: "Olive", fr: "Olive", ar: "زيتوني" },
+  "رمادي": { en: "Grey", fr: "Gris", ar: "رمادي" },
+  "رصاصي": { en: "Grey", fr: "Gris", ar: "رصاصي" },
+  "فضي": { en: "Silver", fr: "Argent", ar: "فضي" },
+  "ذهبي": { en: "Gold", fr: "Or", ar: "ذهبي" },
+  "كروم": { en: "Chrome", fr: "Chrome", ar: "كروم" },
+  "روزجولد": { en: "Rose Gold", fr: "Or rose", ar: "روزجولد" },
+  "روز جولد": { en: "Rose Gold", fr: "Or rose", ar: "روز جولد" },
+  "in-stock": { en: "In stock", fr: "En stock", ar: "متوفر" },
+  "instock": { en: "In stock", fr: "En stock", ar: "متوفر" },
+  "out-of-stock": { en: "Out of stock", fr: "Rupture de stock", ar: "غير متوفر" },
+  "outofstock": { en: "Out of stock", fr: "Rupture de stock", ar: "غير متوفر" },
+};
+
+function translatedCatalogValue(value: string, locale: Locale) {
+  const key = cleanCatalogText(value).toLowerCase();
+  return CATALOG_VALUE_TRANSLATIONS[key]?.[locale];
+}
+
 export function hasArabic(value?: string | null) {
   return Boolean(value && ARABIC_RE.test(value));
 }
@@ -99,10 +125,16 @@ export function localizedProductName(product: Product, locale: Locale) {
   if (locale !== "ar") {
     for (const candidate of sourceCandidates) {
       if (MOJIBAKE_RE.test(candidate)) continue;
-      const cleaned = cleanLocalizedTokens(candidate, locale);
+      const cleaned = cleanLocalizedTokens(candidate, locale)
+        .split(/\s+/)
+        .filter((token) => /[A-Za-z]/.test(token))
+        .join(" ")
+        .trim();
       const letterCount = [...cleaned].filter((char) => LATIN_CHAR_RE.test(char)).length;
       if (letterCount >= 2 && !hasArabic(cleaned)) return cleaned;
     }
+    const sourceCode = cleanCatalogText(product.code);
+    if (sourceCode && !MOJIBAKE_RE.test(sourceCode)) return sourceCode.toUpperCase();
     return undefined;
   }
 
@@ -112,6 +144,8 @@ export function localizedProductName(product: Product, locale: Locale) {
 export function localizedOptional(value: string | undefined | null, locale: Locale, allowNeutral = true) {
   const text = cleanCatalogText(value);
   if (!text || MOJIBAKE_RE.test(text)) return undefined;
+  const translated = translatedCatalogValue(text, locale);
+  if (translated) return translated;
   if (textMatchesLocale(text, locale, allowNeutral)) return text;
 
   const cleaned = cleanLocalizedTokens(text, locale);
