@@ -113,11 +113,6 @@ function normalizedCollection(row: CatalogRow): CollectionSlug | null {
     /نقطة صرف|غطاء بيبه|غطاء بيبة|مجرى شاور|مجرى دش|غطاء صرف|صرف خطي|بلاعة|صفاية/u.test(text)
   ) return "plumbing-products";
 
-  // The actual surface material takes precedence over a decorative effect
-  // mentioned later in the product name.
-  if (/\bporcelain\b/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
-  if (/\b(?:ceramic|ceramic tile|ceramic tiles)\b/i.test(text) || /سيراميك/u.test(text)) return "ceramics";
-
   // A sink may mention mixer holes, but the product itself is still a sink.
   if (/^(?:kitchen\s+sink|sink\b|basin\b|wash\s*basin\b)/i.test(nameText) || /^(?:حوض|احواض|أحواض)\b/u.test(nameText)) {
     return "sanitary-ware";
@@ -158,6 +153,11 @@ function normalizedCollection(row: CatalogRow): CollectionSlug | null {
   if (/\b(?:vase|statue|decorative object|candle holder|wall object|painting|mirror|rug|carpet|cushion|throw|textile|wallpaper|wall covering|home decor|decoration)\b/i.test(text) ||
       /فازة|فازات|تمثال|ديكور|شمعدان|لوحة|لوحات|مراية|مرآة|سجادة|سجاد|وسادة|ورق حائط/u.test(text)) return "home-decor";
 
+  // Surface categories are evaluated after product nouns so incidental words
+  // such as "ceramic cartridge" on a mixer cannot turn plumbing into tiles.
+  // Within surfaces, porcelain/ceramic win over decorative marble/granite effects.
+  if (/\bporcelain\b/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
+  if (/\b(?:ceramic|ceramic tile|ceramic tiles)\b/i.test(text) || /سيراميك/u.test(text)) return "ceramics";
   if (/\b(?:marble|natural stone|travertine|granite)\b/i.test(text) || /رخام|حجر طبيعي|ترافرتين|جرانيت(?!و)/u.test(text)) return "marble";
   if (/\b(?:tiles?|wall tile|floor tile)\b/i.test(text) || /بلاط|حوائط|أرضيات|ارضيات/u.test(text)) return "ceramics";
 
