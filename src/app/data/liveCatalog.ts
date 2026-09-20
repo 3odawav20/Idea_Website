@@ -256,6 +256,7 @@ function brandFromName(name: string) {
     [/cleopatra|كليوباترا/iu, "Cleopatra"],
     [/sanipure|ساني بيور|سانى بيور/iu, "Sanipure"],
     [/grohe|جروهي/iu, "Grohe"],
+    [/dovvo|دوفو/iu, "Dovvo"],
     [/villeroy\s*&\s*boch/iu, "Villeroy & Boch"],
   ];
   return brands.find(([pattern]) => pattern.test(name))?.[1];
