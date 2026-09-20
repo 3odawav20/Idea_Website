@@ -40,6 +40,7 @@ interface DetailProductRow {
   primary_image_url?: string | null;
   source_url?: string | null;
   last_source_sync_at?: string | null;
+  source_payload?: string | null;
 }
 
 interface DetailResponse {
@@ -65,6 +66,87 @@ const VALID_COLLECTIONS = new Set<CollectionSlug>([
   "lighting",
   "home-decor",
 ]);
+
+type SourceRawAttribute = {
+  name?: string;
+  terms?: Array<string | { name?: string }>;
+};
+
+type SourceRawPayload = {
+  brands?: Array<{ name?: string }>;
+  attributes?: SourceRawAttribute[];
+  tags?: Array<string | { name?: string }>;
+  weight?: string | null;
+  formatted_weight?: string | null;
+  dimensions?: { length?: string; width?: string; height?: string } | null;
+  formatted_dimensions?: string | null;
+};
+
+function parseSourceRaw(row: DetailProductRow): SourceRawPayload {
+  if (!row.source_payload) return {};
+  try {
+    const parsed = JSON.parse(row.source_payload) as { raw?: SourceRawPayload };
+    return parsed?.raw || {};
+  } catch {
+    return {};
+  }
+}
+
+function sourceTerms(raw: SourceRawPayload, matcher: RegExp) {
+  const attribute = (raw.attributes || []).find((item) => matcher.test(item.name || ""));
+  return (attribute?.terms || [])
+    .map((term) => typeof term === "string" ? term : term?.name)
+    .map((term) => clean(term))
+    .filter((term): term is string => Boolean(term));
+}
+
+function sourceBrand(raw: SourceRawPayload) {
+  const value = clean(raw.brands?.[0]?.name);
+  if (!value) return undefined;
+  if (/دوفو|dovvo/iu.test(value)) return "Dovvo";
+  if (/ايديال ستاندرد|ideal standard/iu.test(value)) return "Ideal Standard";
+  if (/جروهي|grohe/iu.test(value)) return "Grohe";
+  if (/ديورافيت|duravit/iu.test(value)) return "Duravit";
+  return value;
+}
+
+function sourceWeight(raw: SourceRawPayload) {
+  const rawWeight = clean(raw.weight);
+  if (rawWeight && /^\d+(?:\.\d+)?$/.test(rawWeight)) return `${rawWeight} kg`;
+  const formatted = clean(raw.formatted_weight);
+  if (!formatted) return undefined;
+  return formatted
+    .replace(/كيلوجرام|كجم/gu, "kg")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function sourceDimensions(raw: SourceRawPayload) {
+  const dimensions = raw.dimensions || {};
+  const values = [dimensions.length, dimensions.width, dimensions.height].map((value) => clean(value)).filter(Boolean);
+  if (values.length >= 2) return `${values.join(" × ")} cm`;
+
+  const formatted = clean(raw.formatted_dimensions);
+  if (!formatted) return undefined;
+  return formatted
+    .replace(/سنتيمتر|سم/gu, "cm")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function inferredMaterial(description?: string | null) {
+  const text = clean(description) || "";
+  if (/\bHPL\b/i.test(text)) return "HPL moisture-resistant board";
+  return undefined;
+}
+
+function inferredWarranty(description?: string | null) {
+  const text = clean(description) || "";
+  const ar = text.match(/ضمان\s*(\d+)\s*سنوات?/u);
+  if (ar) return `${ar[1]} years`;
+  const en = text.match(/(\d+)\s*[- ]?year\s+warranty/i);
+  return en ? `${en[1]} years` : undefined;
+}
 
 function clean(value?: string | null) {
   const text = (value || "").trim().replace(/\s+/g, " ");
@@ -125,7 +207,8 @@ function galleryFromPayload(payload: DetailResponse) {
 }
 
 function specificationItems(payload: DetailResponse): ProductSpecificationItem[] {
-  return (payload.attributes || [])
+  const raw = parseSourceRaw(payload.product);
+  const base = (payload.attributes || [])
     .filter((item) => clean(item.attribute_key) && clean(item.attribute_value))
     .map((item) => ({
       label: item.attribute_key,
@@ -133,30 +216,61 @@ function specificationItems(payload: DetailResponse): ProductSpecificationItem[]
       originalSourceValue: item.source_value || item.attribute_value,
       normalizedValue: item.attribute_value,
     }));
+
+  const extra: ProductSpecificationItem[] = [];
+  const brand = sourceBrand(raw);
+  const weight = sourceWeight(raw);
+  const dimensions = sourceDimensions(raw);
+  const warranty = inferredWarranty(payload.product.description);
+  const material = clean(payload.product.material) || inferredMaterial(payload.product.description);
+
+  if (brand) extra.push({ label: "Brand", value: brand, originalSourceValue: brand, normalizedValue: brand });
+  if (dimensions) extra.push({ label: "Dimensions", value: dimensions, originalSourceValue: dimensions, normalizedValue: dimensions });
+  if (weight) extra.push({ label: "Weight", value: weight, originalSourceValue: weight, normalizedValue: weight });
+  if (material) extra.push({ label: "Material", value: material, originalSourceValue: material, normalizedValue: material });
+  if (warranty) extra.push({ label: "Warranty", value: warranty, originalSourceValue: warranty, normalizedValue: warranty });
+
+  const seen = new Set<string>();
+  return [...base, ...extra].filter((item) => {
+    const key = `${item.label.trim().toLowerCase()}|${item.value.trim().toLowerCase()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
 }
 
 function enrichProduct(product: Product, payload: DetailResponse): Product {
   const attributes = (payload.attributes || []).filter((item) => clean(item.attribute_key) && clean(item.attribute_value));
+  const raw = parseSourceRaw(payload.product);
   const specs = specificationItems(payload);
   const gallery = galleryFromPayload(payload);
   const dimension =
     clean(payload.product.dimension_text) ||
     clean(findAttribute(attributes, /size|dimension|measure|مقاس|أبعاد|ابعاد/i)) ||
+    sourceDimensions(raw) ||
     dimensionFromName(payload.product.name);
-  const color =
+  const directColor =
     clean(payload.product.color) ||
     clean(findAttribute(attributes, /color|colour|لون/i));
+  const sourceColors = sourceTerms(raw, /color|colour|لون/i);
+  const colors = [...new Set([...(product.colors || []), ...(directColor ? [directColor] : []), ...sourceColors])];
   const material =
     clean(payload.product.material) ||
-    clean(findAttribute(attributes, /material|خامة|الخامة/i));
+    clean(findAttribute(attributes, /material|خامة|الخامة/i)) ||
+    inferredMaterial(payload.product.description);
   const finish = clean(findAttribute(attributes, /finish|surface|texture|تشطيب|ملمس/i)) || finishFromName(payload.product.name);
   const origin = clean(findAttribute(attributes, /origin|country of origin|بلد المنشأ|المنشأ/i));
-  const weight = clean(findAttribute(attributes, /weight|وزن/i));
+  const weight =
+    clean(findAttribute(attributes, /weight|وزن/i)) ||
+    sourceWeight(raw);
   const packaging = clean(findAttribute(attributes, /pack|packaging|box|عبوة|كرتونة/i));
+  const brand = clean(payload.product.brand) || sourceBrand(raw) || product.brand;
+  const warranty = inferredWarranty(payload.product.description);
+  const extraBadges = warranty ? [...new Set([...(product.badges || []), `${warranty} warranty`])] : product.badges;
 
   return {
     ...product,
-    brand: clean(payload.product.brand) || product.brand,
+    brand,
     code: clean(payload.product.sku) || product.code,
     description: clean(payload.product.description) || product.description,
     material: material || product.material,
@@ -165,7 +279,7 @@ function enrichProduct(product: Product, payload: DetailResponse): Product {
     weight: weight || product.weight,
     packaging: packaging || product.packaging,
     availability: clean(payload.product.availability) || product.availability,
-    colors: color ? [...new Set([...(product.colors || []), color])] : product.colors,
+    colors: colors.length ? colors : product.colors,
     sizes: dimension
       ? [{
           id: `${product.id}:source-size`,
@@ -176,24 +290,39 @@ function enrichProduct(product: Product, payload: DetailResponse): Product {
       : product.sizes,
     image: gallery[0] || product.image,
     gallery: gallery.length ? gallery : product.gallery,
+    badges: extraBadges,
     specificationGroups: specs.length
       ? [{ title: "Technical specifications", items: specs }]
       : product.specificationGroups,
   };
 }
 
+const detailCache = new Map<number, Promise<Product | null>>();
+
 export async function loadLiveCatalogDetail(product: Product): Promise<Product | null> {
   const id = catalogId(product);
   if (!id) return null;
 
-  const response = await fetch(catalogUrl(`action=product&id=${id}`), {
-    headers: { Accept: "application/json" },
-  });
-  if (!response.ok) return null;
+  const cached = detailCache.get(id);
+  if (cached) return cached;
 
-  const payload = await response.json() as DetailResponse;
-  if (!payload.ok || !payload.product) return null;
-  return enrichProduct(product, payload);
+  const request = (async () => {
+    try {
+      const response = await fetch(catalogUrl(`action=product&id=${id}`), {
+        headers: { Accept: "application/json" },
+      });
+      if (!response.ok) return null;
+
+      const payload = await response.json() as DetailResponse;
+      if (!payload.ok || !payload.product) return null;
+      return enrichProduct(product, payload);
+    } catch {
+      return null;
+    }
+  })();
+
+  detailCache.set(id, request);
+  return request;
 }
 
 export async function loadLiveCatalogProductBySlug(slug: string): Promise<Product | null> {
