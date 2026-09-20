@@ -9,7 +9,7 @@ import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
 import { COLLECTIONS } from "../data/catalog";
-import { hasPublicProductDetails, isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName, productMatchesLocale } from "../data/catalogPresentation";
+import { hasArabic, hasPublicProductDetails, isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName, productMatchesLocale } from "../data/catalogPresentation";
 import { productSourceLabel } from "../data/catalogSources";
 
 function canonicalSlug(value?: string) {
@@ -107,7 +107,10 @@ export function ProductDetail() {
   const visibleSubcategory = localizedOptional(product.subcategory, locale);
   const visibleSeries = localizedOptional(product.series, locale);
   const visibleFamily = localizedOptional(product.family, locale);
-  const visibleDescription = localizedOptional(product.description, locale);
+  const localizedSourceDescription = localizedOptional(product.description, locale);
+  const visibleDescription = locale !== "ar" && hasArabic(product.description)
+    ? undefined
+    : localizedSourceDescription;
   const visibleBrand = localizedOptional(product.brand, locale, false);
   const visibleSource = productSourceLabel(product.source);
   const visibleVariant = localizedOptional(product.variant, locale);
@@ -170,7 +173,8 @@ export function ProductDetail() {
 
   const localizedSpecLabel = (label: string) => {
     const key = label.trim().toLowerCase();
-    if (/dimension|size|measure|مقاس|أبعاد|ابعاد/.test(key)) return t("label.sizes");
+    if (/dimension|dimensions|أبعاد|ابعاد/.test(key)) return locale === "ar" ? "الأبعاد" : locale === "fr" ? "Dimensions" : "Dimensions";
+    if (/size|measure|مقاس/.test(key)) return t("label.sizes");
     if (/material|خامة/.test(key)) return t("label.material");
     if (/brand|ماركة|علامة تجارية/.test(key)) return t("filters.brand");
     if (/warranty|ضمان/.test(key)) return locale === "ar" ? "الضمان" : locale === "fr" ? "Garantie" : "Warranty";
@@ -186,9 +190,8 @@ export function ProductDetail() {
   };
 
   const visibleSpecificationGroups = (product.specificationGroups ?? [])
-    .map((group) => ({
-      title: t("product.technicalSpecs"),
-      items: group.items
+    .map((group) => {
+      const mapped = group.items
         .map((item) => {
           const label = localizedSpecLabel(item.label);
           const rawValue = item.normalizedValue || item.value;
@@ -199,8 +202,20 @@ export function ProductDetail() {
               : localizedOptional(rawValue, locale) || (/^[\d\s×x*./_-]+$/u.test(rawValue) ? rawValue : undefined);
           return label && value ? { label, value } : null;
         })
-        .filter((item): item is { label: string; value: string } => Boolean(item)),
-    }))
+        .filter((item): item is { label: string; value: string } => Boolean(item));
+
+      const grouped = new Map<string, string[]>();
+      for (const item of mapped) {
+        const values = grouped.get(item.label) || [];
+        if (!values.includes(item.value)) values.push(item.value);
+        grouped.set(item.label, values);
+      }
+
+      return {
+        title: t("product.technicalSpecs"),
+        items: [...grouped.entries()].map(([label, values]) => ({ label, value: values.join(" · ") })),
+      };
+    })
     .filter((group) => group.items.length > 0);
 
   const spec = (label: string, value: string) => (
