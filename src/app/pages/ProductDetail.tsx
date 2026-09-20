@@ -162,6 +162,8 @@ export function ProductDetail() {
     const key = label.trim().toLowerCase();
     if (/dimension|size|measure|مقاس|أبعاد|ابعاد/.test(key)) return t("label.sizes");
     if (/material|خامة/.test(key)) return t("label.material");
+    if (/brand|ماركة|علامة تجارية/.test(key)) return t("filters.brand");
+    if (/warranty|ضمان/.test(key)) return locale === "ar" ? "الضمان" : locale === "fr" ? "Garantie" : "Warranty";
     if (/color|colour|لون/.test(key)) return t("filters.color");
     if (/finish|surface|texture|تشطيب|ملمس/.test(key)) return t("label.finish");
     if (/availability|stock|توفر|مخزون/.test(key)) return t("label.availability");
@@ -182,7 +184,9 @@ export function ProductDetail() {
           const rawValue = item.normalizedValue || item.value;
           const value = /dimension|size|measure|مقاس|أبعاد|ابعاد/i.test(item.label)
             ? localizedMeasurement(rawValue, locale)
-            : localizedOptional(rawValue, locale) || (/^[\d\s×x*./_-]+$/u.test(rawValue) ? rawValue : undefined);
+            : /warranty|ضمان/i.test(item.label) && locale === "ar"
+              ? rawValue.replace(/years?/i, "سنوات")
+              : localizedOptional(rawValue, locale) || (/^[\d\s×x*./_-]+$/u.test(rawValue) ? rawValue : undefined);
           return label && value ? { label, value } : null;
         })
         .filter((item): item is { label: string; value: string } => Boolean(item)),
