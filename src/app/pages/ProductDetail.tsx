@@ -12,11 +12,21 @@ import { COLLECTIONS } from "../data/catalog";
 import { hasPublicProductDetails, isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName, productMatchesLocale } from "../data/catalogPresentation";
 import { productSourceLabel } from "../data/catalogSources";
 
+function canonicalSlug(value?: string) {
+  if (!value) return "";
+  try {
+    return decodeURIComponent(value).trim().toLowerCase();
+  } catch {
+    return value.trim().toLowerCase();
+  }
+}
+
 export function ProductDetail() {
   const { slug } = useParams();
   const { t, locale } = useI18n();
   const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote } = useStore();
-  const baseProduct = products.find((p) => p.slug === slug);
+  const routeSlug = canonicalSlug(slug);
+  const baseProduct = products.find((p) => canonicalSlug(p.slug) === routeSlug);
   const [resolvedProduct, setResolvedProduct] = useState<Product | undefined>(baseProduct);
   const [activeImg, setActiveImg] = useState(0);
   const [failedImages, setFailedImages] = useState<number[]>([]);
