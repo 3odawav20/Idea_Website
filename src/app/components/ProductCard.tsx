@@ -1,5 +1,3 @@
-[Reading 181 lines from start (total: 181 lines, 0 remaining)]
-
 import { Link } from "react-router";
 import { Heart, GitCompare, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -181,5 +179,3 @@ function roundBtn(active: boolean): React.CSSProperties {
     color: active ? "var(--idea-gold-bright)" : "var(--idea-text)", backdropFilter: "blur(6px)",
   };
 }
-
-[executed on device: RAKAN-DOD (6a82d06b-428a-4784-9cdc-9a48cc90678f)]
