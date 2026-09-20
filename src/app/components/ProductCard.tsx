@@ -8,19 +8,21 @@ import { useStore } from "../store/store";
 import { Tag } from "./ui";
 import { COLLECTIONS } from "../data/catalog";
 import { isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName } from "../data/catalogPresentation";
+import { isLiveCatalogProduct } from "../data/liveCatalogDetails";
+import { productSourceLabel } from "../data/catalogSources";
 
 export function ProductCard({ product }: { product: Product }) {
   const { t, locale } = useI18n();
   const { isFavorite, toggleFavorite, toggleCompare, compare, addToQuote } = useStore();
   const [resolved, setResolved] = useState(product);
-  const [sourceLoading, setSourceLoading] = useState(product.source?.sourceId === "source-13" && product.source?.provider !== "IDEA catalog source");
+  const [sourceLoading, setSourceLoading] = useState(product.source?.sourceId === "source-13" && !isLiveCatalogProduct(product));
   const [imageFailed, setImageFailed] = useState(false);
   const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     setResolved(product);
     setImageFailed(false);
-    if (product.source?.sourceId !== "source-13" || product.source?.provider === "IDEA catalog source" || !product.source.productPageUrl) {
+    if (product.source?.sourceId !== "source-13" || isLiveCatalogProduct(product) || !product.source.productPageUrl) {
       setSourceLoading(false);
       return;
     }
@@ -61,6 +63,7 @@ export function ProductCard({ product }: { product: Product }) {
   const visibleSubcategory = localizedOptional(p.subcategory, locale) || collectionTitle;
   const visibleType = localizedOptional(p.type, locale);
   const visibleBrand = localizedOptional(p.brand, locale, false);
+  const visibleSource = productSourceLabel(p.source);
   const visibleBadges = (p.badges ?? []).filter((badge) => localizedOptional(badge, locale));
   const priceText = localizedPrice(p.priceText, locale);
   const compareAtPriceText = localizedPrice(p.compareAtPriceText, locale);
@@ -104,7 +107,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)", minHeight: 14 }}>
-          {visibleBrand || " "}
+          {visibleBrand || visibleSource || " "}
         </div>
         <Link
           to={`/product/${p.slug}`}

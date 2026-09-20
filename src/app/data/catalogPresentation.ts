@@ -89,12 +89,19 @@ export function localizedProductName(product: Product, locale: Locale) {
     }
   }
 
-  // If the source has no translation for the selected UI language, keep the
-  // exact clean source title instead of hiding a valid marketplace product.
-  for (const candidate of sourceCandidates) {
-    const cleaned = cleanCatalogText(candidate);
-    if (cleaned && !MOJIBAKE_RE.test(cleaned) && (hasArabic(cleaned) || hasLatin(cleaned))) return cleaned;
+  // Never leak Arabic source titles into English/French storefront views.
+  // If no Latin title exists, hide that record in non-Arabic locales until a
+  // verified translation/source title is available.
+  if (locale !== "ar") {
+    for (const candidate of sourceCandidates) {
+      if (MOJIBAKE_RE.test(candidate)) continue;
+      const cleaned = cleanLocalizedTokens(candidate, locale);
+      const letterCount = [...cleaned].filter((char) => LATIN_CHAR_RE.test(char)).length;
+      if (letterCount >= 2 && !hasArabic(cleaned)) return cleaned;
+    }
+    return undefined;
   }
+
   return undefined;
 }
 
@@ -134,12 +141,21 @@ export function isPresentableImageUrl(value?: string | null) {
 
 
 export function localizedMeasurement(value: string, locale: Locale) {
-  if (locale !== "ar") return value;
+  if (locale === "ar") {
+    return value
+      .replace(/\bcm\b/gi, "سم")
+      .replace(/\bmm\b/gi, "مم")
+      .replace(/\bm²\b/gi, "م²")
+      .replace(/\bsqm\b/gi, "م²");
+  }
   return value
-    .replace(/\bcm\b/gi, "سم")
-    .replace(/\bmm\b/gi, "مم")
-    .replace(/\bm²\b/gi, "م²")
-    .replace(/\bsqm\b/gi, "م²");
+    .replace(/سم/gu, "cm")
+    .replace(/مم/gu, "mm")
+    .replace(/م²/gu, "m²")
+    .replace(/[٠-٩]/g, (digit) => String("٠١٢٣٤٥٦٧٨٩".indexOf(digit)))
+    .replace(/[\u0600-\u06FF]+/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 export function hasPublicProductDetails(product: Product) {

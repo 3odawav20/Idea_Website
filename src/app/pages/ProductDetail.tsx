@@ -10,6 +10,7 @@ import { Button, Container, Section, Tag } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
 import { COLLECTIONS } from "../data/catalog";
 import { hasPublicProductDetails, isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName, productMatchesLocale } from "../data/catalogPresentation";
+import { productSourceLabel } from "../data/catalogSources";
 
 export function ProductDetail() {
   const { slug } = useParams();
@@ -98,6 +99,7 @@ export function ProductDetail() {
   const visibleFamily = localizedOptional(product.family, locale);
   const visibleDescription = localizedOptional(product.description, locale);
   const visibleBrand = localizedOptional(product.brand, locale, false);
+  const visibleSource = productSourceLabel(product.source);
   const visibleVariant = localizedOptional(product.variant, locale);
   const visibleApplication = localizedOptional(product.application, locale);
   const visibleUsage = (product.usage ?? []).map((value) => localizedOptional(value, locale)).filter(Boolean) as string[];
@@ -138,6 +140,7 @@ export function ProductDetail() {
     [locale === "ar" ? "المجموعة" : locale === "fr" ? "Collection" : "Collection", collectionTitle],
     [locale === "ar" ? "القسم" : locale === "fr" ? "Sous-catégorie" : "Subcategory", visibleSubcategory],
     [t("filters.brand"), visibleBrand],
+    [locale === "ar" ? "المورّد / المصدر" : locale === "fr" ? "Fournisseur / source" : "Supplier / source", visibleSource],
     [t("label.model"), product.model],
     ["SKU", product.code],
     [t("label.origin"), localizedOptional(product.origin, locale)],

@@ -1,5 +1,6 @@
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
 import { isPresentableImageUrl } from "./catalogPresentation";
+import { sourceProviderName } from "./catalogSources";
 
 const API_BASE = (import.meta.env.VITE_CATALOG_API_BASE_URL || "").replace(/\/$/, "");
 const catalogUrl = (query: string) => API_BASE ? `${API_BASE}/api.php?${query}` : `/api/catalog?${query}`;
@@ -75,6 +76,21 @@ function normalizeCollection(value: string): CollectionSlug | null {
   return VALID_COLLECTIONS.has(value as CollectionSlug) ? value as CollectionSlug : null;
 }
 
+function dimensionFromName(name?: string | null) {
+  const match = (name || "").match(/(\d{1,4}(?:\.\d+)?)\s*[×x*]\s*(\d{1,4}(?:\.\d+)?)(?:\s*[×x*]\s*(\d{1,4}(?:\.\d+)?))?\s*(سم|cm|مم|mm)?/iu);
+  if (!match) return undefined;
+  const values = [match[1], match[2], match[3]].filter(Boolean);
+  const unit = match[4]?.toLowerCase();
+  return values.join(" × ") + (unit ? " " + unit : "");
+}
+
+function finishFromName(name?: string | null) {
+  const value = name || "";
+  if (/(?:glossy|polished)/i.test(value) || /لامع/u.test(value)) return "Glossy";
+  if (/(?:matt|matte)/i.test(value) || /(?:^|\s)مط(?:\s|$)/u.test(value)) return "Matte";
+  return undefined;
+}
+
 function displayPrice(value?: string | null, currency?: string | null) {
   const raw = clean(value);
   if (!raw) return undefined;
@@ -125,14 +141,15 @@ function enrichProduct(product: Product, payload: DetailResponse): Product {
   const gallery = galleryFromPayload(payload);
   const dimension =
     clean(payload.product.dimension_text) ||
-    clean(findAttribute(attributes, /size|dimension|measure|مقاس|أبعاد|ابعاد/i));
+    clean(findAttribute(attributes, /size|dimension|measure|مقاس|أبعاد|ابعاد/i)) ||
+    dimensionFromName(payload.product.name);
   const color =
     clean(payload.product.color) ||
     clean(findAttribute(attributes, /color|colour|لون/i));
   const material =
     clean(payload.product.material) ||
     clean(findAttribute(attributes, /material|خامة|الخامة/i));
-  const finish = clean(findAttribute(attributes, /finish|surface|texture|تشطيب|ملمس/i));
+  const finish = clean(findAttribute(attributes, /finish|surface|texture|تشطيب|ملمس/i)) || finishFromName(payload.product.name);
   const origin = clean(findAttribute(attributes, /origin|country of origin|بلد المنشأ|المنشأ/i));
   const weight = clean(findAttribute(attributes, /weight|وزن/i));
   const packaging = clean(findAttribute(attributes, /pack|packaging|box|عبوة|كرتونة/i));
@@ -198,7 +215,8 @@ export async function loadLiveCatalogProductBySlug(slug: string): Promise<Produc
 
   const dimension =
     clean(row.dimension_text) ||
-    clean(findAttribute(payload.attributes || [], /size|dimension|measure|مقاس|أبعاد|ابعاد/i));
+    clean(findAttribute(payload.attributes || [], /size|dimension|measure|مقاس|أبعاد|ابعاد/i)) ||
+    dimensionFromName(row.name);
   const color =
     clean(row.color) ||
     clean(findAttribute(payload.attributes || [], /color|colour|لون/i));
@@ -233,7 +251,7 @@ export async function loadLiveCatalogProductBySlug(slug: string): Promise<Produc
     specificationGroups: specs.length ? [{ title: "Technical specifications", items: specs }] : undefined,
     source: {
       sourceId: row.source_id,
-      provider: "IDEA catalog source",
+      provider: sourceProviderName(row.source_id) || "IDEA catalog source",
       recordId: row.source_record_id,
       productPageUrl: row.source_url,
       extractionTimestamp: row.last_source_sync_at || undefined,
@@ -251,5 +269,5 @@ export async function loadLiveCatalogProductBySlug(slug: string): Promise<Produc
 }
 
 export function isLiveCatalogProduct(product?: Product) {
-  return Boolean(product && product.source?.provider === "IDEA catalog source" && catalogId(product));
+  return Boolean(product && catalogId(product));
 }
