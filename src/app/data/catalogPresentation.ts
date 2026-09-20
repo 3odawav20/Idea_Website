@@ -142,13 +142,6 @@ export function localizedMeasurement(value: string, locale: Locale) {
     .replace(/\bsqm\b/gi, "م²");
 }
 
-function presentationImageKey(value: string) {
-  return value
-    .replace(/([?&])(width|height|w|h|quality|q)=\d+/gi, "$1")
-    .replace(/[?&]+$/g, "")
-    .toLowerCase();
-}
-
 export function hasPublicProductDetails(product: Product) {
   return Boolean(
     product.brand?.trim() ||
@@ -214,7 +207,6 @@ export function isMarketplaceReadyProduct(product: Product, locale: Locale) {
 }
 
 export function dedupeProductsForLocale(products: Product[], locale: Locale) {
-  const seenImages = new Set<string>();
   const seenProducts = new Set<string>();
   const ranked = [...products].sort((a, b) =>
     marketplaceProductQuality(b, locale) - marketplaceProductQuality(a, locale)
@@ -224,15 +216,13 @@ export function dedupeProductsForLocale(products: Product[], locale: Locale) {
     const name = localizedProductName(product, locale);
     if (!name || !isMarketplaceReadyProduct(product, locale)) return false;
 
-    const imageKey = presentationImageKey(product.image);
     const brand = cleanCatalogText(product.brand);
     const sku = (product.code || "").trim().toLowerCase();
     const identity = sku
       ? `sku:${brand.toLowerCase()}:${sku}`
       : `name:${brand.toLowerCase()}:${name.toLowerCase()}:${product.collection}`;
 
-    if (seenImages.has(imageKey) || seenProducts.has(identity)) return false;
-    seenImages.add(imageKey);
+    if (seenProducts.has(identity)) return false;
     seenProducts.add(identity);
     return true;
   });
