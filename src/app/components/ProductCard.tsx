@@ -53,10 +53,18 @@ export function ProductCard({ product }: { product: Product }) {
   const cardImage = hovered && secondaryImage ? secondaryImage : p.image;
   const primarySizeRaw = p.sizes[0]?.normalizedDisplayValue || p.sizes[0]?.label;
   const primarySize = primarySizeRaw ? localizedMeasurement(primarySizeRaw, locale) : undefined;
+  const visibleMaterial = localizedOptional(p.material, locale);
+  const visibleColor = localizedOptional(p.colors?.[0], locale);
+  const visibleAvailability = localizedOptional(p.availability, locale);
+  const visibleCode = p.code?.trim() && p.code.trim().toLowerCase() !== displayName.toLowerCase()
+    ? `SKU ${p.code.trim().toUpperCase()}`
+    : undefined;
   const commercialMeta = [
     primarySize,
-    localizedOptional(p.material, locale),
-    localizedOptional(p.colors?.[0], locale),
+    visibleMaterial,
+    visibleColor,
+    visibleAvailability,
+    visibleCode,
   ].filter(Boolean).slice(0, 3) as string[];
 
   const collectionTitle = COLLECTIONS.find((item) => item.slug === p.collection)?.title[locale];
