@@ -77,6 +77,8 @@ function clean(value?: string | null) {
 function displayPrice(value?: string | null, currency?: string | null) {
   const raw = clean(value);
   if (!raw) return undefined;
+  // A zero catalogue price is not a sellable price; present it as request-only.
+  if (/^(?:(?:EGP|ج\.م)\s*)?0(?:[.,]0+)?$/iu.test(raw)) return undefined;
   const number = Number(raw);
   if (Number.isFinite(number)) {
     return `${currency || "EGP"} ${number.toLocaleString("en-US", {
@@ -103,7 +105,10 @@ function normalizedCollection(row: CatalogRow): CollectionSlug | null {
   // the current consumer marketplace taxonomy.
   if (
     row.source_id === "source-25" &&
-    /\b(?:mdf|hdf|wood panel|wood board|spc wall panel|spc flooring|wall panel|cladding sheet|door hardware|kitchen hardware|closet hardware|dressing hardware|furniture handle|cabinet handle)\b/i.test(text)
+    (
+      /\b(?:mdf|hdf|solid wood|engineered wood|parquet|laminate|garbelotto|wood panel|wood board|spc wall panel|spc flooring|wall panel|cladding sheet|door hardware|kitchen hardware|closet hardware|dressing hardware|furniture handle|cabinet handle)\b/i.test(text) ||
+      /^floors?$/i.test(clean(row.subcategory) || "")
+    )
   ) return null;
 
   // Drain covers and drain channels can mention ceramic/porcelain because a
