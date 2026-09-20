@@ -90,7 +90,9 @@ function displayPrice(value?: string | null, currency?: string | null) {
   return [currency, raw].filter(Boolean).join(" ");
 }
 
-function normalizedCollection(row: CatalogRow): CollectionSlug | null {
+export function normalizeLiveCatalogCollection(
+  row: Pick<CatalogRow, "source_id" | "collection_slug" | "name" | "subcategory" | "product_type">
+): CollectionSlug | null {
   const raw = clean(row.collection_slug) || "";
   const nameText = clean(row.name)?.toLowerCase() || "";
   const text = clean([row.name, row.subcategory, row.product_type].filter(Boolean).join(" "))?.toLowerCase() || "";
@@ -282,7 +284,7 @@ function hasProfessionalMetadata(values: Array<string | undefined>) {
 function mapRow(row: CatalogRow): Product | null {
   if (SKIP_SOURCES.has(row.source_id)) return null;
 
-  const collection = normalizedCollection(row);
+  const collection = normalizeLiveCatalogCollection(row);
   if (!collection) return null;
 
   const name = clean(row.name);
