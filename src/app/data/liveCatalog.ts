@@ -1,5 +1,3 @@
-[Reading 373 lines from start (total: 373 lines, 0 remaining)]
-
 import type { CollectionSlug, Product, ProductSpecificationItem } from "./types";
 import { cleanCatalogText, isPresentableImageUrl } from "./catalogPresentation";
 
@@ -373,5 +371,3 @@ export async function loadLiveCatalog(
 
   await Promise.all(Array.from({ length: Math.min(PAGE_CONCURRENCY, remaining.length) }, () => worker()));
 }
-
-[executed on device: RAKAN-DOD (6a82d06b-428a-4784-9cdc-9a48cc90678f)]
