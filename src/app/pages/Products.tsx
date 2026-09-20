@@ -10,7 +10,31 @@ import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from "lucide-react";
 import { dedupeProductsForLocale, localizedOptional, localizedProductName, marketplaceProductQuality } from "../data/catalogPresentation";
 
 function uniq<T>(arr: (T | undefined)[]): T[] {
-  return [...new Set(arr.filter(Boolean) as T[])];
+  return [...new Set(arr.filter(Boolean) as T[])].toSorted((a, b) => String(a).localeCompare(String(b)));
+}
+
+function interleaveCollections(products: Product[]) {
+  const buckets = new Map<CollectionSlug, Product[]>();
+  for (const product of products) {
+    const bucket = buckets.get(product.collection) || [];
+    bucket.push(product);
+    buckets.set(product.collection, bucket);
+  }
+
+  const order = COLLECTIONS.map((collection) => collection.slug).filter((slug) => buckets.has(slug));
+  const result: Product[] = [];
+  let added = true;
+  while (added) {
+    added = false;
+    for (const slug of order) {
+      const next = buckets.get(slug)?.shift();
+      if (next) {
+        result.push(next);
+        added = true;
+      }
+    }
+  }
+  return result;
 }
 
 export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug }) {
@@ -33,6 +57,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const [usage, setUsage] = useState<string | null>(params.get("usage"));
   const [color, setColor] = useState<string | null>(params.get("color"));
   const [brand, setBrand] = useState<string | null>(params.get("brand"));
+  const [category, setCategory] = useState<string | null>(params.get("category"));
   const [type, setType] = useState<string | null>(params.get("type"));
   const [material, setMaterial] = useState<string | null>(params.get("material"));
   const [application, setApplication] = useState<string | null>(params.get("application"));
@@ -45,6 +70,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     usage: uniq(scope.flatMap((p) => (p.usage ?? []).map((value) => localizedOptional(value, locale)))),
     color: uniq(scope.flatMap((p) => (p.colors ?? []).map((value) => localizedOptional(value, locale)))),
     brand: uniq(scope.map((p) => localizedOptional(p.brand, locale, false))),
+    category: uniq(scope.map((p) => COLLECTIONS.find((collection) => collection.slug === p.collection)?.title[locale])),
     type: uniq(scope.map((p) => localizedOptional(p.type, locale))),
     material: uniq(scope.map((p) => localizedOptional(p.material, locale))),
     application: uniq(scope.map((p) => localizedOptional(p.application, locale))),
@@ -56,6 +82,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     if (usage && !(p.usage ?? []).some((value) => localizedOptional(value, locale) === usage)) return false;
     if (color && !(p.colors ?? []).some((value) => localizedOptional(value, locale) === color)) return false;
     if (brand && localizedOptional(p.brand, locale, false) !== brand) return false;
+    if (category && COLLECTIONS.find((collection) => collection.slug === p.collection)?.title[locale] !== category) return false;
     if (type && localizedOptional(p.type, locale) !== type) return false;
     if (material && localizedOptional(p.material, locale) !== material) return false;
     if (application && localizedOptional(p.application, locale) !== application) return false;
@@ -83,7 +110,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     return true;
   };
 
-  const results = scope.filter(matches).toSorted((a, b) => {
+  const sortedResults = scope.filter(matches).toSorted((a, b) => {
     const nameA = localizedProductName(a, locale) || "";
     const nameB = localizedProductName(b, locale) || "";
     const brandA = localizedOptional(a.brand, locale, false) || "";
@@ -93,7 +120,10 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     if (sort === "collection") return a.collection.localeCompare(b.collection) || nameA.localeCompare(nameB);
     return nameA.localeCompare(nameB);
   });
-  const activeCount = [finish, size, usage, color, brand, type, material, application].filter(Boolean).length;
+  const results = sort === "recommended" && !fixedCollection && !q
+    ? interleaveCollections(sortedResults)
+    : sortedResults;
+  const activeCount = [finish, size, usage, color, brand, category, type, material, application].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 24;
@@ -102,12 +132,12 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
 
   useEffect(() => {
     setPage(1);
-  }, [fixedCollection, q, finish, size, usage, color, brand, type, material, application, sort]);
+  }, [fixedCollection, q, finish, size, usage, color, brand, category, type, material, application, sort]);
 
   useEffect(() => {
     if (page > totalPages) setPage(totalPages);
   }, [page, totalPages]);
-  const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); setBrand(null); setType(null); setMaterial(null); setApplication(null); };
+  const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); setBrand(null); setCategory(null); setType(null); setMaterial(null); setApplication(null); };
 
   const meta = fixedCollection ? COLLECTIONS.find((c) => c.slug === fixedCollection) : null;
   const catalogueSummary = locale === "ar"
@@ -172,6 +202,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
               <span className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{t("filters.title")}</span>
               <button onClick={clear} style={{ background: "none", border: "none", color: "var(--idea-gold)", cursor: "pointer", fontSize: "var(--idea-text-xs)" }}>{t("filters.clear")}</button>
             </div>
+            {group(t("sort.category"), facets.category, category, setCategory)}
             {group(t("filters.brand"), facets.brand, brand, setBrand)}
             {group(t("filters.productType"), facets.type, type, setType)}
             {group(t("filters.finish"), facets.finish, finish, setFinish)}
