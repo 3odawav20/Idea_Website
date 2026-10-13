@@ -4,6 +4,7 @@ import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
+import { categoryArtwork } from "../data/categoryArtwork";
 import { MARKET_FOCUS_COLLECTIONS } from "../data/curatedMarket";
 import imgBath from "../../imports/idea-hero-spa-bath-4k.webp";
 import { ProductCard } from "../components/ProductCard";
@@ -177,7 +178,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container>
         {/* Curated editorial market cover. User-provided category hero artworks may replace these assets. */}
-        <header className="idea-premium-market-cover" style={{ backgroundImage: `linear-gradient(90deg,rgba(12,12,13,.93) 0%,rgba(12,12,13,.62) 48%,rgba(12,12,13,.12) 100%),url("${meta?.image || imgBath}")` }}>
+        <header className="idea-premium-market-cover" style={{ backgroundImage: `linear-gradient(90deg,rgba(12,12,13,.93) 0%,rgba(12,12,13,.62) 48%,rgba(12,12,13,.12) 100%),url("${meta ? categoryArtwork(meta.slug,meta.image) : imgBath}")` }}>
           <div className="idea-premium-market-cover__copy">
             <div className="idea-eyebrow" style={{ color: "#ffaa76", letterSpacing: ".16em" }}>
               {meta ? "IDEA / SIGNATURE COLLECTIONS" : "IDEA / THE CURATED MARKET"}
