@@ -1,7 +1,4 @@
 import type { CollectionMeta, Product } from "./types";
-import imgLivingRoom from "../../imports/Modern_luxury_living_room_ambiance.png";
-import imgMarbleGold from "../../imports/Luxurious_modern_interiors_with_marble_and_gold.png";
-import imgTriptych from "../../imports/Luxurious_modern_interior_triptych_design.png";
 
 // ── Imagery (Unsplash) ────────────────────────────────────────────────────
 const IMG = {
@@ -20,9 +17,6 @@ const IMG = {
   faucet2: "https://images.unsplash.com/photo-1638815401319-702d3b5dfd2a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900",
   sink: "https://images.unsplash.com/photo-1576698483491-8c43f0862543?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900",
   vanity: "https://images.unsplash.com/photo-1782805134559-825155d2ba98?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=900",
-  mazloumFurniture: imgLivingRoom,
-  mazloumLighting: imgMarbleGold,
-  mazloumDecor: imgTriptych,
 };
 
 export const HERO_IMAGES = IMG;
@@ -34,9 +28,6 @@ export const COLLECTIONS: CollectionMeta[] = [
   { slug: "porcelain", group: "porcelain", image: IMG.marbleWhite,
     title: { en: "Porcelain", ar: "بورسلين", fr: "Porcelaine" },
     blurb: { en: "Large-format porcelain slabs & marble-effect surfaces.", ar: "بلاطات بورسلين كبيرة الحجم وأسطح بتأثير الرخام.", fr: "Grandes dalles en porcelaine et surfaces effet marbre." } },
-  { slug: "marble", group: "marble", image: IMG.marbleGrey,
-    title: { en: "Marble & Stone", ar: "رخام وحجر", fr: "Marbre & pierre" },
-    blurb: { en: "Natural marble and stone products when identified by the source.", ar: "منتجات الرخام والحجر الطبيعي كما يعرّفها المصدر.", fr: "Produits en marbre et pierre naturelle identifiés par la source." } },
   { slug: "sanitary-ware", group: "sanitary", image: IMG.bath2,
     title: { en: "Sanitary Ware", ar: "أدوات صحية", fr: "Sanitaires" },
     blurb: { en: "Complete bathroom sanitary solutions.", ar: "حلول صحية متكاملة للحمامات.", fr: "Solutions sanitaires complètes pour la salle de bain." } },
@@ -55,21 +46,9 @@ export const COLLECTIONS: CollectionMeta[] = [
   { slug: "shower-units", group: "sanitary", image: IMG.bath4,
     title: { en: "Shower Units", ar: "وحدات دش", fr: "Cabines de douche" },
     blurb: { en: "Shower systems & enclosures.", ar: "أنظمة وكبائن دش.", fr: "Systèmes et cabines de douche." } },
-  { slug: "bathroom-accessories", group: "sanitary", image: IMG.bath1,
+  { slug: "bathroom-accessories", group: "sanitary", image: IMG.faucet2,
     title: { en: "Accessories", ar: "إكسسوارات", fr: "Accessoires" },
     blurb: { en: "Glass & stainless steel accessories.", ar: "إكسسوارات زجاج وستانلس ستيل.", fr: "Accessoires en verre et acier inoxydable." } },
-  { slug: "plumbing-products", group: "plumbing", image: IMG.faucet2,
-    title: { en: "Plumbing Products", ar: "منتجات السباكة", fr: "Produits de plomberie" },
-    blurb: { en: "Pipes, fittings and plumbing products from verified source data.", ar: "مواسير ووصلات ومنتجات سباكة من بيانات المصادر.", fr: "Tuyaux, raccords et produits de plomberie issus des sources." } },
-  { slug: "furniture", group: "furniture", image: IMG.mazloumFurniture,
-    title: { en: "Furniture", ar: "أثاث", fr: "Mobilier" },
-    blurb: { en: "Living, dining, bedroom and occasional furniture.", ar: "أثاث غرف المعيشة والسفرة والنوم والقطع الجانبية.", fr: "Mobilier de séjour, salle à manger, chambre et pièces d'appoint." } },
-  { slug: "lighting", group: "lighting", image: IMG.mazloumLighting,
-    title: { en: "Lighting", ar: "إضاءة", fr: "Éclairage" },
-    blurb: { en: "Wall, ceiling, floor, table and pendant lighting.", ar: "إضاءة حائط وسقف وأرضية وترابيزة ومعلقات.", fr: "Appliques, plafonniers, lampadaires, lampes de table et suspensions." } },
-  { slug: "home-decor", group: "decor", image: IMG.mazloumDecor,
-    title: { en: "Home Decor", ar: "ديكور منزلي", fr: "Décoration" },
-    blurb: { en: "Vases, wall objects, mirrors, decorative pieces and textiles.", ar: "فازات وديكور حائط ومرايات وقطع ديكور ومنسوجات.", fr: "Vases, objets muraux, miroirs, décoration et textiles." } },
 ];
 
 // ── STAGING SAMPLE DATA ────────────────────────────────────────────────────

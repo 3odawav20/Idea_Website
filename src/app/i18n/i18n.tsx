@@ -6,7 +6,6 @@ type Dict = Record<string, { en: string; ar: string; fr: string }>;
 // UI strings only — product data is localized on the Product objects themselves.
 const T: Dict = {
   tagline: { en: "When you have an idea… We are the IDEA.", ar: "عندما تكون لديك فكرة… نحن IDEA.", fr: "Quand vous avez une idée… Nous sommes IDEA." },
-  "nav.home": { en: "Home", ar: "الرئيسية", fr: "Accueil" },
   "nav.collections": { en: "Collections", ar: "المجموعات", fr: "Collections" },
   "nav.products": { en: "All Products", ar: "كل المنتجات", fr: "Tous les produits" },
   "nav.visualizer": { en: "AI Visualizer", ar: "المحاكي الذكي", fr: "Visualiseur IA" },
@@ -27,14 +26,6 @@ const T: Dict = {
   "action.addVisualizer": { en: "Add to AI Visualizer", ar: "أضف للمحاكي", fr: "Ajouter au visualiseur" },
   "search.placeholder": { en: "Search products, models, brands…", ar: "ابحث عن منتجات، موديلات، ماركات…", fr: "Rechercher produits, modèles, marques…" },
   "home.shopByCategory": { en: "Shop by Category", ar: "تسوق حسب الفئة", fr: "Acheter par catégorie" },
-  "home.curated": { en: "Curated", ar: "مختارات", fr: "Sélection" },
-  "home.visualizerTitle": { en: "See It Inside Your Space Before You Buy", ar: "شاهد النتيجة في مساحتك قبل الشراء", fr: "Visualisez-le chez vous avant d’acheter" },
-  "home.visualizerBody": { en: "Upload your room, select a real IDEA surface, and preview the finished result with accurate scale and lighting.", ar: "ارفع صورة مساحتك، واختر سطحًا حقيقيًا من IDEA، ثم شاهد النتيجة النهائية بمقياس وإضاءة واقعيين.", fr: "Importez votre pièce, choisissez une surface IDEA réelle et prévisualisez le résultat avec une échelle et un éclairage réalistes." },
-  "common.browse": { en: "Browse", ar: "تصفح", fr: "Parcourir" },
-  "collection.ceramics": { en: "Ceramics", ar: "سيراميك", fr: "Céramiques" },
-  "collection.porcelain": { en: "Porcelain", ar: "بورسلين", fr: "Porcelaine" },
-  "collection.marble": { en: "Marble & Stone", ar: "رخام وحجر", fr: "Marbre & pierre" },
-  "collection.plumbing": { en: "Plumbing", ar: "سباكة", fr: "Plomberie" },
   "home.ceramicPorcelain": { en: "Ceramic & Porcelain", ar: "سيراميك وبورسلين", fr: "Céramique et porcelaine" },
   "home.sanitary": { en: "Sanitary Ware", ar: "الأدوات الصحية", fr: "Sanitaires" },
   "home.featured": { en: "Featured Surfaces", ar: "أسطح مميزة", fr: "Surfaces en vedette" },
@@ -48,34 +39,6 @@ const T: Dict = {
   "filters.finish": { en: "Finish", ar: "التشطيب", fr: "Finition" },
   "filters.texture": { en: "Texture", ar: "الملمس", fr: "Texture" },
   "filters.size": { en: "Size", ar: "المقاس", fr: "Taille" },
-  "filters.productType": { en: "Product type", ar: "نوع المنتج", fr: "Type de produit" },
-  "filters.color": { en: "Color", ar: "اللون", fr: "Couleur" },
-  "filters.material": { en: "Material", ar: "الخامة", fr: "Matériau" },
-  "filters.application": { en: "Application", ar: "الاستخدام", fr: "Application" },
-  "sort.label": { en: "Sort", ar: "ترتيب", fr: "Trier" },
-  "sort.name": { en: "Product name", ar: "اسم المنتج", fr: "Nom du produit" },
-  "sort.brand": { en: "Brand", ar: "الماركة", fr: "Marque" },
-  "sort.category": { en: "Category", ar: "القسم", fr: "Catégorie" },
-  "pagination.previous": { en: "Previous", ar: "السابق", fr: "Précédent" },
-  "pagination.next": { en: "Next", ar: "التالي", fr: "Suivant" },
-  "image.unavailable": { en: "Image unavailable", ar: "الصورة غير متاحة", fr: "Image indisponible" },
-  "product.notFound": { en: "Product not found.", ar: "المنتج غير متاح.", fr: "Produit introuvable." },
-  "product.loading": { en: "Loading product details…", ar: "جارٍ تحميل تفاصيل المنتج…", fr: "Chargement des détails du produit…" },
-  "product.backGallery": { en: "Back to gallery", ar: "العودة للمعرض", fr: "Retour à la galerie" },
-  "product.colorsFinishes": { en: "Colors / finishes", ar: "الألوان / التشطيبات", fr: "Couleurs / finitions" },
-  "product.variants": { en: "Available variants", ar: "الخيارات المتاحة", fr: "Variantes disponibles" },
-  "product.technicalSpecs": { en: "Technical specifications", ar: "المواصفات الفنية", fr: "Spécifications techniques" },
-  "product.related": { en: "Related products", ar: "منتجات ذات صلة", fr: "Produits associés" },
-  "product.unavailable": { en: "Unavailable", ar: "غير متاح", fr: "Indisponible" },
-  "product.showImage": { en: "Show image", ar: "عرض الصورة", fr: "Afficher l’image" },
-  "label.surface": { en: "Surface", ar: "السطح", fr: "Surface" },
-  "label.material": { en: "Material", ar: "الخامة", fr: "Matériau" },
-  "label.pattern": { en: "Pattern", ar: "النقشة", fr: "Motif" },
-  "label.weight": { en: "Weight", ar: "الوزن", fr: "Poids" },
-  "label.availability": { en: "Availability", ar: "التوفر", fr: "Disponibilité" },
-  "label.packaging": { en: "Packaging", ar: "التعبئة", fr: "Emballage" },
-  "label.piecesBox": { en: "Pieces / box", ar: "قطع / كرتونة", fr: "Pièces / boîte" },
-  "label.sqmBox": { en: "m² / box", ar: "م² / كرتونة", fr: "m² / boîte" },
   "label.brand": { en: "Brand", ar: "الماركة", fr: "Marque" },
   "label.model": { en: "Model", ar: "الموديل", fr: "Modèle" },
   "label.code": { en: "Code", ar: "الكود", fr: "Code" },
@@ -121,13 +84,6 @@ const T: Dict = {
   "auth.secure": { en: "Secure sign-in. We never store your password.", ar: "دخول آمن. لا نخزن كلمة المرور أبداً.", fr: "Connexion sécurisée. Aucun mot de passe stocké." },
   "auth.noAccount": { en: "New to IDEA?", ar: "جديد على IDEA؟", fr: "Nouveau sur IDEA ?" },
   "auth.haveAccount": { en: "Already have an account?", ar: "لديك حساب بالفعل؟", fr: "Vous avez déjà un compte ?" },
-  "auth.name": { en: "Name", ar: "الاسم", fr: "Nom" },
-  "auth.password": { en: "Password", ar: "كلمة المرور", fr: "Mot de passe" },
-  "auth.working": { en: "Working…", ar: "جارٍ التنفيذ…", fr: "Traitement…" },
-  "auth.resetPassword": { en: "Reset password", ar: "إعادة تعيين كلمة المرور", fr: "Réinitialiser le mot de passe" },
-  "auth.resetSent": { en: "Password reset instructions were sent to your email.", ar: "تم إرسال تعليمات إعادة تعيين كلمة المرور إلى بريدك الإلكتروني.", fr: "Les instructions de réinitialisation ont été envoyées par e-mail." },
-  "auth.checkEmail": { en: "Check your email to confirm your account, then sign in.", ar: "راجع بريدك الإلكتروني لتأكيد الحساب، ثم سجّل الدخول.", fr: "Consultez votre e-mail pour confirmer votre compte, puis connectez-vous." },
-  "auth.buyerDefault": { en: "New accounts are buyers by default. Supplier and admin access is assigned securely by the system.", ar: "الحسابات الجديدة تُنشأ كحسابات مشترين افتراضيًا، ويتم منح صلاحيات المورد والإدارة بشكل آمن من النظام.", fr: "Les nouveaux comptes sont acheteurs par défaut. Les accès fournisseur et administrateur sont attribués de façon sécurisée." },
 
   /* role */
   "role.question": { en: "How will you use IDEA?", ar: "كيف ستستخدم IDEA؟", fr: "Comment utiliserez-vous IDEA ?" },
@@ -188,30 +144,6 @@ const T: Dict = {
   "pay.wallet": { en: "Mobile Wallet", ar: "محفظة إلكترونية", fr: "Portefeuille mobile" },
   "pay.applepay": { en: "Apple Pay", ar: "Apple Pay", fr: "Apple Pay" },
   "pay.bank": { en: "Bank / Instant Transfer", ar: "تحويل بنكي / فوري", fr: "Virement bancaire" },
-  "checkout.secure": { en: "Secure checkout", ar: "دفع آمن", fr: "Paiement sécurisé" },
-  "checkout.confirmPay": { en: "Confirm & Pay", ar: "تأكيد والدفع", fr: "Confirmer et payer" },
-  "checkout.subscribe": { en: "Subscribe", ar: "اشتراك", fr: "S’abonner" },
-  "checkout.paymentMethod": { en: "Payment method", ar: "طريقة الدفع", fr: "Mode de paiement" },
-  "checkout.notConfigured": { en: "not configured", ar: "غير مفعّل", fr: "non configuré" },
-  "checkout.instantTransfer": { en: "Instant transfer", ar: "تحويل فوري", fr: "Virement instantané" },
-  "checkout.pay": { en: "Pay", ar: "ادفع", fr: "Payer" },
-  "checkout.sandbox": { en: "Sandbox", ar: "وضع تجريبي", fr: "Bac à sable" },
-  "checkout.sandboxNote": { en: "Sandbox environment · no real charge · card data is never stored", ar: "بيئة تجريبية · لا يتم خصم أموال حقيقية · لا يتم تخزين بيانات البطاقة", fr: "Environnement de test · aucun débit réel · les données de carte ne sont jamais stockées" },
-  "checkout.nothingTitle": { en: "Nothing to pay", ar: "لا توجد عملية دفع", fr: "Aucun paiement" },
-  "checkout.nothingSub": { en: "Accept an offer or choose a subscription plan.", ar: "اقبل عرضًا أو اختر خطة اشتراك للمتابعة.", fr: "Acceptez une offre ou choisissez un abonnement." },
-  "checkout.authorized": { en: "Sandbox payment authorized", ar: "تم اعتماد الدفع التجريبي", fr: "Paiement de test autorisé" },
-  "checkout.failed": { en: "Payment could not be completed", ar: "تعذر إتمام عملية الدفع", fr: "Le paiement n’a pas pu être effectué" },
-  "checkout.orderReady": { en: "Your order is now preparing and an invoice was generated.", ar: "تم تأكيد الطلب وهو الآن قيد التجهيز، وتم إنشاء الفاتورة.", fr: "Votre commande est en préparation et une facture a été générée." },
-  "checkout.subscriptionActive": { en: "Your subscription is now active.", ar: "تم تفعيل اشتراكك.", fr: "Votre abonnement est maintenant actif." },
-  "checkout.merchantMissing": { en: "This payment method is not configured for live authorization yet.", ar: "طريقة الدفع هذه غير مهيأة بعد للاعتماد الفعلي.", fr: "Ce mode de paiement n’est pas encore configuré pour une autorisation réelle." },
-  "checkout.viewOrders": { en: "View orders", ar: "عرض الطلبات", fr: "Voir les commandes" },
-  "checkout.viewSubscription": { en: "View subscription", ar: "عرض الاشتراك", fr: "Voir l’abonnement" },
-  "checkout.backHome": { en: "Back to Home", ar: "العودة للرئيسية", fr: "Retour à l’accueil" },
-  "footer.company": { en: "Company", ar: "الشركة", fr: "Entreprise" },
-  "footer.securePayment": { en: "Secure Payment", ar: "دفع آمن", fr: "Paiement sécurisé" },
-  "footer.paymentNote": { en: "EGP · Available with configured and tested merchant credentials.", ar: "ج.م · متاح بعد إعداد واختبار بيانات التاجر.", fr: "EGP · Disponible avec des identifiants marchands configurés et testés." },
-  "footer.rights": { en: "All rights reserved.", ar: "جميع الحقوق محفوظة.", fr: "Tous droits réservés." },
-  "footer.privateOffers": { en: "Public prices are never shown — request private offers.", ar: "الأسعار العامة لا تُعرض — اطلب عروض أسعار خاصة.", fr: "Les prix publics ne sont pas affichés — demandez des offres privées." },
   "common.egp": { en: "EGP", ar: "ج.م", fr: "EGP" },
   "common.save": { en: "Save", ar: "حفظ", fr: "Enregistrer" },
   "common.monthly": { en: "Monthly", ar: "شهري", fr: "Mensuel" },
@@ -228,24 +160,12 @@ interface I18nCtx {
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>(() => {
-    try {
-      const saved = localStorage.getItem("idea.locale");
-      return saved === "ar" || saved === "fr" || saved === "en" ? saved : "en";
-    } catch {
-      return "en";
-    }
-  });
+  const [locale, setLocale] = useState<Locale>("en");
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
     document.documentElement.dir = dir;
     document.documentElement.lang = locale;
-    try {
-      localStorage.setItem("idea.locale", locale);
-    } catch {
-      /* ignore */
-    }
   }, [dir, locale]);
 
   const t = (key: string) => T[key]?.[locale] ?? key;

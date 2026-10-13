@@ -1,81 +1,44 @@
-import { Link, useParams } from "react-router";
-import { ArrowUpRight } from "lucide-react";
+import { useParams } from "react-router";
+import { Link } from "react-router";
 import { useI18n } from "../i18n/i18n";
-import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { dedupeProductsForLocale } from "../data/catalogPresentation";
 import type { CollectionSlug } from "../data/types";
-import { Container, Section } from "../components/ui";
+import { Container, Section, SectionHeader } from "../components/ui";
 import { Products } from "./Products";
-
-const ORDER: CollectionSlug[] = [
-  "ceramics",
-  "porcelain",
-  "marble",
-  "sanitary-ware",
-  "faucets",
-  "bathtubs",
-  "shower-units",
-  "bathroom-units",
-  "bathroom-accessories",
-  "plumbing-products",
-  "furniture",
-  "lighting",
-  "home-decor",
-];
 
 export function Collections() {
   const { locale, t } = useI18n();
-  const { products } = useStore();
-
-  const available = ORDER
-    .map((slug) => {
-      const collection = COLLECTIONS.find((item) => item.slug === slug);
-      if (!collection) return null;
-      const collectionProducts = dedupeProductsForLocale(products.filter((product) => product.collection === slug), locale);
-      const count = collectionProducts.length;
-      return count > 0 ? { collection, count, coverImage: collectionProducts[0]?.image || collection.image } : null;
-    })
-    .filter(Boolean) as Array<{ collection: (typeof COLLECTIONS)[number]; count: number; coverImage: string }>;
-
+  const groups: { key: string; label: string }[] = [
+    { key: "ceramics", label: t("home.ceramicPorcelain") },
+    { key: "porcelain", label: "Porcelain" },
+    { key: "sanitary", label: t("home.sanitary") },
+  ];
   return (
-    <Section style={{ paddingTop: "var(--idea-space-8)" }}>
-      <div className="idea-collections-page">
+    <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container>
-        <header className="idea-collections-intro">
-          <div>
-            <div className="idea-eyebrow">{t("common.browse")}</div>
-            <h1 className="idea-display idea-collections-title">{t("nav.collections")}</h1>
-          </div>
-          <p>{t("tagline")}</p>
-        </header>
-
-        <div className="idea-collections-grid">
-          {available.map(({ collection: c, count, coverImage }) => (
-            <Link key={c.slug} to={`/collections/${c.slug}`} className="idea-collection-card">
-              <img
-                className="idea-vivid-image"
-                src={coverImage}
-                alt={c.title[locale]}
-                loading="lazy"
-                onError={(event) => {
-                  if (event.currentTarget.src !== c.image) event.currentTarget.src = c.image;
-                }}
-              />
-              <div className="idea-collection-card__wash" aria-hidden="true" />
-              <div className="idea-collection-card__content">
-                <div className="idea-collection-card__meta">
-                  <span>{count.toLocaleString(locale === "ar" ? "ar-EG" : locale === "fr" ? "fr-FR" : "en-US")}</span>
-                  <ArrowUpRight size={15} />
-                </div>
-                <h2 className="idea-display">{c.title[locale]}</h2>
-                <p>{c.blurb[locale]}</p>
+        <SectionHeader eyebrow="Browse" title={t("nav.collections")} sub={t("tagline")} />
+        {groups.map((g) => {
+          const items = COLLECTIONS.filter((c) => c.group === g.key);
+          if (!items.length) return null;
+          return (
+            <div key={g.key} style={{ marginBottom: "var(--idea-space-7)" }}>
+              <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{g.label}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-4)" }}>
+                {items.map((c) => (
+                  <Link key={c.slug} to={`/collections/${c.slug}`} style={{ position: "relative", aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", display: "block" }}>
+                    <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                    <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay-soft)" }} />
+                    <div style={{ position: "absolute", bottom: 0, padding: "var(--idea-space-4)" }}>
+                      <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{c.title[locale]}</div>
+                      <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", marginTop: 4 }}>{c.blurb[locale]}</div>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </Link>
-          ))}
-        </div>
+            </div>
+          );
+        })}
       </Container>
-      </div>
     </Section>
   );
 }

@@ -1,36 +1,84 @@
 import { Link } from "react-router";
-import { ArrowRight, Clock, Sparkles } from "lucide-react";
+import { ArrowRight, Clock, Sparkles, Shield, Zap, Truck, HeadphonesIcon } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { dedupeProductsForLocale, productMatchesLocale } from "../data/catalogPresentation";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
 import { Button, Container, Section, SectionHeader } from "../components/ui";
 import { Reveal, Stagger, StaggerItem, ShimmerText, AnimatedWords } from "../components/motion";
+import { MaterialLookStrip } from "../components/MaterialLookStrip";
 import visualizerImage from "../../imports/Modern_luxury_living_room_ambiance.png";
 
-function CollectionTile({ slug, image }: { slug: string; image?: string }) {
+const USP_ITEMS = [
+  { icon: Shield, label: { en: "Premium Quality", ar: "جودة فاخرة", fr: "Qualité Premium" }, sub: { en: "World-class materials", ar: "مواد عالمية الجودة", fr: "Matériaux de classe mondiale" } },
+  { icon: Zap, label: { en: "Best Price in 24h", ar: "أفضل سعر خلال 24 ساعة", fr: "Meilleur prix en 24h" }, sub: { en: "Free price comparison", ar: "مقارنة أسعار مجانية", fr: "Comparaison de prix gratuite" } },
+  { icon: Truck, label: { en: "Nationwide Delivery", ar: "توصيل لجميع أنحاء مصر", fr: "Livraison nationale" }, sub: { en: "Egypt & MENA", ar: "مصر والشرق الأوسط", fr: "Égypte & MENA" } },
+  { icon: HeadphonesIcon, label: { en: "Expert Support", ar: "دعم متخصص", fr: "Support expert" }, sub: { en: "7 days a week", ar: "7 أيام في الأسبوع", fr: "7 jours sur 7" } },
+];
+
+function UspBar() {
+  const { locale } = useI18n();
+  return (
+    <div style={{
+      background: "#0d0b08",
+      borderBottom: "1px solid rgba(255,114,0,0.12)",
+      display: "flex",
+      justifyContent: "center",
+      flexWrap: "wrap",
+      gap: 0,
+    }}>
+      {USP_ITEMS.map((item, i) => (
+        <div key={i} style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "var(--idea-space-3)",
+          padding: "var(--idea-space-5) var(--idea-space-6)",
+          flex: "1 1 200px",
+          maxWidth: 320,
+          borderInlineEnd: i < USP_ITEMS.length - 1 ? "1px solid rgba(255,255,255,0.06)" : undefined,
+        }}>
+          <div style={{
+            width: 40, height: 40, borderRadius: "var(--idea-radius-md)",
+            background: "rgba(255,114,0,0.1)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            flexShrink: 0,
+          }}>
+            <item.icon size={19} color="var(--idea-gold-bright)" />
+          </div>
+          <div>
+            <div style={{
+              fontFamily: "var(--idea-font-display)",
+              fontSize: "var(--idea-text-sm)",
+              color: "white",
+              letterSpacing: "0.04em",
+              lineHeight: 1.3,
+            }}>{item.label[locale as "en" | "ar" | "fr"]}</div>
+            <div style={{
+              fontSize: "var(--idea-text-xs)",
+              color: "rgba(255,255,255,0.42)",
+              marginTop: 3,
+            }}>{item.sub[locale as "en" | "ar" | "fr"]}</div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function CollectionTile({ slug }: { slug: string }) {
   const { locale } = useI18n();
   const c = COLLECTIONS.find((x) => x.slug === slug)!;
   return (
-    <Link to={`/collections/${c.slug}`} className="idea-home-collection-tile">
-      <img
-        className="idea-vivid-image idea-home-collection-tile__image"
-        src={image || c.image}
-        alt={c.title[locale]}
-        loading="lazy"
-        onError={(event) => {
-          if (event.currentTarget.src !== c.image) event.currentTarget.src = c.image;
-        }}
-      />
-      <div className="idea-home-collection-tile__wash" aria-hidden="true" />
-      <div className="idea-home-collection-tile__content">
-        <div className="idea-display idea-home-collection-tile__title">{c.title[locale]}</div>
-        <div className="idea-home-collection-tile__description">
-          <ArrowRight size={13} />
-          <span>{c.blurb[locale]}</span>
+    <Link to={`/collections/${c.slug}`} style={{ position: "relative", display: "block", aspectRatio: "3/4", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)" }}>
+      <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
+        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "")} />
+      <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay)" }} />
+      <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-4)", display: "grid", gridTemplateRows: "2.3em minmax(2.8em, auto)", alignItems: "end" }}>
+        <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", display: "flex", alignItems: "end" }}>{c.title[locale]}</div>
+        <div style={{ color: "var(--idea-gold)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 6, marginTop: 4, lineHeight: 1.45 }}>
+          <ArrowRight size={13} /> {c.blurb[locale]}
         </div>
       </div>
     </Link>
@@ -38,27 +86,27 @@ function CollectionTile({ slug, image }: { slug: string; image?: string }) {
 }
 
 export function Home() {
-  const { t, locale } = useI18n();
+  const { t } = useI18n();
   const { products } = useStore();
-  const ceramicPorcelain = ["ceramics", "porcelain", "marble"];
-  const sanitary = ["sanitary-ware", "faucets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
-  const visibleProducts = dedupeProductsForLocale(products.filter((product) => productMatchesLocale(product, locale)), locale);
-  const featured = visibleProducts.slice(0, 4);
-  const visibleCollections = (slugs: string[]) => slugs
-    .map((slug) => ({ slug, image: visibleProducts.find((product) => product.collection === slug)?.image }))
-    .filter((item) => Boolean(item.image));
+  const ceramicPorcelain = ["ceramics", "porcelain", "sanitary-ware", "faucets"];
+  const sanitary = ["bathroom-sets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories"];
+  const featured = products.slice(0, 4);
 
   return (
     <>
       <HeroCarousel />
+
+      {/* USP trust bar — the "different color strip in the middle" */}
+      <UspBar />
+
       <HeroSearchPanel />
 
       {/* Ceramic & Porcelain categories */}
       <Section>
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.ceramicPorcelain")} />
-          <div className="idea-home-category-grid idea-home-category-grid--three">
-            {visibleCollections(ceramicPorcelain).map((item) => <CollectionTile key={item.slug} slug={item.slug} image={item.image} />)}
+          <div className="idea-ceramic-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-4)" }}>
+            {ceramicPorcelain.map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
       </Section>
@@ -67,7 +115,7 @@ export function Home() {
       <Section alt>
         <Container>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
-            <SectionHeader eyebrow={t("home.curated")} title={t("home.featured")} />
+            <SectionHeader eyebrow="Curated" title={t("home.featured")} />
             <Link to="/products" style={{ marginBottom: "var(--idea-space-7)" }}><Button variant="outline">{t("action.browseAll")}</Button></Link>
           </div>
           <Stagger style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
@@ -83,10 +131,10 @@ export function Home() {
             <div style={{ padding: "var(--idea-space-7)" }}>
               <div className="idea-eyebrow" style={{ display: "flex", alignItems: "center", gap: 8 }}><Sparkles size={14} /> {t("nav.visualizer")}</div>
               <h2 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-3) 0 var(--idea-space-4)" }}>
-                <AnimatedWords text={t("home.visualizerTitle")} />
+                <AnimatedWords text="See It Inside Your Space Before You Buy" />
               </h2>
               <p style={{ color: "var(--idea-text-muted)", lineHeight: 1.7, marginBottom: "var(--idea-space-5)" }}>
-                {t("home.visualizerBody")}
+                Upload your room, select a real IDEA surface, and preview the finished result with accurate scale and lighting.
               </p>
               <Link to="/room-designer/new"><Button size="lg">{t("action.startAi")}</Button></Link>
             </div>
@@ -97,12 +145,15 @@ export function Home() {
         </Container>
       </Section>
 
+      {/* Material Look Strip */}
+      <MaterialLookStrip />
+
       {/* Sanitary categories */}
       <Section alt>
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.sanitary")} />
-          <div className="idea-home-category-grid idea-home-category-grid--four">
-            {visibleCollections(sanitary).map((item) => <CollectionTile key={item.slug} slug={item.slug} image={item.image} />)}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "var(--idea-space-4)" }}>
+            {sanitary.map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
       </Section>
@@ -123,9 +174,10 @@ export function Home() {
       </Section>
 
       <style>{`
-@media (max-width: 820px){ .idea-split{ grid-template-columns: 1fr !important; } }
-`}</style>
+        @media (max-width: 1000px){ .idea-ceramic-grid{ grid-template-columns: repeat(2, minmax(0, 1fr)) !important; } }
+        @media (max-width: 820px){ .idea-split{ grid-template-columns: 1fr !important; } }
+        @media (max-width: 560px){ .idea-ceramic-grid{ grid-template-columns: 1fr !important; } }
+      `}</style>
     </>
   );
 }
-

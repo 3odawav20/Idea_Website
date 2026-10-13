@@ -2,7 +2,6 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
-import { loadLiveCatalog } from "../data/liveCatalog";
 import { useBackend } from "../backend/db";
 import { requireSupabase } from "../backend/supabaseClient";
 
@@ -49,30 +48,11 @@ function usePersisted<T>(key: string, initial: T): [T, React.Dispatch<React.SetS
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   // Products imported from the source export. Unconfirmed fields stay empty.
-  const [products, setProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS.filter((product) => product.approved));
+  const [products, setProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS);
   useEffect(() => {
     fetchAbaElMozahemProducts()
-      .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => product.approved && !current.some((existing) => existing.id === product.id))]))
+      .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => !current.some((existing) => existing.id === product.id))]))
       .catch(() => { /* Source remains staged in registry; keep verified local catalogue available. */ });
-
-    const controller = new AbortController();
-
-    void loadLiveCatalog((incoming) => {
-      setProducts((current) => {
-        const next = new Map<string, Product>();
-        for (const product of incoming) {
-          if (product.approved) next.set(product.id, product);
-        }
-        for (const product of current) {
-          if (!next.has(product.id)) next.set(product.id, product);
-        }
-        return [...next.values()];
-      });
-    }, controller.signal).catch(() => {
-      /* Keep locally imported catalogue visible if the live cPanel catalogue is temporarily unavailable. */
-    });
-
-    return () => controller.abort();
   }, []);
   const { session } = useBackend();
   const [favorites, setFavorites] = useState<string[]>([]);

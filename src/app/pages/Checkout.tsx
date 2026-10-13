@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useSearchParams, useNavigate, Navigate } from "react-router";
-import { ShieldCheck, Lock, House } from "lucide-react";
+import { useSearchParams, useNavigate } from "react-router";
+import { ShieldCheck, Lock } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useBackend, type PaymentMethodKey } from "../backend/db";
 import { Container, Section, SectionHeader, Button } from "../components/ui";
@@ -12,7 +12,7 @@ const METHODS: { key: PaymentMethodKey; tKey: string; marks: () => React.ReactNo
   { key: "fawry", tKey: "pay.fawry", marks: () => <span style={chip}><FawryMark /></span> },
   { key: "wallet", tKey: "pay.wallet", marks: () => <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>Vodafone · Orange · e& cash</span> },
   { key: "applepay", tKey: "pay.applepay", marks: () => <span style={{ ...chip, background: "var(--idea-text)" }}><ApplePayMark /></span> },
-  { key: "bank", tKey: "pay.bank", marks: () => null },
+  { key: "bank", tKey: "pay.bank", marks: () => <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>Instant transfer</span> },
 ];
 const chip: React.CSSProperties = { background: "var(--idea-surface)", borderRadius: "var(--idea-radius-sm)", padding: "var(--idea-space-1) var(--idea-space-2)", display: "inline-flex", alignItems: "center" };
 
@@ -32,35 +32,15 @@ export function Checkout() {
   const amount = order ? order.total : plan ? (interval === "annual" ? plan.annual : plan.monthly) : 0;
   const cfg = db.payments.find((p) => p.key === method);
 
-  if (!session) return <Navigate to={"/login?next=" + encodeURIComponent("/checkout?" + sp.toString())} replace />;
-  if (plan && amount < 0) return (
-    <Section style={{ paddingTop: "var(--idea-space-8)" }}>
-      <Container style={{ maxWidth: 560 }}>
-        <EmptyState title="Custom pricing" sub="This plan is activated by the IDEA team after pricing is confirmed." />
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "var(--idea-space-4)" }}>
-          <Button variant="outline" onClick={() => nav("/subscriptions")}>Back to subscriptions</Button>
-        </div>
-      </Container>
-    </Section>
-  );
-
-  if (!order && !plan) return (
-    <Section style={{ paddingTop: "var(--idea-space-8)" }}>
-      <Container style={{ maxWidth: 560 }}>
-        <EmptyState title={t("checkout.nothingTitle")} sub={t("checkout.nothingSub")} />
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "var(--idea-space-4)" }}>
-          <Button variant="outline" onClick={() => nav("/")}><House size={15} /> {t("checkout.backHome")}</Button>
-        </div>
-      </Container>
-    </Section>
-  );
+  if (!session) { nav("/login"); return null; }
+  if (!order && !plan) return <Section style={{ paddingTop: "var(--idea-space-8)" }}><Container style={{ maxWidth: 560 }}><EmptyState title="Nothing to pay" sub="Accept an offer or choose a subscription plan." /></Container></Section>;
 
   const pay = () => {
-    const ok = Boolean(cfg?.enabled && cfg?.merchantConfigured);
-    if (!ok) { setDone("fail"); return; }
-    if (order) api.sandboxPay(order.id, true);
-    if (plan) api.subscribe(plan.id, interval, true);
-    setDone("ok");
+    // Sandbox only: a method must be enabled with configured merchant creds to "authorize".
+    const ok = !!cfg?.merchantConfigured;
+    if (order) api.sandboxPay(order.id, ok);
+    if (plan) api.subscribe(plan.id, interval, ok);
+    setDone(ok ? "ok" : "fail");
   };
 
   if (done) {
@@ -69,17 +49,14 @@ export function Checkout() {
         <Container style={{ maxWidth: 520, textAlign: "center" }}>
           <Panel>
             <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: done === "ok" ? "var(--idea-gold-bright)" : "var(--idea-danger)" }}>
-              {done === "ok" ? t("checkout.authorized") : t("checkout.failed")}
+              {done === "ok" ? "Sandbox payment authorized" : "Payment could not be completed"}
             </div>
             <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", margin: "10px 0 16px" }}>
               {done === "ok"
-                ? (order ? t("checkout.orderReady") : t("checkout.subscriptionActive"))
-                : t("checkout.merchantMissing")}
+                ? (order ? "Your order is now preparing and an invoice was generated." : "Your subscription is now active.")
+                : "This payment method has no configured merchant credentials, so it cannot authorize. An administrator must configure and test it in Admin → Payment Settings before it can be used in production."}
             </p>
-            <div style={{ display: "flex", gap: 10, justifyContent: "center", flexWrap: "wrap" }}>
-              <Button onClick={() => nav(order ? "/account/orders" : "/account/subscription")}>{order ? t("checkout.viewOrders") : t("checkout.viewSubscription")}</Button>
-              <Button variant="outline" onClick={() => nav("/")}><House size={15} /> {t("checkout.backHome")}</Button>
-            </div>
+            <Button onClick={() => nav(order ? "/account/orders" : "/account/subscription")}>{order ? "View orders" : "View subscription"}</Button>
           </Panel>
         </Container>
       </Section>
@@ -89,7 +66,7 @@ export function Checkout() {
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container style={{ maxWidth: 620 }}>
-        <SectionHeader eyebrow={t("checkout.secure")} title={order ? t("checkout.confirmPay") : `${t("checkout.subscribe")} — ${plan?.name}`} />
+        <SectionHeader eyebrow="Secure checkout" title={order ? "Confirm & Pay" : `Subscribe — ${plan?.name}`} />
         <Panel style={{ marginBottom: "var(--idea-space-4)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", color: "var(--idea-text)" }}>
             <span>{order ? `Order ${order.id}` : `${plan?.name} (${interval})`}</span>
@@ -97,14 +74,14 @@ export function Checkout() {
           </div>
         </Panel>
         <Panel>
-          <div className="idea-eyebrow" style={{ marginBottom: 12 }}>{t("checkout.paymentMethod")}</div>
+          <div className="idea-eyebrow" style={{ marginBottom: 12 }}>Payment method</div>
           <div style={{ display: "grid", gap: 8 }}>
             {METHODS.map((m) => {
               const mc = db.payments.find((p) => p.key === m.key);
               const active = method === m.key;
               return (
-                <button key={m.key} disabled={!mc?.enabled || !mc?.merchantConfigured} onClick={() => setMethod(m.key)} style={{
-                  display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, cursor: mc?.enabled && mc?.merchantConfigured ? "pointer" : "not-allowed", opacity: mc?.enabled && mc?.merchantConfigured ? 1 : .58,
+                <button key={m.key} onClick={() => setMethod(m.key)} style={{
+                  display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, cursor: "pointer",
                   padding: "12px 14px", borderRadius: "var(--idea-radius-md)", textAlign: "start",
                   border: `1px solid ${active ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
                   background: active ? "var(--idea-gold-soft)" : "var(--idea-surface-2)",
@@ -114,16 +91,16 @@ export function Checkout() {
                     <span style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-sm)" }}>{t(m.tKey)}</span>
                   </span>
                   <span style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                    {m.key === "bank" ? <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{t("checkout.instantTransfer")}</span> : m.marks()}
-                    {!mc?.merchantConfigured && <span style={{ color: "var(--idea-text-faint)", fontSize: 10 }}>{t("checkout.notConfigured")}</span>}
+                    {m.marks()}
+                    {!mc?.merchantConfigured && <span style={{ color: "var(--idea-text-faint)", fontSize: 10 }}>not configured</span>}
                   </span>
                 </button>
               );
             })}
           </div>
-          <Button style={{ width: "100%", marginTop: "var(--idea-space-5)" }} disabled={!cfg?.enabled || !cfg?.merchantConfigured} onClick={pay}><Lock size={15} /> {cfg?.enabled && cfg?.merchantConfigured ? t("checkout.pay") + " " + amount.toLocaleString() + " " + t("common.egp") : "Payment activation pending"}</Button>
+          <Button style={{ width: "100%", marginTop: "var(--idea-space-5)" }} onClick={pay}><Lock size={15} /> Pay {amount.toLocaleString()} EGP (sandbox)</Button>
           <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center", marginTop: 12, color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>
-            <ShieldCheck size={13} color="var(--idea-gold)" /> {t("checkout.sandboxNote")}
+            <ShieldCheck size={13} color="var(--idea-gold)" /> Sandbox environment · no real charge · card data is never stored
           </div>
         </Panel>
       </Container>

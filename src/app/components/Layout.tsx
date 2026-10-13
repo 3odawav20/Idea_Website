@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigationType } from "react-router";
 import { motion, useScroll, useSpring, useReducedMotion, AnimatePresence } from "motion/react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
+import { AnnouncementBar } from "./AnnouncementBar";
 
 export function Layout() {
   const { pathname } = useLocation();
@@ -29,6 +30,7 @@ export function Layout() {
           scaleX: reduce ? 1 : progress, opacity: reduce ? 0 : 1,
         }}
       />
+      <AnnouncementBar />
       <Header />
       <main style={{ flex: 1 }}>
         <AnimatePresence mode="wait">

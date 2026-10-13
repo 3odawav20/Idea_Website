@@ -1,169 +1,59 @@
 import { Link } from "react-router";
 import { Heart, GitCompare, FileText } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Product } from "../data/types";
-import { loadMazloumDetail, applyMazloumDetail } from "../data/mazloumDetails";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
-import { COLLECTIONS } from "../data/catalog";
-import { isPresentableImageUrl, localizedMeasurement, localizedOptional, localizedPrice, localizedProductName } from "../data/catalogPresentation";
-import { isLiveCatalogProduct } from "../data/liveCatalogDetails";
-import { productSourceLabel } from "../data/catalogSources";
 
 export function ProductCard({ product }: { product: Product }) {
   const { t, locale } = useI18n();
   const { isFavorite, toggleFavorite, toggleCompare, compare, addToQuote } = useStore();
-  const [resolved, setResolved] = useState(product);
-  const [sourceLoading, setSourceLoading] = useState(product.source?.sourceId === "source-13" && !isLiveCatalogProduct(product));
+  const fav = isFavorite(product.id);
+  const inCompare = compare.includes(product.id);
   const [imageFailed, setImageFailed] = useState(false);
-  const [hovered, setHovered] = useState(false);
-
-  useEffect(() => {
-    setResolved(product);
-    setImageFailed(false);
-    if (product.source?.sourceId !== "source-13" || isLiveCatalogProduct(product) || !product.source.productPageUrl) {
-      setSourceLoading(false);
-      return;
-    }
-
-    let cancelled = false;
-    setSourceLoading(true);
-    void loadMazloumDetail(product.source.productPageUrl).then((detail) => {
-      if (!cancelled && detail) {
-        setResolved(applyMazloumDetail(product, detail));
-        setImageFailed(false);
-      }
-    }).finally(() => {
-      if (!cancelled) setSourceLoading(false);
-    });
-
-    return () => { cancelled = true; };
-  }, [product]);
-
-  const p = resolved;
-  const displayName = localizedProductName(p, locale);
-  if (!displayName || !p.image || !isPresentableImageUrl(p.image) || imageFailed) return null;
-
-  const fav = isFavorite(p.id);
-  const inCompare = compare.includes(p.id);
-  const unit = p.collection === "ceramics" || p.collection === "porcelain" || p.collection === "marble" ? "sqm" : "pieces";
-
-  const secondaryImage = p.gallery?.find((image) => image && image !== p.image && isPresentableImageUrl(image));
-  const cardImage = hovered && secondaryImage ? secondaryImage : p.image;
-  const primarySizeRaw = p.sizes[0]?.normalizedDisplayValue || p.sizes[0]?.label;
-  const primarySize = primarySizeRaw ? localizedMeasurement(primarySizeRaw, locale) : undefined;
-  const visibleMaterial = localizedOptional(p.material, locale);
-  const visibleColor = localizedOptional(p.colors?.[0], locale);
-  const visibleAvailability = localizedOptional(p.availability, locale);
-  const visibleCode = p.code?.trim() && p.code.trim().toLowerCase() !== displayName.toLowerCase()
-    ? `SKU ${p.code.trim().toUpperCase()}`
-    : undefined;
-  const commercialMeta = [
-    primarySize,
-    visibleMaterial,
-    visibleColor,
-    visibleAvailability,
-    visibleCode,
-  ].filter(Boolean).slice(0, 3) as string[];
-
-  const collectionTitle = COLLECTIONS.find((item) => item.slug === p.collection)?.title[locale];
-  const visibleType = localizedOptional(p.type, locale);
-  const visibleBrand = localizedOptional(p.brand, locale, false);
-  const visibleSource = productSourceLabel(p.source);
-  const cardEyebrow = visibleBrand || visibleSource || collectionTitle;
-  const visibleSubcategoryRaw = localizedOptional(p.subcategory, locale);
-  const visibleSubcategory = visibleSubcategoryRaw && visibleSubcategoryRaw !== visibleType && visibleSubcategoryRaw !== cardEyebrow
-    ? visibleSubcategoryRaw
-    : !visibleType || visibleType === cardEyebrow
-      ? collectionTitle !== cardEyebrow ? collectionTitle : undefined
-      : visibleType;
-  const visibleTypeBadge = visibleType && visibleType !== cardEyebrow && visibleType !== visibleSubcategory
-    ? visibleType
-    : undefined;
-  const visibleBadges = (p.badges ?? []).filter((badge) => localizedOptional(badge, locale));
-  const priceText = localizedPrice(p.priceText, locale);
-  const compareAtPriceText = localizedPrice(p.compareAtPriceText, locale);
+  const unit = product.collection === "ceramics" || product.collection === "porcelain" ? "sqm" : "pieces";
 
   return (
-    <article
-      className="idea-product-card"
-      style={{
-        background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
-        overflow: "hidden", display: "flex", flexDirection: "column", height: "100%", transition: "transform .3s, box-shadow .3s",
-      }}
-      onMouseEnter={(e) => { setHovered(true); e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}
-      onMouseLeave={(e) => { setHovered(false); e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
+    <div className="idea-product-card" style={{
+      background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
+      overflow: "hidden", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
+    }}
+      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
     >
-      <Link to={`/product/${p.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden", background: "var(--idea-bg)" }}>
-        <img
-            className="idea-product-img idea-vivid-image"
-            src={cardImage}
-            alt={displayName}
-            loading="lazy"
-            onError={() => setImageFailed(true)}
-            onLoad={(event) => {
-              const image = event.currentTarget;
-              if (image.naturalWidth < 480 || image.naturalHeight < 300) setImageFailed(true);
-            }}
-            style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1), opacity .2s" }}
-          />
-        <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6, flexWrap: "wrap" }}>
-          {visibleTypeBadge && <span style={badgeStyle}>{visibleTypeBadge}</span>}
-          {visibleBadges.slice(0, 2).map((badge) => <span key={badge} style={badgeStyle}>{badge}</span>)}
+      <Link to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
+        {imageFailed ? (
+          <span className="idea-image-unavailable">Image unavailable</span>
+        ) : (
+          <img className="idea-product-img idea-vivid-image" src={product.image} alt={product.name[locale]} loading="lazy" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
+        )}
+        <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
+          {product.type && <span style={badgeStyle}>{product.type}</span>}
         </div>
         <div style={{ position: "absolute", top: 12, insetInlineEnd: 12, display: "flex", gap: 6 }}>
-          <button aria-label={t("action.favorite")} onClick={(e) => { e.preventDefault(); toggleFavorite(p.id); }} style={roundBtn(fav)}>
+          <button aria-label={t("action.favorite")} onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }} style={roundBtn(fav)}>
             <Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} />
           </button>
-          <button aria-label={t("action.compare")} onClick={(e) => { e.preventDefault(); toggleCompare(p.id); }} style={roundBtn(inCompare)}>
+          <button aria-label={t("action.compare")} onClick={(e) => { e.preventDefault(); toggleCompare(product.id); }} style={roundBtn(inCompare)}>
             <GitCompare size={16} />
           </button>
         </div>
       </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)", minHeight: 14 }}>
-          {cardEyebrow || " "}
-        </div>
-        <Link
-          to={`/product/${p.slug}`}
-          className="idea-display"
-          style={{
-            fontSize: "var(--idea-text-lg)",
-            color: "var(--idea-text)",
-            textDecoration: "none",
-            minHeight: "2.3em",
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-          }}
-        >
-          {displayName}
+        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>
+        <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
+          {product.name[locale]}
         </Link>
-        {visibleSubcategory && (
-          <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", textTransform: "capitalize", minHeight: 18 }}>
-            {visibleSubcategory}
-          </div>
-        )}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2, minHeight: 28, alignContent: "flex-start" }}>
-          {commercialMeta.map((value) => <Tag key={value}>{value}</Tag>)}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
+          {product.sizes[0] && <Tag>{product.sizes[0].label}</Tag>}
+          {product.finish && <Tag>{product.finish}</Tag>}
+          {product.variant && <Tag>{product.variant}</Tag>}
         </div>
-        <div className="idea-product-card-actions" style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: 10 }}>
-          <div>
-            {compareAtPriceText && (
-              <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", textDecoration: "line-through" }}>
-                {compareAtPriceText}
-              </div>
-            )}
-            {priceText ? (
-              <div style={{ color: "var(--idea-gold-bright)", fontWeight: 700 }}>{priceText}</div>
-            ) : (
-              <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{t("price.hidden")}</span>
-            )}
-          </div>
-          <button className="idea-product-card-quote" onClick={() => addToQuote(p.id, unit)} style={{
+        <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+          <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{t("price.hidden")}</span>
+          <button onClick={() => addToQuote(product.id, unit)} style={{
             display: "inline-flex", alignItems: "center", gap: 6, background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)",
             color: "var(--idea-gold-bright)", borderRadius: "var(--idea-radius-full)", padding: "6px 14px", cursor: "pointer", fontSize: "var(--idea-text-xs)", textTransform: "uppercase", letterSpacing: "0.05em",
           }}>
@@ -172,16 +62,10 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       </div>
       <style>{`
-        .idea-product-card:hover .idea-product-img { transform: scale(1.045); }
-        @media (max-width: 560px) {
-          .idea-product-card button { min-height: 44px; }
-          .idea-product-card button[aria-label] { min-width: 44px; }
-          .idea-product-card-actions { align-items: stretch !important; flex-direction: column; }
-          .idea-product-card-quote { width: 100%; justify-content: center; }
-        }
+        .idea-product-card:hover .idea-product-img { transform: scale(1.06); }
         @media (prefers-reduced-motion: reduce) { .idea-product-img { transition: none !important; } }
       `}</style>
-    </article>
+    </div>
   );
 }
 

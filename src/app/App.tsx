@@ -28,6 +28,7 @@ import { SubscriptionsHome, SubscriptionsCustomers, SubscriptionsBusinesses, Acc
 import { AdminLayout, AdminOverview, AdminSubscriptions, AdminPayments } from "./pages/Admin";
 import { Checkout } from "./pages/Checkout";
 import { RoomDesignerHome, PhotoGuide, RoomDesignerEditor } from "./pages/RoomDesigner";
+import { TileShowroom } from "./pages/TileShowroom";
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
@@ -53,14 +54,14 @@ export default function App() {
               {/* Storefront */}
               <Route index element={<Home />} />
               <Route path="/products" element={<Products />} />
-              <Route path="/market/mazloum" element={<Navigate to="/products" replace />} />
-              <Route path="/market/mazloum/product" element={<Navigate to="/products" replace />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/collections/:slug" element={<CollectionDetail />} />
               <Route path="/product/:slug" element={<ProductDetail />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/ai-room-visualizer" element={<AiVisualizer />} />
+              <Route path="/tile-showroom/:lookId" element={<TileShowroom />} />
+              <Route path="/tile-showroom" element={<TileShowroom />} />
 
               {/* RFQ */}
               <Route path="/request-quote" element={<Navigate to="/request-quote/new" replace />} />
