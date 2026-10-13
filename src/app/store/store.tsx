@@ -3,7 +3,7 @@ import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
 import { loadLiveCatalog } from "../data/liveCatalog";
-import { FIVE_VERIFIED_SURFACES, mergeMarketProducts } from "../data/curatedMarket";
+import { FIVE_VERIFIED_SURFACES, VERIFIED_BATHROOM_PRODUCTS, mergeMarketProducts } from "../data/curatedMarket";
 import { useBackend } from "../backend/db";
 import { requireSupabase } from "../backend/supabaseClient";
 
@@ -51,7 +51,7 @@ function usePersisted<T>(key: string, initial: T): [T, React.Dispatch<React.SetS
 export function StoreProvider({ children }: { children: ReactNode }) {
   // Products imported from the source export. Unconfirmed fields stay empty.
   const [products, setProducts] = useState<Product[]>(() =>
-    mergeMarketProducts([...FIVE_VERIFIED_SURFACES, ...ART_CERAMIC_PRODUCTS])
+    mergeMarketProducts([...FIVE_VERIFIED_SURFACES, ...VERIFIED_BATHROOM_PRODUCTS, ...ART_CERAMIC_PRODUCTS])
   );
   useEffect(() => {
     fetchAbaElMozahemProducts()
