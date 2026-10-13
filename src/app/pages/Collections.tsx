@@ -52,12 +52,17 @@ export function Collections() {
                 }}
               />
               <div className="idea-collection-card__wash" aria-hidden="true" />
+              <div className="idea-premium-category__nameplate idea-collection-card__nameplate">
+                <span className="idea-premium-category__eyebrow">
+                  {locale === "ar" ? "تصفح القسم" : locale === "fr" ? "EXPLORER" : "SHOP CATEGORY"}
+                </span>
+                <h2 className="idea-display idea-premium-category__side-title">{c.title[locale]}</h2>
+              </div>
               <div className="idea-collection-card__content">
                 <div className="idea-collection-card__meta">
-                  <span>{count.toLocaleString(locale === "ar" ? "ar-EG" : locale === "fr" ? "fr-FR" : "en-US")}</span>
+                  <span>{count.toLocaleString(locale === "ar" ? "ar-EG" : locale === "fr" ? "fr-FR" : "en-US")} {locale === "ar" ? "منتج" : "PRODUCTS"}</span>
                   <ArrowUpRight size={15} />
                 </div>
-                <h2 className="idea-display">{c.title[locale]}</h2>
                 <p>{c.blurb[locale]}</p>
               </div>
             </Link>
