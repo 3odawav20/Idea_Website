@@ -257,7 +257,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                 {t("empty.products")}
               </div>
             ) : (
-              <div className="idea-products-grid">
+              <div className="idea-products-grid idea-premium-market-grid">
                 {visibleResults.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
             )}
