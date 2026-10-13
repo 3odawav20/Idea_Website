@@ -38,6 +38,18 @@ const EDITORIAL_TILES: EditorialTile[] = [
     subtitle:{en:"Premium porcelain flooring",ar:"أرضيات بورسلين راقية",fr:"Sols en porcelaine"},
     scope:p=>/floor/i.test(p.application||""),
   },
+  {
+    collection:"ceramics",to:"/collections/ceramics?application=Floor",
+    title:{en:"Floor Ceramics",ar:"سيراميك الأرضيات",fr:"Céramique au sol"},
+    subtitle:{en:"Refined floor ceramic surfaces",ar:"أرضيات سيراميك بتشطيبات راقية",fr:"Sols céramiques haut de gamme"},
+    scope:p=>/floor/i.test(p.application||""),
+  },
+  {
+    collection:"basins",to:"/collections/basins?brand=Duravit",
+    title:{en:"Duravit Basins",ar:"أحواض دورافيت",fr:"Vasques Duravit"},
+    subtitle:{en:"A manufacturer-led basin edit",ar:"مختارات أحواض من الشركة المصنعة",fr:"Une sélection de vasques fabricant"},
+    scope:p=>p.brand==="Duravit",
+  },
 ];
 
 function EditorialCard({tile, image}: {tile:EditorialTile;image:string}) {
@@ -69,7 +81,7 @@ export function Home() {
     const matches=approved.filter(p=>p.collection===tile.collection && (!tile.scope || tile.scope(p)));
     const cover=matches.sort((a,b)=>marketplaceProductQuality(b,locale)-marketplaceProductQuality(a,locale))[0];
     return cover ? {tile,image:cover.image} : null;
-  }).filter((entry):entry is {tile:EditorialTile;image:string}=>Boolean(entry));
+  }).filter((entry):entry is {tile:EditorialTile;image:string}=>Boolean(entry)).slice(0,8);
 
   // Mix verified manufacturers and material families, avoiding identical products in the same row.
   const byCollection = MARKET_FOCUS_COLLECTIONS.map(category=>
