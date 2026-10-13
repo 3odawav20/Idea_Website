@@ -186,7 +186,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
               {meta ? meta.title[locale] : (locale === "ar" ? "الماركت · خامات استثنائية" : "The Signature Market")}
             </h1>
             <p style={{ color: "#f1ece6", lineHeight: 1.75, maxWidth: 550, margin: 0 }}>
-              {meta ? meta.blurb[locale] : (locale === "ar" ? "سيراميك وبورسلين وبلاط ورخام وأحواض وبانيوهات، كل منتج في مكانه الصحيح." : "Architectural ceramics, porcelain, natural marble, tiles, washbasins and baths. Carefully organized.")}
+              {meta ? meta.blurb[locale] : (locale === "ar" ? "سيراميك وبورسلين وبلاط وأحواض وبانيوهات، كل منتج في قسمه الصحيح." : "Ceramics, porcelain, tiles, washbasins and bathtubs. Carefully organized and never mixed.")}
             </p>
             <div className="idea-premium-market-cover__count">{catalogueSummary}</div>
           </div>
