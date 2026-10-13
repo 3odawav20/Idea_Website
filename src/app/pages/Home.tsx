@@ -74,22 +74,24 @@ function CollectionTile({ slug }: { slug: string }) {
     <Link to={`/collections/${c.slug}`} style={{ position: "relative", display: "block", aspectRatio: "3/4", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)" }}>
       <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .5s" }}
         onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")} onMouseLeave={(e) => (e.currentTarget.style.transform = "")} />
-      <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay)" }} />
-      <div style={{ position: "absolute", insetInline: 0, bottom: 0, padding: "var(--idea-space-4)", display: "grid", gridTemplateRows: "2.3em minmax(2.8em, auto)", alignItems: "end" }}>
-        <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", display: "flex", alignItems: "end" }}>{c.title[locale]}</div>
-        <div style={{ color: "var(--idea-gold)", fontSize: "var(--idea-text-xs)", display: "flex", alignItems: "flex-start", gap: 6, marginTop: 4, lineHeight: 1.45 }}>
-          <ArrowRight size={13} /> {c.blurb[locale]}
-        </div>
+      <div className="idea-main-collection-scrim" aria-hidden="true" />
+      <div className="idea-main-collection-nameplate">
+        <span className="idea-main-collection-eyebrow">{locale === "ar" ? "تصفح القسم" : locale === "fr" ? "COLLECTION" : "SHOP COLLECTION"}</span>
+        <h2 className="idea-display idea-main-collection-title">{c.title[locale]}</h2>
+      </div>
+      <div className="idea-main-collection-footer">
+        <span>{c.blurb[locale]}</span>
+        <ArrowRight size={18} aria-hidden="true" />
       </div>
     </Link>
   );
 }
 
 export function Home() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const { products } = useStore();
-  const ceramicPorcelain = ["ceramics", "porcelain", "sanitary-ware", "faucets"];
-  const sanitary = ["bathroom-sets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories"];
+  const ceramicPorcelain = ["ceramics", "porcelain", "sanitary-ware", "bathtubs"];
+  const sanitary = ["bathroom-sets", "bathroom-units", "faucets", "shower-units"];
   const featured = products.slice(0, 4);
 
   return (
@@ -104,7 +106,7 @@ export function Home() {
       {/* Ceramic & Porcelain categories */}
       <Section>
         <Container>
-          <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.ceramicPorcelain")} />
+          <SectionHeader eyebrow={t("home.shopByCategory")} title={locale === "ar" ? "اكتشف أقسام الماركت" : locale === "fr" ? "Toutes nos collections" : "Explore All Collections"} />
           <div className="idea-ceramic-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-4)" }}>
             {ceramicPorcelain.map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
