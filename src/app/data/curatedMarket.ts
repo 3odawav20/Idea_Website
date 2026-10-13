@@ -6,6 +6,7 @@ import { INNOVA_VERIFIED_BULK } from "./innovaVerifiedBulk";
 import { getFiveMahgoubSourceUrl } from "./fiveSourceUrls";
 import { VERIFIED_BASINS } from "./basinsFromMahgoub";
 import { VERIFIED_BATHTUBS } from "./bathtubsFromMahgoub";
+import { VERIFIED_MARBLE } from "./marbleFromWesha";
 import { isPresentableImageUrl, cleanCatalogText } from "./catalogPresentation";
 
 // Public presentation scope. Other backend records are preserved at their source.
@@ -68,6 +69,8 @@ export function normalizeMarketProduct(p: Product): Product {
     gallery: [...new Set([p.image, ...(p.gallery || [])].filter(isRealImage))],
   };
 }
+export const VERIFIED_NATURAL_MARBLE: Product[] = VERIFIED_MARBLE.map(normalizeMarketProduct).filter(isPublishableMarketProduct);
+
 export const VERIFIED_BATHROOM_PRODUCTS: Product[] = [
   ...VERIFIED_BASINS,
   ...VERIFIED_BATHTUBS,
