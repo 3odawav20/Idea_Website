@@ -4,6 +4,7 @@ import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
 import { MARKET_FOCUS_COLLECTIONS } from "../data/curatedMarket";
+import { categoryArtwork } from "../data/categoryArtwork";
 import { dedupeProductsForLocale, productMatchesLocale, marketplaceProductQuality } from "../data/catalogPresentation";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
@@ -80,7 +81,7 @@ export function Home() {
   const tiles = EDITORIAL_TILES.map(tile=>{
     const matches=approved.filter(p=>p.collection===tile.collection && (!tile.scope || tile.scope(p)));
     const cover=matches.sort((a,b)=>marketplaceProductQuality(b,locale)-marketplaceProductQuality(a,locale))[0];
-    return cover ? {tile,image:cover.image} : null;
+    return cover ? {tile,image:categoryArtwork(tile.collection,cover.image)} : null;
   }).filter((entry):entry is {tile:EditorialTile;image:string}=>Boolean(entry)).slice(0,8);
 
   // Mix verified manufacturers and material families, avoiding identical products in the same row.
