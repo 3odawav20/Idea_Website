@@ -46,6 +46,18 @@ const EDITORIAL_TILES: EditorialTile[] = [
     scope:p=>/floor/i.test(p.application||""),
   },
   {
+    collection:"porcelain",to:"/collections/porcelain?application=Wall",
+    title:{en:"Wall Porcelain",ar:"بورسلين الحوائط",fr:"Porcelaine murale"},
+    subtitle:{en:"Distinctive wall surfaces",ar:"تشطيبات بورسلين للحوائط",fr:"Porcelaine murale"},
+    scope:p=>/wall/i.test(p.application||""),
+  },
+  {
+    collection:"ceramics",to:"/collections/ceramics?finish=Glossy",
+    title:{en:"Glossy Ceramics",ar:"سيراميك لامع",fr:"Céramique brillante"},
+    subtitle:{en:"Luminous surface finishes",ar:"تشطيبات لامعة للمساحات الراقية",fr:"Finitions brillantes"},
+    scope:p=>/glossy/i.test(p.finish||""),
+  },
+  {
     collection:"basins",to:"/collections/basins?brand=Duravit",
     title:{en:"Duravit Basins",ar:"أحواض دورافيت",fr:"Vasques Duravit"},
     subtitle:{en:"A manufacturer-led basin edit",ar:"مختارات أحواض من الشركة المصنعة",fr:"Une sélection de vasques fabricant"},
