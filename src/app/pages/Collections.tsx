@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
+import { categoryArtwork } from "../data/categoryArtwork";
 import { dedupeProductsForLocale } from "../data/catalogPresentation";
 import type { CollectionSlug } from "../data/types";
 import { Container, Section } from "../components/ui";
@@ -22,7 +23,7 @@ export function Collections() {
       if (!collection) return null;
       const collectionProducts = dedupeProductsForLocale(products.filter((product) => product.collection === slug), locale);
       const count = collectionProducts.length;
-      return count > 0 ? { collection, count, coverImage: collectionProducts[0]?.image || collection.image } : null;
+      return count > 0 ? { collection, count, coverImage: categoryArtwork(collection.slug,collectionProducts[0]?.image || collection.image) } : null;
     })
     .filter(Boolean) as Array<{ collection: (typeof COLLECTIONS)[number]; count: number; coverImage: string }>;
 
