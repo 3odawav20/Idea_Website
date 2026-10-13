@@ -24,7 +24,6 @@ const EDITORIAL_TILES: EditorialTile[] = [
   {collection:"ceramics"},
   {collection:"porcelain"},
   {collection:"tiles"},
-  {collection:"marble"},
   {collection:"basins"},
   {collection:"bathtubs"},
   {
@@ -107,7 +106,7 @@ export function Home() {
                 {locale==="ar"?"خامات تصنع الفرق":locale==="fr"?"La matière sublime l’espace":"Designed to be extraordinary"}
               </h2>
               <p className="idea-premium-subtitle">
-                {locale==="ar"?"سيراميك، بورسلين، بلاط، رخام وأحواض مختارة بعناية، بمواصفات موثّقة وشكل يليق بكل مساحة.":locale==="fr"?"Céramique, porcelaine, carrelage, marbre et salle de bain — une sélection authentique.":"Beautiful surfaces. Verified details. Remarkable spaces."}
+                {locale==="ar"?"سيراميك وبورسلين وبلاط وأحواض وبانيوهات مختارة بعناية، بمواصفات موثّقة وشكل يليق بكل مساحة.":locale==="fr"?"Céramique, porcelaine, carrelage, vasques et baignoires — une sélection authentique.":"Beautiful surfaces. Verified details. Remarkable spaces."}
               </p>
             </div>
             <Link to="/collections" className="idea-premium-text-link">{locale==="ar"?"كل الأقسام":"VIEW COLLECTIONS"} <ArrowUpRight size={17}/></Link>
@@ -151,7 +150,7 @@ export function Home() {
             <div className="idea-premium-bath-feature__copy">
               <div className="idea-eyebrow" style={{color:"#ffa86f"}}>IDEA / THE ART OF BATHING</div>
               <h2 className="idea-display">{locale==="ar"?"حمّام بتفاصيل استثنائية":locale==="fr"?"L’art de la salle de bain":"Spaces that feel extraordinary"}</h2>
-              <p>{locale==="ar"?"بورسلين ورخام وأحواض وبانيوهات في مجموعات منفصلة ومختارة بذوق معماري.":"Architectural surfaces, washbasins and bathtubs. Each in its own verified collection."}</p>
+              <p>{locale==="ar"?"بورسلين وسيراميك وأحواض وبانيوهات في مجموعات منفصلة ومختارة بذوق معماري.":"Ceramic and porcelain surfaces, washbasins and bathtubs. Each in its own verified collection."}</p>
               <div className="idea-premium-bath-actions">
                 {heroShortcuts.filter(c=>c.slug==="basins"||c.slug==="bathtubs"||c.slug==="porcelain").slice(0,3).map(c=>
                   <Link key={c.slug} to={`/collections/${c.slug}`}>{c.title[locale]} <ArrowUpRight size={15}/></Link>
