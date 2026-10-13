@@ -116,7 +116,7 @@ export function HeroSearchPanel() {
     material: { en: "Material", ar: "الخامة", fr: "Matière" },
     apply: { en: "Filter", ar: "تصفية", fr: "Filtrer" },
     go: { en: "Search", ar: "ابحث", fr: "Rechercher" },
-    ph: { en: "Search ceramics, porcelain, marble, faucets…", ar: "ابحث في السيراميك والبورسلين والرخام والخلاطات…", fr: "Rechercher céramique, porcelaine, marbre…" },
+    ph: { en: "Search ceramics, porcelain, tiles, basins, bathtubs…", ar: "ابحث في السيراميك والبورسلين والبلاط والأحواض والبانيوهات…", fr: "Rechercher céramique, porcelaine, carrelage, vasques…" },
   } as const;
 
   return (
