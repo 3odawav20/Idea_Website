@@ -6,6 +6,8 @@ export type Locale = "en" | "ar" | "fr";
 
 export type CollectionSlug =
   | "ceramics"
+  | "tiles"
+  | "basins"
   | "porcelain"
   | "marble"
   | "sanitary-ware"
