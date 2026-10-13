@@ -3,6 +3,7 @@ import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
 import { loadLiveCatalog } from "../data/liveCatalog";
+import { FIVE_VERIFIED_SURFACES, mergeMarketProducts } from "../data/curatedMarket";
 import { useBackend } from "../backend/db";
 import { requireSupabase } from "../backend/supabaseClient";
 
@@ -49,25 +50,18 @@ function usePersisted<T>(key: string, initial: T): [T, React.Dispatch<React.SetS
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   // Products imported from the source export. Unconfirmed fields stay empty.
-  const [products, setProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS.filter((product) => product.approved));
+  const [products, setProducts] = useState<Product[]>(() =>
+    mergeMarketProducts([...FIVE_VERIFIED_SURFACES, ...ART_CERAMIC_PRODUCTS])
+  );
   useEffect(() => {
     fetchAbaElMozahemProducts()
-      .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => product.approved && !current.some((existing) => existing.id === product.id))]))
+      .then((incoming) => setProducts((current) => mergeMarketProducts([...current, ...incoming])))
       .catch(() => { /* Source remains staged in registry; keep verified local catalogue available. */ });
 
     const controller = new AbortController();
 
     void loadLiveCatalog((incoming) => {
-      setProducts((current) => {
-        const next = new Map<string, Product>();
-        for (const product of incoming) {
-          if (product.approved) next.set(product.id, product);
-        }
-        for (const product of current) {
-          if (!next.has(product.id)) next.set(product.id, product);
-        }
-        return [...next.values()];
-      });
+      setProducts((current) => mergeMarketProducts([...current, ...incoming]));
     }, controller.signal).catch(() => {
       /* Keep locally imported catalogue visible if the live cPanel catalogue is temporarily unavailable. */
     });
