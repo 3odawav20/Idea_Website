@@ -122,7 +122,7 @@ export function normalizeLiveCatalogCollection(
 
   // A sink may mention mixer holes, but the product itself is still a sink.
   if (/^(?:kitchen\s+sink|sink\b|basin\b|wash\s*basin\b)/i.test(nameText) || /^(?:حوض|احواض|أحواض)\b/u.test(nameText)) {
-    return "sanitary-ware";
+    return "basins";
   }
 
   // Complete sanitary sets must stay under sanitary ware even when a shower is included.
@@ -146,6 +146,7 @@ export function normalizeLiveCatalogCollection(
   if (/\b(?:bathtub|bath tub|jacuzzi|freestanding bath|spa bath)\b/i.test(text) || /بانيو|جاكوزي|حوض استحمام/u.test(text)) return "bathtubs";
   if (/\b(?:shower enclosure|shower cabin|shower tray|shower column|shower system|shower set|shower panel|shower)\b/i.test(text) || /كابينة دش|كابينه دش|عمود دش|شاور بانل|دش|شاور/u.test(text)) return "shower-units";
   if (/\b(?:vanity|bathroom unit|bathroom furniture|bathroom cabinet)\b/i.test(text) || /وحدة حمام|وحدات حمام|اثاث حمام|أثاث حمام|خزانة حمام/u.test(text)) return "bathroom-units";
+  if (/\b(?:basin|wash\s*basin|sink)\b/i.test(text) || /حوض|أحواض|احواض/u.test(text)) return "basins";
   if (/\b(?:basin|wash ?basin|sink|toilet|wc|bidet|urinal|sanitary ware|sanitary)\b/i.test(text) || /حوض|احواض|أحواض|مرحاض|تواليت|قاعدة حمام|قواعد حمام|بيديه|مبولة|ادوات صحية|أدوات صحية|كومبنيشن/u.test(text)) return "sanitary-ware";
   if (/\b(?:pipe|fitting|valve|plumbing|trap|siphon|drain|connector)\b/i.test(text) || /مواسير|ماسورة|وصلة|وصلات|محبس|محابس|سباكة|سيفون|صرف|بلف/u.test(text)) return "plumbing-products";
 
@@ -166,7 +167,7 @@ export function normalizeLiveCatalogCollection(
   if (/\bporcelain\b/i.test(text) || /بورسلين/u.test(text)) return "porcelain";
   if (/\b(?:ceramic|ceramic tile|ceramic tiles)\b/i.test(text) || /سيراميك/u.test(text)) return "ceramics";
   if (/\b(?:marble|natural stone|travertine|granite)\b/i.test(text) || /رخام|حجر طبيعي|ترافرتين|جرانيت(?!و)/u.test(text)) return "marble";
-  if (/\b(?:tiles?|wall tile|floor tile)\b/i.test(text) || /بلاط|حوائط|أرضيات|ارضيات/u.test(text)) return "ceramics";
+  if (/\b(?:tiles?|wall tile|floor tile)\b/i.test(text) || /بلاط/u.test(text)) return "tiles";
 
   if (row.source_id === "source-13" && DISPLAY_COLLECTIONS.has(raw as CollectionSlug)) return raw as CollectionSlug;
   return null;
@@ -187,7 +188,7 @@ function normalizedSubcategory(row: CatalogRow, collection: CollectionSlug) {
     if (/shower|دش|شاور/u.test(text)) return "Shower Mixers";
     return sourceValue || "Mixers";
   }
-  if (collection === "sanitary-ware") {
+  if (collection === "sanitary-ware" || collection === "basins") {
     if (/kitchen sink|حوض مطبخ/u.test(text)) return "Kitchen Sinks";
     if (/bathroom set|complete set|طقم حمام|أطقم حمام/u.test(text)) return "Bathroom Sets";
     if (/toilet|wc|مرحاض|تواليت|قاعدة/u.test(text)) return "Toilets";
@@ -221,7 +222,7 @@ function normalizedSubcategory(row: CatalogRow, collection: CollectionSlug) {
     if (/planter|زرع|أصيص/u.test(text)) return "Planters";
     if (/textile|cushion|throw|وسادة|منسوج/u.test(text)) return "Textiles";
   }
-  if (collection === "ceramics" || collection === "porcelain" || collection === "marble") {
+  if (collection === "ceramics" || collection === "porcelain" || collection === "tiles" || collection === "marble") {
     if (/wall|حوائط/u.test(text)) return "Wall Surfaces";
     if (/floor|أرضيات|ارضيات/u.test(text)) return "Floor Surfaces";
   }

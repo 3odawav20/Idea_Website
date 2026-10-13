@@ -1,9 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
+import { categoryArtwork } from "../data/categoryArtwork";
+import { MARKET_FOCUS_COLLECTIONS } from "../data/curatedMarket";
+import imgBath from "../../imports/idea-hero-spa-bath-4k.webp";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
 import { ChevronLeft, ChevronRight, SlidersHorizontal, X } from "lucide-react";
@@ -174,19 +177,37 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container>
-        {/* Page heading */}
-        <div style={{ marginBottom: "var(--idea-space-6)" }}>
-          <div className="idea-eyebrow">{meta ? t("nav.collections") : t("nav.products")}</div>
-          <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 0" }}>
-            {meta ? meta.title[locale] : t("nav.products")}
-          </h1>
-          {q && <p style={{ color: "var(--idea-text-muted)", marginTop: 8 }}>“{q}”</p>}
-          {!q && !meta && (
-            <p style={{ color: "var(--idea-text-muted)", marginTop: "var(--idea-space-2)", fontSize: "var(--idea-text-sm)" }}>
-              {catalogueSummary}
+        {/* Curated editorial market cover. User-provided category hero artworks may replace these assets. */}
+        <header className="idea-premium-market-cover" style={{ backgroundImage: `linear-gradient(90deg,rgba(12,12,13,.93) 0%,rgba(12,12,13,.62) 48%,rgba(12,12,13,.12) 100%),url("${meta ? categoryArtwork(meta.slug,meta.image) : imgBath}")` }}>
+          <div className="idea-premium-market-cover__copy">
+            <div className="idea-eyebrow" style={{ color: "#ffaa76", letterSpacing: ".16em" }}>
+              {meta ? "IDEA / SIGNATURE COLLECTIONS" : "IDEA / THE CURATED MARKET"}
+            </div>
+            <h1 className="idea-display" style={{ fontSize: "clamp(34px,5vw,65px)", color: "#fff", lineHeight: 1.08, margin: "14px 0" }}>
+              {meta ? meta.title[locale] : (locale === "ar" ? "الماركت · خامات استثنائية" : "The Signature Market")}
+            </h1>
+            <p style={{ color: "#f1ece6", lineHeight: 1.75, maxWidth: 550, margin: 0 }}>
+              {meta ? meta.blurb[locale] : (locale === "ar" ? "سيراميك وبورسلين وبلاط وأحواض وبانيوهات، كل منتج في قسمه الصحيح." : "Ceramics, porcelain, tiles, washbasins and bathtubs. Carefully organized and never mixed.")}
             </p>
-          )}
-        </div>
+            <div className="idea-premium-market-cover__count">{catalogueSummary}</div>
+          </div>
+        </header>
+        <nav className="idea-premium-quick-links" aria-label="Market categories" style={{ marginBottom: "var(--idea-space-6)" }}>
+          {MARKET_FOCUS_COLLECTIONS.filter(slug => products.some(p => p.collection === slug))
+            .map(slug => COLLECTIONS.find(c => c.slug === slug)!)
+            .filter(Boolean)
+            .map(c => (
+              <Link key={c.slug} to={`/collections/${c.slug}`}
+                aria-current={fixedCollection === c.slug ? "page" : undefined}
+                style={fixedCollection === c.slug ? { borderColor: "var(--idea-gold)", color: "var(--idea-gold-bright)" } : undefined}>
+                {c.title[locale]}
+              </Link>
+            ))}
+          <Link to="/products" aria-current={!fixedCollection ? "page" : undefined}>
+            {locale === "ar" ? "كل المنتجات" : "All Products"}
+          </Link>
+        </nav>
+        {q && <p style={{ color: "var(--idea-text-muted)", margin: "0 0 16px" }}>“{q}”</p>}
 
         {/* Mobile filter toolbar */}
         <div className="idea-filter-toolbar" style={{ display: "none", justifyContent: "space-between", alignItems: "center", gap: "var(--idea-space-3)", marginBottom: "var(--idea-space-4)" }}>
@@ -257,7 +278,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                 {t("empty.products")}
               </div>
             ) : (
-              <div className="idea-products-grid">
+              <div className="idea-products-grid idea-premium-market-grid">
                 {visibleResults.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
             )}

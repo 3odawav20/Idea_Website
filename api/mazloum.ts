@@ -156,7 +156,7 @@ function productFromArticle(article) {
     productUrl,
     image,
     category,
-    price: uniquePrices.at(-1) || null,
+    price: uniquePrices[uniquePrices.length - 1] || null,
     previousPrice: uniquePrices.length > 1 ? uniquePrices[0] : null,
     discount: discount ? stripTags(discount) : null,
     badges: [...new Set(badges)],

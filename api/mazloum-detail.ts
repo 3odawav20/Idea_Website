@@ -158,7 +158,7 @@ export default async function handler(req, res) {
       features,
       price: asText(offer.price),
       priceCurrency: asText(offer.priceCurrency) || "EGP",
-      availability: asText(offer.availability)?.split("/").at(-1) || null,
+      availability: asText(offer.availability)?.split("/").slice(-1)[0] || null,
       fetchedAt: new Date().toISOString(),
     });
   } catch (error) {

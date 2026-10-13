@@ -117,6 +117,12 @@ export function localizedProductName(product: Product, locale: Locale) {
       const letterCount = [...cleaned].filter((char) => ARABIC_CHAR_RE.test(char)).length;
       if (letterCount >= 3 && textMatchesLocale(cleaned, locale, true)) return cleaned;
     }
+    // The source never supplied an Arabic model translation. Keep the verified
+    // Latin manufacturer's product identity rather than hiding the entire item.
+    if (product.source?.sourceId === "source-03" || product.source?.sourceId === "wesha-marble") {
+      const originalName = cleanCatalogText(product.name.en);
+      if (originalName && !MOJIBAKE_RE.test(originalName) && !hasArabic(originalName)) return originalName;
+    }
   }
 
   // Never leak Arabic source titles into English/French storefront views.

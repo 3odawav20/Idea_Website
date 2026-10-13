@@ -21,50 +21,55 @@ interface Slide {
 
 const SLIDES: Slide[] = [
   {
-    id: "signature-interiors",
-    image: imgLivingRoom,
-    mobileImage: imgLivingRoom2k,
-    position: "center center",
-    motion: "left",
-    headline: {
-      en: "Exceptional Materials. Exceptional Interiors.",
-      ar: "خامات استثنائية لمساحات استثنائية",
-      fr: "Des matériaux d’exception pour des intérieurs d’exception",
-    },
-    text: {
-      en: "Curated ceramic, porcelain, marble and bathroom collections for refined residential and commercial spaces.",
-      ar: "تشكيلة منتقاة من السيراميك والبورسلين والرخام وحلول الحمامات للمساحات السكنية والتجارية الراقية.",
-      fr: "Une sélection raffinée de céramique, porcelaine, marbre et solutions de salle de bain.",
-    },
-    buttons: [
-      { label: { en: "Explore Collections", ar: "استكشف المجموعات", fr: "Explorer les collections" }, to: "/collections", variant: "gold" },
-      { label: { en: "Browse Products", ar: "تصفح المنتجات", fr: "Voir les produits" }, to: "/products", variant: "outline" },
-    ],
+    id:"signature-porcelain-bath",
+    image:imgSpaBath,mobileImage:imgSpaBath2k,
+    position:"center 47%",motion:"left",
+    headline:{en:"The Art of Exceptional Surfaces",ar:"فنّ الأسطح الاستثنائية",fr:"L’art des matières exceptionnelles"},
+    text:{en:"Architectural porcelain and ceramic collections, selected for extraordinary spaces.",ar:"مجموعات بورسلين وسيراميك راقية تمنح المساحات هوية استثنائية.",fr:"Des porcelaines et céramiques raffinées pour des espaces singuliers."},
+    buttons:[
+      {label:{en:"Discover Porcelain",ar:"اكتشف البورسلين",fr:"Explorer la porcelaine"},to:"/collections/porcelain",variant:"gold"},
+      {label:{en:"Shop Ceramics",ar:"تصفح السيراميك",fr:"Voir les céramiques"},to:"/collections/ceramics",variant:"outline"},
+    ]
   },
   {
-    id: "marble-architecture",
-    image: imgSpaBath,
-    mobileImage: imgSpaBath2k,
-    position: "center 45%",
-    motion: "right",
-    headline: {
-      en: "The Art of the Bath",
-      ar: "فنّ الحمام الراقي",
-      fr: "L’art de la salle de bain",
-    },
-    text: {
-      en: "Architectural sanitary ware, refined faucets and porcelain surfaces composed for premium bathroom spaces.",
-      ar: "أدوات صحية معمارية وخلاطات راقية وأسطح بورسلين مختارة لتكوين حمامات فاخرة متكاملة.",
-      fr: "Sanitaires architecturaux, robinetterie raffinée et surfaces en porcelaine pour des salles de bain premium.",
-    },
-    buttons: [
-      { label: { en: "Explore Bathrooms", ar: "استكشف الحمامات", fr: "Explorer les salles de bain" }, to: "/collections/sanitary-ware", variant: "gold" },
-      { label: { en: "Faucets & Fixtures", ar: "الخلاطات والتجهيزات", fr: "Robinets & équipements" }, to: "/collections/faucets", variant: "outline" },
-    ],
+    id:"ceramic-bathroom-architecture",
+    image:"https://images.unsplash.com/photo-1663811397133-2d1f5addd9d5?w=3200&q=87&fit=crop",
+    mobileImage:"https://images.unsplash.com/photo-1663811397133-2d1f5addd9d5?w=1600&q=82&fit=crop",
+    position:"center 49%",motion:"right",
+    headline:{en:"Bathrooms Beyond Ordinary",ar:"حمّامات تتجاوز المعتاد",fr:"Des salles de bain d’exception"},
+    text:{en:"Rich ceramic textures and timeless bathroom compositions. A refined vision in every detail.",ar:"ملمس سيراميك غني وتكوينات حمّامات خالدة بتفاصيل محسوبة بعناية.",fr:"Des textures céramiques riches et des compositions intemporelles."},
+    buttons:[
+      {label:{en:"Ceramic Collection",ar:"مجموعة السيراميك",fr:"Collection céramique"},to:"/collections/ceramics",variant:"gold"},
+      {label:{en:"Explore Basins",ar:"استكشف الأحواض",fr:"Explorer les vasques"},to:"/collections/basins",variant:"outline"}
+    ]
   },
+  {
+    id:"signature-tiles",
+    image:"https://images.unsplash.com/photo-1663811396585-94548d37760f?w=3200&q=87&fit=crop",
+    mobileImage:"https://images.unsplash.com/photo-1663811396585-94548d37760f?w=1600&q=82&fit=crop",
+    position:"center 50%",motion:"left",
+    headline:{en:"Crafted for Every Surface",ar:"تفاصيل بلاط تصنع الاختلاف",fr:"Des surfaces remarquables"},
+    text:{en:"Distinctive tile textures, measured finishes and expressive architectural spaces.",ar:"بلاط بخامات وتشطيبات مدروسة لمساحات معمارية مميزة.",fr:"Des carreaux, textures et finitions pour des espaces uniques."},
+    buttons:[
+      {label:{en:"Explore Tiles",ar:"تصفح البلاط",fr:"Voir les carreaux"},to:"/collections/tiles",variant:"gold"},
+      {label:{en:"Shop Porcelain",ar:"اكتشف البورسلين",fr:"Explorer la porcelaine"},to:"/collections/porcelain",variant:"outline"}
+    ]
+  },
+  {
+    id:"designer-bath-collection",
+    image:"https://images.unsplash.com/photo-1663811396038-7a21d4eef49e?w=3200&q=87&fit=crop",
+    mobileImage:"https://images.unsplash.com/photo-1663811396038-7a21d4eef49e?w=1600&q=82&fit=crop",
+    position:"center 50%",motion:"right",
+    headline:{en:"Design Begins With Detail",ar:"التصميم يبدأ من التفاصيل",fr:"Tout commence dans le détail"},
+    text:{en:"Discover statement washbasins, sculptural bathtubs and coordinated premium surfaces.",ar:"أحواض فاخرة وبانيوهات بتصميمات مميزة وخامات متناسقة.",fr:"Vasques, baignoires et surfaces aux finitions soignées."},
+    buttons:[
+      {label:{en:"Explore Bathtubs",ar:"اكتشف البانيوهات",fr:"Découvrir les baignoires"},to:"/collections/bathtubs",variant:"gold"},
+      {label:{en:"Browse Market",ar:"ادخل الماركت",fr:"Explorer le marché"},to:"/products",variant:"outline"}
+    ]
+  }
 ];
 
-const INTERVAL = 8500;
+const INTERVAL = 9500;
 
 export function HeroCarousel() {
   const { locale } = useI18n();
@@ -189,7 +194,7 @@ export function HeroCarousel() {
             >
               <div className={active ? "idea-hero-copy idea-hero-copy--active" : "idea-hero-copy"} style={{ maxWidth: 700 }}>
                 <div className="idea-eyebrow idea-hero-reveal idea-hero-reveal--one" style={{ marginBottom: "var(--idea-space-4)", color: "#ff8a32" }}>
-                  IDEA · BUSINESS ADMINISTRATION
+                  IDEA / SIGNATURE SURFACES
                 </div>
                 <h1
                   className="idea-hero-title idea-hero-reveal idea-hero-reveal--two"
