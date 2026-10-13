@@ -9,7 +9,7 @@ import { Container, Section } from "../components/ui";
 import { Products } from "./Products";
 
 const ORDER: CollectionSlug[] = [
-  "ceramics", "porcelain", "tiles", "marble", "basins", "bathtubs",
+  "ceramics", "porcelain", "tiles", "basins", "bathtubs",
 ];
 
 export function Collections() {
