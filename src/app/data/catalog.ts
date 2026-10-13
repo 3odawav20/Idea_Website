@@ -28,6 +28,12 @@ const IMG = {
 export const HERO_IMAGES = IMG;
 
 export const COLLECTIONS: CollectionMeta[] = [
+  { slug: "tiles", group: "ceramics", image: IMG.tileWood,
+    title: { en: "Tiles", ar: "بلاط", fr: "Carrelage" },
+    blurb: { en: "Distinct tile products with verified material and specifications.", ar: "بلاط مستقل بمواد ومواصفات موثقة.", fr: "Carrelages aux matériaux et spécifications vérifiés." } },
+  { slug: "basins", group: "sanitary", image: IMG.sink,
+    title: { en: "Basins & Sinks", ar: "أحواض", fr: "Vasques & lavabos" },
+    blurb: { en: "Washbasins and sinks, separate from bathtubs and sanitary fittings.", ar: "أحواض غسيل مستقلة عن البانيو وتجهيزات السباكة.", fr: "Vasques et lavabos indépendants des baignoires." } },
   { slug: "ceramics", group: "ceramics", image: IMG.tileCeramic,
     title: { en: "Ceramics", ar: "سيراميك", fr: "Céramiques" },
     blurb: { en: "Wall & floor ceramic tiles in refined finishes.", ar: "بلاط سيراميك للحوائط والأرضيات بلمسات راقية.", fr: "Carrelage céramique mural et sol aux finitions raffinées." } },
