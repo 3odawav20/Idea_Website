@@ -1078,3 +1078,39 @@ a, button {
 @media (prefers-reduced-motion:reduce){
  .idea-premium-text-link,.idea-premium-quick-links a,.idea-premium-bath-actions a {transition:none;}
 }
+
+
+/* Market identity: one strong editorial image and consistent color rhythm. */
+.idea-premium-market-cover {
+  position:relative;min-height:310px;overflow:hidden;
+  background-color:#17171a;background-position:center;
+  background-size:cover;display:flex;align-items:center;
+  border:1px solid rgba(255,255,255,.15);border-radius:22px;
+  margin:0 0 24px;isolation:isolate;
+  box-shadow:0 14px 34px rgba(0,0,0,.12);
+}
+.idea-premium-market-cover__copy {
+  max-width:790px;padding:clamp(28px,5vw,62px);
+}
+.idea-premium-market-cover__count {
+  display:inline-flex;padding:9px 16px;margin-top:24px;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:99px;background:rgba(16,16,18,.5);
+  backdrop-filter:blur(8px);color:#fff;font-size:12px;letter-spacing:.045em;
+}
+.idea-products-grid.idea-premium-market-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:20px;}
+.idea-collections-grid {grid-template-columns:repeat(4,minmax(0,1fr));}
+.idea-collections-grid > .idea-collection-card {grid-column:span 1;min-width:0;}
+@media (max-width:1150px) {
+  .idea-products-grid.idea-premium-market-grid, .idea-collections-grid {grid-template-columns:repeat(3,minmax(0,1fr));}
+}
+@media (max-width:830px) {
+  .idea-products-grid.idea-premium-market-grid, .idea-collections-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;}
+  .idea-premium-market-cover {min-height:330px;}
+}
+@media (max-width:550px) {
+  .idea-products-grid.idea-premium-market-grid, .idea-collections-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .idea-collections-grid .idea-collection-card {min-height:0;aspect-ratio:4/5;}
+  .idea-premium-market-cover {min-height:290px;border-radius:14px;}
+  .idea-premium-market-cover__copy {padding:26px;}
+}
