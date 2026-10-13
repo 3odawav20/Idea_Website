@@ -1,131 +1,177 @@
 import { Link } from "react-router";
-import { ArrowRight, Clock, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Sparkles } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { dedupeProductsForLocale, productMatchesLocale } from "../data/catalogPresentation";
+import { MARKET_FOCUS_COLLECTIONS } from "../data/curatedMarket";
+import { dedupeProductsForLocale, productMatchesLocale, marketplaceProductQuality } from "../data/catalogPresentation";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
 import { Button, Container, Section, SectionHeader } from "../components/ui";
-import { Reveal, Stagger, StaggerItem, ShimmerText, AnimatedWords } from "../components/motion";
-import visualizerImage from "../../imports/Modern_luxury_living_room_ambiance.png";
+import { Reveal } from "../components/motion";
+import imgBath from "../../imports/idea-hero-spa-bath-4k.webp";
+import type { Product, CollectionSlug } from "../data/types";
 
-function CollectionTile({ slug, image }: { slug: string; image?: string }) {
-  const { locale } = useI18n();
-  const c = COLLECTIONS.find((x) => x.slug === slug)!;
+type EditorialTile = {
+  collection: CollectionSlug; to?: string;
+  title?: {en:string;ar:string;fr:string};
+  subtitle?: {en:string;ar:string;fr:string};
+  scope?: (product:Product)=>boolean;
+};
+
+const EDITORIAL_TILES: EditorialTile[] = [
+  {collection:"ceramics"},
+  {collection:"porcelain"},
+  {collection:"tiles"},
+  {collection:"marble"},
+  {collection:"basins"},
+  {collection:"bathtubs"},
+  {
+    collection:"ceramics",to:"/collections/ceramics?application=Wall",
+    title:{en:"Wall Ceramics",ar:"سيراميك الحوائط",fr:"Céramique murale"},
+    subtitle:{en:"Architectural wall finishes",ar:"تشطيبات حوائط فاخرة",fr:"Revêtements muraux"},
+    scope:p=>/wall/i.test(p.application||""),
+  },
+  {
+    collection:"porcelain",to:"/collections/porcelain?application=Floor",
+    title:{en:"Floor Porcelain",ar:"بورسلين الأرضيات",fr:"Porcelaine au sol"},
+    subtitle:{en:"Premium porcelain flooring",ar:"أرضيات بورسلين راقية",fr:"Sols en porcelaine"},
+    scope:p=>/floor/i.test(p.application||""),
+  },
+];
+
+function EditorialCard({tile, image}: {tile:EditorialTile;image:string}) {
+  const {locale}=useI18n();
+  const category=COLLECTIONS.find(c=>c.slug===tile.collection)!;
+  const title=tile.title?.[locale] || category.title[locale];
+  const blurb=tile.subtitle?.[locale] || category.blurb[locale];
   return (
-    <Link to={`/collections/${c.slug}`} className="idea-home-collection-tile">
-      <img
-        className="idea-vivid-image idea-home-collection-tile__image"
-        src={image || c.image}
-        alt={c.title[locale]}
-        loading="lazy"
-        onError={(event) => {
-          if (event.currentTarget.src !== c.image) event.currentTarget.src = c.image;
-        }}
-      />
-      <div className="idea-home-collection-tile__wash" aria-hidden="true" />
+    <Link to={tile.to || `/collections/${tile.collection}`} className="idea-home-collection-tile idea-premium-category">
+      <img src={image} alt={title} loading="lazy" decoding="async" className="idea-vivid-image idea-home-collection-tile__image" />
+      <div className="idea-home-collection-tile__wash" aria-hidden="true"/>
       <div className="idea-home-collection-tile__content">
-        <div className="idea-display idea-home-collection-tile__title">{c.title[locale]}</div>
-        <div className="idea-home-collection-tile__description">
-          <ArrowRight size={13} />
-          <span>{c.blurb[locale]}</span>
-        </div>
+        <div className="idea-eyebrow" style={{color:"#f5bb80",marginBottom:10}}>IDEA / MATERIALS</div>
+        <h2 className="idea-display idea-home-collection-tile__title">{title}</h2>
+        <div className="idea-home-collection-tile__description"><span>{blurb}</span><ArrowUpRight size={17}/></div>
       </div>
     </Link>
   );
 }
 
 export function Home() {
-  const { t, locale } = useI18n();
-  const { products } = useStore();
-  const ceramicPorcelain = ["ceramics", "porcelain", "marble"];
-  const sanitary = ["sanitary-ware", "faucets", "bathroom-units", "bathtubs", "shower-units", "bathroom-accessories", "plumbing-products"];
-  const visibleProducts = dedupeProductsForLocale(products.filter((product) => productMatchesLocale(product, locale)), locale);
-  const featured = visibleProducts.slice(0, 4);
-  const visibleCollections = (slugs: string[]) => slugs
-    .map((slug) => ({ slug, image: visibleProducts.find((product) => product.collection === slug)?.image }))
-    .filter((item) => Boolean(item.image));
+  const {t,locale}=useI18n();
+  const {products}=useStore();
+  const approved = dedupeProductsForLocale(
+    products.filter(p=>MARKET_FOCUS_COLLECTIONS.includes(p.collection) && productMatchesLocale(p,locale)),
+    locale
+  ).filter(p=>p.image);
+  const tiles = EDITORIAL_TILES.map(tile=>{
+    const matches=approved.filter(p=>p.collection===tile.collection && (!tile.scope || tile.scope(p)));
+    const cover=matches.sort((a,b)=>marketplaceProductQuality(b,locale)-marketplaceProductQuality(a,locale))[0];
+    return cover ? {tile,image:cover.image} : null;
+  }).filter((entry):entry is {tile:EditorialTile;image:string}=>Boolean(entry));
+
+  // Mix verified manufacturers and material families, avoiding identical products in the same row.
+  const byCollection = MARKET_FOCUS_COLLECTIONS.map(category=>
+    approved.filter(p=>p.collection===category)
+      .sort((a,b)=>marketplaceProductQuality(b,locale)-marketplaceProductQuality(a,locale)));
+  const chosen:Product[]=[];
+  const seen=new Set<string>();
+  for(let i=0;chosen.length<8 && i<30;i++){
+    for(const family of byCollection){
+      const next=family[i];
+      if(next && !seen.has(next.image) && !seen.has(next.id)){
+        chosen.push(next);
+        seen.add(next.image); seen.add(next.id);
+      }
+      if(chosen.length>=8) break;
+    }
+  }
+  const heroShortcuts = MARKET_FOCUS_COLLECTIONS
+    .filter(slug=>approved.some(p=>p.collection===slug))
+    .map(slug=>COLLECTIONS.find(c=>c.slug===slug)!)
+    .filter(Boolean);
 
   return (
     <>
       <HeroCarousel />
       <HeroSearchPanel />
 
-      {/* Ceramic & Porcelain categories */}
-      <Section>
+      <Section className="idea-premium-home-section">
         <Container>
-          <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.ceramicPorcelain")} />
-          <div className="idea-home-category-grid idea-home-category-grid--three">
-            {visibleCollections(ceramicPorcelain).map((item) => <CollectionTile key={item.slug} slug={item.slug} image={item.image} />)}
-          </div>
-        </Container>
-      </Section>
-
-      {/* Featured products */}
-      <Section alt>
-        <Container>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", flexWrap: "wrap", gap: 16 }}>
-            <SectionHeader eyebrow={t("home.curated")} title={t("home.featured")} />
-            <Link to="/products" style={{ marginBottom: "var(--idea-space-7)" }}><Button variant="outline">{t("action.browseAll")}</Button></Link>
-          </div>
-          <Stagger style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
-            {featured.map((p) => <StaggerItem key={p.id}><ProductCard product={p} /></StaggerItem>)}
-          </Stagger>
-        </Container>
-      </Section>
-
-      {/* AI Visualizer band */}
-      <Section>
-        <Container>
-          <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "var(--idea-space-7)", alignItems: "center", background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)", overflow: "hidden" }} className="idea-split">
-            <div style={{ padding: "var(--idea-space-7)" }}>
-              <div className="idea-eyebrow" style={{ display: "flex", alignItems: "center", gap: 8 }}><Sparkles size={14} /> {t("nav.visualizer")}</div>
-              <h2 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-3) 0 var(--idea-space-4)" }}>
-                <AnimatedWords text={t("home.visualizerTitle")} />
+          <div className="idea-premium-header">
+            <div>
+              <div className="idea-eyebrow" style={{color:"var(--idea-gold-bright)"}}>THE MATERIALS EDIT / IDEA</div>
+              <h2 className="idea-display idea-premium-headline">
+                {locale==="ar"?"خامات تصنع الفرق":locale==="fr"?"La matière sublime l’espace":"Designed to be extraordinary"}
               </h2>
-              <p style={{ color: "var(--idea-text-muted)", lineHeight: 1.7, marginBottom: "var(--idea-space-5)" }}>
-                {t("home.visualizerBody")}
+              <p className="idea-premium-subtitle">
+                {locale==="ar"?"سيراميك، بورسلين، بلاط، رخام وأحواض مختارة بعناية، بمواصفات موثّقة وشكل يليق بكل مساحة.":locale==="fr"?"Céramique, porcelaine, carrelage, marbre et salle de bain — une sélection authentique.":"Beautiful surfaces. Verified details. Remarkable spaces."}
               </p>
-              <Link to="/room-designer/new"><Button size="lg">{t("action.startAi")}</Button></Link>
             </div>
-            <div style={{ aspectRatio: "4/3", height: "100%" }}>
-              <img className="idea-vivid-image" src={visualizerImage} alt="AI Room Visualizer" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+            <Link to="/collections" className="idea-premium-text-link">{locale==="ar"?"كل الأقسام":"VIEW COLLECTIONS"} <ArrowUpRight size={17}/></Link>
+          </div>
+          <nav className="idea-premium-quick-links" aria-label="Browse key collections">
+            {heroShortcuts.map(c=><Link key={c.slug} to={`/collections/${c.slug}`}>{c.title[locale]} <ArrowRight size={14}/></Link>)}
+          </nav>
+          <div className="idea-premium-categories-grid">
+            {tiles.map(({tile,image},i)=><EditorialCard key={tile.to||tile.collection} tile={tile} image={image}/>)}
+          </div>
+        </Container>
+      </Section>
+
+      {chosen.length>0 && (
+        <Section alt className="idea-premium-home-section">
+          <Container>
+            <div className="idea-premium-header">
+              <div>
+                <div className="idea-eyebrow" style={{color:"var(--idea-gold-bright)"}}>THE CURATED MARKET</div>
+                <h2 className="idea-display idea-premium-headline">
+                  {locale==="ar"?"مختارات من أفضل الخامات":locale==="fr"?"Sélection du moment":"The signature selection"}
+                </h2>
+                <p className="idea-premium-subtitle">
+                  {locale==="ar"?"منتجات أصلية من الشركات المصنعة، بصورها الحقيقية ومواصفاتها المتاحة.":"Real manufacturers. Authentic product images. Actual specifications."}
+                </p>
+              </div>
+              <Link to="/products" className="idea-premium-text-link">{locale==="ar"?"افتح الماركت":"EXPLORE MARKET"} <ArrowUpRight size={17}/></Link>
+            </div>
+            <div className="idea-premium-products-grid">
+              {chosen.map(p=><ProductCard key={p.id} product={p}/>)}
+            </div>
+          </Container>
+        </Section>
+      )}
+
+      <Section className="idea-premium-home-section">
+        <Container>
+          <div className="idea-premium-bath-feature">
+            <img src={imgBath} alt="Architectural bathroom with premium stone surfaces" loading="lazy" />
+            <div className="idea-premium-bath-feature__shade"/>
+            <div className="idea-premium-bath-feature__copy">
+              <div className="idea-eyebrow" style={{color:"#ffa86f"}}>IDEA / THE ART OF BATHING</div>
+              <h2 className="idea-display">{locale==="ar"?"حمّام بتفاصيل استثنائية":locale==="fr"?"L’art de la salle de bain":"Spaces that feel extraordinary"}</h2>
+              <p>{locale==="ar"?"بورسلين ورخام وأحواض وبانيوهات في مجموعات منفصلة ومختارة بذوق معماري.":"Architectural surfaces, washbasins and bathtubs. Each in its own verified collection."}</p>
+              <div className="idea-premium-bath-actions">
+                {heroShortcuts.filter(c=>c.slug==="basins"||c.slug==="bathtubs"||c.slug==="porcelain").slice(0,3).map(c=>
+                  <Link key={c.slug} to={`/collections/${c.slug}`}>{c.title[locale]} <ArrowUpRight size={15}/></Link>
+                )}
+              </div>
             </div>
           </div>
         </Container>
       </Section>
 
-      {/* Sanitary categories */}
       <Section alt>
         <Container>
-          <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.sanitary")} />
-          <div className="idea-home-category-grid idea-home-category-grid--four">
-            {visibleCollections(sanitary).map((item) => <CollectionTile key={item.slug} slug={item.slug} image={item.image} />)}
+          <div className="idea-premium-cta">
+            <Sparkles size={22} color="var(--idea-gold)"/>
+            <Reveal><h2 className="idea-display">{t("home.bestPrice")}</h2></Reveal>
+            <p>{t("home.bestPriceBody")}</p>
+            <Link to="/request-quote/new"><Button size="lg">{t("action.requestPrice")}</Button></Link>
           </div>
         </Container>
       </Section>
-
-      {/* Best price within 24h */}
-      <Section>
-        <Container>
-          <div style={{ textAlign: "center", maxWidth: 720, margin: "0 auto" }}>
-            <div className="idea-eyebrow" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}><Clock size={14} /> IDEA</div>
-            <Reveal as="header"><h2 className="idea-display" style={{ fontSize: "var(--idea-text-3xl)", margin: "var(--idea-space-4) 0" }}><ShimmerText>{t("home.bestPrice")}</ShimmerText></h2></Reveal>
-            <Reveal delay={0.08}><p style={{ color: "var(--idea-text-muted)", lineHeight: 1.7, marginBottom: "var(--idea-space-6)" }}>{t("home.bestPriceBody")}</p></Reveal>
-            <div style={{ display: "flex", gap: "var(--idea-space-4)", justifyContent: "center", flexWrap: "wrap" }}>
-              <Link to="/request-quote/new"><Button size="lg">{t("action.requestPrice")}</Button></Link>
-              <Link to="/how-it-works"><Button variant="outline" size="lg">{t("action.howItWorks")}</Button></Link>
-            </div>
-          </div>
-        </Container>
-      </Section>
-
-      <style>{`
-@media (max-width: 820px){ .idea-split{ grid-template-columns: 1fr !important; } }
-`}</style>
     </>
   );
 }
-
