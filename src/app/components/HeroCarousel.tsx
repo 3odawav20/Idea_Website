@@ -44,15 +44,15 @@ const SLIDES: Slide[] = [
     ]
   },
   {
-    id:"natural-marble-interiors",
-    image:"https://images.unsplash.com/photo-1744025098626-66c0b9cb1ba8?w=3200&q=87&fit=crop",
-    mobileImage:"https://images.unsplash.com/photo-1744025098626-66c0b9cb1ba8?w=1600&q=82&fit=crop",
+    id:"signature-tiles",
+    image:"https://images.unsplash.com/photo-1663811396585-94548d37760f?w=3200&q=87&fit=crop",
+    mobileImage:"https://images.unsplash.com/photo-1663811396585-94548d37760f?w=1600&q=82&fit=crop",
     position:"center 50%",motion:"left",
-    headline:{en:"A Statement in Marble",ar:"فخامة الرخام الطبيعي",fr:"L’élégance du marbre"},
-    text:{en:"An elegant material library for signature bathrooms and architectural spaces.",ar:"تشكيلات رخام أنيقة للحمّامات والمساحات المعمارية المميزة.",fr:"Des matériaux raffinés pour les intérieurs les plus remarquables."},
+    headline:{en:"Crafted for Every Surface",ar:"تفاصيل بلاط تصنع الاختلاف",fr:"Des surfaces remarquables"},
+    text:{en:"Distinctive tile textures, measured finishes and expressive architectural spaces.",ar:"بلاط بخامات وتشطيبات مدروسة لمساحات معمارية مميزة.",fr:"Des carreaux, textures et finitions pour des espaces uniques."},
     buttons:[
-      {label:{en:"Explore Marble",ar:"تصفح الرخام",fr:"Voir le marbre"},to:"/collections/marble",variant:"gold"},
-      {label:{en:"Browse Tiles",ar:"تصفح البلاط",fr:"Voir les carreaux"},to:"/collections/tiles",variant:"outline"}
+      {label:{en:"Explore Tiles",ar:"تصفح البلاط",fr:"Voir les carreaux"},to:"/collections/tiles",variant:"gold"},
+      {label:{en:"Shop Porcelain",ar:"اكتشف البورسلين",fr:"Explorer la porcelaine"},to:"/collections/porcelain",variant:"outline"}
     ]
   },
   {
