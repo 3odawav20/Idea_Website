@@ -5,6 +5,7 @@ import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
 import { categoryArtwork } from "../data/categoryArtwork";
+import { categoryArtwork } from "../data/categoryArtwork";
 import { MARKET_FOCUS_COLLECTIONS } from "../data/curatedMarket";
 import imgBath from "../../imports/idea-hero-spa-bath-4k.webp";
 import { ProductCard } from "../components/ProductCard";
