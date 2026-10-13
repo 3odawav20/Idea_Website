@@ -146,7 +146,7 @@ export function normalizeLiveCatalogCollection(
   if (/\b(?:bathtub|bath tub|jacuzzi|freestanding bath|spa bath)\b/i.test(text) || /بانيو|جاكوزي|حوض استحمام/u.test(text)) return "bathtubs";
   if (/\b(?:shower enclosure|shower cabin|shower tray|shower column|shower system|shower set|shower panel|shower)\b/i.test(text) || /كابينة دش|كابينه دش|عمود دش|شاور بانل|دش|شاور/u.test(text)) return "shower-units";
   if (/\b(?:vanity|bathroom unit|bathroom furniture|bathroom cabinet)\b/i.test(text) || /وحدة حمام|وحدات حمام|اثاث حمام|أثاث حمام|خزانة حمام/u.test(text)) return "bathroom-units";
-  if (/\\b(?:basin|wash\\s*basin|sink)\\b/i.test(text) || /حوض|أحواض|احواض/u.test(text)) return "basins";
+  if (/\b(?:basin|wash\s*basin|sink)\b/i.test(text) || /حوض|أحواض|احواض/u.test(text)) return "basins";
   if (/\b(?:basin|wash ?basin|sink|toilet|wc|bidet|urinal|sanitary ware|sanitary)\b/i.test(text) || /حوض|احواض|أحواض|مرحاض|تواليت|قاعدة حمام|قواعد حمام|بيديه|مبولة|ادوات صحية|أدوات صحية|كومبنيشن/u.test(text)) return "sanitary-ware";
   if (/\b(?:pipe|fitting|valve|plumbing|trap|siphon|drain|connector)\b/i.test(text) || /مواسير|ماسورة|وصلة|وصلات|محبس|محابس|سباكة|سيفون|صرف|بلف/u.test(text)) return "plumbing-products";
 
