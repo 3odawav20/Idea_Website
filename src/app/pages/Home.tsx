@@ -74,10 +74,15 @@ function EditorialCard({tile, image}: {tile:EditorialTile;image:string}) {
     <Link to={tile.to || `/collections/${tile.collection}`} className="idea-home-collection-tile idea-premium-category">
       <img src={image} alt={title} loading="lazy" decoding="async" className="idea-vivid-image idea-home-collection-tile__image" />
       <div className="idea-home-collection-tile__wash" aria-hidden="true"/>
-      <div className="idea-home-collection-tile__content">
-        <div className="idea-eyebrow" style={{color:"#f5bb80",marginBottom:10}}>IDEA / MATERIALS</div>
-        <h2 className="idea-display idea-home-collection-tile__title">{title}</h2>
-        <div className="idea-home-collection-tile__description"><span>{blurb}</span><ArrowUpRight size={17}/></div>
+      <div className="idea-premium-category__nameplate">
+        <span className="idea-premium-category__eyebrow">
+          {locale === "ar" ? "اكتشف المجموعة" : locale === "fr" ? "DÉCOUVRIR" : "EXPLORE COLLECTION"}
+        </span>
+        <h2 className="idea-display idea-premium-category__side-title">{title}</h2>
+      </div>
+      <div className="idea-premium-category__footer">
+        <span>{blurb}</span>
+        <span className="idea-premium-category__arrow" aria-hidden="true"><ArrowUpRight size={20}/></span>
       </div>
     </Link>
   );
@@ -128,10 +133,10 @@ export function Home() {
             <div>
               <div className="idea-eyebrow" style={{color:"var(--idea-gold-bright)"}}>THE MATERIALS EDIT / IDEA</div>
               <h2 className="idea-display idea-premium-headline">
-                {locale==="ar"?"خامات تصنع الفرق":locale==="fr"?"La matière sublime l’espace":"Designed to be extraordinary"}
+                {locale==="ar"?"خامات تصنع الفرق":locale==="fr"?"La matière sublime l’espace":"Explore Every Collection"}
               </h2>
               <p className="idea-premium-subtitle">
-                {locale==="ar"?"سيراميك وبورسلين وبلاط وأحواض وبانيوهات مختارة بعناية، بمواصفات موثّقة وشكل يليق بكل مساحة.":locale==="fr"?"Céramique, porcelaine, carrelage, vasques et baignoires — une sélection authentique.":"Beautiful surfaces. Verified details. Remarkable spaces."}
+                {locale==="ar"?"سيراميك وبورسلين وبلاط وأحواض وبانيوهات مختارة بعناية، بمواصفات موثّقة وشكل يليق بكل مساحة.":locale==="fr"?"Céramique, porcelaine, carrelage, vasques et baignoires — une sélection authentique.":"Explore ceramics, porcelain, tiles, basins and bathtubs — each in its own collection."}
               </p>
             </div>
             <Link to="/collections" className="idea-premium-text-link">{locale==="ar"?"كل الأقسام":"VIEW COLLECTIONS"} <ArrowUpRight size={17}/></Link>
