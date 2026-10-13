@@ -972,3 +972,109 @@ a, button {
 }
 
 [executed on device: RAKAN-DOD (6a82d06b-428a-4784-9cdc-9a48cc90678f)]
+
+/* IDEA PREMIUM MARKET / editorial 2026 design-system pass */
+.idea-premium-home-section { scroll-margin-top: 84px; }
+.idea-premium-header {
+  display:flex; align-items:end; justify-content:space-between; gap:24px;
+  margin-bottom:clamp(24px,3vw,44px);
+}
+.idea-premium-headline { font-size:clamp(30px,3.5vw,56px);line-height:1.08;
+  color:var(--idea-text);letter-spacing:-.035em;margin:14px 0 10px;
+}
+.idea-premium-subtitle { color:var(--idea-text-muted);font-size:clamp(14px,1.1vw,17px);
+  line-height:1.75;max-width:680px;margin:0;
+}
+.idea-premium-text-link { color:var(--idea-gold-bright);text-decoration:none;
+  white-space:nowrap;display:inline-flex;align-items:center;gap:10px;
+  font-weight:650;letter-spacing:.07em;font-size:12px;padding:12px 0;
+  transition:gap .25s ease;
+}
+.idea-premium-text-link:hover {gap:16px;}
+.idea-premium-quick-links {display:flex;gap:10px;flex-wrap:wrap;margin-bottom:24px;}
+.idea-premium-quick-links a { display:inline-flex;gap:8px;align-items:center;
+  border:1px solid var(--idea-border);border-radius:100px;
+  padding:10px 16px;color:var(--idea-text);font-size:12px;text-decoration:none;
+  background:var(--idea-surface);transition:color .2s,border-color .2s,transform .2s;
+}
+.idea-premium-quick-links a:hover {border-color:var(--idea-gold);color:var(--idea-gold-bright);transform:translateY(-2px);}
+.idea-premium-categories-grid,.idea-premium-products-grid { display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;align-items:stretch;
+}
+.idea-premium-category { width:100%; aspect-ratio:4/5; isolation:isolate;transform:translateZ(0);
+  border-radius:18px;min-height:0;box-shadow:0 12px 30px rgba(0,0,0,.14);
+}
+.idea-premium-category::after {content:"";position:absolute;inset:0;border:1px solid rgba(255,255,255,.15);
+  border-radius:inherit;pointer-events:none;z-index:4;
+}
+.idea-premium-category .idea-home-collection-tile__image {width:100%;height:100%;object-fit:cover;}
+.idea-premium-category .idea-home-collection-tile__content {inset-inline:0;bottom:0;padding:clamp(18px,2.2vw,30px);z-index:3;}
+.idea-premium-category .idea-home-collection-tile__title {font-size:clamp(22px,2.1vw,31px);line-height:1.2;
+  color:#fff;text-shadow:0 3px 16px #000c;overflow-wrap:anywhere;
+}
+.idea-premium-category .idea-home-collection-tile__description {display:flex;gap:10px;align-items:center;
+  color:#f4ede7;text-shadow:0 2px 8px #000b;font-size:12px;line-height:1.5;
+}
+.idea-premium-category .idea-home-collection-tile__description span {display:-webkit-box;
+  -webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;
+}
+.idea-premium-products-grid > * {min-width:0;height:100%;}
+.idea-premium-products-grid .idea-product-card {border-radius:18px!important;
+  box-shadow:0 8px 26px rgba(0,0,0,.12);}
+.idea-premium-products-grid .idea-product-card:hover {box-shadow:0 20px 45px rgba(0,0,0,.22)!important;}
+.idea-premium-bath-feature {position:relative;overflow:hidden;isolation:isolate;min-height:540px;
+  border:1px solid rgba(255,255,255,.13);border-radius:24px;background:#101010;display:flex;align-items:end;
+}
+.idea-premium-bath-feature > img {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;}
+.idea-premium-bath-feature__shade {position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(9,8,9,.9) 0%,rgba(9,8,9,.61) 44%,rgba(9,8,9,.05) 100%);
+  z-index:-1;}
+.idea-premium-bath-feature__copy {max-width:700px;padding:clamp(30px,6vw,85px);color:#fff;}
+.idea-premium-bath-feature__copy h2 {font-size:clamp(35px,5vw,65px);
+  line-height:1.06;margin:18px 0;color:#fff;text-shadow:0 4px 20px #0009;}
+.idea-premium-bath-feature__copy p {font-size:clamp(16px,1.4vw,20px);
+  line-height:1.7;color:rgba(255,255,255,.83);max-width:540px;}
+.idea-premium-bath-actions {display:flex;gap:10px;flex-wrap:wrap;margin-top:26px;}
+.idea-premium-bath-actions a {display:inline-flex;align-items:center;gap:8px;color:#fff;text-decoration:none;
+  border:1px solid #fff7;padding:13px 20px;border-radius:4px;background:#fff1;
+  backdrop-filter:blur(8px);transition:background .2s,border-color .2s;}
+.idea-premium-bath-actions a:hover {background:#f70;color:#111;border-color:#f70;}
+.idea-premium-cta {max-width:780px;margin:auto;text-align:center;display:flex;
+  align-items:center;flex-direction:column;gap:18px;padding:clamp(12px,3vw,35px);}
+.idea-premium-cta h2 {font-size:clamp(30px,3vw,48px);color:var(--idea-text);margin:0;}
+.idea-premium-cta p {line-height:1.75;color:var(--idea-text-muted);margin:0 0 8px;}
+/* Market cards must be symmetric: never switch to auto-fill variable column widths. */
+.idea-premium-market-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:22px;align-items:stretch;}
+.idea-premium-market-grid > * {min-width:0;height:100%;}
+.idea-premium-market-grid .idea-product-card a:has(>img) {aspect-ratio:4/5!important;}
+.idea-premium-market-grid .idea-product-card .idea-product-img {object-fit:cover!important;}
+@media (max-width:1180px){
+  .idea-premium-categories-grid,.idea-premium-products-grid,.idea-premium-market-grid {
+    grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;
+  }
+}
+@media (max-width:800px){
+  .idea-premium-categories-grid,.idea-premium-products-grid,.idea-premium-market-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;
+  }
+  .idea-premium-header {align-items:start;flex-direction:column;gap:12px;}
+  .idea-premium-bath-feature {min-height:500px;}
+  .idea-premium-bath-feature__shade {background:linear-gradient(0deg,#080809e8 0%,#0808097a 67%,transparent);}
+  .idea-premium-bath-feature__copy {padding:30px;}
+}
+@media (max-width:470px){
+  .idea-premium-categories-grid {gap:10px;}
+  .idea-premium-category {border-radius:12px;}
+  .idea-premium-category .idea-home-collection-tile__content {padding:13px;}
+  .idea-premium-category .idea-home-collection-tile__title {font-size:20px;}
+  .idea-premium-category .idea-home-collection-tile__description {font-size:10px;}
+  .idea-premium-quick-links {gap:7px;}
+  .idea-premium-quick-links a {font-size:11px;padding:9px 12px;}
+  .idea-premium-products-grid,.idea-premium-market-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+  .idea-premium-bath-feature {min-height:520px;}
+  .idea-premium-bath-actions a {flex:1;justify-content:center;font-size:12px;padding:12px;}
+}
+@media (prefers-reduced-motion:reduce){
+ .idea-premium-text-link,.idea-premium-quick-links a,.idea-premium-bath-actions a {transition:none;}
+}
