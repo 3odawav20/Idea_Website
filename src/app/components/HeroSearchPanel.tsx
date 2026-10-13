@@ -75,13 +75,17 @@ export function HeroSearchPanel() {
   const [color, setColor] = useState<string | null>(null);
   const [size, setSize] = useState<string | null>(null);
   const [usage, setUsage] = useState<string | null>(null);
+  const [finish, setFinish] = useState<string | null>(null);
+  const [material, setMaterial] = useState<string | null>(null);
   const [q, setQ] = useState("");
 
   const opts = useMemo(() => ({
-    collection: COLLECTIONS.map((c) => ({ value: c.slug, label: c.title[locale] })),
+    collection: COLLECTIONS.filter((c) => products.some(p => p.collection === c.slug)).map((c) => ({ value: c.slug, label: c.title[locale] })),
     color: uniq(products.flatMap((p) => p.colors ?? [])).map((v) => ({ value: v, label: v })),
     size: uniq(products.flatMap((p) => p.sizes.map((s) => s.label))).map((v) => ({ value: v, label: v })),
     usage: uniq(products.flatMap((p) => p.usage ?? [])).map((v) => ({ value: v, label: v })),
+    finish: uniq(products.map(p=>p.finish)).map(v=>({value:v,label:v})),
+    material: uniq(products.map(p=>p.material)).map(v=>({value:v,label:v})),
   }), [products, locale]);
 
   const applyFilters = () => {
@@ -89,6 +93,8 @@ export function HeroSearchPanel() {
     if (color) params.set("color", color);
     if (size) params.set("size", size);
     if (usage) params.set("usage", usage);
+    if (finish) params.set("finish", finish);
+    if (material) params.set("material", material);
     const base = collection ? `/collections/${collection}` : "/products";
     const qs = params.toString();
     nav(qs ? `${base}?${qs}` : base);
@@ -106,6 +112,8 @@ export function HeroSearchPanel() {
     color: { en: "Select Color", ar: "اختر اللون", fr: "Couleur" },
     size: { en: "Select Size", ar: "اختر المقاس", fr: "Format" },
     usage: { en: "Select Usage", ar: "اختر الاستخدام", fr: "Usage" },
+    finish: { en: "Surface Finish", ar: "تشطيب السطح", fr: "Finition" },
+    material: { en: "Material", ar: "الخامة", fr: "Matière" },
     apply: { en: "Filter", ar: "تصفية", fr: "Filtrer" },
     go: { en: "Search", ar: "ابحث", fr: "Rechercher" },
     ph: { en: "Search ceramics, porcelain, marble, faucets…", ar: "ابحث في السيراميك والبورسلين والرخام والخلاطات…", fr: "Rechercher céramique, porcelaine, marbre…" },
@@ -136,11 +144,13 @@ export function HeroSearchPanel() {
         </div>
 
         {tab === "filter" ? (
-          <div className="idea-hero-filter-row" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr) auto", gap: "var(--idea-space-3)", alignItems: "center" }}>
+          <div className="idea-hero-filter-row" style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "var(--idea-space-3)", alignItems: "center" }}>
             <Dropdown placeholder={L.collection[locale]} value={collection} options={opts.collection} onChange={setCollection} />
             <Dropdown placeholder={L.color[locale]} value={color} options={opts.color} onChange={setColor} />
             <Dropdown placeholder={L.size[locale]} value={size} options={opts.size} onChange={setSize} />
             <Dropdown placeholder={L.usage[locale]} value={usage} options={opts.usage} onChange={setUsage} />
+            <Dropdown placeholder={L.finish[locale]} value={finish} options={opts.finish} onChange={setFinish} />
+            <Dropdown placeholder={L.material[locale]} value={material} options={opts.material} onChange={setMaterial} />
             <button type="button" onClick={applyFilters}
               style={{
                 padding: "12px 28px", background: "linear-gradient(135deg, var(--idea-gold-bright), var(--idea-gold))",
