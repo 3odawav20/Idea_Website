@@ -29,6 +29,7 @@ import { AdminLayout, AdminOverview, AdminSubscriptions, AdminPayments } from ".
 import { Checkout } from "./pages/Checkout";
 import { RoomDesignerHome, PhotoGuide, RoomDesignerEditor } from "./pages/RoomDesigner";
 import { TileShowroom } from "./pages/TileShowroom";
+import { SurfaceStyles } from "./pages/SurfaceStyles";
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
@@ -62,6 +63,7 @@ export default function App() {
               <Route path="/ai-room-visualizer" element={<AiVisualizer />} />
               <Route path="/tile-showroom/:lookId" element={<TileShowroom />} />
               <Route path="/tile-showroom" element={<TileShowroom />} />
+              <Route path="/surface-styles" element={<SurfaceStyles />} />
 
               {/* RFQ */}
               <Route path="/request-quote" element={<Navigate to="/request-quote/new" replace />} />

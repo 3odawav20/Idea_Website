@@ -7,6 +7,7 @@ type Dict = Record<string, { en: string; ar: string; fr: string }>;
 const T: Dict = {
   tagline: { en: "When you have an idea… We are the IDEA.", ar: "عندما تكون لديك فكرة… نحن IDEA.", fr: "Quand vous avez une idée… Nous sommes IDEA." },
   "nav.collections": { en: "Collections", ar: "المجموعات", fr: "Collections" },
+  "nav.surfaceStyles": { en: "Surface Styles", ar: "أساليب الأسطح", fr: "Styles de surface" },
   "nav.products": { en: "All Products", ar: "كل المنتجات", fr: "Tous les produits" },
   "nav.visualizer": { en: "AI Visualizer", ar: "المحاكي الذكي", fr: "Visualiseur IA" },
   "nav.how": { en: "How It Works", ar: "كيف يعمل", fr: "Comment ça marche" },
