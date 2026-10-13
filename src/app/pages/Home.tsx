@@ -154,7 +154,7 @@ export function Home() {
       <Section alt>
         <Container>
           <SectionHeader eyebrow={t("home.shopByCategory")} title={t("home.sanitary")} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "var(--idea-space-4)" }}>
+          <div className="idea-ceramic-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-4)" }}>
             {sanitary.map((s) => <CollectionTile key={s} slug={s} />)}
           </div>
         </Container>
