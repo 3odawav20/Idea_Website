@@ -29,6 +29,7 @@ import { AdminLayout, AdminOverview, AdminSubscriptions, AdminPayments } from ".
 import { Checkout } from "./pages/Checkout";
 import { RoomDesignerHome, PhotoGuide, RoomDesignerEditor } from "./pages/RoomDesigner";
 import { TileShowroom } from "./pages/TileShowroom";
+import { Resources } from "./pages/Resources";
 import { SurfaceStyles } from "./pages/SurfaceStyles";
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
@@ -64,6 +65,10 @@ export default function App() {
               <Route path="/tile-showroom/:lookId" element={<TileShowroom />} />
               <Route path="/tile-showroom" element={<TileShowroom />} />
               <Route path="/surface-styles" element={<SurfaceStyles />} />
+
+              {["about", "showrooms", "downloads", "projects", "journal", "videos", "glossary", "contact", "updates"].map(path => <Route key={path} path={`/${path}`} element={<Resources />} />)}
+              <Route path="/inspiration/:destination" element={<Resources />} />
+              <Route path="/journal/:guideId" element={<Resources />} />
 
               {/* RFQ */}
               <Route path="/request-quote" element={<Navigate to="/request-quote/new" replace />} />
