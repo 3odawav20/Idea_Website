@@ -1,0 +1,3666 @@
+[
+  {
+    "id": "cc-150c4e9286bd7339",
+    "slug": "cleopatra-150c4e9286bd7339",
+    "sitePath": "/product/cleopatra-150c4e9286bd7339",
+    "name": {
+      "en": "Fortuna",
+      "ar": "Fortuna",
+      "fr": "Fortuna"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-150c4e9286bd7339",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/ee4df2900dfd733b64c9.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/ee4df2900dfd733b64c9.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "150c4e9286bd7339",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-752dd3e2b133243a",
+    "slug": "cleopatra-752dd3e2b133243a",
+    "sitePath": "/product/cleopatra-752dd3e2b133243a",
+    "name": {
+      "en": "Grace",
+      "ar": "Grace",
+      "fr": "Grace"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-752dd3e2b133243a",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/2c7ff62402f4fffaba50.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/2c7ff62402f4fffaba50.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "752dd3e2b133243a",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-3506c4efb4c1cb46",
+    "slug": "cleopatra-3506c4efb4c1cb46",
+    "sitePath": "/product/cleopatra-3506c4efb4c1cb46",
+    "name": {
+      "en": "Grace",
+      "ar": "Grace",
+      "fr": "Grace"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-3506c4efb4c1cb46",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/11bc524ba20181fa957e.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/11bc524ba20181fa957e.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "3506c4efb4c1cb46",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-da634ef3d1358648",
+    "slug": "cleopatra-da634ef3d1358648",
+    "sitePath": "/product/cleopatra-da634ef3d1358648",
+    "name": {
+      "en": "Carvel",
+      "ar": "Carvel",
+      "fr": "Carvel"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-da634ef3d1358648",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/07cfc9c01349d4c4f11f.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/07cfc9c01349d4c4f11f.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "da634ef3d1358648",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-0b76d836545de5d1",
+    "slug": "cleopatra-0b76d836545de5d1",
+    "sitePath": "/product/cleopatra-0b76d836545de5d1",
+    "name": {
+      "en": "Korba",
+      "ar": "Korba",
+      "fr": "Korba"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-0b76d836545de5d1",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/1a5a934dcadcdb00333f.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/1a5a934dcadcdb00333f.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "0b76d836545de5d1",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-ec0fcad086f116f9",
+    "slug": "cleopatra-ec0fcad086f116f9",
+    "sitePath": "/product/cleopatra-ec0fcad086f116f9",
+    "name": {
+      "en": "Emiliaivory",
+      "ar": "Emiliaivory",
+      "fr": "Emiliaivory"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-ec0fcad086f116f9",
+        "originalSourceValue": "40.8X40.8",
+        "normalizedDisplayValue": "40.8 x 40.8 cm",
+        "label": "40.8 x 40.8 cm",
+        "widthMm": 408,
+        "heightMm": 408,
+        "sourceUnit": "cm",
+        "thicknessMm": 17.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/e3011b950812acac9785.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/e3011b950812acac9785.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "ec0fcad086f116f9",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-2a2874f4cae3cddb",
+    "slug": "cleopatra-2a2874f4cae3cddb",
+    "sitePath": "/product/cleopatra-2a2874f4cae3cddb",
+    "name": {
+      "en": "Surio",
+      "ar": "Surio",
+      "fr": "Surio"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-2a2874f4cae3cddb",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/c4d599cb9a8f5a789b7a.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/c4d599cb9a8f5a789b7a.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "2a2874f4cae3cddb",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-2001c78cfc5dba48",
+    "slug": "cleopatra-2001c78cfc5dba48",
+    "sitePath": "/product/cleopatra-2001c78cfc5dba48",
+    "name": {
+      "en": "Urbino",
+      "ar": "Urbino",
+      "fr": "Urbino"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-2001c78cfc5dba48",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/52392cd64e22506297b4.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/52392cd64e22506297b4.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "2001c78cfc5dba48",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-1c7fda1c2615c43b",
+    "slug": "cleopatra-1c7fda1c2615c43b",
+    "sitePath": "/product/cleopatra-1c7fda1c2615c43b",
+    "name": {
+      "en": "Avanza",
+      "ar": "Avanza",
+      "fr": "Avanza"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-1c7fda1c2615c43b",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/92f244ac3ba57407852c.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/92f244ac3ba57407852c.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "1c7fda1c2615c43b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-1f80449d1799c087",
+    "slug": "cleopatra-1f80449d1799c087",
+    "sitePath": "/product/cleopatra-1f80449d1799c087",
+    "name": {
+      "en": "15X70 Tropical 3020",
+      "ar": "15X70 Tropical 3020",
+      "fr": "15X70 Tropical 3020"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-1f80449d1799c087",
+        "originalSourceValue": "75x75",
+        "normalizedDisplayValue": "75 x 75 cm",
+        "label": "75 x 75 cm",
+        "widthMm": 750,
+        "heightMm": 750,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/07ef2d1ae7ae5a816056.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/07ef2d1ae7ae5a816056.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "1f80449d1799c087",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-92f541dcae046e38",
+    "slug": "cleopatra-92f541dcae046e38",
+    "sitePath": "/product/cleopatra-92f541dcae046e38",
+    "name": {
+      "en": "Caldiawhite",
+      "ar": "Caldiawhite",
+      "fr": "Caldiawhite"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-92f541dcae046e38",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/c00dbc0a3f3cffdd94a3.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/c00dbc0a3f3cffdd94a3.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "92f541dcae046e38",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-324b3687b36d5c1b",
+    "slug": "cleopatra-324b3687b36d5c1b",
+    "sitePath": "/product/cleopatra-324b3687b36d5c1b",
+    "name": {
+      "en": "Ida",
+      "ar": "Ida",
+      "fr": "Ida"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-324b3687b36d5c1b",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/929d586d140837d971d1.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/929d586d140837d971d1.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "324b3687b36d5c1b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-5df6aaffc9ceab76",
+    "slug": "cleopatra-5df6aaffc9ceab76",
+    "sitePath": "/product/cleopatra-5df6aaffc9ceab76",
+    "name": {
+      "en": "Oslo",
+      "ar": "Oslo",
+      "fr": "Oslo"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-5df6aaffc9ceab76",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/2c1204d37edffa24c439.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/2c1204d37edffa24c439.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "5df6aaffc9ceab76",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-df2a6a4366ec8f02",
+    "slug": "cleopatra-df2a6a4366ec8f02",
+    "sitePath": "/product/cleopatra-df2a6a4366ec8f02",
+    "name": {
+      "en": "Misty",
+      "ar": "Misty",
+      "fr": "Misty"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-df2a6a4366ec8f02",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/30aa3b70e69c994e8a4f.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/30aa3b70e69c994e8a4f.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "df2a6a4366ec8f02",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-cb0d9e0a58cab677",
+    "slug": "cleopatra-cb0d9e0a58cab677",
+    "sitePath": "/product/cleopatra-cb0d9e0a58cab677",
+    "name": {
+      "en": "Venato 4439",
+      "ar": "Venato 4439",
+      "fr": "Venato 4439"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-cb0d9e0a58cab677",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/77beb920e92b309498fa.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/77beb920e92b309498fa.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "cb0d9e0a58cab677",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-37bd465b6afacaea",
+    "slug": "cleopatra-37bd465b6afacaea",
+    "sitePath": "/product/cleopatra-37bd465b6afacaea",
+    "name": {
+      "en": "Fuji",
+      "ar": "Fuji",
+      "fr": "Fuji"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-37bd465b6afacaea",
+        "originalSourceValue": "120x120",
+        "normalizedDisplayValue": "120 x 120 cm",
+        "label": "120 x 120 cm",
+        "widthMm": 1200,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/3e95bcf94e78cd3add3b.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/3e95bcf94e78cd3add3b.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "37bd465b6afacaea",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-722c8fb94784a0f2",
+    "slug": "cleopatra-722c8fb94784a0f2",
+    "sitePath": "/product/cleopatra-722c8fb94784a0f2",
+    "name": {
+      "en": "Biancoradian",
+      "ar": "Biancoradian",
+      "fr": "Biancoradian"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-722c8fb94784a0f2",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/e2500f749826924a1e75.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/e2500f749826924a1e75.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "722c8fb94784a0f2",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-69a0b4404a586293",
+    "slug": "cleopatra-69a0b4404a586293",
+    "sitePath": "/product/cleopatra-69a0b4404a586293",
+    "name": {
+      "en": "Cordoba",
+      "ar": "Cordoba",
+      "fr": "Cordoba"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-69a0b4404a586293",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/25beeb715bbe64de7bbe.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/25beeb715bbe64de7bbe.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "69a0b4404a586293",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-f2d01d01a3489872",
+    "slug": "cleopatra-f2d01d01a3489872",
+    "sitePath": "/product/cleopatra-f2d01d01a3489872",
+    "name": {
+      "en": "Eldoradowhite",
+      "ar": "Eldoradowhite",
+      "fr": "Eldoradowhite"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-f2d01d01a3489872",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/677f2d9bfa24626fc30d.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/677f2d9bfa24626fc30d.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "f2d01d01a3489872",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-f142fee3e59ca25d",
+    "slug": "cleopatra-f142fee3e59ca25d",
+    "sitePath": "/product/cleopatra-f142fee3e59ca25d",
+    "name": {
+      "en": "Eldoradowhite",
+      "ar": "Eldoradowhite",
+      "fr": "Eldoradowhite"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-f142fee3e59ca25d",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/677f2d9bfa24626fc30d.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/677f2d9bfa24626fc30d.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "f142fee3e59ca25d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-4766f68519048512",
+    "slug": "cleopatra-4766f68519048512",
+    "sitePath": "/product/cleopatra-4766f68519048512",
+    "name": {
+      "en": "Iris",
+      "ar": "Iris",
+      "fr": "Iris"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-4766f68519048512",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/ed7a5cf1f2ab847a5b79.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/ed7a5cf1f2ab847a5b79.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "4766f68519048512",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-cb9c29fda2f40708",
+    "slug": "cleopatra-cb9c29fda2f40708",
+    "sitePath": "/product/cleopatra-cb9c29fda2f40708",
+    "name": {
+      "en": "Iris",
+      "ar": "Iris",
+      "fr": "Iris"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-cb9c29fda2f40708",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/603677f96cbf470a247d.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/603677f96cbf470a247d.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "cb9c29fda2f40708",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-1b12086fe27940eb",
+    "slug": "cleopatra-1b12086fe27940eb",
+    "sitePath": "/product/cleopatra-1b12086fe27940eb",
+    "name": {
+      "en": "Iris",
+      "ar": "Iris",
+      "fr": "Iris"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-1b12086fe27940eb",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/b32056d522ded13f780f.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/b32056d522ded13f780f.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "1b12086fe27940eb",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-ea80b2f6aab1f58c",
+    "slug": "cleopatra-ea80b2f6aab1f58c",
+    "sitePath": "/product/cleopatra-ea80b2f6aab1f58c",
+    "name": {
+      "en": "Lucy",
+      "ar": "Lucy",
+      "fr": "Lucy"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-ea80b2f6aab1f58c",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/138e3ab97a103badecef.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/138e3ab97a103badecef.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "ea80b2f6aab1f58c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-035b6f02d2c05469",
+    "slug": "cleopatra-035b6f02d2c05469",
+    "sitePath": "/product/cleopatra-035b6f02d2c05469",
+    "name": {
+      "en": "Lucy",
+      "ar": "Lucy",
+      "fr": "Lucy"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-035b6f02d2c05469",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/8fee8360b3668d47e3b3.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/8fee8360b3668d47e3b3.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "035b6f02d2c05469",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-26ce09c456b371b6",
+    "slug": "cleopatra-26ce09c456b371b6",
+    "sitePath": "/product/cleopatra-26ce09c456b371b6",
+    "name": {
+      "en": "Rimos",
+      "ar": "Rimos",
+      "fr": "Rimos"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-26ce09c456b371b6",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/f6da311f8cdec96cc8eb.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/f6da311f8cdec96cc8eb.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "26ce09c456b371b6",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-446c517d61d03584",
+    "slug": "cleopatra-446c517d61d03584",
+    "sitePath": "/product/cleopatra-446c517d61d03584",
+    "name": {
+      "en": "Cromix",
+      "ar": "Cromix",
+      "fr": "Cromix"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-446c517d61d03584",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/e3cb10d5ef7e942aa80c.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/e3cb10d5ef7e942aa80c.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "446c517d61d03584",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-28b9186f57f0aa88",
+    "slug": "cleopatra-28b9186f57f0aa88",
+    "sitePath": "/product/cleopatra-28b9186f57f0aa88",
+    "name": {
+      "en": "Cromix",
+      "ar": "Cromix",
+      "fr": "Cromix"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-28b9186f57f0aa88",
+        "originalSourceValue": "120x120",
+        "normalizedDisplayValue": "120 x 120 cm",
+        "label": "120 x 120 cm",
+        "widthMm": 1200,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/50e7c6a8ba8d585c00ef.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/50e7c6a8ba8d585c00ef.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "28b9186f57f0aa88",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-71b392facf9632d3",
+    "slug": "cleopatra-71b392facf9632d3",
+    "sitePath": "/product/cleopatra-71b392facf9632d3",
+    "name": {
+      "en": "Orobico",
+      "ar": "Orobico",
+      "fr": "Orobico"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-71b392facf9632d3",
+        "originalSourceValue": "120x120",
+        "normalizedDisplayValue": "120 x 120 cm",
+        "label": "120 x 120 cm",
+        "widthMm": 1200,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/59135d0c3ad1f1f4eb23.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/59135d0c3ad1f1f4eb23.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "71b392facf9632d3",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-86a3eba96c24aacf",
+    "slug": "cleopatra-86a3eba96c24aacf",
+    "sitePath": "/product/cleopatra-86a3eba96c24aacf",
+    "name": {
+      "en": "Arcadiagrey",
+      "ar": "Arcadiagrey",
+      "fr": "Arcadiagrey"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-86a3eba96c24aacf",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/b422685f40abbf035c63.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/b422685f40abbf035c63.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "86a3eba96c24aacf",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-29b3bb4553e7eaad",
+    "slug": "cleopatra-29b3bb4553e7eaad",
+    "sitePath": "/product/cleopatra-29b3bb4553e7eaad",
+    "name": {
+      "en": "Tiger",
+      "ar": "Tiger",
+      "fr": "Tiger"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-29b3bb4553e7eaad",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/c54140635713b68661ef.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/c54140635713b68661ef.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "29b3bb4553e7eaad",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-6c6d206f58945607",
+    "slug": "cleopatra-6c6d206f58945607",
+    "sitePath": "/product/cleopatra-6c6d206f58945607",
+    "name": {
+      "en": "Amanda",
+      "ar": "Amanda",
+      "fr": "Amanda"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-6c6d206f58945607",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/f24cbf88127690e3bec1.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/f24cbf88127690e3bec1.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "6c6d206f58945607",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-14d34ecbb09c7fe1",
+    "slug": "cleopatra-14d34ecbb09c7fe1",
+    "sitePath": "/product/cleopatra-14d34ecbb09c7fe1",
+    "name": {
+      "en": "Amanda",
+      "ar": "Amanda",
+      "fr": "Amanda"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-14d34ecbb09c7fe1",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/463177d8335cfd9513cb.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/463177d8335cfd9513cb.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "14d34ecbb09c7fe1",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-fe81e6e0664a7be9",
+    "slug": "cleopatra-fe81e6e0664a7be9",
+    "sitePath": "/product/cleopatra-fe81e6e0664a7be9",
+    "name": {
+      "en": "Silver",
+      "ar": "Silver",
+      "fr": "Silver"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-fe81e6e0664a7be9",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/84c01e11e3bc1fd43c39.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/84c01e11e3bc1fd43c39.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "fe81e6e0664a7be9",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-365553b200b0f649",
+    "slug": "cleopatra-365553b200b0f649",
+    "sitePath": "/product/cleopatra-365553b200b0f649",
+    "name": {
+      "en": "Davos",
+      "ar": "Davos",
+      "fr": "Davos"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-365553b200b0f649",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/3ee717f1d1c980fa8a66.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/3ee717f1d1c980fa8a66.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "365553b200b0f649",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-37a6c35088f96334",
+    "slug": "cleopatra-37a6c35088f96334",
+    "sitePath": "/product/cleopatra-37a6c35088f96334",
+    "name": {
+      "en": "Davos",
+      "ar": "Davos",
+      "fr": "Davos"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-37a6c35088f96334",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/43b4ca9d5dfb6ad2d6c9.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/43b4ca9d5dfb6ad2d6c9.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "37a6c35088f96334",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-fa549af9aa874b57",
+    "slug": "cleopatra-fa549af9aa874b57",
+    "sitePath": "/product/cleopatra-fa549af9aa874b57",
+    "name": {
+      "en": "Lorinzokitchen",
+      "ar": "Lorinzokitchen",
+      "fr": "Lorinzokitchen"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-fa549af9aa874b57",
+        "originalSourceValue": "45x45",
+        "normalizedDisplayValue": "45 x 45 cm",
+        "label": "45 x 45 cm",
+        "widthMm": 450,
+        "heightMm": 450,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/4af47104bd86bfdc4c75.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/4af47104bd86bfdc4c75.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "fa549af9aa874b57",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-aad6ab5cefcff23f",
+    "slug": "cleopatra-aad6ab5cefcff23f",
+    "sitePath": "/product/cleopatra-aad6ab5cefcff23f",
+    "name": {
+      "en": "Lorinzokitchen",
+      "ar": "Lorinzokitchen",
+      "fr": "Lorinzokitchen"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-aad6ab5cefcff23f",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/d5b54208f1de6894b374.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/d5b54208f1de6894b374.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "aad6ab5cefcff23f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-a7b182497c53eb64",
+    "slug": "cleopatra-a7b182497c53eb64",
+    "sitePath": "/product/cleopatra-a7b182497c53eb64",
+    "name": {
+      "en": "Brazell",
+      "ar": "Brazell",
+      "fr": "Brazell"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-a7b182497c53eb64",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/7fcf2cf63f6af3a15142.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/7fcf2cf63f6af3a15142.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "a7b182497c53eb64",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-57c39f3975c01112",
+    "slug": "cleopatra-57c39f3975c01112",
+    "sitePath": "/product/cleopatra-57c39f3975c01112",
+    "name": {
+      "en": "Pireo",
+      "ar": "Pireo",
+      "fr": "Pireo"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-57c39f3975c01112",
+        "originalSourceValue": "45x45",
+        "normalizedDisplayValue": "45 x 45 cm",
+        "label": "45 x 45 cm",
+        "widthMm": 450,
+        "heightMm": 450,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/72ece6f8c2da3356cffe.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/72ece6f8c2da3356cffe.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "57c39f3975c01112",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-0fca09b5eff33b62",
+    "slug": "cleopatra-0fca09b5eff33b62",
+    "sitePath": "/product/cleopatra-0fca09b5eff33b62",
+    "name": {
+      "en": "Pireo",
+      "ar": "Pireo",
+      "fr": "Pireo"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-0fca09b5eff33b62",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/c7dc872bd63dc831fc91.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/c7dc872bd63dc831fc91.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "0fca09b5eff33b62",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-3a36258e6e17c27e",
+    "slug": "cleopatra-3a36258e6e17c27e",
+    "sitePath": "/product/cleopatra-3a36258e6e17c27e",
+    "name": {
+      "en": "Volga",
+      "ar": "Volga",
+      "fr": "Volga"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-3a36258e6e17c27e",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/42ade839b9f9b977f42d.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/42ade839b9f9b977f42d.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "3a36258e6e17c27e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-d7bba364e3399788",
+    "slug": "cleopatra-d7bba364e3399788",
+    "sitePath": "/product/cleopatra-d7bba364e3399788",
+    "name": {
+      "en": "Perlato",
+      "ar": "Perlato",
+      "fr": "Perlato"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-d7bba364e3399788",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/82af7cab7ff8948644ff.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/82af7cab7ff8948644ff.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "d7bba364e3399788",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-b782a933aa37343d",
+    "slug": "cleopatra-b782a933aa37343d",
+    "sitePath": "/product/cleopatra-b782a933aa37343d",
+    "name": {
+      "en": "Polaris",
+      "ar": "Polaris",
+      "fr": "Polaris"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-b782a933aa37343d",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/b554a0ec140ce831ca9b.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/b554a0ec140ce831ca9b.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "b782a933aa37343d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-431ad4b01d64a15a",
+    "slug": "cleopatra-431ad4b01d64a15a",
+    "sitePath": "/product/cleopatra-431ad4b01d64a15a",
+    "name": {
+      "en": "Eleganza",
+      "ar": "Eleganza",
+      "fr": "Eleganza"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-431ad4b01d64a15a",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/da2427690b6c7aefe5d8.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/da2427690b6c7aefe5d8.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "431ad4b01d64a15a",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-a25a03d0d9bef312",
+    "slug": "cleopatra-a25a03d0d9bef312",
+    "sitePath": "/product/cleopatra-a25a03d0d9bef312",
+    "name": {
+      "en": "Picaya",
+      "ar": "Picaya",
+      "fr": "Picaya"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-a25a03d0d9bef312",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/64ad2d6579f57606e17b.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/64ad2d6579f57606e17b.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "a25a03d0d9bef312",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-abb0a0945e7286d6",
+    "slug": "cleopatra-abb0a0945e7286d6",
+    "sitePath": "/product/cleopatra-abb0a0945e7286d6",
+    "name": {
+      "en": "Picaya",
+      "ar": "Picaya",
+      "fr": "Picaya"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-abb0a0945e7286d6",
+        "originalSourceValue": "121X242",
+        "normalizedDisplayValue": "121 x 242 cm",
+        "label": "121 x 242 cm",
+        "widthMm": 1210,
+        "heightMm": 2420,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/917adf326372978f63a7.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/917adf326372978f63a7.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "abb0a0945e7286d6",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-e9aed959aba3d6b2",
+    "slug": "cleopatra-e9aed959aba3d6b2",
+    "sitePath": "/product/cleopatra-e9aed959aba3d6b2",
+    "name": {
+      "en": "Tacosonix",
+      "ar": "Tacosonix",
+      "fr": "Tacosonix"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-e9aed959aba3d6b2",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/6b73d85c713d8b9627c4.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/6b73d85c713d8b9627c4.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "e9aed959aba3d6b2",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-b99cbd26147d5c1a",
+    "slug": "cleopatra-b99cbd26147d5c1a",
+    "sitePath": "/product/cleopatra-b99cbd26147d5c1a",
+    "name": {
+      "en": "Gold",
+      "ar": "Gold",
+      "fr": "Gold"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-b99cbd26147d5c1a",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/f16cf80ef60dc5daa187.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/f16cf80ef60dc5daa187.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "b99cbd26147d5c1a",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-f02042e27fb07946",
+    "slug": "cleopatra-f02042e27fb07946",
+    "sitePath": "/product/cleopatra-f02042e27fb07946",
+    "name": {
+      "en": "Quota",
+      "ar": "Quota",
+      "fr": "Quota"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-f02042e27fb07946",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/8e6b409e4c429a282c23.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/8e6b409e4c429a282c23.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "f02042e27fb07946",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-77b14a132e6fef57",
+    "slug": "cleopatra-77b14a132e6fef57",
+    "sitePath": "/product/cleopatra-77b14a132e6fef57",
+    "name": {
+      "en": "Brico",
+      "ar": "Brico",
+      "fr": "Brico"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-77b14a132e6fef57",
+        "originalSourceValue": "50x50",
+        "normalizedDisplayValue": "50 x 50 cm",
+        "label": "50 x 50 cm",
+        "widthMm": 500,
+        "heightMm": 500,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/1c4e95a7501b07ec16ea.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/1c4e95a7501b07ec16ea.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "77b14a132e6fef57",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-5591b79d4a57ea91",
+    "slug": "cleopatra-5591b79d4a57ea91",
+    "sitePath": "/product/cleopatra-5591b79d4a57ea91",
+    "name": {
+      "en": "Brico",
+      "ar": "Brico",
+      "fr": "Brico"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-5591b79d4a57ea91",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/163ba7b67aab398dbbb8.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/163ba7b67aab398dbbb8.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "5591b79d4a57ea91",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-8b427d943caaa1f9",
+    "slug": "cleopatra-8b427d943caaa1f9",
+    "sitePath": "/product/cleopatra-8b427d943caaa1f9",
+    "name": {
+      "en": "Rugiada",
+      "ar": "Rugiada",
+      "fr": "Rugiada"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-8b427d943caaa1f9",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/dfcf96be2ce6c57c5f6d.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/dfcf96be2ce6c57c5f6d.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "8b427d943caaa1f9",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-e2598af760e4944d",
+    "slug": "cleopatra-e2598af760e4944d",
+    "sitePath": "/product/cleopatra-e2598af760e4944d",
+    "name": {
+      "en": "Lisa",
+      "ar": "Lisa",
+      "fr": "Lisa"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-e2598af760e4944d",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/b9ae0af7c0fc0a11adc0.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/b9ae0af7c0fc0a11adc0.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "e2598af760e4944d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-58a74840e27902cd",
+    "slug": "cleopatra-58a74840e27902cd",
+    "sitePath": "/product/cleopatra-58a74840e27902cd",
+    "name": {
+      "en": "Lisa",
+      "ar": "Lisa",
+      "fr": "Lisa"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-58a74840e27902cd",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/e69ba7582644edf5407c.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/e69ba7582644edf5407c.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "58a74840e27902cd",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-7de06249b885c925",
+    "slug": "cleopatra-7de06249b885c925",
+    "sitePath": "/product/cleopatra-7de06249b885c925",
+    "name": {
+      "en": "Wish",
+      "ar": "Wish",
+      "fr": "Wish"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-7de06249b885c925",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/278d565fdd4945d4944d.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/278d565fdd4945d4944d.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "7de06249b885c925",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-be7cddacf10843b4",
+    "slug": "cleopatra-be7cddacf10843b4",
+    "sitePath": "/product/cleopatra-be7cddacf10843b4",
+    "name": {
+      "en": "Superzahira",
+      "ar": "Superzahira",
+      "fr": "Superzahira"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-be7cddacf10843b4",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/5b9e1a82a2ab6d1627b8.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/5b9e1a82a2ab6d1627b8.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "be7cddacf10843b4",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-b5e9ac8f4c64018d",
+    "slug": "cleopatra-b5e9ac8f4c64018d",
+    "sitePath": "/product/cleopatra-b5e9ac8f4c64018d",
+    "name": {
+      "en": "Newcairo",
+      "ar": "Newcairo",
+      "fr": "Newcairo"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-b5e9ac8f4c64018d",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/32bd074baea00dc69066.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/32bd074baea00dc69066.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "b5e9ac8f4c64018d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-fd0c62bdb2fef88f",
+    "slug": "cleopatra-fd0c62bdb2fef88f",
+    "sitePath": "/product/cleopatra-fd0c62bdb2fef88f",
+    "name": {
+      "en": "Astriddark",
+      "ar": "Astriddark",
+      "fr": "Astriddark"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-fd0c62bdb2fef88f",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/78039136fd9598a11da4.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/78039136fd9598a11da4.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "fd0c62bdb2fef88f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-fbbb05cba7d3d7d5",
+    "slug": "cleopatra-fbbb05cba7d3d7d5",
+    "sitePath": "/product/cleopatra-fbbb05cba7d3d7d5",
+    "name": {
+      "en": "Pinocrema",
+      "ar": "Pinocrema",
+      "fr": "Pinocrema"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-fbbb05cba7d3d7d5",
+        "originalSourceValue": "45x45",
+        "normalizedDisplayValue": "45 x 45 cm",
+        "label": "45 x 45 cm",
+        "widthMm": 450,
+        "heightMm": 450,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/cd3df776217c6424ad61.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/cd3df776217c6424ad61.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "fbbb05cba7d3d7d5",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-cb385376c1a0ac8a",
+    "slug": "cleopatra-cb385376c1a0ac8a",
+    "sitePath": "/product/cleopatra-cb385376c1a0ac8a",
+    "name": {
+      "en": "Pinocrema",
+      "ar": "Pinocrema",
+      "fr": "Pinocrema"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-cb385376c1a0ac8a",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/838846d466eee8f57a23.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/838846d466eee8f57a23.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "cb385376c1a0ac8a",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-5108ff92b03192f8",
+    "slug": "cleopatra-5108ff92b03192f8",
+    "sitePath": "/product/cleopatra-5108ff92b03192f8",
+    "name": {
+      "en": "Admiral",
+      "ar": "Admiral",
+      "fr": "Admiral"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-5108ff92b03192f8",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/a3ceefb39c2b109390ca.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/a3ceefb39c2b109390ca.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "5108ff92b03192f8",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-469b605746296d0d",
+    "slug": "cleopatra-469b605746296d0d",
+    "sitePath": "/product/cleopatra-469b605746296d0d",
+    "name": {
+      "en": "60X120 Darian 5016",
+      "ar": "60X120 Darian 5016",
+      "fr": "60X120 Darian 5016"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-469b605746296d0d",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/a5f074eb9ea0a2ed65e8.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/a5f074eb9ea0a2ed65e8.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "469b605746296d0d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-e99063304fa0c6d6",
+    "slug": "cleopatra-e99063304fa0c6d6",
+    "sitePath": "/product/cleopatra-e99063304fa0c6d6",
+    "name": {
+      "en": "Pinogravito",
+      "ar": "Pinogravito",
+      "fr": "Pinogravito"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-e99063304fa0c6d6",
+        "originalSourceValue": "45x45",
+        "normalizedDisplayValue": "45 x 45 cm",
+        "label": "45 x 45 cm",
+        "widthMm": 450,
+        "heightMm": 450,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/6b6c2addb0a47591e540.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/6b6c2addb0a47591e540.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "e99063304fa0c6d6",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-e962c85f8be5b2db",
+    "slug": "cleopatra-e962c85f8be5b2db",
+    "sitePath": "/product/cleopatra-e962c85f8be5b2db",
+    "name": {
+      "en": "Aurorabeige",
+      "ar": "Aurorabeige",
+      "fr": "Aurorabeige"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-e962c85f8be5b2db",
+        "originalSourceValue": "120x120",
+        "normalizedDisplayValue": "120 x 120 cm",
+        "label": "120 x 120 cm",
+        "widthMm": 1200,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/67f5ebd41a2b4fe9e493.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/67f5ebd41a2b4fe9e493.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "e962c85f8be5b2db",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-2e516dca514b91a1",
+    "slug": "cleopatra-2e516dca514b91a1",
+    "sitePath": "/product/cleopatra-2e516dca514b91a1",
+    "name": {
+      "en": "Aurorabeige",
+      "ar": "Aurorabeige",
+      "fr": "Aurorabeige"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-2e516dca514b91a1",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/25f13f2252b685bd4c84.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/25f13f2252b685bd4c84.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "2e516dca514b91a1",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-dbba60b5c0da3399",
+    "slug": "cleopatra-dbba60b5c0da3399",
+    "sitePath": "/product/cleopatra-dbba60b5c0da3399",
+    "name": {
+      "en": "Galaxy",
+      "ar": "Galaxy",
+      "fr": "Galaxy"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-dbba60b5c0da3399",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/54aab9c7ddcbdce445f9.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/54aab9c7ddcbdce445f9.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "dbba60b5c0da3399",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-c07b9fee2c9448c5",
+    "slug": "cleopatra-c07b9fee2c9448c5",
+    "sitePath": "/product/cleopatra-c07b9fee2c9448c5",
+    "name": {
+      "en": "Kayak",
+      "ar": "Kayak",
+      "fr": "Kayak"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-c07b9fee2c9448c5",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/eb490558ecae487fec11.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/eb490558ecae487fec11.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "c07b9fee2c9448c5",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-5a7234ecafc9ac1d",
+    "slug": "cleopatra-5a7234ecafc9ac1d",
+    "sitePath": "/product/cleopatra-5a7234ecafc9ac1d",
+    "name": {
+      "en": "Ambra",
+      "ar": "Ambra",
+      "fr": "Ambra"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-5a7234ecafc9ac1d",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/d3c86d8906aabbca658f.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/d3c86d8906aabbca658f.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "5a7234ecafc9ac1d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-e62cc2d54a3c03a3",
+    "slug": "cleopatra-e62cc2d54a3c03a3",
+    "sitePath": "/product/cleopatra-e62cc2d54a3c03a3",
+    "name": {
+      "en": "River",
+      "ar": "River",
+      "fr": "River"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-e62cc2d54a3c03a3",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/5708ae6aa8c66db4e0e5.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/5708ae6aa8c66db4e0e5.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "e62cc2d54a3c03a3",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-cf709d901aa6f0cb",
+    "slug": "cleopatra-cf709d901aa6f0cb",
+    "sitePath": "/product/cleopatra-cf709d901aa6f0cb",
+    "name": {
+      "en": "Wazzan",
+      "ar": "Wazzan",
+      "fr": "Wazzan"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-cf709d901aa6f0cb",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/44cd77665f9ed06f6bb8.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/44cd77665f9ed06f6bb8.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "cf709d901aa6f0cb",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-53b7398cd371d825",
+    "slug": "cleopatra-53b7398cd371d825",
+    "sitePath": "/product/cleopatra-53b7398cd371d825",
+    "name": {
+      "en": "Emiliamulticolor",
+      "ar": "Emiliamulticolor",
+      "fr": "Emiliamulticolor"
+    },
+    "collection": "ceramics",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-53b7398cd371d825",
+        "originalSourceValue": "40.8X40.8",
+        "normalizedDisplayValue": "40.8 x 40.8 cm",
+        "label": "40.8 x 40.8 cm",
+        "widthMm": 408,
+        "heightMm": 408,
+        "sourceUnit": "cm",
+        "thicknessMm": 17.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/e93a5fc6053b189472f1.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/e93a5fc6053b189472f1.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "53b7398cd371d825",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-bff9f893de8966fa",
+    "slug": "cleopatra-bff9f893de8966fa",
+    "sitePath": "/product/cleopatra-bff9f893de8966fa",
+    "name": {
+      "en": "Kabul",
+      "ar": "Kabul",
+      "fr": "Kabul"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-bff9f893de8966fa",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/732964c7e89619bc8bae.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/732964c7e89619bc8bae.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "bff9f893de8966fa",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-21aea1b77c765fd3",
+    "slug": "cleopatra-21aea1b77c765fd3",
+    "sitePath": "/product/cleopatra-21aea1b77c765fd3",
+    "name": {
+      "en": "Cordoba",
+      "ar": "Cordoba",
+      "fr": "Cordoba"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-21aea1b77c765fd3",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/25beeb715bbe64de7bbe.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/25beeb715bbe64de7bbe.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "21aea1b77c765fd3",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-38a84224c8635b99",
+    "slug": "cleopatra-38a84224c8635b99",
+    "sitePath": "/product/cleopatra-38a84224c8635b99",
+    "name": {
+      "en": "Iowa",
+      "ar": "Iowa",
+      "fr": "Iowa"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-38a84224c8635b99",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/9719f9b75c61e921dbae.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/9719f9b75c61e921dbae.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "38a84224c8635b99",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-bc3db3d1b2e51cbb",
+    "slug": "cleopatra-bc3db3d1b2e51cbb",
+    "sitePath": "/product/cleopatra-bc3db3d1b2e51cbb",
+    "name": {
+      "en": "Montana",
+      "ar": "Montana",
+      "fr": "Montana"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-bc3db3d1b2e51cbb",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/4a9f0b03040f005c4ba8.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/4a9f0b03040f005c4ba8.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "bc3db3d1b2e51cbb",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-6df3354ac43c877d",
+    "slug": "cleopatra-6df3354ac43c877d",
+    "sitePath": "/product/cleopatra-6df3354ac43c877d",
+    "name": {
+      "en": "Oslo",
+      "ar": "Oslo",
+      "fr": "Oslo"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-6df3354ac43c877d",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm",
+        "thicknessMm": 9.8
+      }
+    ],
+    "image": "/images/catalog/cleopatra/2c1204d37edffa24c439.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/2c1204d37edffa24c439.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "6df3354ac43c877d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-41497b7620fc64be",
+    "slug": "cleopatra-41497b7620fc64be",
+    "sitePath": "/product/cleopatra-41497b7620fc64be",
+    "name": {
+      "en": "Mumbai",
+      "ar": "Mumbai",
+      "fr": "Mumbai"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-41497b7620fc64be",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/c3250c39b00326703e5d.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/c3250c39b00326703e5d.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "41497b7620fc64be",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-12f184baf92c0699",
+    "slug": "cleopatra-12f184baf92c0699",
+    "sitePath": "/product/cleopatra-12f184baf92c0699",
+    "name": {
+      "en": "Tassos",
+      "ar": "Tassos",
+      "fr": "Tassos"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-12f184baf92c0699",
+        "originalSourceValue": "60.5x121",
+        "normalizedDisplayValue": "60.5 x 121 cm",
+        "label": "60.5 x 121 cm",
+        "widthMm": 605,
+        "heightMm": 1210,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/14b1d61f2b83270e2908.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/14b1d61f2b83270e2908.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "12f184baf92c0699",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-0e4b3c7d76f7be7f",
+    "slug": "cleopatra-0e4b3c7d76f7be7f",
+    "sitePath": "/product/cleopatra-0e4b3c7d76f7be7f",
+    "name": {
+      "en": "Scass",
+      "ar": "Scass",
+      "fr": "Scass"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Matt",
+    "sizes": [
+      {
+        "id": "sz-0e4b3c7d76f7be7f",
+        "originalSourceValue": "120x120",
+        "normalizedDisplayValue": "120 x 120 cm",
+        "label": "120 x 120 cm",
+        "widthMm": 1200,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 8.0
+      }
+    ],
+    "image": "/images/catalog/cleopatra/30e2a048b048a1bb7ab9.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/30e2a048b048a1bb7ab9.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "0e4b3c7d76f7be7f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-149ce50049c16f25",
+    "slug": "cleopatra-149ce50049c16f25",
+    "sitePath": "/product/cleopatra-149ce50049c16f25",
+    "name": {
+      "en": "Arabiscato 6418",
+      "ar": "Arabiscato 6418",
+      "fr": "Arabiscato 6418"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-149ce50049c16f25",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/50923b6ebf5f2b6a29ca.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/50923b6ebf5f2b6a29ca.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "149ce50049c16f25",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-70e2a13f5c4caa63",
+    "slug": "cleopatra-70e2a13f5c4caa63",
+    "sitePath": "/product/cleopatra-70e2a13f5c4caa63",
+    "name": {
+      "en": "Arabiscato 6418",
+      "ar": "Arabiscato 6418",
+      "fr": "Arabiscato 6418"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-70e2a13f5c4caa63",
+        "originalSourceValue": "120x120",
+        "normalizedDisplayValue": "120 x 120 cm",
+        "label": "120 x 120 cm",
+        "widthMm": 1200,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/8a511d2b48de9ae112cd.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/8a511d2b48de9ae112cd.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "70e2a13f5c4caa63",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-526a6cb0125e6f47",
+    "slug": "cleopatra-526a6cb0125e6f47",
+    "sitePath": "/product/cleopatra-526a6cb0125e6f47",
+    "name": {
+      "en": "Madras 2302",
+      "ar": "Madras 2302",
+      "fr": "Madras 2302"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-526a6cb0125e6f47",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/91a7172af2a127830ddd.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/91a7172af2a127830ddd.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "526a6cb0125e6f47",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-8b4a92e1a59cc308",
+    "slug": "cleopatra-8b4a92e1a59cc308",
+    "sitePath": "/product/cleopatra-8b4a92e1a59cc308",
+    "name": {
+      "en": "Madras 2302",
+      "ar": "Madras 2302",
+      "fr": "Madras 2302"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-8b4a92e1a59cc308",
+        "originalSourceValue": "80x80",
+        "normalizedDisplayValue": "80 x 80 cm",
+        "label": "80 x 80 cm",
+        "widthMm": 800,
+        "heightMm": 800,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.5
+      }
+    ],
+    "image": "/images/catalog/cleopatra/a873dfb677f0ce79cff6.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/a873dfb677f0ce79cff6.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "8b4a92e1a59cc308",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-e0962457dd56ad74",
+    "slug": "cleopatra-e0962457dd56ad74",
+    "sitePath": "/product/cleopatra-e0962457dd56ad74",
+    "name": {
+      "en": "Thais 4083",
+      "ar": "Thais 4083",
+      "fr": "Thais 4083"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-e0962457dd56ad74",
+        "originalSourceValue": "120x120",
+        "normalizedDisplayValue": "120 x 120 cm",
+        "label": "120 x 120 cm",
+        "widthMm": 1200,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/9f5d4ca7cb765412a120.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/9f5d4ca7cb765412a120.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "e0962457dd56ad74",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-7f0c121968999479",
+    "slug": "cleopatra-7f0c121968999479",
+    "sitePath": "/product/cleopatra-7f0c121968999479",
+    "name": {
+      "en": "Asos 7224",
+      "ar": "Asos 7224",
+      "fr": "Asos 7224"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-7f0c121968999479",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/299f091b2fe1dc1d4fca.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/299f091b2fe1dc1d4fca.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "7f0c121968999479",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-dcefa615a8d4bf76",
+    "slug": "cleopatra-dcefa615a8d4bf76",
+    "sitePath": "/product/cleopatra-dcefa615a8d4bf76",
+    "name": {
+      "en": "Asos 7224",
+      "ar": "Asos 7224",
+      "fr": "Asos 7224"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-dcefa615a8d4bf76",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/cleopatra/0c2119789189fdc11456.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/0c2119789189fdc11456.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "dcefa615a8d4bf76",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-d7d9d06ec71ff0f8",
+    "slug": "cleopatra-d7d9d06ec71ff0f8",
+    "sitePath": "/product/cleopatra-d7d9d06ec71ff0f8",
+    "name": {
+      "en": "60X120 Palissandro 1817",
+      "ar": "60X120 Palissandro 1817",
+      "fr": "60X120 Palissandro 1817"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-d7d9d06ec71ff0f8",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/bfbdfe2f29e92644d9cb.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/bfbdfe2f29e92644d9cb.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "d7d9d06ec71ff0f8",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-b2e0671144614c1a",
+    "slug": "cleopatra-b2e0671144614c1a",
+    "sitePath": "/product/cleopatra-b2e0671144614c1a",
+    "name": {
+      "en": "60X120 Apollo 3903",
+      "ar": "60X120 Apollo 3903",
+      "fr": "60X120 Apollo 3903"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-b2e0671144614c1a",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/807a5b18824cbede6f37.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/807a5b18824cbede6f37.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "b2e0671144614c1a",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-049ff0eba5f6eb36",
+    "slug": "cleopatra-049ff0eba5f6eb36",
+    "sitePath": "/product/cleopatra-049ff0eba5f6eb36",
+    "name": {
+      "en": "25X75 Alaska 1483",
+      "ar": "25X75 Alaska 1483",
+      "fr": "25X75 Alaska 1483"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Glossy",
+    "sizes": [
+      {
+        "id": "sz-049ff0eba5f6eb36",
+        "originalSourceValue": "80x80",
+        "normalizedDisplayValue": "80 x 80 cm",
+        "label": "80 x 80 cm",
+        "widthMm": 800,
+        "heightMm": 800,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.5
+      }
+    ],
+    "image": "/images/catalog/cleopatra/df413c9390c869bfee97.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/df413c9390c869bfee97.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "049ff0eba5f6eb36",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-a2943987b4e3e711",
+    "slug": "cleopatra-a2943987b4e3e711",
+    "sitePath": "/product/cleopatra-a2943987b4e3e711",
+    "name": {
+      "en": "60X120 Micias 2729",
+      "ar": "60X120 Micias 2729",
+      "fr": "60X120 Micias 2729"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-a2943987b4e3e711",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.3
+      }
+    ],
+    "image": "/images/catalog/cleopatra/e84833900d0a401dee4b.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/e84833900d0a401dee4b.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "a2943987b4e3e711",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "cc-a9e9f8957269d10c",
+    "slug": "cleopatra-a9e9f8957269d10c",
+    "sitePath": "/product/cleopatra-a9e9f8957269d10c",
+    "name": {
+      "en": "80X80 Triumph 2454",
+      "ar": "80X80 Triumph 2454",
+      "fr": "80X80 Triumph 2454"
+    },
+    "collection": "porcelain",
+    "brand": "Ceramica Cleopatra",
+    "manufacturer": "Ceramica Cleopatra",
+    "manufacturerBasis": "official-manufacturer",
+    "model": "",
+    "finish": "Polished",
+    "sizes": [
+      {
+        "id": "sz-a9e9f8957269d10c",
+        "originalSourceValue": "80x80",
+        "normalizedDisplayValue": "80 x 80 cm",
+        "label": "80 x 80 cm",
+        "widthMm": 800,
+        "heightMm": 800,
+        "sourceUnit": "cm",
+        "thicknessMm": 10.5
+      }
+    ],
+    "image": "/images/catalog/cleopatra/59eead62a0a9df2439c3.webp",
+    "gallery": [
+      "/images/catalog/cleopatra/59eead62a0a9df2439c3.webp"
+    ],
+    "source": {
+      "sourceId": "source-35",
+      "provider": "Ceramica Cleopatra group",
+      "recordId": "a9e9f8957269d10c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  }
+]

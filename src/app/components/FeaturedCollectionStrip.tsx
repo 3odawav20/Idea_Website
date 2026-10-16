@@ -4,12 +4,12 @@ import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import "./FeaturedCollectionStrip.css";
 import { useCollectionDestinations } from "./useCollectionDestinations";
-import { useStore } from "../store/store";
 
 const FEATURED_COLLECTIONS = [
   { id: "ceramics", label: { en: "Ceramics", ar: "سيراميك", fr: "Céramiques" }, href: "/collections/ceramics" },
   { id: "porcelain", label: { en: "Porcelain", ar: "بورسلين", fr: "Porcelaine" }, href: "/collections/porcelain" },
   { id: "tiles", label: { en: "Tiles", ar: "بلاط", fr: "Carrelage" }, href: "/products?material=tiles" },
+  { id: "marble", label: { en: "Marble", ar: "رخام", fr: "Marbre" }, href: "/collections/marble" },
 ];
 
 const COPY = {
@@ -22,14 +22,7 @@ export function FeaturedCollectionStrip() {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const destinations = useCollectionDestinations();
-  // Tiles do not yet have independently verified public records. Do not link
-  // visitors to an empty category or relabel ceramics/porcelain as tiles.
-  const { products } = useStore();
-  const featured = FEATURED_COLLECTIONS.filter((look) =>
-    look.id !== "tiles" || products.some((product) =>
-      product.approved && ["tile", "tiles"].includes(product.type?.trim().toLowerCase() ?? "")
-    )
-  );
+  const featured = FEATURED_COLLECTIONS;
   const rail = useRef<HTMLDivElement>(null);
   const direction = useRef(1);
   const drag = useRef<{ x: number; scroll: number; moved: boolean } | null>(null);

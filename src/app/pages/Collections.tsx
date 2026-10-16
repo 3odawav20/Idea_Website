@@ -9,9 +9,10 @@ import { Products } from "./Products";
 export function Collections() {
   const { locale, t } = useI18n();
   const groups: { key: string; label: string }[] = [
-    { key: "ceramics", label: t("home.ceramicPorcelain") },
-    { key: "porcelain", label: "Porcelain" },
-    { key: "sanitary", label: t("home.sanitary") },
+    { key: "ceramics", label: locale === "ar" ? "السيراميك" : "Ceramics" },
+    { key: "porcelain", label: locale === "ar" ? "البورسلين" : "Porcelain" },
+    { key: "tiles", label: locale === "ar" ? "البلاط" : "Tiles" },
+    { key: "marble", label: locale === "ar" ? "الرخام" : "Marble" },
   ];
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>

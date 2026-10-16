@@ -85,6 +85,8 @@ function mapProduct(source: RawArtCeramicProduct): Product {
     collection: "ceramics",
     // Catalogue-level affiliation only; the export has no per-record brand/model fields.
     brand: "Art Ceramic",
+    manufacturer: "Art Ceramic",
+    manufacturerBasis: "official-manufacturer",
     finish: finishFromSource(source.texture),
     variant: source.color ?? undefined,
     usage,

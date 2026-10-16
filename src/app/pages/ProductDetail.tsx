@@ -1,8 +1,9 @@
-import { Link, useParams } from "react-router";
-import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
+import { Link, useParams, useNavigate } from "react-router";
+import { Heart, GitCompare, Sparkles, ChevronRight, Share2 } from "lucide-react";
 import { useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
+import { useBackend } from "../backend/db";
 import { Button, Container, Section, Tag } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
 
@@ -11,6 +12,9 @@ export function ProductDetail() {
   const { t, locale } = useI18n();
   const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote } = useStore();
   const product = products.find((p) => p.slug === slug);
+  const { session } = useBackend();
+  const navigate = useNavigate();
+  const [linkCopied, setLinkCopied] = useState(false);
   const [activeImg, setActiveImg] = useState(0);
   const [failedImages, setFailedImages] = useState<number[]>([]);
 
@@ -78,6 +82,8 @@ export function ProductDetail() {
             <p style={{ color: "var(--idea-text-faint)", fontStyle: "italic", marginBottom: "var(--idea-space-5)" }}>{t("price.hidden")}</p>
 
             <div style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-4) var(--idea-space-5)", marginBottom: "var(--idea-space-5)" }}>
+              {spec(locale === "ar" ? "الشركة المصنّعة" : locale === "fr" ? "Fabricant" : "Manufacturer", product.manufacturer)}
+              {spec(locale === "ar" ? "العلامة التجارية" : locale === "fr" ? "Marque" : "Brand", product.brand)}
               {spec(t("label.model"), product.model)}
               {spec(t("label.code"), product.code)}
               {spec(t("label.origin"), product.origin)}
@@ -86,15 +92,28 @@ export function ProductDetail() {
               {spec(t("label.texture"), product.texture)}
             </div>
 
+            {product.description && (
+              <p style={{ color: "var(--idea-text-muted)", lineHeight: 1.75, marginBottom: "var(--idea-space-5)", whiteSpace: "pre-line" }}>
+                {product.description}
+              </p>
+            )}
             <div className="idea-eyebrow" style={{ marginBottom: 10 }}>{t("label.sizes")}</div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-5)" }}>
-              {product.sizes.map((s) => <Tag key={s.id}>{s.label}</Tag>)}
+              {product.sizes.map((s) => (
+                <Tag key={s.id}>{s.label}{s.thicknessMm ? " · " + s.thicknessMm + " mm" : ""}</Tag>
+              ))}
             </div>
 
             <div style={{ display: "flex", gap: "var(--idea-space-3)", flexWrap: "wrap" }}>
               <Button size="lg" onClick={() => addToQuote(product.id, unit)}>{t("action.requestPrice")}</Button>
-              <Button variant="ghost" onClick={() => toggleFavorite(product.id)}><Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} /> {t("action.favorite")}</Button>
+              <Button variant="ghost" onClick={() => session ? toggleFavorite(product.id) : navigate("/login")}><Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} /> {t("action.favorite")}</Button>
               <Button variant="ghost" onClick={() => toggleCompare(product.id)}><GitCompare size={16} /> {t("action.compare")}</Button>
+              <Button variant="ghost" onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(window.location.href);
+                  setLinkCopied(true);
+                } catch { setLinkCopied(false); }
+              }}><Share2 size={16} /> {linkCopied ? (locale === "ar" ? "تم نسخ رابط المنتج" : "Link copied") : (locale === "ar" ? "نسخ رابط المنتج" : "Copy product link")}</Button>
             </div>
             <Link to="/room-designer/new" style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--idea-gold)", marginTop: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)" }}>
               <Sparkles size={14} /> {t("action.addVisualizer")}

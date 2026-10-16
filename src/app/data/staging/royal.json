@@ -1,0 +1,6401 @@
+[
+  {
+    "id": "royal-0bb65a9f3bef17b1",
+    "slug": "royal-0bb65a9f3bef17b1",
+    "sitePath": "/product/royal-0bb65a9f3bef17b1",
+    "name": {
+      "ar": "سيراميك جلوريا 61*122.5 كود 104",
+      "en": "سيراميك جلوريا 61*122.5 كود 104",
+      "fr": "سيراميك جلوريا 61*122.5 كود 104"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-0bb65a9f3b",
+        "originalSourceValue": "61x122.5",
+        "normalizedDisplayValue": "61 x 122.5 cm",
+        "label": "61 x 122.5 cm",
+        "widthMm": 610,
+        "heightMm": 1225,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9d73b39298793e1d9216.webp",
+    "gallery": [
+      "/images/catalog/royal/9d73b39298793e1d9216.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-0bb65a9f3bef17b1",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-0edd29548a18672d",
+    "slug": "royal-0edd29548a18672d",
+    "sitePath": "/product/royal-0edd29548a18672d",
+    "name": {
+      "ar": "سيراميك حوائط بريما كود:7966 مقاس 30*60",
+      "en": "سيراميك حوائط بريما كود:7966 مقاس 30*60",
+      "fr": "سيراميك حوائط بريما كود:7966 مقاس 30*60"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-0edd29548a",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/a990d53a45f8d06aca64.webp",
+    "gallery": [
+      "/images/catalog/royal/a990d53a45f8d06aca64.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-0edd29548a18672d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-157fc0fb394aa734",
+    "slug": "royal-157fc0fb394aa734",
+    "sitePath": "/product/royal-157fc0fb394aa734",
+    "name": {
+      "ar": "سيراميك اليجانت مقاس 70*70 كود:75012",
+      "en": "سيراميك اليجانت مقاس 70*70 كود:75012",
+      "fr": "سيراميك اليجانت مقاس 70*70 كود:75012"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-157fc0fb39",
+        "originalSourceValue": "70x70",
+        "normalizedDisplayValue": "70 x 70 cm",
+        "label": "70 x 70 cm",
+        "widthMm": 700,
+        "heightMm": 700,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/83af1767dc23f3ada491.webp",
+    "gallery": [
+      "/images/catalog/royal/83af1767dc23f3ada491.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-157fc0fb394aa734",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-19060b3e2c6fcb31",
+    "slug": "royal-19060b3e2c6fcb31",
+    "sitePath": "/product/royal-19060b3e2c6fcb31",
+    "name": {
+      "ar": "حمام جرانيتو مقاس 60*120 جراي كود:نانت 700\\3",
+      "en": "حمام جرانيتو مقاس 60*120 جراي كود:نانت 700\\3",
+      "fr": "حمام جرانيتو مقاس 60*120 جراي كود:نانت 700\\3"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-19060b3e2c",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/d86f2f34703171878c21.webp",
+    "gallery": [
+      "/images/catalog/royal/d86f2f34703171878c21.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-19060b3e2c6fcb31",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-241796df50795617",
+    "slug": "royal-241796df50795617",
+    "sitePath": "/product/royal-241796df50795617",
+    "name": {
+      "ar": "حمام اليجانت سيراميك مقاس 60*120 كود:12604",
+      "en": "حمام اليجانت سيراميك مقاس 60*120 كود:12604",
+      "fr": "حمام اليجانت سيراميك مقاس 60*120 كود:12604"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-241796df50",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/0168688a7e5af5af1a88.webp",
+    "gallery": [
+      "/images/catalog/royal/0168688a7e5af5af1a88.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-241796df50795617",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-2f966f553e688f2b",
+    "slug": "royal-2f966f553e688f2b",
+    "sitePath": "/product/royal-2f966f553e688f2b",
+    "name": {
+      "ar": "سيراميك حوائط ليجاسي كود:8060 مقاس 40*80 ليزر",
+      "en": "سيراميك حوائط ليجاسي كود:8060 مقاس 40*80 ليزر",
+      "fr": "سيراميك حوائط ليجاسي كود:8060 مقاس 40*80 ليزر"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-2f966f553e",
+        "originalSourceValue": "40x80",
+        "normalizedDisplayValue": "40 x 80 cm",
+        "label": "40 x 80 cm",
+        "widthMm": 400,
+        "heightMm": 800,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/34b390af22c42ca84b0a.webp",
+    "gallery": [
+      "/images/catalog/royal/34b390af22c42ca84b0a.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-2f966f553e688f2b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-3319a73a34591fc8",
+    "slug": "royal-3319a73a34591fc8",
+    "sitePath": "/product/royal-3319a73a34591fc8",
+    "name": {
+      "ar": "سيراميك وينتر جليز بورسيلين جلوريا 61*61",
+      "en": "سيراميك وينتر جليز بورسيلين جلوريا 61*61",
+      "fr": "سيراميك وينتر جليز بورسيلين جلوريا 61*61"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-3319a73a34",
+        "originalSourceValue": "61x61",
+        "normalizedDisplayValue": "61 x 61 cm",
+        "label": "61 x 61 cm",
+        "widthMm": 610,
+        "heightMm": 610,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/5456077306e75a828ecb.webp",
+    "gallery": [
+      "/images/catalog/royal/5456077306e75a828ecb.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-3319a73a34591fc8",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-3cb72c147347ab68",
+    "slug": "royal-3cb72c147347ab68",
+    "sitePath": "/product/royal-3cb72c147347ab68",
+    "name": {
+      "ar": "حمام كليوباترا مقاس 60*120 كود روندا جراي +روندا بلاك",
+      "en": "حمام كليوباترا مقاس 60*120 كود روندا جراي +روندا بلاك",
+      "fr": "حمام كليوباترا مقاس 60*120 كود روندا جراي +روندا بلاك"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-3cb72c1473",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/93e9dbea156509a7dbc1.webp",
+    "gallery": [
+      "/images/catalog/royal/93e9dbea156509a7dbc1.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-3cb72c147347ab68",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-4412ec4a0c21f2f0",
+    "slug": "royal-4412ec4a0c21f2f0",
+    "sitePath": "/product/royal-4412ec4a0c21f2f0",
+    "name": {
+      "ar": "سيراميك ارضيات بيراميدز مقاس 59.5*59.5 كود: طوكيو  #ارضيات",
+      "en": "سيراميك ارضيات بيراميدز مقاس 59.5*59.5 كود: طوكيو  #ارضيات",
+      "fr": "سيراميك ارضيات بيراميدز مقاس 59.5*59.5 كود: طوكيو  #ارضيات"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-4412ec4a0c",
+        "originalSourceValue": "59.5x59.5",
+        "normalizedDisplayValue": "59.5 x 59.5 cm",
+        "label": "59.5 x 59.5 cm",
+        "widthMm": 595,
+        "heightMm": 595,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/a571cff86232d1cbac0f.webp",
+    "gallery": [
+      "/images/catalog/royal/a571cff86232d1cbac0f.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-4412ec4a0c21f2f0",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-50bba6094f6c13a6",
+    "slug": "royal-50bba6094f6c13a6",
+    "sitePath": "/product/royal-50bba6094f6c13a6",
+    "name": {
+      "ar": "سيراميك مطابخ ليجاسي مقاس 30*60 كود : تولان",
+      "en": "سيراميك مطابخ ليجاسي مقاس 30*60 كود : تولان",
+      "fr": "سيراميك مطابخ ليجاسي مقاس 30*60 كود : تولان"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-50bba6094f",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/38bcf81deb51dbe78dd6.webp",
+    "gallery": [
+      "/images/catalog/royal/38bcf81deb51dbe78dd6.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-50bba6094f6c13a6",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-521b62c65a9c56c7",
+    "slug": "royal-521b62c65a9c56c7",
+    "sitePath": "/product/royal-521b62c65a9c56c7",
+    "name": {
+      "ar": "سيراميك جلوريا 61*122.5 كود 121",
+      "en": "سيراميك جلوريا 61*122.5 كود 121",
+      "fr": "سيراميك جلوريا 61*122.5 كود 121"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-521b62c65a",
+        "originalSourceValue": "61x122.5",
+        "normalizedDisplayValue": "61 x 122.5 cm",
+        "label": "61 x 122.5 cm",
+        "widthMm": 610,
+        "heightMm": 1225,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/a37d3e5da1819817429d.webp",
+    "gallery": [
+      "/images/catalog/royal/a37d3e5da1819817429d.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-521b62c65a9c56c7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-59dcfbe073e78eff",
+    "slug": "royal-59dcfbe073e78eff",
+    "sitePath": "/product/royal-59dcfbe073e78eff",
+    "name": {
+      "ar": "سيراميك ارضيات اوميجا كود: حلايب مارون مقاس 50*50",
+      "en": "سيراميك ارضيات اوميجا كود: حلايب مارون مقاس 50*50",
+      "fr": "سيراميك ارضيات اوميجا كود: حلايب مارون مقاس 50*50"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-59dcfbe073",
+        "originalSourceValue": "50x50",
+        "normalizedDisplayValue": "50 x 50 cm",
+        "label": "50 x 50 cm",
+        "widthMm": 500,
+        "heightMm": 500,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/f494c968c6cee897c760.webp",
+    "gallery": [
+      "/images/catalog/royal/f494c968c6cee897c760.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-59dcfbe073e78eff",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-5d6c6385c55eb782",
+    "slug": "royal-5d6c6385c55eb782",
+    "sitePath": "/product/royal-5d6c6385c55eb782",
+    "name": {
+      "ar": "سيراميك ارضيات جلامور مقاس 59*59 كود : 221 #ارضيات",
+      "en": "سيراميك ارضيات جلامور مقاس 59*59 كود : 221 #ارضيات",
+      "fr": "سيراميك ارضيات جلامور مقاس 59*59 كود : 221 #ارضيات"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-5d6c6385c5",
+        "originalSourceValue": "59x59",
+        "normalizedDisplayValue": "59 x 59 cm",
+        "label": "59 x 59 cm",
+        "widthMm": 590,
+        "heightMm": 590,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/f842791f5ba77180dd1d.webp",
+    "gallery": [
+      "/images/catalog/royal/f842791f5ba77180dd1d.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-5d6c6385c55eb782",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-643f994d7c2211fb",
+    "slug": "royal-643f994d7c2211fb",
+    "sitePath": "/product/royal-643f994d7c2211fb",
+    "name": {
+      "ar": "سيراميك حوائط:جرانيتو مقاس 85/180مطبخ 30*60",
+      "en": "سيراميك حوائط:جرانيتو مقاس 85/180مطبخ 30*60",
+      "fr": "سيراميك حوائط:جرانيتو مقاس 85/180مطبخ 30*60"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-643f994d7c",
+        "originalSourceValue": "85x180",
+        "normalizedDisplayValue": "85 x 180 cm",
+        "label": "85 x 180 cm",
+        "widthMm": 850,
+        "heightMm": 1800,
+        "sourceUnit": "cm"
+      },
+      {
+        "id": "sz-1-643f994d7c",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b4f056a7bb268792a6e4.webp",
+    "gallery": [
+      "/images/catalog/royal/b4f056a7bb268792a6e4.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-643f994d7c2211fb",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-67d1050e359be6e3",
+    "slug": "royal-67d1050e359be6e3",
+    "sitePath": "/product/royal-67d1050e359be6e3",
+    "name": {
+      "ar": "سيراميك حوائط بريما كود7852 مقاس 30*60",
+      "en": "سيراميك حوائط بريما كود7852 مقاس 30*60",
+      "fr": "سيراميك حوائط بريما كود7852 مقاس 30*60"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-67d1050e35",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e38311a5448bf6d40b35.webp",
+    "gallery": [
+      "/images/catalog/royal/e38311a5448bf6d40b35.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-67d1050e359be6e3",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-68fe57d19d9cce9f",
+    "slug": "royal-68fe57d19d9cce9f",
+    "sitePath": "/product/royal-68fe57d19d9cce9f",
+    "name": {
+      "ar": "سيراميك تورين جليز بورسيلين جلوريا 61*61",
+      "en": "سيراميك تورين جليز بورسيلين جلوريا 61*61",
+      "fr": "سيراميك تورين جليز بورسيلين جلوريا 61*61"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-68fe57d19d",
+        "originalSourceValue": "61x61",
+        "normalizedDisplayValue": "61 x 61 cm",
+        "label": "61 x 61 cm",
+        "widthMm": 610,
+        "heightMm": 610,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/f923bb8c76061bb198a1.webp",
+    "gallery": [
+      "/images/catalog/royal/f923bb8c76061bb198a1.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-68fe57d19d9cce9f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-70ac7a3af16dc1f4",
+    "slug": "royal-70ac7a3af16dc1f4",
+    "sitePath": "/product/royal-70ac7a3af16dc1f4",
+    "name": {
+      "ar": "سيراميك جيرانيتو 60*120 كود 700/18",
+      "en": "سيراميك جيرانيتو 60*120 كود 700/18",
+      "fr": "سيراميك جيرانيتو 60*120 كود 700/18"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-70ac7a3af1",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/8a61e25bd06303d5ec8a.webp",
+    "gallery": [
+      "/images/catalog/royal/8a61e25bd06303d5ec8a.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-70ac7a3af16dc1f4",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-7929dee43fe2dfc2",
+    "slug": "royal-7929dee43fe2dfc2",
+    "sitePath": "/product/royal-7929dee43fe2dfc2",
+    "name": {
+      "ar": "سيراميك ارضيات مقاس 61*61 جرانيتو كود 615/112",
+      "en": "سيراميك ارضيات مقاس 61*61 جرانيتو كود 615/112",
+      "fr": "سيراميك ارضيات مقاس 61*61 جرانيتو كود 615/112"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-7929dee43f",
+        "originalSourceValue": "61x61",
+        "normalizedDisplayValue": "61 x 61 cm",
+        "label": "61 x 61 cm",
+        "widthMm": 610,
+        "heightMm": 610,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c9023aeaa5b1d5698677.webp",
+    "gallery": [
+      "/images/catalog/royal/c9023aeaa5b1d5698677.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-7929dee43fe2dfc2",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-794045cf77556c2d",
+    "slug": "royal-794045cf77556c2d",
+    "sitePath": "/product/royal-794045cf77556c2d",
+    "name": {
+      "ar": "#سيراميك_ارضيات_روندي كود: ليلي جراي مقاس 61*61",
+      "en": "#سيراميك_ارضيات_روندي كود: ليلي جراي مقاس 61*61",
+      "fr": "#سيراميك_ارضيات_روندي كود: ليلي جراي مقاس 61*61"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-794045cf77",
+        "originalSourceValue": "61x61",
+        "normalizedDisplayValue": "61 x 61 cm",
+        "label": "61 x 61 cm",
+        "widthMm": 610,
+        "heightMm": 610,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/2264a0ed42158d726952.webp",
+    "gallery": [
+      "/images/catalog/royal/2264a0ed42158d726952.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-794045cf77556c2d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-7ae1dfe8496f3db9",
+    "slug": "royal-7ae1dfe8496f3db9",
+    "sitePath": "/product/royal-7ae1dfe8496f3db9",
+    "name": {
+      "ar": "سيراميك جيرانيتو 60*120 كود 700/2",
+      "en": "سيراميك جيرانيتو 60*120 كود 700/2",
+      "fr": "سيراميك جيرانيتو 60*120 كود 700/2"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-7ae1dfe849",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/78243c41247c7e40c2bf.webp",
+    "gallery": [
+      "/images/catalog/royal/78243c41247c7e40c2bf.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-7ae1dfe8496f3db9",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-83ca5e6376a5330c",
+    "slug": "royal-83ca5e6376a5330c",
+    "sitePath": "/product/royal-83ca5e6376a5330c",
+    "name": {
+      "ar": "سيراميك مطابخ ليجاسي مقاس 30*60 كود : ايجل",
+      "en": "سيراميك مطابخ ليجاسي مقاس 30*60 كود : ايجل",
+      "fr": "سيراميك مطابخ ليجاسي مقاس 30*60 كود : ايجل"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-83ca5e6376",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/130303ef2613f40349b3.webp",
+    "gallery": [
+      "/images/catalog/royal/130303ef2613f40349b3.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-83ca5e6376a5330c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-8d942f2465149a18",
+    "slug": "royal-8d942f2465149a18",
+    "sitePath": "/product/royal-8d942f2465149a18",
+    "name": {
+      "ar": "سيراميك جيرايتو 60*120 كود 700/15",
+      "en": "سيراميك جيرايتو 60*120 كود 700/15",
+      "fr": "سيراميك جيرايتو 60*120 كود 700/15"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-8d942f2465",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/068efd9e5a5d09ade566.webp",
+    "gallery": [
+      "/images/catalog/royal/068efd9e5a5d09ade566.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-8d942f2465149a18",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-96af2a28557da44a",
+    "slug": "royal-96af2a28557da44a",
+    "sitePath": "/product/royal-96af2a28557da44a",
+    "name": {
+      "ar": "حمام كليوباترا مقاس 60*120 كود: جودي بيج",
+      "en": "حمام كليوباترا مقاس 60*120 كود: جودي بيج",
+      "fr": "حمام كليوباترا مقاس 60*120 كود: جودي بيج"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-96af2a2855",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9f5cfa4dfd4f33ffcbf2.webp",
+    "gallery": [
+      "/images/catalog/royal/9f5cfa4dfd4f33ffcbf2.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-96af2a28557da44a",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-a2f22cde4589b44f",
+    "slug": "royal-a2f22cde4589b44f",
+    "sitePath": "/product/royal-a2f22cde4589b44f",
+    "name": {
+      "ar": "سيراميك ارضيات اوميجا كود: حلايب جندوله مقاس 50*50",
+      "en": "سيراميك ارضيات اوميجا كود: حلايب جندوله مقاس 50*50",
+      "fr": "سيراميك ارضيات اوميجا كود: حلايب جندوله مقاس 50*50"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-a2f22cde45",
+        "originalSourceValue": "50x50",
+        "normalizedDisplayValue": "50 x 50 cm",
+        "label": "50 x 50 cm",
+        "widthMm": 500,
+        "heightMm": 500,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/41fc375e1ac0a46d7e23.webp",
+    "gallery": [
+      "/images/catalog/royal/41fc375e1ac0a46d7e23.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-a2f22cde4589b44f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-a6835a8e37cb2d02",
+    "slug": "royal-a6835a8e37cb2d02",
+    "sitePath": "/product/royal-a6835a8e37cb2d02",
+    "name": {
+      "ar": "حمام كليوباترا مقاس 60*120 كود: لونا فارمه+لونا فلور",
+      "en": "حمام كليوباترا مقاس 60*120 كود: لونا فارمه+لونا فلور",
+      "fr": "حمام كليوباترا مقاس 60*120 كود: لونا فارمه+لونا فلور"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-a6835a8e37",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/fa8f1e0bd65aa0a6b1c5.webp",
+    "gallery": [
+      "/images/catalog/royal/fa8f1e0bd65aa0a6b1c5.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-a6835a8e37cb2d02",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-a743da5f6bd03838",
+    "slug": "royal-a743da5f6bd03838",
+    "sitePath": "/product/royal-a743da5f6bd03838",
+    "name": {
+      "ar": "سيراميك ارضيات جلامور مقاس 59*59 كود : جولد 232",
+      "en": "سيراميك ارضيات جلامور مقاس 59*59 كود : جولد 232",
+      "fr": "سيراميك ارضيات جلامور مقاس 59*59 كود : جولد 232"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-a743da5f6b",
+        "originalSourceValue": "59x59",
+        "normalizedDisplayValue": "59 x 59 cm",
+        "label": "59 x 59 cm",
+        "widthMm": 590,
+        "heightMm": 590,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/ca9cdf4e0df5b28ebefd.webp",
+    "gallery": [
+      "/images/catalog/royal/ca9cdf4e0df5b28ebefd.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-a743da5f6bd03838",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-afe69b9a85539227",
+    "slug": "royal-afe69b9a85539227",
+    "sitePath": "/product/royal-afe69b9a85539227",
+    "name": {
+      "ar": "سيراميك حوائط اليجانت :كود 8006 مقاس 40*80 ليزر",
+      "en": "سيراميك حوائط اليجانت :كود 8006 مقاس 40*80 ليزر",
+      "fr": "سيراميك حوائط اليجانت :كود 8006 مقاس 40*80 ليزر"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-afe69b9a85",
+        "originalSourceValue": "40x80",
+        "normalizedDisplayValue": "40 x 80 cm",
+        "label": "40 x 80 cm",
+        "widthMm": 400,
+        "heightMm": 800,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/a27a4a871d250b3619c7.webp",
+    "gallery": [
+      "/images/catalog/royal/a27a4a871d250b3619c7.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-afe69b9a85539227",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b24699884556070b",
+    "slug": "royal-b24699884556070b",
+    "sitePath": "/product/royal-b24699884556070b",
+    "name": {
+      "ar": "سيراميك جلوريا 61*122.5 كود 108",
+      "en": "سيراميك جلوريا 61*122.5 كود 108",
+      "fr": "سيراميك جلوريا 61*122.5 كود 108"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b246998845",
+        "originalSourceValue": "61x122.5",
+        "normalizedDisplayValue": "61 x 122.5 cm",
+        "label": "61 x 122.5 cm",
+        "widthMm": 610,
+        "heightMm": 1225,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c634282f86fcfd2dd051.webp",
+    "gallery": [
+      "/images/catalog/royal/c634282f86fcfd2dd051.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b24699884556070b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-bbfa0a2f8e9dcec8",
+    "slug": "royal-bbfa0a2f8e9dcec8",
+    "sitePath": "/product/royal-bbfa0a2f8e9dcec8",
+    "name": {
+      "ar": "سيراميك حوائط جرانيتو كود: 94/180 حمام 30*60 (اول)",
+      "en": "سيراميك حوائط جرانيتو كود: 94/180 حمام 30*60 (اول)",
+      "fr": "سيراميك حوائط جرانيتو كود: 94/180 حمام 30*60 (اول)"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-bbfa0a2f8e",
+        "originalSourceValue": "94x180",
+        "normalizedDisplayValue": "94 x 180 cm",
+        "label": "94 x 180 cm",
+        "widthMm": 940,
+        "heightMm": 1800,
+        "sourceUnit": "cm"
+      },
+      {
+        "id": "sz-1-bbfa0a2f8e",
+        "originalSourceValue": "30x60",
+        "normalizedDisplayValue": "30 x 60 cm",
+        "label": "30 x 60 cm",
+        "widthMm": 300,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/d5add8f108f66fe64dc2.webp",
+    "gallery": [
+      "/images/catalog/royal/d5add8f108f66fe64dc2.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-bbfa0a2f8e9dcec8",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-c52fc97f70afefd2",
+    "slug": "royal-c52fc97f70afefd2",
+    "sitePath": "/product/royal-c52fc97f70afefd2",
+    "name": {
+      "ar": "سيراميك ارضيات سيريل كود: 118 مقاس 60*60",
+      "en": "سيراميك ارضيات سيريل كود: 118 مقاس 60*60",
+      "fr": "سيراميك ارضيات سيريل كود: 118 مقاس 60*60"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-c52fc97f70",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/0ec0e930bccb6c0bae85.webp",
+    "gallery": [
+      "/images/catalog/royal/0ec0e930bccb6c0bae85.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-c52fc97f70afefd2",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e2c305bd7adf5d78",
+    "slug": "royal-e2c305bd7adf5d78",
+    "sitePath": "/product/royal-e2c305bd7adf5d78",
+    "name": {
+      "ar": "سيراميك جيرانيتو 60*120 كود 700/12",
+      "en": "سيراميك جيرانيتو 60*120 كود 700/12",
+      "fr": "سيراميك جيرانيتو 60*120 كود 700/12"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e2c305bd7a",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/8c69d87cb8ada457e1dc.webp",
+    "gallery": [
+      "/images/catalog/royal/8c69d87cb8ada457e1dc.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e2c305bd7adf5d78",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e6008974d17c8e42",
+    "slug": "royal-e6008974d17c8e42",
+    "sitePath": "/product/royal-e6008974d17c8e42",
+    "name": {
+      "ar": "سيراميك ارضيات جلامور مقاس 59*59 كود: 203 جراي",
+      "en": "سيراميك ارضيات جلامور مقاس 59*59 كود: 203 جراي",
+      "fr": "سيراميك ارضيات جلامور مقاس 59*59 كود: 203 جراي"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e6008974d1",
+        "originalSourceValue": "59x59",
+        "normalizedDisplayValue": "59 x 59 cm",
+        "label": "59 x 59 cm",
+        "widthMm": 590,
+        "heightMm": 590,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c4a5b7f2a297eff33980.webp",
+    "gallery": [
+      "/images/catalog/royal/c4a5b7f2a297eff33980.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e6008974d17c8e42",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-ea8a4671122d10e1",
+    "slug": "royal-ea8a4671122d10e1",
+    "sitePath": "/product/royal-ea8a4671122d10e1",
+    "name": {
+      "ar": "سيراميك جرانيتو 60*120 كود 750/24 جراي مط",
+      "en": "سيراميك جرانيتو 60*120 كود 750/24 جراي مط",
+      "fr": "سيراميك جرانيتو 60*120 كود 750/24 جراي مط"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-ea8a467112",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9b64c85f65f12423d80e.webp",
+    "gallery": [
+      "/images/catalog/royal/9b64c85f65f12423d80e.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-ea8a4671122d10e1",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-f20d1045e4da8919",
+    "slug": "royal-f20d1045e4da8919",
+    "sitePath": "/product/royal-f20d1045e4da8919",
+    "name": {
+      "ar": "سيراميك ارضيات سيريل كود:156 مقاس 60*60",
+      "en": "سيراميك ارضيات سيريل كود:156 مقاس 60*60",
+      "fr": "سيراميك ارضيات سيريل كود:156 مقاس 60*60"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-f20d1045e4",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/6b3e67b1d78f88cd6136.webp",
+    "gallery": [
+      "/images/catalog/royal/6b3e67b1d78f88cd6136.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-f20d1045e4da8919",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-f391e2c64692ae74",
+    "slug": "royal-f391e2c64692ae74",
+    "sitePath": "/product/royal-f391e2c64692ae74",
+    "name": {
+      "ar": "سيراميك ارضيات ليجاسي مقاس 60*60 كود: فيجو ابيض",
+      "en": "سيراميك ارضيات ليجاسي مقاس 60*60 كود: فيجو ابيض",
+      "fr": "سيراميك ارضيات ليجاسي مقاس 60*60 كود: فيجو ابيض"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-f391e2c646",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/ab9f819800cfa82f8cec.webp",
+    "gallery": [
+      "/images/catalog/royal/ab9f819800cfa82f8cec.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-f391e2c64692ae74",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-f8099a4fea3078c8",
+    "slug": "royal-f8099a4fea3078c8",
+    "sitePath": "/product/royal-f8099a4fea3078c8",
+    "name": {
+      "ar": "سيراميك ارضيات جرانيتو29/60 مقاس 61*61 ليزر",
+      "en": "سيراميك ارضيات جرانيتو29/60 مقاس 61*61 ليزر",
+      "fr": "سيراميك ارضيات جرانيتو29/60 مقاس 61*61 ليزر"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-f8099a4fea",
+        "originalSourceValue": "29x60",
+        "normalizedDisplayValue": "29 x 60 cm",
+        "label": "29 x 60 cm",
+        "widthMm": 290,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      },
+      {
+        "id": "sz-1-f8099a4fea",
+        "originalSourceValue": "61x61",
+        "normalizedDisplayValue": "61 x 61 cm",
+        "label": "61 x 61 cm",
+        "widthMm": 610,
+        "heightMm": 610,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/d3e8107970babfb4e7d6.webp",
+    "gallery": [
+      "/images/catalog/royal/d3e8107970babfb4e7d6.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-f8099a4fea3078c8",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-fb3c16d919261a6d",
+    "slug": "royal-fb3c16d919261a6d",
+    "sitePath": "/product/royal-fb3c16d919261a6d",
+    "name": {
+      "ar": "سيراميك ارضيات اوميجا كود:حلايب رصاصي مقاس 50*50",
+      "en": "سيراميك ارضيات اوميجا كود:حلايب رصاصي مقاس 50*50",
+      "fr": "سيراميك ارضيات اوميجا كود:حلايب رصاصي مقاس 50*50"
+    },
+    "collection": "ceramics",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-fb3c16d919",
+        "originalSourceValue": "50x50",
+        "normalizedDisplayValue": "50 x 50 cm",
+        "label": "50 x 50 cm",
+        "widthMm": 500,
+        "heightMm": 500,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/369d2486401f932d5036.webp",
+    "gallery": [
+      "/images/catalog/royal/369d2486401f932d5036.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-fb3c16d919261a6d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-024ce95661a2bf55",
+    "slug": "royal-024ce95661a2bf55",
+    "sitePath": "/product/royal-024ce95661a2bf55",
+    "name": {
+      "ar": "بورسلين هندي مقاس 60*120 كود:493 بلاك",
+      "en": "بورسلين هندي مقاس 60*120 كود:493 بلاك",
+      "fr": "بورسلين هندي مقاس 60*120 كود:493 بلاك"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-024ce95661",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/a1cd69a4fe46a0665599.webp",
+    "gallery": [
+      "/images/catalog/royal/a1cd69a4fe46a0665599.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-024ce95661a2bf55",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-02676180161967ef",
+    "slug": "royal-02676180161967ef",
+    "sitePath": "/product/royal-02676180161967ef",
+    "name": {
+      "ar": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "en": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "fr": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-0267618016",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/3298746dcc2bce2c1bdf.webp",
+    "gallery": [
+      "/images/catalog/royal/3298746dcc2bce2c1bdf.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-02676180161967ef",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-042da184f6f6b408",
+    "slug": "royal-042da184f6f6b408",
+    "sitePath": "/product/royal-042da184f6f6b408",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 امبرادور كود:Z612025",
+      "en": "بورسلين سعودي مقاس 60*120 امبرادور كود:Z612025",
+      "fr": "بورسلين سعودي مقاس 60*120 امبرادور كود:Z612025"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-042da184f6",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9ceee808b8905c59a4c6.webp",
+    "gallery": [
+      "/images/catalog/royal/9ceee808b8905c59a4c6.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-042da184f6f6b408",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-055ef6d40655c731",
+    "slug": "royal-055ef6d40655c731",
+    "sitePath": "/product/royal-055ef6d40655c731",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:011",
+      "en": "بورسلين هندي 60*120 كود:011",
+      "fr": "بورسلين هندي 60*120 كود:011"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-055ef6d406",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/acf306a0d5a7b21ff936.webp",
+    "gallery": [
+      "/images/catalog/royal/acf306a0d5a7b21ff936.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-055ef6d40655c731",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-05d92df3c3d36535",
+    "slug": "royal-05d92df3c3d36535",
+    "sitePath": "/product/royal-05d92df3c3d36535",
+    "name": {
+      "ar": "بورسلين هندي مقاس60*120 كود:انفينتي فيسكو بيرل",
+      "en": "بورسلين هندي مقاس60*120 كود:انفينتي فيسكو بيرل",
+      "fr": "بورسلين هندي مقاس60*120 كود:انفينتي فيسكو بيرل"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-05d92df3c3",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/12337d3ff77a05ea3fa7.webp",
+    "gallery": [
+      "/images/catalog/royal/12337d3ff77a05ea3fa7.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-05d92df3c3d36535",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-0a224e2405722efc",
+    "slug": "royal-0a224e2405722efc",
+    "sitePath": "/product/royal-0a224e2405722efc",
+    "name": {
+      "ar": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "en": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "fr": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-0a224e2405",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/ac46726b50a2d12e1425.webp",
+    "gallery": [
+      "/images/catalog/royal/ac46726b50a2d12e1425.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-0a224e2405722efc",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-0c9466b833753e76",
+    "slug": "royal-0c9466b833753e76",
+    "sitePath": "/product/royal-0c9466b833753e76",
+    "name": {
+      "ar": "بورسلين جلوريا مقاس 60*60 كود: فابيو #بورسلين",
+      "en": "بورسلين جلوريا مقاس 60*60 كود: فابيو #بورسلين",
+      "fr": "بورسلين جلوريا مقاس 60*60 كود: فابيو #بورسلين"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-0c9466b833",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9fcb41b7cdf050777d93.webp",
+    "gallery": [
+      "/images/catalog/royal/9fcb41b7cdf050777d93.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-0c9466b833753e76",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-0f38f800212b4cbf",
+    "slug": "royal-0f38f800212b4cbf",
+    "sitePath": "/product/royal-0f38f800212b4cbf",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612895",
+      "en": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612895",
+      "fr": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612895"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-0f38f80021",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e476f670d001acea70f6.webp",
+    "gallery": [
+      "/images/catalog/royal/e476f670d001acea70f6.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-0f38f800212b4cbf",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-102dca4837b20762",
+    "slug": "royal-102dca4837b20762",
+    "sitePath": "/product/royal-102dca4837b20762",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:189",
+      "en": "بورسلين هندي 60*120 كود:189",
+      "fr": "بورسلين هندي 60*120 كود:189"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-102dca4837",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/201801fec522fe9e0871.webp",
+    "gallery": [
+      "/images/catalog/royal/201801fec522fe9e0871.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-102dca4837b20762",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-10b06b6f3ff6722b",
+    "slug": "royal-10b06b6f3ff6722b",
+    "sitePath": "/product/royal-10b06b6f3ff6722b",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:019",
+      "en": "بورسلين هندي 60*120 كود:019",
+      "fr": "بورسلين هندي 60*120 كود:019"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-10b06b6f3f",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/6d689b82eb517e19f419.webp",
+    "gallery": [
+      "/images/catalog/royal/6d689b82eb517e19f419.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-10b06b6f3ff6722b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-1197ed0e6e9c4f14",
+    "slug": "royal-1197ed0e6e9c4f14",
+    "sitePath": "/product/royal-1197ed0e6e9c4f14",
+    "name": {
+      "ar": "بورسلين هندي60*120 كود:517",
+      "en": "بورسلين هندي60*120 كود:517",
+      "fr": "بورسلين هندي60*120 كود:517"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-1197ed0e6e",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b6b3d1afe27949e38722.webp",
+    "gallery": [
+      "/images/catalog/royal/b6b3d1afe27949e38722.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-1197ed0e6e9c4f14",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-186a754dd0dcb9c7",
+    "slug": "royal-186a754dd0dcb9c7",
+    "sitePath": "/product/royal-186a754dd0dcb9c7",
+    "name": {
+      "ar": "رونا بيج جلوريا بورسلين 60*120 ليزر",
+      "en": "رونا بيج جلوريا بورسلين 60*120 ليزر",
+      "fr": "رونا بيج جلوريا بورسلين 60*120 ليزر"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-186a754dd0",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/5ec9d80688bd5311a0eb.webp",
+    "gallery": [
+      "/images/catalog/royal/5ec9d80688bd5311a0eb.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-186a754dd0dcb9c7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-19bb32ea587ab0e1",
+    "slug": "royal-19bb32ea587ab0e1",
+    "sitePath": "/product/royal-19bb32ea587ab0e1",
+    "name": {
+      "ar": "بورسلين هندى 80*160 كود: 604",
+      "en": "بورسلين هندى 80*160 كود: 604",
+      "fr": "بورسلين هندى 80*160 كود: 604"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-19bb32ea58",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9a7b1e06ce495eda6f23.webp",
+    "gallery": [
+      "/images/catalog/royal/9a7b1e06ce495eda6f23.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-19bb32ea587ab0e1",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-1ed295ceefb5e342",
+    "slug": "royal-1ed295ceefb5e342",
+    "sitePath": "/product/royal-1ed295ceefb5e342",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:3019 بورسيلوكس",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:3019 بورسيلوكس",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:3019 بورسيلوكس"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-1ed295ceef",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/fb59b32d1bc5e0f85c65.webp",
+    "gallery": [
+      "/images/catalog/royal/fb59b32d1bc5e0f85c65.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-1ed295ceefb5e342",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-21759455b4777887",
+    "slug": "royal-21759455b4777887",
+    "sitePath": "/product/royal-21759455b4777887",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160كود:615",
+      "en": "بورسلين هندي مقاس 80*160كود:615",
+      "fr": "بورسلين هندي مقاس 80*160كود:615"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-21759455b4",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/5190f637ede103af77af.webp",
+    "gallery": [
+      "/images/catalog/royal/5190f637ede103af77af.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-21759455b4777887",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-2556ecc495d699c4",
+    "slug": "royal-2556ecc495d699c4",
+    "sitePath": "/product/royal-2556ecc495d699c4",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:3003 جراي بورسيلوكس",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:3003 جراي بورسيلوكس",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:3003 جراي بورسيلوكس"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-2556ecc495",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/055e51a591f2d36bdd3b.webp",
+    "gallery": [
+      "/images/catalog/royal/055e51a591f2d36bdd3b.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-2556ecc495d699c4",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-26337d462907bd0d",
+    "slug": "royal-26337d462907bd0d",
+    "sitePath": "/product/royal-26337d462907bd0d",
+    "name": {
+      "ar": "كاندي جراي -كونكورد بورسلين -60*120",
+      "en": "كاندي جراي -كونكورد بورسلين -60*120",
+      "fr": "كاندي جراي -كونكورد بورسلين -60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-26337d4629",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/944adadf0cf3b1497018.webp",
+    "gallery": [
+      "/images/catalog/royal/944adadf0cf3b1497018.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-26337d462907bd0d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-272a379e185964a0",
+    "slug": "royal-272a379e185964a0",
+    "sitePath": "/product/royal-272a379e185964a0",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بيج كود:Z612559",
+      "en": "بورسلين سعودي مقاس 60*120 بيج كود:Z612559",
+      "fr": "بورسلين سعودي مقاس 60*120 بيج كود:Z612559"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-272a379e18",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c135d0fd1c03fec130b5.webp",
+    "gallery": [
+      "/images/catalog/royal/c135d0fd1c03fec130b5.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-272a379e185964a0",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-27d2da7091b4c29c",
+    "slug": "royal-27d2da7091b4c29c",
+    "sitePath": "/product/royal-27d2da7091b4c29c",
+    "name": {
+      "ar": "حمام بورسيلوكس مقاس 60*120 كود:3012",
+      "en": "حمام بورسيلوكس مقاس 60*120 كود:3012",
+      "fr": "حمام بورسيلوكس مقاس 60*120 كود:3012"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-27d2da7091",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9deda37f30e391f78599.webp",
+    "gallery": [
+      "/images/catalog/royal/9deda37f30e391f78599.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-27d2da7091b4c29c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-2a4c8a05c2fee8fe",
+    "slug": "royal-2a4c8a05c2fee8fe",
+    "sitePath": "/product/royal-2a4c8a05c2fee8fe",
+    "name": {
+      "ar": "بورسلين بورسيلوكس مقاس 60*120 عرض",
+      "en": "بورسلين بورسيلوكس مقاس 60*120 عرض",
+      "fr": "بورسلين بورسيلوكس مقاس 60*120 عرض"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-2a4c8a05c2",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/0e3d403a8952f19ab232.webp",
+    "gallery": [
+      "/images/catalog/royal/0e3d403a8952f19ab232.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-2a4c8a05c2fee8fe",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-2a6e734e1a8447fa",
+    "slug": "royal-2a6e734e1a8447fa",
+    "sitePath": "/product/royal-2a6e734e1a8447fa",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود :16013",
+      "en": "بورسلين هندي مقاس 80*160 كود :16013",
+      "fr": "بورسلين هندي مقاس 80*160 كود :16013"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-2a6e734e1a",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e6fe79dba49c501d9241.webp",
+    "gallery": [
+      "/images/catalog/royal/e6fe79dba49c501d9241.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-2a6e734e1a8447fa",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-2af7c343bbd10175",
+    "slug": "royal-2af7c343bbd10175",
+    "sitePath": "/product/royal-2af7c343bbd10175",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود: كرارا 616",
+      "en": "بورسلين هندي مقاس 80*160 كود: كرارا 616",
+      "fr": "بورسلين هندي مقاس 80*160 كود: كرارا 616"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-2af7c343bb",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/2761bbc56cf5f29ae9fb.webp",
+    "gallery": [
+      "/images/catalog/royal/2761bbc56cf5f29ae9fb.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-2af7c343bbd10175",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-2ea93c1692e0987b",
+    "slug": "royal-2ea93c1692e0987b",
+    "sitePath": "/product/royal-2ea93c1692e0987b",
+    "name": {
+      "ar": "فينا بيج جلوريا بورسلين-60*60",
+      "en": "فينا بيج جلوريا بورسلين-60*60",
+      "fr": "فينا بيج جلوريا بورسلين-60*60"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-2ea93c1692",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/023f600f850a42a7f006.webp",
+    "gallery": [
+      "/images/catalog/royal/023f600f850a42a7f006.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-2ea93c1692e0987b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-2fa15b29b2e890a7",
+    "slug": "royal-2fa15b29b2e890a7",
+    "sitePath": "/product/royal-2fa15b29b2e890a7",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:669",
+      "en": "بورسلين هندي مقاس 80*160 كود:669",
+      "fr": "بورسلين هندي مقاس 80*160 كود:669"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-2fa15b29b2",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/758f597f9b117688825a.webp",
+    "gallery": [
+      "/images/catalog/royal/758f597f9b117688825a.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-2fa15b29b2e890a7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-32d94e0f751ade05",
+    "slug": "royal-32d94e0f751ade05",
+    "sitePath": "/product/royal-32d94e0f751ade05",
+    "name": {
+      "ar": "حمام كليوباترا بورسلين مقاس:60*120 كود: بكين",
+      "en": "حمام كليوباترا بورسلين مقاس:60*120 كود: بكين",
+      "fr": "حمام كليوباترا بورسلين مقاس:60*120 كود: بكين"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-32d94e0f75",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/67ebceea681d930d4b71.webp",
+    "gallery": [
+      "/images/catalog/royal/67ebceea681d930d4b71.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-32d94e0f751ade05",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-3807a2f916ceda0c",
+    "slug": "royal-3807a2f916ceda0c",
+    "sitePath": "/product/royal-3807a2f916ceda0c",
+    "name": {
+      "ar": "بورسلين بورسيلوكس 60*120 عرض خاص",
+      "en": "بورسلين بورسيلوكس 60*120 عرض خاص",
+      "fr": "بورسلين بورسيلوكس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-3807a2f916",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/8895fe27f3cf5df389af.webp",
+    "gallery": [
+      "/images/catalog/royal/8895fe27f3cf5df389af.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-3807a2f916ceda0c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-39a2f72ff950b9d1",
+    "slug": "royal-39a2f72ff950b9d1",
+    "sitePath": "/product/royal-39a2f72ff950b9d1",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:019",
+      "en": "بورسلين هندي 60*120 كود:019",
+      "fr": "بورسلين هندي 60*120 كود:019"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-39a2f72ff9",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/6d689b82eb517e19f419.webp",
+    "gallery": [
+      "/images/catalog/royal/6d689b82eb517e19f419.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-39a2f72ff950b9d1",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-3acedeed59a99dad",
+    "slug": "royal-3acedeed59a99dad",
+    "sitePath": "/product/royal-3acedeed59a99dad",
+    "name": {
+      "ar": "بورسلين هندي 80*160 كود: كرارا 367",
+      "en": "بورسلين هندي 80*160 كود: كرارا 367",
+      "fr": "بورسلين هندي 80*160 كود: كرارا 367"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-3acedeed59",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/75933237bd04d4a671b3.webp",
+    "gallery": [
+      "/images/catalog/royal/75933237bd04d4a671b3.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-3acedeed59a99dad",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-3aebd0d9c444703f",
+    "slug": "royal-3aebd0d9c444703f",
+    "sitePath": "/product/royal-3aebd0d9c444703f",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612016",
+      "en": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612016",
+      "fr": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612016"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-3aebd0d9c4",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/435c9896f1253b9ea472.webp",
+    "gallery": [
+      "/images/catalog/royal/435c9896f1253b9ea472.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-3aebd0d9c444703f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-3e53767845116b99",
+    "slug": "royal-3e53767845116b99",
+    "sitePath": "/product/royal-3e53767845116b99",
+    "name": {
+      "ar": "بورسلين هندي مقاس :60*120 كود:MSD 703",
+      "en": "بورسلين هندي مقاس :60*120 كود:MSD 703",
+      "fr": "بورسلين هندي مقاس :60*120 كود:MSD 703"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-3e53767845",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/bf0516832c1c86a5cefa.webp",
+    "gallery": [
+      "/images/catalog/royal/bf0516832c1c86a5cefa.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-3e53767845116b99",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-405663b0552aebe2",
+    "slug": "royal-405663b0552aebe2",
+    "sitePath": "/product/royal-405663b0552aebe2",
+    "name": {
+      "ar": "كاندي بيج -كونكورد بورسلين -60*120",
+      "en": "كاندي بيج -كونكورد بورسلين -60*120",
+      "fr": "كاندي بيج -كونكورد بورسلين -60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-405663b055",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/8d880f6f57bdc5c88333.webp",
+    "gallery": [
+      "/images/catalog/royal/8d880f6f57bdc5c88333.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-405663b0552aebe2",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-42cdea9a8a61b87b",
+    "slug": "royal-42cdea9a8a61b87b",
+    "sitePath": "/product/royal-42cdea9a8a61b87b",
+    "name": {
+      "ar": "بورسلين جلوريا مقاس 60*60 كود: كشمير جراي #بورسلين",
+      "en": "بورسلين جلوريا مقاس 60*60 كود: كشمير جراي #بورسلين",
+      "fr": "بورسلين جلوريا مقاس 60*60 كود: كشمير جراي #بورسلين"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-42cdea9a8a",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/0cdedb85ca4c01357a4e.webp",
+    "gallery": [
+      "/images/catalog/royal/0cdedb85ca4c01357a4e.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-42cdea9a8a61b87b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-44701b63cba9ef37",
+    "slug": "royal-44701b63cba9ef37",
+    "sitePath": "/product/royal-44701b63cba9ef37",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:بيج3001 بورسيلوكس",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:بيج3001 بورسيلوكس",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:بيج3001 بورسيلوكس"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-44701b63cb",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/bb256ccf139682c8bade.webp",
+    "gallery": [
+      "/images/catalog/royal/bb256ccf139682c8bade.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-44701b63cba9ef37",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-44ebbb3cb1f60156",
+    "slug": "royal-44ebbb3cb1f60156",
+    "sitePath": "/product/royal-44ebbb3cb1f60156",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بيج كود:Z612559",
+      "en": "بورسلين سعودي مقاس 60*120 بيج كود:Z612559",
+      "fr": "بورسلين سعودي مقاس 60*120 بيج كود:Z612559"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-44ebbb3cb1",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/edd03c9ac8c880be0bc5.webp",
+    "gallery": [
+      "/images/catalog/royal/edd03c9ac8c880be0bc5.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-44ebbb3cb1f60156",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-455594e9b60df666",
+    "slug": "royal-455594e9b60df666",
+    "sitePath": "/product/royal-455594e9b60df666",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612900",
+      "en": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612900",
+      "fr": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612900"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-455594e9b6",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/16108718a79d94d34beb.webp",
+    "gallery": [
+      "/images/catalog/royal/16108718a79d94d34beb.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-455594e9b60df666",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-4579095e5d5b92cd",
+    "slug": "royal-4579095e5d5b92cd",
+    "sitePath": "/product/royal-4579095e5d5b92cd",
+    "name": {
+      "ar": "بورسلين هندي60*120 كود:424",
+      "en": "بورسلين هندي60*120 كود:424",
+      "fr": "بورسلين هندي60*120 كود:424"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-4579095e5d",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e890313d2c42c66b04c2.webp",
+    "gallery": [
+      "/images/catalog/royal/e890313d2c42c66b04c2.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-4579095e5d5b92cd",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-45962fb1148579da",
+    "slug": "royal-45962fb1148579da",
+    "sitePath": "/product/royal-45962fb1148579da",
+    "name": {
+      "ar": "حمام بورسيلوكس مقاس:60*120 كود:3035",
+      "en": "حمام بورسيلوكس مقاس:60*120 كود:3035",
+      "fr": "حمام بورسيلوكس مقاس:60*120 كود:3035"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-45962fb114",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/faf27ea266befad53e18.webp",
+    "gallery": [
+      "/images/catalog/royal/faf27ea266befad53e18.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-45962fb1148579da",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-46964f342c676c5c",
+    "slug": "royal-46964f342c676c5c",
+    "sitePath": "/product/royal-46964f342c676c5c",
+    "name": {
+      "ar": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول",
+      "en": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول",
+      "fr": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-46964f342c",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/81c921e0761791b0f78b.webp",
+    "gallery": [
+      "/images/catalog/royal/81c921e0761791b0f78b.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-46964f342c676c5c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-47b60a045ebf9d75",
+    "slug": "royal-47b60a045ebf9d75",
+    "sitePath": "/product/royal-47b60a045ebf9d75",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:8515",
+      "en": "بورسلين هندي مقاس 80*160 كود:8515",
+      "fr": "بورسلين هندي مقاس 80*160 كود:8515"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-47b60a045e",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/59f9e41dd0a84716f53a.webp",
+    "gallery": [
+      "/images/catalog/royal/59f9e41dd0a84716f53a.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-47b60a045ebf9d75",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-4aea5e543ed5d495",
+    "slug": "royal-4aea5e543ed5d495",
+    "sitePath": "/product/royal-4aea5e543ed5d495",
+    "name": {
+      "ar": "بورسلين هندي60*120 كود:490",
+      "en": "بورسلين هندي60*120 كود:490",
+      "fr": "بورسلين هندي60*120 كود:490"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-4aea5e543e",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/2d30a97a8c5bc9cc3035.webp",
+    "gallery": [
+      "/images/catalog/royal/2d30a97a8c5bc9cc3035.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-4aea5e543ed5d495",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-4b6f9f0e0c182015",
+    "slug": "royal-4b6f9f0e0c182015",
+    "sitePath": "/product/royal-4b6f9f0e0c182015",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160كود:636",
+      "en": "بورسلين هندي مقاس 80*160كود:636",
+      "fr": "بورسلين هندي مقاس 80*160كود:636"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-4b6f9f0e0c",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/86305d42eaa67f200ae5.webp",
+    "gallery": [
+      "/images/catalog/royal/86305d42eaa67f200ae5.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-4b6f9f0e0c182015",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-4bfc4fe235aa7881",
+    "slug": "royal-4bfc4fe235aa7881",
+    "sitePath": "/product/royal-4bfc4fe235aa7881",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:004",
+      "en": "بورسلين هندي 60*120 كود:004",
+      "fr": "بورسلين هندي 60*120 كود:004"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-4bfc4fe235",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/2f7143b29acc76b3ec67.webp",
+    "gallery": [
+      "/images/catalog/royal/2f7143b29acc76b3ec67.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-4bfc4fe235aa7881",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-4c47b61d578c98af",
+    "slug": "royal-4c47b61d578c98af",
+    "sitePath": "/product/royal-4c47b61d578c98af",
+    "name": {
+      "ar": "بورسلين صيني مقاس 80*80 دابل جليز",
+      "en": "بورسلين صيني مقاس 80*80 دابل جليز",
+      "fr": "بورسلين صيني مقاس 80*80 دابل جليز"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-4c47b61d57",
+        "originalSourceValue": "80x80",
+        "normalizedDisplayValue": "80 x 80 cm",
+        "label": "80 x 80 cm",
+        "widthMm": 800,
+        "heightMm": 800,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/56e275b426100d01d823.webp",
+    "gallery": [
+      "/images/catalog/royal/56e275b426100d01d823.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-4c47b61d578c98af",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-4cb16fdda4836b6d",
+    "slug": "royal-4cb16fdda4836b6d",
+    "sitePath": "/product/royal-4cb16fdda4836b6d",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:262",
+      "en": "بورسلين هندي 60*120 كود:262",
+      "fr": "بورسلين هندي 60*120 كود:262"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-4cb16fdda4",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9c6258423f1421ec4145.webp",
+    "gallery": [
+      "/images/catalog/royal/9c6258423f1421ec4145.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-4cb16fdda4836b6d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-50b3e6b3ed0d9c8e",
+    "slug": "royal-50b3e6b3ed0d9c8e",
+    "sitePath": "/product/royal-50b3e6b3ed0d9c8e",
+    "name": {
+      "ar": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "en": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "fr": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-50b3e6b3ed",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/917d92d35a8e739aa53d.webp",
+    "gallery": [
+      "/images/catalog/royal/917d92d35a8e739aa53d.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-50b3e6b3ed0d9c8e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-5443474e11a00f31",
+    "slug": "royal-5443474e11a00f31",
+    "sitePath": "/product/royal-5443474e11a00f31",
+    "name": {
+      "ar": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول",
+      "en": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول",
+      "fr": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-5443474e11",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/bc5ac9baf835bf33cd97.webp",
+    "gallery": [
+      "/images/catalog/royal/bc5ac9baf835bf33cd97.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-5443474e11a00f31",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-566b0cd1f36a97e7",
+    "slug": "royal-566b0cd1f36a97e7",
+    "sitePath": "/product/royal-566b0cd1f36a97e7",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:287",
+      "en": "بورسلين هندي 60*120 كود:287",
+      "fr": "بورسلين هندي 60*120 كود:287"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-566b0cd1f3",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/a4561e8f380549fa7839.webp",
+    "gallery": [
+      "/images/catalog/royal/a4561e8f380549fa7839.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-566b0cd1f36a97e7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-58cb0b8a81965e70",
+    "slug": "royal-58cb0b8a81965e70",
+    "sitePath": "/product/royal-58cb0b8a81965e70",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:84612",
+      "en": "بورسلين هندي مقاس 80*160 كود:84612",
+      "fr": "بورسلين هندي مقاس 80*160 كود:84612"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-58cb0b8a81",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/35098ad608f6bb0394c2.webp",
+    "gallery": [
+      "/images/catalog/royal/35098ad608f6bb0394c2.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-58cb0b8a81965e70",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-58ff07200d3e6524",
+    "slug": "royal-58ff07200d3e6524",
+    "sitePath": "/product/royal-58ff07200d3e6524",
+    "name": {
+      "ar": "بورسلين هندي مقاس 60*120 كود:481",
+      "en": "بورسلين هندي مقاس 60*120 كود:481",
+      "fr": "بورسلين هندي مقاس 60*120 كود:481"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-58ff07200d",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/9df1565c2e5042315bc3.webp",
+    "gallery": [
+      "/images/catalog/royal/9df1565c2e5042315bc3.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-58ff07200d3e6524",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-5938b92df97371f2",
+    "slug": "royal-5938b92df97371f2",
+    "sitePath": "/product/royal-5938b92df97371f2",
+    "name": {
+      "ar": "ميراج جراي جلوريا بورسلين 60*60 ليزر",
+      "en": "ميراج جراي جلوريا بورسلين 60*60 ليزر",
+      "fr": "ميراج جراي جلوريا بورسلين 60*60 ليزر"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-5938b92df9",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e77bbe0221f5aa734c51.webp",
+    "gallery": [
+      "/images/catalog/royal/e77bbe0221f5aa734c51.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-5938b92df97371f2",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-5a47d6a5d11e0597",
+    "slug": "royal-5a47d6a5d11e0597",
+    "sitePath": "/product/royal-5a47d6a5d11e0597",
+    "name": {
+      "ar": "بورسلين هندي مقاس 60*120 كود:294بلاك",
+      "en": "بورسلين هندي مقاس 60*120 كود:294بلاك",
+      "fr": "بورسلين هندي مقاس 60*120 كود:294بلاك"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-5a47d6a5d1",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/4b94e76bfedd04f084c1.webp",
+    "gallery": [
+      "/images/catalog/royal/4b94e76bfedd04f084c1.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-5a47d6a5d11e0597",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-5e0d77e09b4a9f48",
+    "slug": "royal-5e0d77e09b4a9f48",
+    "sitePath": "/product/royal-5e0d77e09b4a9f48",
+    "name": {
+      "ar": "فيكتور -كونكورد بورسلين – 60*120",
+      "en": "فيكتور -كونكورد بورسلين – 60*120",
+      "fr": "فيكتور -كونكورد بورسلين – 60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-5e0d77e09b",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/91cd85830b0aee557b55.webp",
+    "gallery": [
+      "/images/catalog/royal/91cd85830b0aee557b55.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-5e0d77e09b4a9f48",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-6088b921a0388ac6",
+    "slug": "royal-6088b921a0388ac6",
+    "sitePath": "/product/royal-6088b921a0388ac6",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:80604",
+      "en": "بورسلين هندي مقاس 80*160 كود:80604",
+      "fr": "بورسلين هندي مقاس 80*160 كود:80604"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-6088b921a0",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/7464b49c883b57150720.webp",
+    "gallery": [
+      "/images/catalog/royal/7464b49c883b57150720.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-6088b921a0388ac6",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-68a11d2eb4077b45",
+    "slug": "royal-68a11d2eb4077b45",
+    "sitePath": "/product/royal-68a11d2eb4077b45",
+    "name": {
+      "ar": "بورسلين هندي مقاس 60*120 كود:851",
+      "en": "بورسلين هندي مقاس 60*120 كود:851",
+      "fr": "بورسلين هندي مقاس 60*120 كود:851"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-68a11d2eb4",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/ebc17d737d5a30e98db2.webp",
+    "gallery": [
+      "/images/catalog/royal/ebc17d737d5a30e98db2.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-68a11d2eb4077b45",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-699af41acb3f78d0",
+    "slug": "royal-699af41acb3f78d0",
+    "sitePath": "/product/royal-699af41acb3f78d0",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:292",
+      "en": "بورسلين هندي 60*120 كود:292",
+      "fr": "بورسلين هندي 60*120 كود:292"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-699af41acb",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/7b5af9029db80df9aba8.webp",
+    "gallery": [
+      "/images/catalog/royal/7b5af9029db80df9aba8.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-699af41acb3f78d0",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-6a31431f1d9ccb6c",
+    "slug": "royal-6a31431f1d9ccb6c",
+    "sitePath": "/product/royal-6a31431f1d9ccb6c",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:666",
+      "en": "بورسلين هندي مقاس 80*160 كود:666",
+      "fr": "بورسلين هندي مقاس 80*160 كود:666"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-6a31431f1d",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/cb110423e788dbed5e6a.webp",
+    "gallery": [
+      "/images/catalog/royal/cb110423e788dbed5e6a.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-6a31431f1d9ccb6c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-6bdb622c58d2c8d7",
+    "slug": "royal-6bdb622c58d2c8d7",
+    "sitePath": "/product/royal-6bdb622c58d2c8d7",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:3013 بورسيلوكس",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:3013 بورسيلوكس",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:3013 بورسيلوكس"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-6bdb622c58",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/1e1bb6b27bbf34dad03a.webp",
+    "gallery": [
+      "/images/catalog/royal/1e1bb6b27bbf34dad03a.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-6bdb622c58d2c8d7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-6c59416be2c23a22",
+    "slug": "royal-6c59416be2c23a22",
+    "sitePath": "/product/royal-6c59416be2c23a22",
+    "name": {
+      "ar": "بورسلين بورسيلوكس مقا 60*120 عرض خاص",
+      "en": "بورسلين بورسيلوكس مقا 60*120 عرض خاص",
+      "fr": "بورسلين بورسيلوكس مقا 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-6c59416be2",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/6161af71c8484412d7e2.webp",
+    "gallery": [
+      "/images/catalog/royal/6161af71c8484412d7e2.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-6c59416be2c23a22",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-6d3b702979bfe4d4",
+    "slug": "royal-6d3b702979bfe4d4",
+    "sitePath": "/product/royal-6d3b702979bfe4d4",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:3000 بورسيلوكس",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:3000 بورسيلوكس",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:3000 بورسيلوكس"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-6d3b702979",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/292e0df65967a8493df0.webp",
+    "gallery": [
+      "/images/catalog/royal/292e0df65967a8493df0.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-6d3b702979bfe4d4",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-74374a77f36eaa66",
+    "slug": "royal-74374a77f36eaa66",
+    "sitePath": "/product/royal-74374a77f36eaa66",
+    "name": {
+      "ar": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول",
+      "en": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول",
+      "fr": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-74374a77f3",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/6db0ef476b3093f257c4.webp",
+    "gallery": [
+      "/images/catalog/royal/6db0ef476b3093f257c4.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-74374a77f36eaa66",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-7785e8a9eac84492",
+    "slug": "royal-7785e8a9eac84492",
+    "sitePath": "/product/royal-7785e8a9eac84492",
+    "name": {
+      "ar": "جلوبال -كونكورد بورسلين-60*120",
+      "en": "جلوبال -كونكورد بورسلين-60*120",
+      "fr": "جلوبال -كونكورد بورسلين-60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-7785e8a9ea",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/6827a6249a502cfca9ac.webp",
+    "gallery": [
+      "/images/catalog/royal/6827a6249a502cfca9ac.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-7785e8a9eac84492",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-78442d7ecfdcc8e8",
+    "slug": "royal-78442d7ecfdcc8e8",
+    "sitePath": "/product/royal-78442d7ecfdcc8e8",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود: كرارا 363",
+      "en": "بورسلين هندي مقاس 80*160 كود: كرارا 363",
+      "fr": "بورسلين هندي مقاس 80*160 كود: كرارا 363"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-78442d7ecf",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/1571a1adeac90a05d1ba.webp",
+    "gallery": [
+      "/images/catalog/royal/1571a1adeac90a05d1ba.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-78442d7ecfdcc8e8",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-7e30c56072694c62",
+    "slug": "royal-7e30c56072694c62",
+    "sitePath": "/product/royal-7e30c56072694c62",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:1600",
+      "en": "بورسلين هندي مقاس 80*160 كود:1600",
+      "fr": "بورسلين هندي مقاس 80*160 كود:1600"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-7e30c56072",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/75d704b22abb62a89138.webp",
+    "gallery": [
+      "/images/catalog/royal/75d704b22abb62a89138.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-7e30c56072694c62",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-7f41e9abbf953beb",
+    "slug": "royal-7f41e9abbf953beb",
+    "sitePath": "/product/royal-7f41e9abbf953beb",
+    "name": {
+      "ar": "البا كرارا جلوريا بورسلين 60*120 ليزر",
+      "en": "البا كرارا جلوريا بورسلين 60*120 ليزر",
+      "fr": "البا كرارا جلوريا بورسلين 60*120 ليزر"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-7f41e9abbf",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/22facdf9f5ddafe2d07e.webp",
+    "gallery": [
+      "/images/catalog/royal/22facdf9f5ddafe2d07e.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-7f41e9abbf953beb",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-808edb0ef3e0d89b",
+    "slug": "royal-808edb0ef3e0d89b",
+    "sitePath": "/product/royal-808edb0ef3e0d89b",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:ستواريو سيلفر",
+      "en": "بورسلين هندي مقاس 80*160 كود:ستواريو سيلفر",
+      "fr": "بورسلين هندي مقاس 80*160 كود:ستواريو سيلفر"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-808edb0ef3",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/0ce0d73c39ebae6693ef.webp",
+    "gallery": [
+      "/images/catalog/royal/0ce0d73c39ebae6693ef.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-808edb0ef3e0d89b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-809e9f46aecae0cf",
+    "slug": "royal-809e9f46aecae0cf",
+    "sitePath": "/product/royal-809e9f46aecae0cf",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:462",
+      "en": "بورسلين هندي 60*120 كود:462",
+      "fr": "بورسلين هندي 60*120 كود:462"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-809e9f46ae",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/a49c2de1c5c33fefeebe.webp",
+    "gallery": [
+      "/images/catalog/royal/a49c2de1c5c33fefeebe.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-809e9f46aecae0cf",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-812c4fa66966acf6",
+    "slug": "royal-812c4fa66966acf6",
+    "sitePath": "/product/royal-812c4fa66966acf6",
+    "name": {
+      "ar": "بورسلين  هندي مقاس 80*160 كود:658",
+      "en": "بورسلين  هندي مقاس 80*160 كود:658",
+      "fr": "بورسلين  هندي مقاس 80*160 كود:658"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-812c4fa669",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/8f389bd241981d1faef6.webp",
+    "gallery": [
+      "/images/catalog/royal/8f389bd241981d1faef6.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-812c4fa66966acf6",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-82711474b39aa276",
+    "slug": "royal-82711474b39aa276",
+    "sitePath": "/product/royal-82711474b39aa276",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:3003 جراي",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:3003 جراي",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:3003 جراي"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-82711474b3",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/055e51a591f2d36bdd3b.webp",
+    "gallery": [
+      "/images/catalog/royal/055e51a591f2d36bdd3b.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-82711474b39aa276",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-83e4ece79c297ce4",
+    "slug": "royal-83e4ece79c297ce4",
+    "sitePath": "/product/royal-83e4ece79c297ce4",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 جراي كود:Z612697",
+      "en": "بورسلين سعودي مقاس 60*120 جراي كود:Z612697",
+      "fr": "بورسلين سعودي مقاس 60*120 جراي كود:Z612697"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-83e4ece79c",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/760997e982961cb327a9.webp",
+    "gallery": [
+      "/images/catalog/royal/760997e982961cb327a9.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-83e4ece79c297ce4",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-886ebe989f76143e",
+    "slug": "royal-886ebe989f76143e",
+    "sitePath": "/product/royal-886ebe989f76143e",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612031",
+      "en": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612031",
+      "fr": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612031"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-886ebe989f",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b2ebb15d006c129d7c08.webp",
+    "gallery": [
+      "/images/catalog/royal/b2ebb15d006c129d7c08.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-886ebe989f76143e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-89e5833ad0ce288b",
+    "slug": "royal-89e5833ad0ce288b",
+    "sitePath": "/product/royal-89e5833ad0ce288b",
+    "name": {
+      "ar": "بورسلين هندي مقاش 60*120 كود:303",
+      "en": "بورسلين هندي مقاش 60*120 كود:303",
+      "fr": "بورسلين هندي مقاش 60*120 كود:303"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-89e5833ad0",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e3771226364a4b9921d8.webp",
+    "gallery": [
+      "/images/catalog/royal/e3771226364a4b9921d8.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-89e5833ad0ce288b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-8aa05ed41a11d07c",
+    "slug": "royal-8aa05ed41a11d07c",
+    "sitePath": "/product/royal-8aa05ed41a11d07c",
+    "name": {
+      "ar": "لورد جراي -كونكورد بورسلين -60*120",
+      "en": "لورد جراي -كونكورد بورسلين -60*120",
+      "fr": "لورد جراي -كونكورد بورسلين -60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-8aa05ed41a",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/8fa37ce326351f7c1e8f.webp",
+    "gallery": [
+      "/images/catalog/royal/8fa37ce326351f7c1e8f.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-8aa05ed41a11d07c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-8c928a3485fa710f",
+    "slug": "royal-8c928a3485fa710f",
+    "sitePath": "/product/royal-8c928a3485fa710f",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:3025 بورسيلوكس",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:3025 بورسيلوكس",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:3025 بورسيلوكس"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-8c928a3485",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/08479c53262545ba5520.webp",
+    "gallery": [
+      "/images/catalog/royal/08479c53262545ba5520.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-8c928a3485fa710f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-90bf088ddb466067",
+    "slug": "royal-90bf088ddb466067",
+    "sitePath": "/product/royal-90bf088ddb466067",
+    "name": {
+      "ar": "بورسلين هندي 60×120 بأحدث الموديلات في مصر.عرض خاص",
+      "en": "بورسلين هندي 60×120 بأحدث الموديلات في مصر.عرض خاص",
+      "fr": "بورسلين هندي 60×120 بأحدث الموديلات في مصر.عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-90bf088ddb",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/16945e0137bc85e343e9.webp",
+    "gallery": [
+      "/images/catalog/royal/16945e0137bc85e343e9.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-90bf088ddb466067",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-92f3a4140329c0bf",
+    "slug": "royal-92f3a4140329c0bf",
+    "sitePath": "/product/royal-92f3a4140329c0bf",
+    "name": {
+      "ar": "بورسلين هندي60*120 كود:272",
+      "en": "بورسلين هندي60*120 كود:272",
+      "fr": "بورسلين هندي60*120 كود:272"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-92f3a41403",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/189d690851742b7f9507.webp",
+    "gallery": [
+      "/images/catalog/royal/189d690851742b7f9507.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-92f3a4140329c0bf",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-936607f9b6b35515",
+    "slug": "royal-936607f9b6b35515",
+    "sitePath": "/product/royal-936607f9b6b35515",
+    "name": {
+      "ar": "حمام بورسيلوكس مقاس 60*120 كود:3019",
+      "en": "حمام بورسيلوكس مقاس 60*120 كود:3019",
+      "fr": "حمام بورسيلوكس مقاس 60*120 كود:3019"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-936607f9b6",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c2015b1ad292dbf3cf06.webp",
+    "gallery": [
+      "/images/catalog/royal/c2015b1ad292dbf3cf06.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-936607f9b6b35515",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-95795390884b7ba0",
+    "slug": "royal-95795390884b7ba0",
+    "sitePath": "/product/royal-95795390884b7ba0",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:486",
+      "en": "بورسلين هندي 60*120 كود:486",
+      "fr": "بورسلين هندي 60*120 كود:486"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-9579539088",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b03c7b58ba05ec73a3fd.webp",
+    "gallery": [
+      "/images/catalog/royal/b03c7b58ba05ec73a3fd.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-95795390884b7ba0",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-978d994ab2e92a2b",
+    "slug": "royal-978d994ab2e92a2b",
+    "sitePath": "/product/royal-978d994ab2e92a2b",
+    "name": {
+      "ar": "بورسلين هندي مقاس 60*120 كود:168 كرارا",
+      "en": "بورسلين هندي مقاس 60*120 كود:168 كرارا",
+      "fr": "بورسلين هندي مقاس 60*120 كود:168 كرارا"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-978d994ab2",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/4e0326ced666ab99b2b3.webp",
+    "gallery": [
+      "/images/catalog/royal/4e0326ced666ab99b2b3.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-978d994ab2e92a2b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-98be2eba3a64263e",
+    "slug": "royal-98be2eba3a64263e",
+    "sitePath": "/product/royal-98be2eba3a64263e",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 ابيض كرارا كود:Z6122024",
+      "en": "بورسلين سعودي مقاس 60*120 ابيض كرارا كود:Z6122024",
+      "fr": "بورسلين سعودي مقاس 60*120 ابيض كرارا كود:Z6122024"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-98be2eba3a",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c2905a3497a1006c4620.webp",
+    "gallery": [
+      "/images/catalog/royal/c2905a3497a1006c4620.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-98be2eba3a64263e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-a3466874c035c8fd",
+    "slug": "royal-a3466874c035c8fd",
+    "sitePath": "/product/royal-a3466874c035c8fd",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:277",
+      "en": "بورسلين هندي 60*120 كود:277",
+      "fr": "بورسلين هندي 60*120 كود:277"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-a3466874c0",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/f9720bc14b38df30ca87.webp",
+    "gallery": [
+      "/images/catalog/royal/f9720bc14b38df30ca87.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-a3466874c035c8fd",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-a4ad8a775079786f",
+    "slug": "royal-a4ad8a775079786f",
+    "sitePath": "/product/royal-a4ad8a775079786f",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 عرض خاص",
+      "en": "بورسلين اليجانت مقاس 60*120 عرض خاص",
+      "fr": "بورسلين اليجانت مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-a4ad8a7750",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/f1c31bff5579167ce093.webp",
+    "gallery": [
+      "/images/catalog/royal/f1c31bff5579167ce093.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-a4ad8a775079786f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-a4cd0d1d57308e27",
+    "slug": "royal-a4cd0d1d57308e27",
+    "sitePath": "/product/royal-a4cd0d1d57308e27",
+    "name": {
+      "ar": "بورسلين هندي 80*160 زيتي كود: 566 لامع",
+      "en": "بورسلين هندي 80*160 زيتي كود: 566 لامع",
+      "fr": "بورسلين هندي 80*160 زيتي كود: 566 لامع"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-a4cd0d1d57",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/4b035de9d151418a9620.webp",
+    "gallery": [
+      "/images/catalog/royal/4b035de9d151418a9620.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-a4cd0d1d57308e27",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-a6b62821976272e8",
+    "slug": "royal-a6b62821976272e8",
+    "sitePath": "/product/royal-a6b62821976272e8",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:055",
+      "en": "بورسلين هندي 60*120 كود:055",
+      "fr": "بورسلين هندي 60*120 كود:055"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-a6b6282197",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/268227548d68d8397af1.webp",
+    "gallery": [
+      "/images/catalog/royal/268227548d68d8397af1.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-a6b62821976272e8",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-a7c322a31cdc716d",
+    "slug": "royal-a7c322a31cdc716d",
+    "sitePath": "/product/royal-a7c322a31cdc716d",
+    "name": {
+      "ar": "بورسلين هندي مقاس 60*120 كود:870",
+      "en": "بورسلين هندي مقاس 60*120 كود:870",
+      "fr": "بورسلين هندي مقاس 60*120 كود:870"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-a7c322a31c",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/d6bafdaf7c9251872958.webp",
+    "gallery": [
+      "/images/catalog/royal/d6bafdaf7c9251872958.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-a7c322a31cdc716d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-aafcc11801176835",
+    "slug": "royal-aafcc11801176835",
+    "sitePath": "/product/royal-aafcc11801176835",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 رصاصي كود:Z612809",
+      "en": "بورسلين سعودي مقاس 60*120 رصاصي كود:Z612809",
+      "fr": "بورسلين سعودي مقاس 60*120 رصاصي كود:Z612809"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-aafcc11801",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b83d2bdfc0b9809df339.webp",
+    "gallery": [
+      "/images/catalog/royal/b83d2bdfc0b9809df339.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-aafcc11801176835",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-acf1a21538ddb4a2",
+    "slug": "royal-acf1a21538ddb4a2",
+    "sitePath": "/product/royal-acf1a21538ddb4a2",
+    "name": {
+      "ar": "بورسلين جلوريا مقاس 60*60 كود: ماكيا #بورسلين",
+      "en": "بورسلين جلوريا مقاس 60*60 كود: ماكيا #بورسلين",
+      "fr": "بورسلين جلوريا مقاس 60*60 كود: ماكيا #بورسلين"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-acf1a21538",
+        "originalSourceValue": "60x60",
+        "normalizedDisplayValue": "60 x 60 cm",
+        "label": "60 x 60 cm",
+        "widthMm": 600,
+        "heightMm": 600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b4e25830b3c06d334ee7.webp",
+    "gallery": [
+      "/images/catalog/royal/b4e25830b3c06d334ee7.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-acf1a21538ddb4a2",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b078e5d597018001",
+    "slug": "royal-b078e5d597018001",
+    "sitePath": "/product/royal-b078e5d597018001",
+    "name": {
+      "ar": "لاري كراره – كونكورد بورسلين-60*120",
+      "en": "لاري كراره – كونكورد بورسلين-60*120",
+      "fr": "لاري كراره – كونكورد بورسلين-60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b078e5d597",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/ca2d51beacebda5eb521.webp",
+    "gallery": [
+      "/images/catalog/royal/ca2d51beacebda5eb521.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b078e5d597018001",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b218a14c092342df",
+    "slug": "royal-b218a14c092342df",
+    "sitePath": "/product/royal-b218a14c092342df",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 عرض خاص",
+      "en": "بورسلين اليجانت مقاس 60*120 عرض خاص",
+      "fr": "بورسلين اليجانت مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b218a14c09",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/80eb288b20b332eecb1b.webp",
+    "gallery": [
+      "/images/catalog/royal/80eb288b20b332eecb1b.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b218a14c092342df",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b2cdb34323a6b37f",
+    "slug": "royal-b2cdb34323a6b37f",
+    "sitePath": "/product/royal-b2cdb34323a6b37f",
+    "name": {
+      "ar": "سيراميك كازبلانكا مقاس 59×59 – براميدز (تاني)",
+      "en": "سيراميك كازبلانكا مقاس 59×59 – براميدز (تاني)",
+      "fr": "سيراميك كازبلانكا مقاس 59×59 – براميدز (تاني)"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b2cdb34323",
+        "originalSourceValue": "59x59",
+        "normalizedDisplayValue": "59 x 59 cm",
+        "label": "59 x 59 cm",
+        "widthMm": 590,
+        "heightMm": 590,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/cc70d90916b1ef6d63f1.webp",
+    "gallery": [
+      "/images/catalog/royal/cc70d90916b1ef6d63f1.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b2cdb34323a6b37f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b4491e3222362f27",
+    "slug": "royal-b4491e3222362f27",
+    "sitePath": "/product/royal-b4491e3222362f27",
+    "name": {
+      "ar": "بورسلين جلوريا مقاس 60*120 كود: ايبيزا/5",
+      "en": "بورسلين جلوريا مقاس 60*120 كود: ايبيزا/5",
+      "fr": "بورسلين جلوريا مقاس 60*120 كود: ايبيزا/5"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b4491e3222",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b04135b5cb826d76bc79.webp",
+    "gallery": [
+      "/images/catalog/royal/b04135b5cb826d76bc79.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b4491e3222362f27",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b587648dfe652b16",
+    "slug": "royal-b587648dfe652b16",
+    "sitePath": "/product/royal-b587648dfe652b16",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:667",
+      "en": "بورسلين هندي مقاس 80*160 كود:667",
+      "fr": "بورسلين هندي مقاس 80*160 كود:667"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b587648dfe",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/6e55b187fa44c6ee3aa2.webp",
+    "gallery": [
+      "/images/catalog/royal/6e55b187fa44c6ee3aa2.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b587648dfe652b16",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b702a63156c8c591",
+    "slug": "royal-b702a63156c8c591",
+    "sitePath": "/product/royal-b702a63156c8c591",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:644",
+      "en": "بورسلين هندي مقاس 80*160 كود:644",
+      "fr": "بورسلين هندي مقاس 80*160 كود:644"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b702a63156",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/175f7d9090f3f71bf6e9.webp",
+    "gallery": [
+      "/images/catalog/royal/175f7d9090f3f71bf6e9.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b702a63156c8c591",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b7ae5cd43db14edc",
+    "slug": "royal-b7ae5cd43db14edc",
+    "sitePath": "/product/royal-b7ae5cd43db14edc",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:066",
+      "en": "بورسلين هندي 60*120 كود:066",
+      "fr": "بورسلين هندي 60*120 كود:066"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b7ae5cd43d",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/81b07886521d8b85cf80.webp",
+    "gallery": [
+      "/images/catalog/royal/81b07886521d8b85cf80.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b7ae5cd43db14edc",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-b872c39a34c2f496",
+    "slug": "royal-b872c39a34c2f496",
+    "sitePath": "/product/royal-b872c39a34c2f496",
+    "name": {
+      "ar": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول",
+      "en": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول",
+      "fr": "جرانيتو جليز بورسلين مقاس 60*120 عرض خاص فرز اول"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-b872c39a34",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e78db3f489c0f7c30983.webp",
+    "gallery": [
+      "/images/catalog/royal/e78db3f489c0f7c30983.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-b872c39a34c2f496",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-bbab7e5416980f2e",
+    "slug": "royal-bbab7e5416980f2e",
+    "sitePath": "/product/royal-bbab7e5416980f2e",
+    "name": {
+      "ar": "حمام بورسلين اليجانت مقاس 60*120 كود:5014",
+      "en": "حمام بورسلين اليجانت مقاس 60*120 كود:5014",
+      "fr": "حمام بورسلين اليجانت مقاس 60*120 كود:5014"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-bbab7e5416",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/3b1f793f217099780797.webp",
+    "gallery": [
+      "/images/catalog/royal/3b1f793f217099780797.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-bbab7e5416980f2e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-bc9edc415b1192e0",
+    "slug": "royal-bc9edc415b1192e0",
+    "sitePath": "/product/royal-bc9edc415b1192e0",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:195",
+      "en": "بورسلين هندي 60*120 كود:195",
+      "fr": "بورسلين هندي 60*120 كود:195"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-bc9edc415b",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/218ca5650c8fa31f6129.webp",
+    "gallery": [
+      "/images/catalog/royal/218ca5650c8fa31f6129.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-bc9edc415b1192e0",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-bd272041fde36980",
+    "slug": "royal-bd272041fde36980",
+    "sitePath": "/product/royal-bd272041fde36980",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:149",
+      "en": "بورسلين هندي 60*120 كود:149",
+      "fr": "بورسلين هندي 60*120 كود:149"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-bd272041fd",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/0897d5125cef13792b3a.webp",
+    "gallery": [
+      "/images/catalog/royal/0897d5125cef13792b3a.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-bd272041fde36980",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-bd5d71f407cd4a4d",
+    "slug": "royal-bd5d71f407cd4a4d",
+    "sitePath": "/product/royal-bd5d71f407cd4a4d",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بلاك كود : Z6122575",
+      "en": "بورسلين سعودي مقاس 60*120 بلاك كود : Z6122575",
+      "fr": "بورسلين سعودي مقاس 60*120 بلاك كود : Z6122575"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-bd5d71f407",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/6183ca1fdc7c8711b5f8.webp",
+    "gallery": [
+      "/images/catalog/royal/6183ca1fdc7c8711b5f8.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-bd5d71f407cd4a4d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-be7774eb0ae85d95",
+    "slug": "royal-be7774eb0ae85d95",
+    "sitePath": "/product/royal-be7774eb0ae85d95",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:183",
+      "en": "بورسلين هندي 60*120 كود:183",
+      "fr": "بورسلين هندي 60*120 كود:183"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-be7774eb0a",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c50f33b4176f557645c2.webp",
+    "gallery": [
+      "/images/catalog/royal/c50f33b4176f557645c2.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-be7774eb0ae85d95",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-c180bea3f8985305",
+    "slug": "royal-c180bea3f8985305",
+    "sitePath": "/product/royal-c180bea3f8985305",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:82620",
+      "en": "بورسلين هندي مقاس 80*160 كود:82620",
+      "fr": "بورسلين هندي مقاس 80*160 كود:82620"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-c180bea3f8",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/97a19a3a560602ff4911.webp",
+    "gallery": [
+      "/images/catalog/royal/97a19a3a560602ff4911.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-c180bea3f8985305",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-c46951d9b5edec4e",
+    "slug": "royal-c46951d9b5edec4e",
+    "sitePath": "/product/royal-c46951d9b5edec4e",
+    "name": {
+      "ar": "حمام بورسلين اليجانت مقاس 60*120 كود:1101",
+      "en": "حمام بورسلين اليجانت مقاس 60*120 كود:1101",
+      "fr": "حمام بورسلين اليجانت مقاس 60*120 كود:1101"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-c46951d9b5",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/10d157cc21aca325a91e.webp",
+    "gallery": [
+      "/images/catalog/royal/10d157cc21aca325a91e.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-c46951d9b5edec4e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-c4cb39b3dd429285",
+    "slug": "royal-c4cb39b3dd429285",
+    "sitePath": "/product/royal-c4cb39b3dd429285",
+    "name": {
+      "ar": "حمام كليوباترا بورسلين مقاس60*120 كود:الدرادو وايت",
+      "en": "حمام كليوباترا بورسلين مقاس60*120 كود:الدرادو وايت",
+      "fr": "حمام كليوباترا بورسلين مقاس60*120 كود:الدرادو وايت"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-c4cb39b3dd",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/774a9b91ba165a287f35.webp",
+    "gallery": [
+      "/images/catalog/royal/774a9b91ba165a287f35.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-c4cb39b3dd429285",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-c6e073f435a2c091",
+    "slug": "royal-c6e073f435a2c091",
+    "sitePath": "/product/royal-c6e073f435a2c091",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:459",
+      "en": "بورسلين هندي 60*120 كود:459",
+      "fr": "بورسلين هندي 60*120 كود:459"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-c6e073f435",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b137f0046246b8f86783.webp",
+    "gallery": [
+      "/images/catalog/royal/b137f0046246b8f86783.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-c6e073f435a2c091",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-c6ef8fc7e54ace7b",
+    "slug": "royal-c6ef8fc7e54ace7b",
+    "sitePath": "/product/royal-c6ef8fc7e54ace7b",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:515",
+      "en": "بورسلين هندي 60*120 كود:515",
+      "fr": "بورسلين هندي 60*120 كود:515"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-c6ef8fc7e5",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/f840f0cdd0f0d18a9539.webp",
+    "gallery": [
+      "/images/catalog/royal/f840f0cdd0f0d18a9539.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-c6ef8fc7e54ace7b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-c939270eeba59e0b",
+    "slug": "royal-c939270eeba59e0b",
+    "sitePath": "/product/royal-c939270eeba59e0b",
+    "name": {
+      "ar": "بورسلين اليجانت كود: بورسيلوكس 3027 مقاس: 60*120",
+      "en": "بورسلين اليجانت كود: بورسيلوكس 3027 مقاس: 60*120",
+      "fr": "بورسلين اليجانت كود: بورسيلوكس 3027 مقاس: 60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-c939270eeb",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/ce6462df015d94dcd59e.webp",
+    "gallery": [
+      "/images/catalog/royal/ce6462df015d94dcd59e.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-c939270eeba59e0b",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-c98b526950aa24fe",
+    "slug": "royal-c98b526950aa24fe",
+    "sitePath": "/product/royal-c98b526950aa24fe",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود: 5004 جراي",
+      "en": "بورسلين اليجانت مقاس 60*120 كود: 5004 جراي",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود: 5004 جراي"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-c98b526950",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/771c4345eb6d61851303.webp",
+    "gallery": [
+      "/images/catalog/royal/771c4345eb6d61851303.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-c98b526950aa24fe",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-ccb9cb6a93b11411",
+    "slug": "royal-ccb9cb6a93b11411",
+    "sitePath": "/product/royal-ccb9cb6a93b11411",
+    "name": {
+      "ar": "بورسلين هندي60*120 كود:296",
+      "en": "بورسلين هندي60*120 كود:296",
+      "fr": "بورسلين هندي60*120 كود:296"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-ccb9cb6a93",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/5c49b2f949c61cd7ea57.webp",
+    "gallery": [
+      "/images/catalog/royal/5c49b2f949c61cd7ea57.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-ccb9cb6a93b11411",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-cd375bfc18e93497",
+    "slug": "royal-cd375bfc18e93497",
+    "sitePath": "/product/royal-cd375bfc18e93497",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:314",
+      "en": "بورسلين هندي 60*120 كود:314",
+      "fr": "بورسلين هندي 60*120 كود:314"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-cd375bfc18",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/10147edbf69f007f7123.webp",
+    "gallery": [
+      "/images/catalog/royal/10147edbf69f007f7123.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-cd375bfc18e93497",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d258db1fa42f0282",
+    "slug": "royal-d258db1fa42f0282",
+    "sitePath": "/product/royal-d258db1fa42f0282",
+    "name": {
+      "ar": "حمام كليوباترا مقاس 60*120 كود:جولد بورسلين",
+      "en": "حمام كليوباترا مقاس 60*120 كود:جولد بورسلين",
+      "fr": "حمام كليوباترا مقاس 60*120 كود:جولد بورسلين"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d258db1fa4",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c4f6c21992ec7875618e.webp",
+    "gallery": [
+      "/images/catalog/royal/c4f6c21992ec7875618e.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d258db1fa42f0282",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d26d03d126e4db10",
+    "slug": "royal-d26d03d126e4db10",
+    "sitePath": "/product/royal-d26d03d126e4db10",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:632",
+      "en": "بورسلين هندي مقاس 80*160 كود:632",
+      "fr": "بورسلين هندي مقاس 80*160 كود:632"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d26d03d126",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/730613e50e1bd66a210c.webp",
+    "gallery": [
+      "/images/catalog/royal/730613e50e1bd66a210c.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d26d03d126e4db10",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d2b465423fec18ec",
+    "slug": "royal-d2b465423fec18ec",
+    "sitePath": "/product/royal-d2b465423fec18ec",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:399",
+      "en": "بورسلين هندي 60*120 كود:399",
+      "fr": "بورسلين هندي 60*120 كود:399"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d2b465423f",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/3868d5c16a07199e36d0.webp",
+    "gallery": [
+      "/images/catalog/royal/3868d5c16a07199e36d0.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d2b465423fec18ec",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d452225d381235d0",
+    "slug": "royal-d452225d381235d0",
+    "sitePath": "/product/royal-d452225d381235d0",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 جراي كود:Z612606",
+      "en": "بورسلين سعودي مقاس 60*120 جراي كود:Z612606",
+      "fr": "بورسلين سعودي مقاس 60*120 جراي كود:Z612606"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d452225d38",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/095e9302c0dc5a9d9096.webp",
+    "gallery": [
+      "/images/catalog/royal/095e9302c0dc5a9d9096.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d452225d381235d0",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d4bac25db9bbf19e",
+    "slug": "royal-d4bac25db9bbf19e",
+    "sitePath": "/product/royal-d4bac25db9bbf19e",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:480",
+      "en": "بورسلين هندي 60*120 كود:480",
+      "fr": "بورسلين هندي 60*120 كود:480"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d4bac25db9",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/48b8122726579c877d87.webp",
+    "gallery": [
+      "/images/catalog/royal/48b8122726579c877d87.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d4bac25db9bbf19e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d7a3f8562e8cf776",
+    "slug": "royal-d7a3f8562e8cf776",
+    "sitePath": "/product/royal-d7a3f8562e8cf776",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612855",
+      "en": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612855",
+      "fr": "بورسلين سعودي مقاس 60*120 بلاك كود:Z612855"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d7a3f8562e",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/f9294315bc2f4395bd61.webp",
+    "gallery": [
+      "/images/catalog/royal/f9294315bc2f4395bd61.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d7a3f8562e8cf776",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d9d16ee17d9f087e",
+    "slug": "royal-d9d16ee17d9f087e",
+    "sitePath": "/product/royal-d9d16ee17d9f087e",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:243",
+      "en": "بورسلين هندي 60*120 كود:243",
+      "fr": "بورسلين هندي 60*120 كود:243"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d9d16ee17d",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/bc1c260a7a7adb1954a3.webp",
+    "gallery": [
+      "/images/catalog/royal/bc1c260a7a7adb1954a3.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d9d16ee17d9f087e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d9d76d4146525908",
+    "slug": "royal-d9d76d4146525908",
+    "sitePath": "/product/royal-d9d76d4146525908",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:860",
+      "en": "بورسلين هندي 60*120 كود:860",
+      "fr": "بورسلين هندي 60*120 كود:860"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d9d76d4146",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/c235e78d8c0f60f652e9.webp",
+    "gallery": [
+      "/images/catalog/royal/c235e78d8c0f60f652e9.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d9d76d4146525908",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d9da6350abe4c2c5",
+    "slug": "royal-d9da6350abe4c2c5",
+    "sitePath": "/product/royal-d9da6350abe4c2c5",
+    "name": {
+      "ar": "بورسلين هندي مقاس 60*120 كود:035 جراي",
+      "en": "بورسلين هندي مقاس 60*120 كود:035 جراي",
+      "fr": "بورسلين هندي مقاس 60*120 كود:035 جراي"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d9da6350ab",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/46ef0e2417679fec156c.webp",
+    "gallery": [
+      "/images/catalog/royal/46ef0e2417679fec156c.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d9da6350abe4c2c5",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-d9e96f1c617c4d72",
+    "slug": "royal-d9e96f1c617c4d72",
+    "sitePath": "/product/royal-d9e96f1c617c4d72",
+    "name": {
+      "ar": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "en": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "fr": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-d9e96f1c61",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/b36fc5ca9cca547f6068.webp",
+    "gallery": [
+      "/images/catalog/royal/b36fc5ca9cca547f6068.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-d9e96f1c617c4d72",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-dd6ef41d521c2db7",
+    "slug": "royal-dd6ef41d521c2db7",
+    "sitePath": "/product/royal-dd6ef41d521c2db7",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:8509",
+      "en": "بورسلين هندي مقاس 80*160 كود:8509",
+      "fr": "بورسلين هندي مقاس 80*160 كود:8509"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-dd6ef41d52",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/4a8d780213315891e9f8.webp",
+    "gallery": [
+      "/images/catalog/royal/4a8d780213315891e9f8.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-dd6ef41d521c2db7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e0ed7e120cf69fd7",
+    "slug": "royal-e0ed7e120cf69fd7",
+    "sitePath": "/product/royal-e0ed7e120cf69fd7",
+    "name": {
+      "ar": "بورسلين هندي مقاس 60*120 كود:071 بيج",
+      "en": "بورسلين هندي مقاس 60*120 كود:071 بيج",
+      "fr": "بورسلين هندي مقاس 60*120 كود:071 بيج"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e0ed7e120c",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/d771c3cd5ce79c94a10d.webp",
+    "gallery": [
+      "/images/catalog/royal/d771c3cd5ce79c94a10d.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e0ed7e120cf69fd7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e34d5f0129d9b45e",
+    "slug": "royal-e34d5f0129d9b45e",
+    "sitePath": "/product/royal-e34d5f0129d9b45e",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:217",
+      "en": "بورسلين هندي 60*120 كود:217",
+      "fr": "بورسلين هندي 60*120 كود:217"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e34d5f0129",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/5019a9e17951b93bff35.webp",
+    "gallery": [
+      "/images/catalog/royal/5019a9e17951b93bff35.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e34d5f0129d9b45e",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e45a84aabb47a38a",
+    "slug": "royal-e45a84aabb47a38a",
+    "sitePath": "/product/royal-e45a84aabb47a38a",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:3017 بورسيلوكس",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:3017 بورسيلوكس",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:3017 بورسيلوكس"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e45a84aabb",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/a5c8cb8d9b123214e8e8.webp",
+    "gallery": [
+      "/images/catalog/royal/a5c8cb8d9b123214e8e8.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e45a84aabb47a38a",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e59a586e073fd68d",
+    "slug": "royal-e59a586e073fd68d",
+    "sitePath": "/product/royal-e59a586e073fd68d",
+    "name": {
+      "ar": "بورسلين اليجانت بورسيلوكس مقاس 60*120 كود:3027",
+      "en": "بورسلين اليجانت بورسيلوكس مقاس 60*120 كود:3027",
+      "fr": "بورسلين اليجانت بورسيلوكس مقاس 60*120 كود:3027"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e59a586e07",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/43894383a80f8fdc27fb.webp",
+    "gallery": [
+      "/images/catalog/royal/43894383a80f8fdc27fb.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e59a586e073fd68d",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e59dcac5052c6510",
+    "slug": "royal-e59dcac5052c6510",
+    "sitePath": "/product/royal-e59dcac5052c6510",
+    "name": {
+      "ar": "لاراي كرارا-كونكورد بورسلين -60*120",
+      "en": "لاراي كرارا-كونكورد بورسلين -60*120",
+      "fr": "لاراي كرارا-كونكورد بورسلين -60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e59dcac505",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/998d90bd35720c33e7b8.webp",
+    "gallery": [
+      "/images/catalog/royal/998d90bd35720c33e7b8.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e59dcac5052c6510",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e613590eaa4357d7",
+    "slug": "royal-e613590eaa4357d7",
+    "sitePath": "/product/royal-e613590eaa4357d7",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:293",
+      "en": "بورسلين هندي 60*120 كود:293",
+      "fr": "بورسلين هندي 60*120 كود:293"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e613590eaa",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/5b5417b42087b08e8284.webp",
+    "gallery": [
+      "/images/catalog/royal/5b5417b42087b08e8284.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e613590eaa4357d7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e69bda43a5a8cd3a",
+    "slug": "royal-e69bda43a5a8cd3a",
+    "sitePath": "/product/royal-e69bda43a5a8cd3a",
+    "name": {
+      "ar": "بورسلين هندي مقاس 80*160 كود:648",
+      "en": "بورسلين هندي مقاس 80*160 كود:648",
+      "fr": "بورسلين هندي مقاس 80*160 كود:648"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e69bda43a5",
+        "originalSourceValue": "80x160",
+        "normalizedDisplayValue": "80 x 160 cm",
+        "label": "80 x 160 cm",
+        "widthMm": 800,
+        "heightMm": 1600,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/38bcad088590c58d9337.webp",
+    "gallery": [
+      "/images/catalog/royal/38bcad088590c58d9337.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e69bda43a5a8cd3a",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-e748f67e3c60d724",
+    "slug": "royal-e748f67e3c60d724",
+    "sitePath": "/product/royal-e748f67e3c60d724",
+    "name": {
+      "ar": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "en": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "fr": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-e748f67e3c",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e9d353d8ab525573ea4c.webp",
+    "gallery": [
+      "/images/catalog/royal/e9d353d8ab525573ea4c.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-e748f67e3c60d724",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-ecbd16ef4ed31374",
+    "slug": "royal-ecbd16ef4ed31374",
+    "sitePath": "/product/royal-ecbd16ef4ed31374",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بيج كود:Z612046",
+      "en": "بورسلين سعودي مقاس 60*120 بيج كود:Z612046",
+      "fr": "بورسلين سعودي مقاس 60*120 بيج كود:Z612046"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-ecbd16ef4e",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e1d2865c68d8a831b0dd.webp",
+    "gallery": [
+      "/images/catalog/royal/e1d2865c68d8a831b0dd.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-ecbd16ef4ed31374",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-ecfe670d2c40e228",
+    "slug": "royal-ecfe670d2c40e228",
+    "sitePath": "/product/royal-ecfe670d2c40e228",
+    "name": {
+      "ar": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "en": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص",
+      "fr": "بورسلين بورسيلوكس مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-ecfe670d2c",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/3298746dcc2bce2c1bdf.webp",
+    "gallery": [
+      "/images/catalog/royal/3298746dcc2bce2c1bdf.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-ecfe670d2c40e228",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-ee19758c353855a3",
+    "slug": "royal-ee19758c353855a3",
+    "sitePath": "/product/royal-ee19758c353855a3",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 كود:3022 بورسيلوكس",
+      "en": "بورسلين اليجانت مقاس 60*120 كود:3022 بورسيلوكس",
+      "fr": "بورسلين اليجانت مقاس 60*120 كود:3022 بورسيلوكس"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-ee19758c35",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/2fe8d9a3432a508ef164.webp",
+    "gallery": [
+      "/images/catalog/royal/2fe8d9a3432a508ef164.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-ee19758c353855a3",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-f086b55cc80f78ce",
+    "slug": "royal-f086b55cc80f78ce",
+    "sitePath": "/product/royal-f086b55cc80f78ce",
+    "name": {
+      "ar": "بورسلين جلوريا مقاس 60*120 كود:سباركل/2",
+      "en": "بورسلين جلوريا مقاس 60*120 كود:سباركل/2",
+      "fr": "بورسلين جلوريا مقاس 60*120 كود:سباركل/2"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-f086b55cc8",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/ee4939c3d6993636b962.webp",
+    "gallery": [
+      "/images/catalog/royal/ee4939c3d6993636b962.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-f086b55cc80f78ce",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-f6f268022abe88a1",
+    "slug": "royal-f6f268022abe88a1",
+    "sitePath": "/product/royal-f6f268022abe88a1",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:259",
+      "en": "بورسلين هندي 60*120 كود:259",
+      "fr": "بورسلين هندي 60*120 كود:259"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-f6f268022a",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/21227341fe4db86e2b6d.webp",
+    "gallery": [
+      "/images/catalog/royal/21227341fe4db86e2b6d.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-f6f268022abe88a1",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-f904f51299f9f185",
+    "slug": "royal-f904f51299f9f185",
+    "sitePath": "/product/royal-f904f51299f9f185",
+    "name": {
+      "ar": "بورسلين اليجانت مقاس 60*120 عرض خاص",
+      "en": "بورسلين اليجانت مقاس 60*120 عرض خاص",
+      "fr": "بورسلين اليجانت مقاس 60*120 عرض خاص"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-f904f51299",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/d2e08191471c6cb9dfea.webp",
+    "gallery": [
+      "/images/catalog/royal/d2e08191471c6cb9dfea.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-f904f51299f9f185",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-f9ec816d360c4b46",
+    "slug": "royal-f9ec816d360c4b46",
+    "sitePath": "/product/royal-f9ec816d360c4b46",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:154",
+      "en": "بورسلين هندي 60*120 كود:154",
+      "fr": "بورسلين هندي 60*120 كود:154"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-f9ec816d36",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/e4bfd100a4e6bb381619.webp",
+    "gallery": [
+      "/images/catalog/royal/e4bfd100a4e6bb381619.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-f9ec816d360c4b46",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-fbab6d4d9f60f0e7",
+    "slug": "royal-fbab6d4d9f60f0e7",
+    "sitePath": "/product/royal-fbab6d4d9f60f0e7",
+    "name": {
+      "ar": "بورسلين هندي 60*120 كود:122",
+      "en": "بورسلين هندي 60*120 كود:122",
+      "fr": "بورسلين هندي 60*120 كود:122"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-fbab6d4d9f",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/8f56931f70e933e8e04f.webp",
+    "gallery": [
+      "/images/catalog/royal/8f56931f70e933e8e04f.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-fbab6d4d9f60f0e7",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-fc8c55fdc281182c",
+    "slug": "royal-fc8c55fdc281182c",
+    "sitePath": "/product/royal-fc8c55fdc281182c",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 كود 1328",
+      "en": "بورسلين سعودي مقاس 60*120 كود 1328",
+      "fr": "بورسلين سعودي مقاس 60*120 كود 1328"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-fc8c55fdc2",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/4162c52414861a9e484b.webp",
+    "gallery": [
+      "/images/catalog/royal/4162c52414861a9e484b.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-fc8c55fdc281182c",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-fdb65e7dc693579f",
+    "slug": "royal-fdb65e7dc693579f",
+    "sitePath": "/product/royal-fdb65e7dc693579f",
+    "name": {
+      "ar": "حمام بورسيلوكس بورسلين مقاس 60*120 كود:3027",
+      "en": "حمام بورسيلوكس بورسلين مقاس 60*120 كود:3027",
+      "fr": "حمام بورسيلوكس بورسلين مقاس 60*120 كود:3027"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-fdb65e7dc6",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/502af3aa3e9e989b5b17.webp",
+    "gallery": [
+      "/images/catalog/royal/502af3aa3e9e989b5b17.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-fdb65e7dc693579f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-fe36094bbfa610e4",
+    "slug": "royal-fe36094bbfa610e4",
+    "sitePath": "/product/royal-fe36094bbfa610e4",
+    "name": {
+      "ar": "بورسلين سعودي مقاس 60*120 بيج كود: Z612025",
+      "en": "بورسلين سعودي مقاس 60*120 بيج كود: Z612025",
+      "fr": "بورسلين سعودي مقاس 60*120 بيج كود: Z612025"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-fe36094bbf",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/bb9a1e2cc7787280bfeb.webp",
+    "gallery": [
+      "/images/catalog/royal/bb9a1e2cc7787280bfeb.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-fe36094bbfa610e4",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-fe8014dc1099123f",
+    "slug": "royal-fe8014dc1099123f",
+    "sitePath": "/product/royal-fe8014dc1099123f",
+    "name": {
+      "ar": "ارين بيج جلوريا بورسلين 60*120 ليزر",
+      "en": "ارين بيج جلوريا بورسلين 60*120 ليزر",
+      "fr": "ارين بيج جلوريا بورسلين 60*120 ليزر"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-fe8014dc10",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/39df8391815c9f633438.webp",
+    "gallery": [
+      "/images/catalog/royal/39df8391815c9f633438.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-fe8014dc1099123f",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  },
+  {
+    "id": "royal-ffa8ce59d43ae407",
+    "slug": "royal-ffa8ce59d43ae407",
+    "sitePath": "/product/royal-ffa8ce59d43ae407",
+    "name": {
+      "ar": "سيراميك 60*120 جيرانيتو  كود: فالكون مقاس: 60*120",
+      "en": "سيراميك 60*120 جيرانيتو  كود: فالكون مقاس: 60*120",
+      "fr": "سيراميك 60*120 جيرانيتو  كود: فالكون مقاس: 60*120"
+    },
+    "collection": "porcelain",
+    "brand": "",
+    "model": "",
+    "sizes": [
+      {
+        "id": "sz-0-ffa8ce59d4",
+        "originalSourceValue": "60x120",
+        "normalizedDisplayValue": "60 x 120 cm",
+        "label": "60 x 120 cm",
+        "widthMm": 600,
+        "heightMm": 1200,
+        "sourceUnit": "cm"
+      }
+    ],
+    "image": "/images/catalog/royal/81bc6d8c775d2e9347a4.webp",
+    "gallery": [
+      "/images/catalog/royal/81bc6d8c775d2e9347a4.webp"
+    ],
+    "source": {
+      "sourceId": "source-10",
+      "provider": "Royal Group retailer catalogue",
+      "recordId": "royal-ffa8ce59d43ae407",
+      "reviewStatus": "needs-human-review"
+    },
+    "approved": false,
+    "status": "staged"
+  }
+]

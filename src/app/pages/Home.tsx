@@ -2,7 +2,6 @@ import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
-import { COLLECTIONS } from "../data/catalog";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
@@ -15,7 +14,6 @@ const EDITORIALS = [
   { image: "porcelain", href: "/collections/porcelain", title: { en: "Porcelain. A new perspective on space.", ar: "بورسلين. منظور جديد للمساحة.", fr: "Porcelaine. Une nouvelle perspective." }, body: { en: "Explore luminous surfaces, subtle veining and generous formats for considered interiors.", ar: "اكتشف أسطح مضيئة وعروق ناعمة ومقاسات واسعة لمساحات متناسقة.", fr: "Des surfaces lumineuses et de grands formats pour des intérieurs raffinés." } },
   { image: "ceramics", href: "/collections/ceramics", title: { en: "Ceramics. Colour with character.", ar: "سيراميك. ألوان لها شخصية.", fr: "Céramique. Des couleurs de caractère." }, body: { en: "From rich glazed walls to elegant floors, find the finish that makes a room yours.", ar: "من الحوائط اللامعة للأرضيات الأنيقة، اختار اللمسة اللي تعبّر عنك.", fr: "Des murs émaillés aux sols élégants, trouvez la finition qui vous ressemble." } },
 ];
-const BATH_SLUGS = ["bathroom-sets", "bathroom-units", "faucets", "shower-units", "bathtubs", "bathroom-accessories"];
 
 export function Home() {
   const { locale, t } = useI18n();
@@ -47,16 +45,6 @@ export function Home() {
           <p>{text("Explore surfaces and plan your next space with our room designer.", "استكشف الخامات وخطّط مساحتك الجاية مع مصمم الغرف.", "Explorez les surfaces et préparez votre espace avec notre configurateur.")}</p>
           <Link className="idea-home-text-link" to="/room-designer/new">{t("action.visualize")} <ArrowRight size={16} /></Link>
         </div>
-      </section>
-      <section className="idea-home-section">
-        <h2 className="idea-home-centered-title">{t("home.sanitary")}</h2>
-        <div className="idea-home-bath-grid">{BATH_SLUGS.map((slug) => {
-          const c = COLLECTIONS.find((item) => item.slug === slug)!;
-          return <Link className="idea-home-bath-card" to={`/collections/${slug}`} key={slug}>
-            <img src={c.image} alt={c.title[locale]} width={600} height={450} loading="lazy" />
-            <span>{c.title[locale]}</span>
-          </Link>;
-        })}</div>
       </section>
       {products.length > 0 && <section className="idea-home-section">
         <h2 className="idea-home-centered-title">{t("home.featured")}</h2>

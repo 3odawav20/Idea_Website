@@ -4,7 +4,6 @@ import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
 import { SlidersHorizontal, X } from "lucide-react";
@@ -23,8 +22,8 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const scope = useMemo(
     () => products.filter((p) => {
       if (fixedCollection && p.collection !== fixedCollection) return false;
-      if (material === "marble") return p.texture?.toLowerCase() === "marble" || p.type?.toLowerCase() === "marble";
-      if (material === "tiles") return ["tile", "tiles"].includes(p.type?.trim().toLowerCase() ?? "");
+      if (material === "marble") return p.collection === "marble";
+      if (material === "tiles") return p.collection === "tiles";
       return true;
     }),
     [products, fixedCollection, material]
@@ -67,10 +66,10 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     ? { en: "Marble surfaces", ar: "أسطح رخامية", fr: "Surfaces marbrées" }[locale]
     : material === "tiles" ? { en: "Tiles", ar: "بلاط", fr: "Carrelage" }[locale] : null;
   const catalogueSummary = locale === "ar"
-    ? `${products.length} منتجًا في الكتالوج الحالي · ${ART_CERAMIC_CATALOGUE.totalImages} مرجع صورة لـ Art Ceramic`
+    ? "البيانات والصور المعروضة مستضافة على IDEA؛ والمنتجات الأخرى في انتظار مراجعة المواصفات."
     : locale === "fr"
-      ? `${products.length} produits dans le catalogue actuel · ${ART_CERAMIC_CATALOGUE.totalImages} références d’images Art Ceramic`
-      : `${products.length} products in the current catalogue · ${ART_CERAMIC_CATALOGUE.totalImages} Art Ceramic gallery image references`;
+      ? "Les fiches et images affichées sont hébergées par IDEA. Les autres références attendent validation."
+      : "All displayed catalogue images and data are hosted by IDEA. More verified listings are being prepared.";
 
   const group = (label: string, values: string[], val: string | null, set: (v: string | null) => void) =>
     values.length > 1 && (
@@ -150,7 +149,9 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
             </div>
             {results.length === 0 ? (
               <div style={{ padding: "var(--idea-space-8)", textAlign: "center", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", color: "var(--idea-text-muted)", lineHeight: 1.7 }}>
-                {t("empty.products")}
+                {fixedCollection && ["porcelain", "tiles", "marble"].includes(fixedCollection)
+                  ? (locale === "ar" ? "جارٍ تجهيز المنتجات بعد التحقق من خامتها ومقاساتها، ولن نعرض منتجات غير مؤكدة." : "Products will appear here after their material, sizes and images are verified.")
+                  : t("empty.products")}
               </div>
             ) : (
               <div className="idea-catalog-products" style={{ display: "grid", gap: "var(--idea-space-5)" }}>

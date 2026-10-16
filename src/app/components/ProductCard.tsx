@@ -6,6 +6,7 @@ import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
 import { Tag } from "./ui";
+import { productSitePath } from "../data/productLinks";
 
 export function ProductCard({ product }: { product: Product }) {
   const { t, locale } = useI18n();
@@ -25,7 +26,7 @@ export function ProductCard({ product }: { product: Product }) {
       onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
     >
-      <Link to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
+      <Link to={productSitePath(product.slug)} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
         {imageFailed ? (
           <span className="idea-image-unavailable">Image unavailable</span>
         ) : (
@@ -45,8 +46,8 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>
-        <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
+        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.manufacturer || product.brand}</div>
+        <Link to={productSitePath(product.slug)} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {product.name[locale]}
         </Link>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>

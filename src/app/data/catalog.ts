@@ -22,12 +22,18 @@ const IMG = {
 export const HERO_IMAGES = IMG;
 
 export const COLLECTIONS: CollectionMeta[] = [
-  { slug: "ceramics", group: "ceramics", image: IMG.tileCeramic,
+  { slug: "ceramics", group: "ceramics", image: "/images/category-covers/ceramics-v2.webp",
     title: { en: "Ceramics", ar: "سيراميك", fr: "Céramiques" },
     blurb: { en: "Wall & floor ceramic tiles in refined finishes.", ar: "بلاط سيراميك للحوائط والأرضيات بلمسات راقية.", fr: "Carrelage céramique mural et sol aux finitions raffinées." } },
-  { slug: "porcelain", group: "porcelain", image: IMG.marbleWhite,
+  { slug: "porcelain", group: "porcelain", image: "/images/category-covers/porcelain-v2.webp",
     title: { en: "Porcelain", ar: "بورسلين", fr: "Porcelaine" },
     blurb: { en: "Large-format porcelain slabs & marble-effect surfaces.", ar: "بلاطات بورسلين كبيرة الحجم وأسطح بتأثير الرخام.", fr: "Grandes dalles en porcelaine et surfaces effet marbre." } },
+  { slug: "tiles", group: "tiles", image: "/images/category-covers/tiles-v2.webp",
+    title: { en: "Tiles", ar: "بلاط", fr: "Carrelage" },
+    blurb: { en: "A dedicated, verified tile catalogue; new listings arrive as specifications are confirmed.", ar: "بلاط بمواصفات ومقاسات مؤكدة.", fr: "Carrelages avec des fiches techniques vérifiées." } },
+  { slug: "marble", group: "marble", image: "/images/category-covers/marble-v2.webp",
+    title: { en: "Marble", ar: "رخام", fr: "Marbre" },
+    blurb: { en: "Natural and engineered marble, explicitly verified and classified by material.", ar: "رخام طبيعي وصناعي بعد التحقق من نوع الخامة.", fr: "Marbre naturel et reconstitué, classification vérifiée." } },
   { slug: "sanitary-ware", group: "sanitary", image: IMG.bath2,
     title: { en: "Sanitary Ware", ar: "أدوات صحية", fr: "Sanitaires" },
     blurb: { en: "Complete bathroom sanitary solutions.", ar: "حلول صحية متكاملة للحمامات.", fr: "Solutions sanitaires complètes pour la salle de bain." } },

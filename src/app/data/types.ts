@@ -8,6 +8,8 @@ export type Locale = "en" | "ar" | "fr";
 export type CollectionSlug =
   | "ceramics"
   | "porcelain"
+  | "tiles"
+  | "marble"
   | "sanitary-ware"
   | "faucets"
   | "bathroom-sets"
@@ -43,6 +45,9 @@ export interface Product {
   name: LocalizedText;
   collection: CollectionSlug;
   brand: string;
+  /** Manufacturer only where evidence identifies the maker. */
+  manufacturer?: string;
+  manufacturerBasis?: "official-manufacturer" | "retailer-brand";
   model: string;
   code?: string; // exact source code only; never generated from an internal ID
   origin?: string; // country of origin
@@ -93,5 +98,5 @@ export interface CollectionMeta {
   title: LocalizedText;
   blurb: LocalizedText;
   image: string;
-  group: "ceramics" | "porcelain" | "sanitary";
+  group: "ceramics" | "porcelain" | "tiles" | "marble" | "sanitary";
 }

@@ -1,0 +1,25 @@
+{
+  "summary": {
+    "supplied_source_registry_links": 40,
+    "source_counts_review_only": {
+      "artceramic": 468,
+      "aba": 279,
+      "cleopatra": 92,
+      "royal": 177,
+      "elsweifi": 27
+    },
+    "records": 1043,
+    "material_counts": {
+      "ceramics": 773,
+      "porcelain": 270
+    },
+    "unique_idea_paths": 1043,
+    "local_primary_images_verified": 1043,
+    "records_with_size": 1043,
+    "manufacturer_evidenced": 560,
+    "manufacturer_not_verified": 483,
+    "possible_cross_source_duplicates": 0,
+    "new_records_publicly_approved": 0
+  },
+  "suspected_duplicates": []
+}
