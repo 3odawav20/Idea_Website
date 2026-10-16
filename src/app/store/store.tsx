@@ -1,7 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
-import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
 import { useBackend } from "../backend/db";
 import { requireSupabase } from "../backend/supabaseClient";
 
@@ -48,12 +47,10 @@ function usePersisted<T>(key: string, initial: T): [T, React.Dispatch<React.SetS
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   // Products imported from the source export. Unconfirmed fields stay empty.
-  const [products, setProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS);
-  useEffect(() => {
-    fetchAbaElMozahemProducts()
-      .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => !current.some((existing) => existing.id === product.id))]))
-      .catch(() => { /* Source remains staged in registry; keep verified local catalogue available. */ });
-  }, []);
+  // Only catalogue records approved for storefront display may be loaded.
+  // The external AbaElMozahem import is staged (approved: false) and must not
+  // leak into the public catalogue until an independent review approves it.
+  const [products] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS.filter((product) => product.approved));
   const { session } = useBackend();
   const [favorites, setFavorites] = useState<string[]>([]);
   useEffect(() => {

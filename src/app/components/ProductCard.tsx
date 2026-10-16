@@ -1,13 +1,16 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Heart, GitCompare, FileText } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
+import { useBackend } from "../backend/db";
 import { Tag } from "./ui";
 
 export function ProductCard({ product }: { product: Product }) {
   const { t, locale } = useI18n();
+  const navigate = useNavigate();
+  const { session } = useBackend();
   const { isFavorite, toggleFavorite, toggleCompare, compare, addToQuote } = useStore();
   const fav = isFavorite(product.id);
   const inCompare = compare.includes(product.id);
@@ -33,7 +36,7 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
       </Link>
         <div style={{ position: "absolute", bottom: 12, insetInlineEnd: 12, display: "flex", gap: 6, zIndex: 2 }}>
-          <button aria-label={t("action.favorite")} aria-pressed={fav} onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }} style={roundBtn(fav)}>
+          <button aria-label={t("action.favorite")} aria-pressed={fav} onClick={(e) => { e.preventDefault(); if (!session) { navigate("/login"); return; } toggleFavorite(product.id); }} style={roundBtn(fav)}>
             <Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} />
           </button>
           <button aria-label={t("action.compare")} aria-pressed={inCompare} onClick={(e) => { e.preventDefault(); toggleCompare(product.id); }} style={roundBtn(inCompare)}>
