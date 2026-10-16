@@ -96,8 +96,8 @@ export function ProductDetail() {
               <Button variant="ghost" onClick={() => toggleFavorite(product.id)}><Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} /> {t("action.favorite")}</Button>
               <Button variant="ghost" onClick={() => toggleCompare(product.id)}><GitCompare size={16} /> {t("action.compare")}</Button>
             </div>
-            <Link to="/room-designer/new" style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--idea-gold)", marginTop: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)" }}>
-              <Sparkles size={14} /> {t("action.addVisualizer")}
+            <Link to={"/ai-room-visualizer?product=" + encodeURIComponent(product.id)} style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--idea-gold)", marginTop: "var(--idea-space-4)", fontSize: "var(--idea-text-base)", fontWeight: 700, background: "var(--idea-gold-soft)", padding: "12px 16px", borderRadius: "var(--idea-radius-md)", border: "1px solid var(--idea-gold)", textDecoration: "none" }}>
+              <Sparkles size={18} /> {locale === "ar" ? "جرّب المنتج في شقتك" : "Try this product in your apartment"}
             </Link>
           </div>
         </div>
