@@ -56,7 +56,7 @@ export function Home() {
         <img src="/images/featured/wood.webp" alt={text("Warm wood-effect floor in a living room", "أرضية بتأثير خشبي في غرفة معيشة", "Sol effet bois dans un salon")} loading="lazy" width={1600} height={900} />
         <div><h2>{text("Imagine it in your home.", "تخيّلها في بيتك.", "Imaginez-le chez vous.")}</h2>
           <p>{text("Explore surfaces and plan your next space with our room designer.", "استكشف الخامات وخطّط مساحتك الجاية مع مصمم الغرف.", "Explorez les surfaces et préparez votre espace avec notre configurateur.")}</p>
-          <Link className="idea-home-text-link" to="/room-designer/new">{t("action.visualize")} <ArrowRight size={16} /></Link>
+          <Link className="idea-home-text-link" to="/ai-room-visualizer">{t("action.visualize")} <ArrowRight size={16} /></Link>
         </div>
       </section>
       <section className="idea-home-section"><h2 className="idea-home-centered-title">{text("Search your destination", "اختار مساحتك", "Choisissez votre espace")}</h2><div className="idea-destination-grid">{DESTINATIONS.map(d=><Link key={d.id} to={`/inspiration/${d.id}`}><img src={`/images/featured/${d.image}.webp`} alt={d.label[locale]} loading="lazy" width={600} height={450}/><span>{d.label[locale]}</span></Link>)}<Link className="idea-destination-all" to="/products" aria-label={text("Browse all materials", "تصفح كل الخامات", "Voir tous les matériaux")}><img src="/images/featured/ceramics.webp" alt="" loading="lazy" width={600} height={450}/><span>{text("All surfaces", "كل الخامات", "Toutes les surfaces")}</span></Link></div></section>

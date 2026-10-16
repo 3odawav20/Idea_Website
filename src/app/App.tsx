@@ -12,7 +12,7 @@ import { Collections, CollectionDetail } from "./pages/Collections";
 import { ProductDetail } from "./pages/ProductDetail";
 import { Favorites } from "./pages/Favorites";
 import { RequestQuote } from "./pages/RequestQuote";
-import { HowItWorks, AiVisualizer } from "./pages/Static";
+import { HowItWorks } from "./pages/Static";
 import { Login, Register, RegisterCustomer, RegisterBusiness, RoleSelect } from "./pages/Auth";
 import {
   AccountLayout, AccountProfile, AccountInbox, AccountRequests, AccountRequestOffers,
@@ -32,6 +32,12 @@ import { RoomDesignerHome, PhotoGuide, RoomDesignerEditor } from "./pages/RoomDe
 import { TileShowroom } from "./pages/TileShowroom";
 import { Resources } from "./pages/Resources";
 import { SurfaceStyles } from "./pages/SurfaceStyles";
+
+import { lazy, Suspense } from "react";
+const CeramicVisualizer = lazy(() => import("./pages/CeramicVisualizer").then(module => ({default:module.CeramicVisualizer})));
+function CeramicVisualizerPage() {
+  return <Suspense fallback={<div style={{padding:40,textAlign:"center",color:"var(--idea-text-muted)"}}>جارٍ تحميل استوديو الخامات…</div>}><CeramicVisualizer /></Suspense>;
+}
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
@@ -62,7 +68,8 @@ export default function App() {
               <Route path="/product/:slug" element={<ProductDetail />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/ai-room-visualizer" element={<AiVisualizer />} />
+              <Route path="/ai-room-visualizer" element={<CeramicVisualizerPage />} />
+              <Route path="/ceramic-studio" element={<CeramicVisualizerPage />} />
               <Route path="/tile-showroom/:lookId" element={<TileShowroom />} />
               <Route path="/tile-showroom" element={<TileShowroom />} />
               <Route path="/surface-styles" element={<SurfaceStyles />} />
