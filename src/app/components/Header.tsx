@@ -148,6 +148,14 @@ export function Header() {
           .idea-header-actions { gap: 8px !important; }
           .idea-mobile-optional { display: none; }
         }
+        /* Fit 320-360px Android and compact iPhone screens. */
+        @media (max-width: 360px) {
+          header .idea-official-logo--compact { width: 100px !important; }
+          header .idea-container { gap: 8px !important; }
+          header .idea-header-actions { gap: 4px !important; }
+          header .idea-header-actions > div { gap: 2px !important; }
+          header .idea-header-actions > div > svg:first-child { display: none; }
+        }
       `}</style>
     </header>
   );
