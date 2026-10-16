@@ -13,7 +13,8 @@ import { ProductDetail } from "./pages/ProductDetail";
 import { Favorites } from "./pages/Favorites";
 import { RequestQuote } from "./pages/RequestQuote";
 import { HowItWorks, AiVisualizer } from "./pages/Static";
-import { Login, Register, RegisterCustomer, RegisterBusiness, RoleSelect } from "./pages/Auth";
+import { Login, Register, RegisterCustomer, RegisterBusiness, RoleSelect, BusinessApplicationStatus } from "./pages/Auth";
+import { AdminSupplierApplications } from "./pages/AdminSuppliers";
 import {
   AccountLayout, AccountProfile, AccountInbox, AccountRequests, AccountRequestOffers,
   AccountOrders, AccountInvoices, AccountFavorites, AccountCompare, AccountRoomProjects,
@@ -80,6 +81,7 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/register/customer" element={<RegisterCustomer />} />
               <Route path="/register/business" element={<RegisterBusiness />} />
+              <Route path="/business/application" element={<BusinessApplicationStatus />} />
               <Route path="/onboarding/role" element={<RoleSelect />} />
 
               {/* Subscriptions + checkout */}
@@ -142,6 +144,7 @@ export default function App() {
                 <Route path="catalogue" element={<AdminProducts />} />
                 <Route path="quality" element={<AdminQuality />} />
                 <Route path="operations" element={<AdminOperations />} />
+                <Route path="suppliers" element={<AdminSupplierApplications />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="subscriptions" element={<AdminSubscriptions />} />
                 <Route path="settings/payments" element={<AdminPayments />} />
