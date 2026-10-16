@@ -354,50 +354,54 @@ textarea:disabled {
 }
 
 
-/* Public homepage category image captions — legible in both day and night mode. */
+/* Shared captions for both homepage collection rows. */
 .idea-main-collection-scrim {
   position:absolute;inset:0;pointer-events:none;
-  background:linear-gradient(180deg,rgba(0,0,0,.2) 0%,transparent 42%,rgba(0,0,0,.83) 100%);
+  background:linear-gradient(180deg,rgba(0,0,0,.06),transparent 35%,rgba(0,0,0,.12));
 }
 .idea-main-collection-nameplate {
-  position:absolute;top:clamp(16px,7%,40px);inset-inline:clamp(12px,1.5vw,23px);z-index:3;
-  padding:clamp(12px,1.4vw,21px);
-  border-inline-start:3px solid #ff7200;
-  border-radius:4px 10px 10px 4px;
-  background:linear-gradient(105deg,rgba(7,8,10,.95),rgba(7,8,10,.77));
-  box-shadow:0 10px 32px rgba(0,0,0,.3);
-  backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);
+  position:absolute;top:16px;inset-inline:16px;z-index:3;
+  display:flex;flex-direction:column;align-items:flex-start;gap:5px;
 }
-[dir="rtl"] .idea-main-collection-nameplate {border-radius:10px 4px 4px 10px;}
+.idea-main-collection-eyebrow,
+.idea-main-collection-title,
+.idea-main-collection-footer span {
+  width:fit-content;max-width:100%;box-sizing:border-box;
+  background:rgba(0,0,0,.22);border-radius:6px;
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  text-shadow:0 1px 4px rgba(0,0,0,.8);
+}
 .idea-main-collection-eyebrow {
-  display:block;font-family:var(--idea-font-body);font-weight:750;font-size:clamp(9px,.7vw,11px);
-  color:#ffb07c!important;letter-spacing:.13em;margin-bottom:8px;line-height:1.35;
+  display:block;padding:3px 6px;font-family:var(--idea-font-body);
+  font-weight:600;font-size:9px;color:#ffd0ad!important;
+  letter-spacing:.09em;line-height:1.4;
 }
 .idea-main-collection-title {
-  margin:0!important;font-size:clamp(20px,2vw,29px)!important;
-  font-weight:750;color:#fff!important;line-height:1.19;
+  margin:0!important;padding:4px 8px;
+  font-family:var(--idea-font-body);font-size:18px!important;
+  font-weight:600;color:#fff!important;line-height:1.35;
   white-space:normal;overflow-wrap:anywhere;
-  text-shadow:0 3px 15px rgba(0,0,0,.95);
 }
 .idea-main-collection-footer {
-  position:absolute;inset-inline:0;bottom:0;z-index:2;
-  display:flex;align-items:end;justify-content:space-between;gap:10px;
-  padding:35px clamp(12px,1.5vw,22px) clamp(14px,1.5vw,22px);
-  color:#fff!important;font-size:clamp(11px,.83vw,13px);
-  line-height:1.55;text-shadow:0 2px 9px rgba(0,0,0,.95);
+  position:absolute;inset-inline:16px;bottom:16px;z-index:2;
+  display:flex;align-items:end;justify-content:space-between;gap:8px;
+  color:#fff!important;font-size:11px;line-height:1.5;
 }
-.idea-main-collection-footer span {min-width:0;display:-webkit-box;-webkit-box-orient:vertical;
-  -webkit-line-clamp:2;overflow:hidden;}
-.idea-main-collection-footer svg {flex:none;color:#ffab78;}
+.idea-main-collection-footer span {
+  min-width:0;padding:4px 6px;display:-webkit-box;-webkit-box-orient:vertical;
+  -webkit-line-clamp:2;overflow:hidden;
+}
+.idea-main-collection-footer svg {flex:none;color:#ffcfad;filter:drop-shadow(0 1px 3px #000);}
 .idea-ceramic-grid a:focus-visible {outline:3px solid #ff7200;outline-offset:3px;}
 @media (max-width:800px) {
   .idea-ceramic-grid {grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important;}
-  .idea-main-collection-nameplate {top:12px;inset-inline:12px;padding:12px;}
-  .idea-main-collection-title {font-size:clamp(17px,3vw,25px)!important;}
+  .idea-main-collection-nameplate {top:12px;inset-inline:12px;}
+  .idea-main-collection-footer {inset-inline:12px;bottom:12px;}
 }
 @media (max-width:480px) {
-  .idea-main-collection-nameplate {top:8px;inset-inline:8px;padding:9px;}
-  .idea-main-collection-eyebrow {font-size:8px;margin-bottom:5px;letter-spacing:.03em;}
-  .idea-main-collection-title {font-size:clamp(16px,4.1vw,19px)!important;}
-  .idea-main-collection-footer {padding:30px 10px 10px;font-size:10px;}
+  .idea-main-collection-nameplate {top:10px;inset-inline:10px;gap:4px;}
+  .idea-main-collection-eyebrow {font-size:8px;letter-spacing:.04em;}
+  .idea-main-collection-title {font-size:15px!important;padding:3px 6px;}
+  .idea-main-collection-footer {inset-inline:10px;bottom:10px;font-size:10px;gap:5px;}
+  .idea-main-collection-footer svg {width:14px;height:14px;}
 }
