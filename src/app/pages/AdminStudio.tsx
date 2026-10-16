@@ -67,6 +67,7 @@ export function AdminStudioLayout(){
   {to:"/admin/catalogue",label:"Products",icon:Package,end:false},
   {to:"/admin/quality",label:"Quality control",icon:ShieldCheck,end:false},
   {to:"/admin/operations",label:"Operations",icon:Truck,end:false},
+  {to:"/admin/suppliers",label:"Business applications",icon:Store,end:false},
   {to:"/admin/settings",label:"Workspace settings",icon:Settings2,end:false}
  ];
  return <div className="ids-root">
