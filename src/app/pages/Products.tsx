@@ -19,9 +19,15 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const [params] = useSearchParams();
   const q = (params.get("q") ?? "").trim().toLowerCase();
 
+  const material = params.get("material");
   const scope = useMemo(
-    () => (fixedCollection ? products.filter((p) => p.collection === fixedCollection) : products),
-    [products, fixedCollection]
+    () => products.filter((p) => {
+      if (fixedCollection && p.collection !== fixedCollection) return false;
+      if (material === "marble") return p.texture?.toLowerCase() === "marble" || p.type?.toLowerCase() === "marble";
+      if (material === "tiles") return p.collection === "ceramics" || p.collection === "porcelain";
+      return true;
+    }),
+    [products, fixedCollection, material]
   );
 
   // Seed filters from the hero search panel (?color=&size=&usage=&finish=).
@@ -57,6 +63,9 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); };
 
   const meta = fixedCollection ? COLLECTIONS.find((c) => c.slug === fixedCollection) : null;
+  const materialTitle = material === "marble"
+    ? { en: "Marble surfaces", ar: "أسطح رخامية", fr: "Surfaces marbrées" }[locale]
+    : material === "tiles" ? { en: "Tiles", ar: "بلاط", fr: "Carrelage" }[locale] : null;
   const catalogueSummary = locale === "ar"
     ? `${products.length} منتجًا في الكتالوج الحالي · ${ART_CERAMIC_CATALOGUE.totalImages} مرجع صورة لـ Art Ceramic`
     : locale === "fr"
@@ -80,7 +89,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
         <div style={{ marginBottom: "var(--idea-space-6)" }}>
           <div className="idea-eyebrow">{meta ? COLLECTIONS.find((c) => c.slug === fixedCollection)?.group : "Gallery"}</div>
           <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 0" }}>
-            {meta ? meta.title[locale] : t("nav.products")}
+            {meta ? meta.title[locale] : materialTitle ?? t("nav.products")}
           </h1>
           {q && <p style={{ color: "var(--idea-text-muted)", marginTop: 8 }}>“{q}”</p>}
           {!q && !meta && (
