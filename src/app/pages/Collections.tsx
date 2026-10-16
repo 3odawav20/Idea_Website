@@ -23,14 +23,13 @@ export function Collections() {
           return (
             <div key={g.key} style={{ marginBottom: "var(--idea-space-7)" }}>
               <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{g.label}</div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-4)" }}>
+              <div className="idea-collection-grid" style={{ display: "grid", gap: "var(--idea-space-4)" }}>
                 {items.map((c) => (
-                  <Link key={c.slug} to={`/collections/${c.slug}`} style={{ position: "relative", aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", display: "block" }}>
+                  <Link className="idea-collection-card" key={c.slug} to={`/collections/${c.slug}`} style={{ position: "relative", aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", display: "block" }}>
                     <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay-soft)" }} />
-                    <div style={{ position: "absolute", bottom: 0, padding: "var(--idea-space-4)" }}>
-                      <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{c.title[locale]}</div>
-                      <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", marginTop: 4 }}>{c.blurb[locale]}</div>
+                    <div className="idea-collection-shade" aria-hidden="true" />
+                    <div className="idea-collection-caption">
+                      <div className="idea-display idea-collection-title">{c.title[locale]}</div>
                     </div>
                   </Link>
                 ))}

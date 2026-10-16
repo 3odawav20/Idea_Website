@@ -147,7 +147,7 @@ export function Header() {
         @media (prefers-reduced-motion: reduce) {
           .idea-nav-link::after { transition: none; }
         }
-        @media (max-width: 1400px) {
+        @media (max-width: 1500px) {
           .idea-desktop-nav, .idea-desktop-search { display: none !important; }
           .idea-menu-btn { display: inline-flex !important; }
         }

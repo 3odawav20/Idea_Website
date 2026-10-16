@@ -1,13 +1,16 @@
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { Heart, GitCompare, FileText } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
+import { useBackend } from "../backend/db";
 import { Tag } from "./ui";
 
 export function ProductCard({ product }: { product: Product }) {
   const { t, locale } = useI18n();
+  const navigate = useNavigate();
+  const { session } = useBackend();
   const { isFavorite, toggleFavorite, toggleCompare, compare, addToQuote } = useStore();
   const fav = isFavorite(product.id);
   const inCompare = compare.includes(product.id);
@@ -17,7 +20,7 @@ export function ProductCard({ product }: { product: Product }) {
   return (
     <div className="idea-product-card" style={{
       background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
-      overflow: "hidden", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
+      overflow: "hidden", position: "relative", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
     }}
       onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
@@ -31,15 +34,15 @@ export function ProductCard({ product }: { product: Product }) {
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
           {product.type && <span style={badgeStyle}>{product.type}</span>}
         </div>
-        <div style={{ position: "absolute", top: 12, insetInlineEnd: 12, display: "flex", gap: 6 }}>
-          <button aria-label={t("action.favorite")} onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }} style={roundBtn(fav)}>
+      </Link>
+        <div style={{ position: "absolute", bottom: 12, insetInlineEnd: 12, display: "flex", gap: 6, zIndex: 2 }}>
+          <button aria-label={t("action.favorite")} aria-pressed={fav} onClick={(e) => { e.preventDefault(); if (!session) { navigate("/login"); return; } toggleFavorite(product.id); }} style={roundBtn(fav)}>
             <Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} />
           </button>
-          <button aria-label={t("action.compare")} onClick={(e) => { e.preventDefault(); toggleCompare(product.id); }} style={roundBtn(inCompare)}>
+          <button aria-label={t("action.compare")} aria-pressed={inCompare} onClick={(e) => { e.preventDefault(); toggleCompare(product.id); }} style={roundBtn(inCompare)}>
             <GitCompare size={16} />
           </button>
         </div>
-      </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>
@@ -51,7 +54,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.finish && <Tag>{product.finish}</Tag>}
           {product.variant && <Tag>{product.variant}</Tag>}
         </div>
-        <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+        <div className="idea-product-actions" style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
           <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{t("price.hidden")}</span>
           <button onClick={() => addToQuote(product.id, unit)} style={{
             display: "inline-flex", alignItems: "center", gap: 6, background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)",
@@ -76,7 +79,7 @@ const badgeStyle: React.CSSProperties = {
 
 function roundBtn(active: boolean): React.CSSProperties {
   return {
-    width: 34, height: 34, borderRadius: 999, display: "grid", placeItems: "center", cursor: "pointer",
+    width: 44, height: 44, borderRadius: 999, display: "grid", placeItems: "center", cursor: "pointer",
     background: active ? "var(--idea-gold-soft)" : "var(--idea-overlay)",
     border: `1px solid ${active ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
     color: active ? "var(--idea-gold-bright)" : "var(--idea-text)", backdropFilter: "blur(6px)",

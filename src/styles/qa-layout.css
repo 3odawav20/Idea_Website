@@ -1,0 +1,29 @@
+/* Stable, symmetric catalog and image-led collections. */
+.idea-catalog-products,.idea-collection-grid {grid-template-columns:repeat(4,minmax(0,1fr));}
+.idea-catalog-products > *,.idea-collection-grid > * {min-width:0;}
+.idea-collection-card {isolation:isolate;}
+.idea-collection-shade {position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 42%,rgba(0,0,0,.66));}
+.idea-collection-caption {position:absolute;bottom:0;inset-inline:0;padding:clamp(10px,1.6vw,20px);z-index:1;}
+.idea-collection-title {color:#fff!important;font-size:clamp(13px,1.2vw,19px)!important;font-weight:500;line-height:1.35;text-shadow:0 2px 8px rgba(0,0,0,.75);overflow-wrap:anywhere;}
+.idea-collection-card:focus-visible,.idea-catalog-products a:focus-visible {outline:3px solid var(--idea-gold-bright,#ff7200);outline-offset:3px;}
+@media(max-width:1100px) {.idea-catalog-products,.idea-collection-grid {grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:800px) {.idea-catalog-products,.idea-collection-grid {grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media(max-width:370px) {.idea-catalog-products,.idea-collection-grid {column-gap:10px!important;row-gap:14px!important;}}
+@media(max-width:340px) {.idea-catalog-products {grid-template-columns:minmax(0,1fr);}}
+
+/* Keep all header controls accessible on narrow 320px phones. */
+@media(max-width:360px) {
+  header .idea-official-logo--compact {width:100px!important;}
+  header .idea-container {gap:8px!important;}
+  header .idea-container .idea-header-actions {gap:4px!important;}
+  header .idea-header-actions > div {gap:2px!important;}
+  header .idea-header-actions > div > svg:first-child {display:none;}
+}
+
+/* Keep product CTAs inside 2-column 320px cards. */
+.idea-product-actions {min-width:0;}
+.idea-product-actions button {min-height:44px;max-width:100%;}
+@media(max-width:480px) {
+  .idea-product-actions {flex-direction:column;align-items:stretch!important;gap:6px!important;}
+  .idea-product-actions button {justify-content:center;text-align:center;white-space:normal;}
+}
