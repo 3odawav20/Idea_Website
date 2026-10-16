@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import "./FeaturedCollectionStrip.css";
 import { useCollectionDestinations } from "./useCollectionDestinations";
+import { useStore } from "../store/store";
 
 const FEATURED_COLLECTIONS = [
   { id: "ceramics", label: { en: "Ceramics", ar: "سيراميك", fr: "Céramiques" }, href: "/collections/ceramics" },
@@ -21,6 +22,14 @@ export function FeaturedCollectionStrip() {
   const { locale } = useI18n();
   const copy = COPY[locale];
   const destinations = useCollectionDestinations();
+  // Tiles do not yet have independently verified public records. Do not link
+  // visitors to an empty category or relabel ceramics/porcelain as tiles.
+  const { products } = useStore();
+  const featured = FEATURED_COLLECTIONS.filter((look) =>
+    look.id !== "tiles" || products.some((product) =>
+      product.approved && ["tile", "tiles"].includes(product.type?.trim().toLowerCase() ?? "")
+    )
+  );
   const rail = useRef<HTMLDivElement>(null);
   const direction = useRef(1);
   const drag = useRef<{ x: number; scroll: number; moved: boolean } | null>(null);
@@ -94,7 +103,7 @@ export function FeaturedCollectionStrip() {
           onPointerLeave={() => { if (drag.current && !drag.current.moved) drag.current = null; }}
           onClickCapture={(e) => { if (suppressClick.current) { e.preventDefault(); e.stopPropagation(); suppressClick.current = false; } }}
           onKeyDown={(e) => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); setPlaying(false); move(e.key === "ArrowLeft" ? -1 : 1); } }}>
-          {FEATURED_COLLECTIONS.map((look) => (
+          {featured.map((look) => (
             <Link key={look.id} className="idea-featured-card" to={destinations[look.id as keyof typeof destinations]} draggable={false} dir={locale === "ar" ? "rtl" : "ltr"}>
               <img src={`/images/featured/${look.id}.webp`} alt={look.label[locale]} loading="lazy" width={1600} height={900} draggable={false} />
               <span className="idea-featured-label">{look.label[locale]}</span>
