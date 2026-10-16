@@ -68,7 +68,7 @@ export function Header() {
     }}>
       <Container style={{ display: "flex", alignItems: "center", gap: "var(--idea-space-4)", height: 78 }}>
         {/* Logo */}
-        <Link to="/" aria-label="IDEA Business Administration — Home" style={{ display: "inline-flex", lineHeight: 1, textDecoration: "none", flexShrink: 0 }}>
+        <Link to="/" aria-label="IDEA — Home" style={{ display: "inline-flex", lineHeight: 1, textDecoration: "none", flexShrink: 0 }}>
           <IdeaLogo compact />
         </Link>
 
