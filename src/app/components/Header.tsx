@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
@@ -37,6 +37,7 @@ export function Header() {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const nav = useNavigate();
+  const isHome = useLocation().pathname === "/";
 
   useEffect(() => {
     if (!open) return;
@@ -82,15 +83,15 @@ export function Header() {
         </nav>
 
         <div className="idea-header-actions" style={{ marginInlineStart: "auto", display: "flex", alignItems: "center", gap: "var(--idea-space-4)" }}>
-          {/* Search (desktop) */}
-          <form onSubmit={submit} className="idea-desktop-search" style={{
+          {/* Search appears only in the HeroSearchPanel directly below the homepage hero. */}
+          {!isHome && <form onSubmit={submit} className="idea-desktop-search" style={{
             display: "flex", alignItems: "center", gap: 8, background: "var(--idea-surface-2)",
             border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)", padding: "8px 16px", minWidth: 220,
           }}>
             <Search size={16} color="var(--idea-gold)" />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("search.placeholder")}
               style={{ background: "transparent", border: "none", outline: "none", color: "var(--idea-text)", width: "100%", fontFamily: "var(--idea-font-body)", fontSize: "var(--idea-text-sm)" }} />
-          </form>
+          </form>}
 
           {/* Language */}
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -124,11 +125,11 @@ export function Header() {
       {open && (
         <div style={{ borderTop: "var(--idea-hairline)", background: "var(--idea-bg-2)", padding: "var(--idea-space-4) 0" }}>
           <Container style={{ display: "flex", flexDirection: "column", gap: "var(--idea-space-3)" }}>
-            <form onSubmit={submit} style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--idea-surface-2)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)", padding: "10px 16px" }}>
+            {!isHome && <form onSubmit={submit} style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--idea-surface-2)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)", padding: "10px 16px" }}>
               <Search size={16} color="var(--idea-gold)" />
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("search.placeholder")}
                 style={{ background: "transparent", border: "none", outline: "none", color: "var(--idea-text)", width: "100%", fontFamily: "var(--idea-font-body)" }} />
-            </form>
+            </form>}
             {links.map((l) => (
               <Link key={l.to} to={l.to} onClick={() => setOpen(false)} style={{ color: "var(--idea-text)", textDecoration: "none", padding: "8px 0", textTransform: "uppercase", fontSize: "var(--idea-text-sm)", letterSpacing: "0.06em" }}>{l.label}</Link>
             ))}
