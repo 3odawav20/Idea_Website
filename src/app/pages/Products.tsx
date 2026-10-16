@@ -8,7 +8,7 @@ import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
 import "../components/Discovery.css";
-import { isLargeFormat, isOutdoor20mm, matchesApplication } from "../data/discovery";
+import { isLargeFormat, isOutdoor20mm, matchesApplication, isColourLabel, isUsageLabel } from "../data/discovery";
 import { SlidersHorizontal, X } from "lucide-react";
 
 function uniq<T>(arr: (T | undefined)[]): T[] {
@@ -52,8 +52,8 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     application: uniq(scope.map(p => p.application)),
     finish: uniq(scope.map((p) => p.finish)),
     size: uniq(scope.flatMap((p) => p.sizes.map((s) => s.label))),
-    usage: uniq(scope.flatMap((p) => p.usage ?? [])),
-    color: uniq(scope.flatMap((p) => p.colors ?? [])),
+    usage: uniq(scope.flatMap((p) => p.usage ?? []).filter(isUsageLabel)),
+    color: uniq(scope.flatMap((p) => p.colors ?? []).filter(isColourLabel)),
   }), [scope]);
 
   const matches = (p: Product) => {

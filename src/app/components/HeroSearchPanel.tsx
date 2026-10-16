@@ -4,7 +4,7 @@ import { Search, SlidersHorizontal } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { unique } from "../data/discovery";
+import { unique, isColourLabel } from "../data/discovery";
 import "./Discovery.css";
 
 export function HeroSearchPanel({ advanced = false }: { advanced?: boolean }) {
@@ -19,7 +19,7 @@ export function HeroSearchPanel({ advanced = false }: { advanced?: boolean }) {
   const keys = ["application", "finish", "color", "size"];
   const scope = useMemo(() => products.filter(p => !category || p.collection === category), [products, category]);
   const values = (key: string) => unique(scope.filter(p => keys.slice(0,keys.indexOf(key)).every(k => !filters[k] || (k === "size" ? p.sizes.some(s => s.label === filters[k]) : k === "color" ? p.colors?.includes(filters[k]) : p[k as "application" | "finish"] === filters[k])))
-    .flatMap(p => key === "size" ? p.sizes.map(s => s.label) : key === "color" ? p.colors ?? [] : [p[key as "application" | "finish"]]));
+    .flatMap(p => key === "size" ? p.sizes.map(s => s.label) : key === "color" ? (p.colors ?? []).filter(isColourLabel) : [p[key as "application" | "finish"]]));
   const labels: Record<string,string> = {
     application: text("Application", "الاستخدام", "Application"), finish: text("Finish", "التشطيب", "Finition"),
     color: text("Colour", "اللون", "Couleur"), size: text("Size", "المقاس", "Format"),
@@ -36,9 +36,9 @@ export function HeroSearchPanel({ advanced = false }: { advanced?: boolean }) {
       {["filter", "search"].map(k => <button key={k} role="tab" aria-selected={tab === k} aria-controls={`${advanced ? "advanced" : "hero"}-finder`} id={`${advanced ? "advanced" : "hero"}-${k}`} onClick={() => setTab(k)}>{k === "filter" ? <SlidersHorizontal size={16}/> : <Search size={16}/>} {k === "filter" ? text("Filter by", "تصفية حسب", "Filtrer par") : text("Search by name", "البحث بالاسم", "Recherche par nom")}</button>)}
     </div>
     <form id={`${advanced ? "advanced" : "hero"}-finder`} role="tabpanel" aria-labelledby={`${advanced ? "advanced" : "hero"}-${tab}`} onSubmit={go} className={`idea-discovery-form${tab === "search" ? " is-name" : ""}`}>
-      {tab === "search" ? <label>{text("Product name or code", "اسم المنتج أو الكود", "Nom ou référence")}<input value={q} onChange={e => setQ(e.target.value)} placeholder={text("Search the catalogue…", "ابحث في الكتالوج…", "Rechercher dans le catalogue…")}/></label> : <>
-        <label>{text("Category", "الفئة", "Catégorie")}<select value={category} onChange={e => {setCategory(e.target.value); setFilters({});}} required><option value="">{text("Choose category first", "اختر الفئة أولًا", "Choisir une catégorie")}</option>{COLLECTIONS.filter(c => products.some(p => p.collection === c.slug)).map(c => <option key={c.slug} value={c.slug}>{c.title[locale]}</option>)}</select></label>
-        {keys.map((key,index) => <label key={key}>{labels[key]}<select disabled={!category || !values(key).length} value={filters[key] ?? ""} onChange={e => setFilters(old => Object.fromEntries([...keys.slice(0,index).map(k => [k,old[k] ?? ""]),[key,e.target.value]]))}><option value="">{category && !values(key).length ? text("Not specified", "غير محدد", "Non précisé") : text("All", "الكل", "Tous")}</option>{values(key).map(v => <option key={v} value={v}>{v}</option>)}</select></label>)}
+      {tab === "search" ? <label>{text("Product name or code", "اسم المنتج أو الكود", "Nom ou référence")}<input aria-label={text("Product name or code", "اسم المنتج أو الكود", "Nom ou référence")} value={q} onChange={e => setQ(e.target.value)} placeholder={text("Search the catalogue…", "ابحث في الكتالوج…", "Rechercher dans le catalogue…")}/></label> : <>
+        <label>{text("Category", "الفئة", "Catégorie")}<select aria-label={text("Category", "الفئة", "Catégorie")} value={category} onChange={e => {setCategory(e.target.value); setFilters({});}} required><option value="">{text("Choose category first", "اختر الفئة أولًا", "Choisir une catégorie")}</option>{COLLECTIONS.filter(c => products.some(p => p.collection === c.slug)).map(c => <option key={c.slug} value={c.slug}>{c.title[locale]}</option>)}</select></label>
+        {keys.map((key,index) => <label key={key}>{labels[key]}<select aria-label={labels[key]} disabled={!category || !values(key).length} value={filters[key] ?? ""} onChange={e => setFilters(old => Object.fromEntries([...keys.slice(0,index).map(k => [k,old[k] ?? ""]),[key,e.target.value]]))}><option value="">{category && !values(key).length ? text("Not specified", "غير محدد", "Non précisé") : text("All", "الكل", "Tous")}</option>{values(key).map(v => <option key={v} value={v}>{v}</option>)}</select></label>)}
       </>}
       <button className="idea-discovery-submit" type="submit"><Search size={17}/>{text("Search", "ابحث", "Rechercher")}</button>
     </form>

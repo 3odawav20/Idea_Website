@@ -32,6 +32,7 @@ Reference inspected: https://www.cleopatraceramics.com/en/ plus ceramic floor li
 ## Validation
 
 - Production build passed (existing large JavaScript bundle warning).
+- Supplier grade/model values masquerading as colour choices and vendor/type tags masquerading as usage choices are excluded from facets; source records are retained unchanged.
 - Eight executable checks covered measured format thresholds, missing dimensions, explicit thickness plus outdoor usage, and floor/wall matching.
 - Source imports, provider identity and material classification are not changed.
 - Both homepage rail sizing rules are retained: two complete equal cards desktop, one mobile, no partial neighbor at rest.
@@ -45,3 +46,9 @@ Reference inspected: https://www.cleopatraceramics.com/en/ plus ceramic floor li
 3. Approved delivered-project case studies, company history/technology/facilities/sustainability content and real videos.
 4. Official catalogue PDFs/certificates.
 5. Mailing provider, consent policy and appointment integration.
+
+## Preview QA
+
+- Desktop viewport 1363px: page width 1353px, no horizontal overflow.
+- Category → Floor → Matte enabled and narrowed available colours and sizes; search opened `/products?category=ceramics&application=Floor&finish=Matte` with 194 matching records.
+- Ceramic mega menu opened with four columns of category/application, looks, destinations and planning links.

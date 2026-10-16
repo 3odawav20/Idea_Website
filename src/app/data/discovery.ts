@@ -26,3 +26,13 @@ export function matchesApplication(p: Product, value: string) {
   return value === "Floor" ? /floor/i.test(p.application ?? "") : value === "Wall" ? /wall/i.test(p.application ?? "") : p.application === value;
 }
 export const unique = (values: (string | undefined)[]) => [...new Set(values.filter(Boolean) as string[])].sort((a,b) => a.localeCompare(b));
+// Some supplier variant/grade values were imported as colours. Do not present
+// those as colour choices; retain the original records unchanged.
+export function isColourLabel(value: string) {
+  const words = value.toLowerCase().replace(/[\/x,\-]/g," ").split(/\s+/).filter(Boolean);
+  const allowed = new Set(["beige","black","blue","brown","cafe","celeste","copper","cotto","dark","gold","green","grey","gray","greyish","havan","ivory","light","mauve","multicolor","off","white","offwhite","olive","red","simon","teal","aquamarine","mix"]);
+  return words.length > 0 && words.every(word => allowed.has(word)) && words.some(word => !["dark","light","mix","off"].includes(word));
+}
+export function isUsageLabel(value: string) {
+  return /^(bathroom|kitchen|bedroom|living(?: room)?|outdoor(?: - (?:floor|wall))?|indoor|commercial|swimming pool|floor|wall|wall and floor)$/i.test(value.trim());
+}
