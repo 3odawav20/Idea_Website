@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import "./FeaturedCollectionStrip.css";
+import { useCollectionDestinations } from "./useCollectionDestinations";
 
 const FEATURED_COLLECTIONS = [
   { id: "marble", label: { en: "Marble", ar: "رخام", fr: "Marbre" }, href: "/products?material=marble" },
@@ -20,6 +21,7 @@ const COPY = {
 export function FeaturedCollectionStrip() {
   const { locale } = useI18n();
   const copy = COPY[locale];
+  const destinations = useCollectionDestinations();
   const rail = useRef<HTMLDivElement>(null);
   const direction = useRef(1);
   const drag = useRef<{ x: number; scroll: number; moved: boolean } | null>(null);
@@ -46,7 +48,7 @@ export function FeaturedCollectionStrip() {
     const el = rail.current;
     if (!el) return;
     const card = el.firstElementChild as HTMLElement | null;
-    el.scrollBy({ left: step * ((card?.offsetWidth ?? el.clientWidth) + 24), behavior: reduced.current ? "instant" : "smooth" });
+    el.scrollBy({ left: step * ((card?.offsetWidth ?? el.clientWidth) + Number.parseFloat(getComputedStyle(el).columnGap || "0")), behavior: reduced.current ? "instant" : "smooth" });
   };
   useEffect(() => {
     if (!playing || interacting) return;
@@ -94,7 +96,7 @@ export function FeaturedCollectionStrip() {
           onClickCapture={(e) => { if (suppressClick.current) { e.preventDefault(); e.stopPropagation(); suppressClick.current = false; } }}
           onKeyDown={(e) => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); setPlaying(false); move(e.key === "ArrowLeft" ? -1 : 1); } }}>
           {FEATURED_COLLECTIONS.map((look) => (
-            <Link key={look.id} className="idea-featured-card" to={look.href} draggable={false} dir={locale === "ar" ? "rtl" : "ltr"}>
+            <Link key={look.id} className="idea-featured-card" to={destinations[look.id as keyof typeof destinations]} draggable={false} dir={locale === "ar" ? "rtl" : "ltr"}>
               <img src={`/images/featured/${look.id}.webp`} alt={look.label[locale]} loading="lazy" width={1600} height={900} draggable={false} />
               <span className="idea-featured-label">{look.label[locale]}</span>
             </Link>

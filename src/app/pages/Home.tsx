@@ -8,11 +8,12 @@ import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import "./Home.css";
+import { useCollectionDestinations } from "../components/useCollectionDestinations";
 
 const EDITORIALS = [
   { image: "porcelain", href: "/collections/porcelain", title: { en: "Porcelain. A new perspective on space.", ar: "بورسلين. منظور جديد للمساحة.", fr: "Porcelaine. Une nouvelle perspective." }, body: { en: "Explore luminous surfaces, subtle veining and generous formats for considered interiors.", ar: "اكتشف أسطح مضيئة وعروق ناعمة ومقاسات واسعة لمساحات متناسقة.", fr: "Des surfaces lumineuses et de grands formats pour des intérieurs raffinés." } },
   { image: "ceramics", href: "/collections/ceramics", title: { en: "Ceramics. Colour with character.", ar: "سيراميك. ألوان لها شخصية.", fr: "Céramique. Des couleurs de caractère." }, body: { en: "From rich glazed walls to elegant floors, find the finish that makes a room yours.", ar: "من الحوائط اللامعة للأرضيات الأنيقة، اختار اللمسة اللي تعبّر عنك.", fr: "Des murs émaillés aux sols élégants, trouvez la finition qui vous ressemble." } },
-  { image: "marble", href: "/products?material=marble", title: { en: "Marble surfaces. Naturally expressive.", ar: "أسطح رخامية. جمال بتفاصيل طبيعية.", fr: "Surfaces marbrées. Une beauté expressive." }, body: { en: "Discover the marble textures and surface finishes available in our catalogue.", ar: "استكشف نقوش الرخام وتشطيبات الأسطح الموجودة في الكتالوج.", fr: "Découvrez les textures marbrées et les finitions de notre catalogue." } },
+  { image: "marble", href: "/products?material=marble", title: { en: "Marble surfaces. Naturally expressive.", ar: "أسطح رخامية. جمال بتفاصيل طبيعية.", fr: "Surfaces marbrées. Une beauté expressive." }, body: { en: "Explore marble textures and envision a distinctive finish for your space.", ar: "استكشف نقوش الرخام وتخيّل اللمسة المناسبة لمساحتك.", fr: "Explorez les textures marbrées pour imaginer votre espace." } },
 ];
 const LOOKS = [
   { id: "stone", en: "Stone", ar: "حجر", fr: "Pierre" },
@@ -26,6 +27,7 @@ const BATH_SLUGS = ["bathroom-sets", "bathroom-units", "faucets", "shower-units"
 export function Home() {
   const { locale, t } = useI18n();
   const { products } = useStore();
+  const destinations = useCollectionDestinations();
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   return (
     <div className="idea-home-editorial">
@@ -35,11 +37,11 @@ export function Home() {
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
         {EDITORIALS.map((item, index) => (
           <article className={`idea-home-story${index % 2 ? " idea-home-story-reverse" : ""}`} key={item.image}>
-            <Link to={item.href} className="idea-home-story-image" aria-label={item.title[locale]}>
+            <Link to={destinations[item.image as keyof typeof destinations]} className="idea-home-story-image" aria-label={item.title[locale]}>
               <img src={`/images/featured/${item.image}.webp`} alt={item.title[locale]} loading="lazy" width={1600} height={900} />
             </Link>
             <div className="idea-home-story-copy"><h2>{item.title[locale]}</h2><p>{item.body[locale]}</p>
-              <Link className="idea-home-text-link" to={item.href}>{t("action.explore")} <ArrowRight size={16} /></Link>
+              <Link className="idea-home-text-link" to={destinations[item.image as keyof typeof destinations]}>{t("action.explore")} <ArrowRight size={16} /></Link>
             </div>
           </article>
         ))}
