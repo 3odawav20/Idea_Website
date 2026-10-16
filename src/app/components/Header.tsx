@@ -114,7 +114,7 @@ export function Header() {
       <div className="idea-discovery-desktop-only"><DiscoveryNavigation /></div>
       {/* Mobile drawer */}
       {open && (
-        <div style={{ borderTop: "var(--idea-hairline)", background: "var(--idea-bg-2)", padding: "var(--idea-space-4) 0" }}>
+        <div onKeyDown={e => {if(e.key === "Escape") setOpen(false);}} style={{ borderTop: "var(--idea-hairline)", background: "var(--idea-bg-2)", padding: "var(--idea-space-4) 0", maxHeight: "calc(100dvh - 120px)", overflowY: "auto" }}>
           <Container style={{ display: "flex", flexDirection: "column", gap: "var(--idea-space-3)" }}>
             <form onSubmit={submit} style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--idea-surface-2)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)", padding: "10px 16px" }}>
               <Search size={16} color="var(--idea-gold)" />

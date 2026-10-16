@@ -52,3 +52,10 @@ Reference inspected: https://www.cleopatraceramics.com/en/ plus ceramic floor li
 - Desktop viewport 1363px: page width 1353px, no horizontal overflow.
 - Category → Floor → Matte enabled and narrowed available colours and sizes; search opened `/products?category=ceramics&application=Floor&finish=Matte` with 194 matching records.
 - Ceramic mega menu opened with four columns of category/application, looks, destinations and planning links.
+
+- Product-index browser download event confirmed with 699 loaded records.
+- Arabic RTL and dark palette observed on the downloads page; no desktop horizontal overflow.
+- Corrected colour dropdown contains 44 valid colour labels and no Arabic grade labels after external catalogue load.
+- New light accent contrast: 5.99:1 on white; dark accent: 6.93:1 on the dark surface; search button text: 6.79:1 on orange. These measurements cover the new discovery controls, not a site-wide contrast certification.
+- Fourteen additional checks passed for excluding vendor/model/grade values from colour/usage facets.
+- Business registration link navigated to the existing `/register/business` route; no account was created.
