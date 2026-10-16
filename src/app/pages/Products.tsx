@@ -24,7 +24,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     () => products.filter((p) => {
       if (fixedCollection && p.collection !== fixedCollection) return false;
       if (material === "marble") return p.texture?.toLowerCase() === "marble" || p.type?.toLowerCase() === "marble";
-      if (material === "tiles") return p.collection === "ceramics" || p.collection === "porcelain";
+      if (material === "tiles") return ["tile", "tiles"].includes(p.type?.trim().toLowerCase() ?? "");
       return true;
     }),
     [products, fixedCollection, material]
@@ -153,7 +153,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                 {t("empty.products")}
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
+              <div className="idea-catalog-products" style={{ display: "grid", gap: "var(--idea-space-5)" }}>
                 {results.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
             )}

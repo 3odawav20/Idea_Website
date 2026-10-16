@@ -6,7 +6,6 @@ import "./FeaturedCollectionStrip.css";
 import { useCollectionDestinations } from "./useCollectionDestinations";
 
 const FEATURED_COLLECTIONS = [
-  { id: "marble", label: { en: "Marble", ar: "رخام", fr: "Marbre" }, href: "/products?material=marble" },
   { id: "ceramics", label: { en: "Ceramics", ar: "سيراميك", fr: "Céramiques" }, href: "/collections/ceramics" },
   { id: "porcelain", label: { en: "Porcelain", ar: "بورسلين", fr: "Porcelaine" }, href: "/collections/porcelain" },
   { id: "tiles", label: { en: "Tiles", ar: "بلاط", fr: "Carrelage" }, href: "/products?material=tiles" },
