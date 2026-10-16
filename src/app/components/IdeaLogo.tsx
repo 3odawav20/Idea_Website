@@ -4,25 +4,26 @@ type IdeaLogoProps = {
   compact?: boolean;
 };
 
-/** The supplied IDEA Business Administration logo, always shown in full. */
+/** The supplied cream-and-orange IDEA logo, preserved without alteration. */
 export function IdeaLogo({ compact = false }: IdeaLogoProps) {
   const [failed, setFailed] = useState(false);
 
   return (
     <span
       className={`idea-official-logo ${compact ? "idea-official-logo--compact" : ""}`}
-      aria-label="IDEA Business Administration"
+      aria-label="IDEA"
       role="img"
     >
       {failed ? (
         <span className="idea-official-logo-fallback" aria-hidden="true">
           <strong>IDEA</strong>
-          <span>Business Administration</span>
         </span>
       ) : (
         <img
-          src="https://i.ibb.co/4wBqQKbz/idea-new-logo.png"
-          alt="IDEA Business Administration"
+          src="/images/brand/idea-logo-cream.png"
+          alt="IDEA"
+          width={2048}
+          height={699}
           onError={() => setFailed(true)}
         />
       )}

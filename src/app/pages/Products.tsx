@@ -7,6 +7,8 @@ import { COLLECTIONS } from "../data/catalog";
 import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
 import { Chip, Container, Section } from "../components/ui";
+import "../components/Discovery.css";
+import { isLargeFormat, isOutdoor20mm, matchesApplication, isColourLabel, isUsageLabel } from "../data/discovery";
 import { SlidersHorizontal, X } from "lucide-react";
 
 function uniq<T>(arr: (T | undefined)[]): T[] {
@@ -16,35 +18,46 @@ function uniq<T>(arr: (T | undefined)[]): T[] {
 export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug }) {
   const { t, locale } = useI18n();
   const { products } = useStore();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const q = (params.get("q") ?? "").trim().toLowerCase();
 
   const material = params.get("material");
+  const category = fixedCollection ?? params.get("category");
+  const format = params.get("format");
   const scope = useMemo(
     () => products.filter((p) => {
-      if (fixedCollection && p.collection !== fixedCollection) return false;
+      if (category && p.collection !== category) return false;
+      if (format === "large" && !isLargeFormat(p)) return false;
+      if (format === "outdoor20" && !isOutdoor20mm(p)) return false;
       if (material === "marble") return p.texture?.toLowerCase() === "marble" || p.type?.toLowerCase() === "marble";
       if (material === "tiles") return p.collection === "ceramics" || p.collection === "porcelain";
       return true;
     }),
-    [products, fixedCollection, material]
+    [products, category, material, format]
   );
 
-  // Seed filters from the hero search panel (?color=&size=&usage=&finish=).
-  const [finish, setFinish] = useState<string | null>(params.get("finish"));
-  const [size, setSize] = useState<string | null>(params.get("size"));
-  const [usage, setUsage] = useState<string | null>(params.get("usage"));
-  const [color, setColor] = useState<string | null>(params.get("color"));
+  const finish = params.get("finish");
+  const size = params.get("size");
+  const usage = params.get("usage");
+  const color = params.get("color");
+  const application = params.get("application");
+  const setFilter = (key: string, value: string | null) => setParams(old => { const next = new URLSearchParams(old); if(value) next.set(key,value); else next.delete(key); return next; });
+  const setFinish = (v:string|null) => setFilter("finish",v);
+  const setSize = (v:string|null) => setFilter("size",v);
+  const setUsage = (v:string|null) => setFilter("usage",v);
+  const setColor = (v:string|null) => setFilter("color",v);
 
   // Only build filter groups from values that actually exist (no empty filters).
   const facets = useMemo(() => ({
+    application: uniq(scope.map(p => p.application)),
     finish: uniq(scope.map((p) => p.finish)),
     size: uniq(scope.flatMap((p) => p.sizes.map((s) => s.label))),
-    usage: uniq(scope.flatMap((p) => p.usage ?? [])),
-    color: uniq(scope.flatMap((p) => p.colors ?? [])),
+    usage: uniq(scope.flatMap((p) => p.usage ?? []).filter(isUsageLabel)),
+    color: uniq(scope.flatMap((p) => p.colors ?? []).filter(isColourLabel)),
   }), [scope]);
 
   const matches = (p: Product) => {
+    if (application && !matchesApplication(p, application)) return false;
     if (finish && p.finish !== finish) return false;
     if (size && !p.sizes.some((s) => s.label === size)) return false;
     if (usage && !(p.usage ?? []).includes(usage)) return false;
@@ -57,12 +70,15 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     return true;
   };
 
+  const sort = params.get("sort") ?? "source";
   const results = scope.filter(matches);
-  const activeCount = [finish, size, usage, color].filter(Boolean).length;
+  if (sort !== "source") results.sort((a,b) => sort === "za" ? b.name[locale].localeCompare(a.name[locale]) : a.name[locale].localeCompare(b.name[locale]));
+  const activeCount = [application, finish, size, usage, color].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const clear = () => { setFinish(null); setSize(null); setUsage(null); setColor(null); };
+  const clear = () => setParams(old => {const next = new URLSearchParams(old); ["finish","size","usage","color","application","q"].forEach(k=>next.delete(k)); return next;});
 
-  const meta = fixedCollection ? COLLECTIONS.find((c) => c.slug === fixedCollection) : null;
+  const meta = category ? COLLECTIONS.find((c) => c.slug === category) : null;
+  const formatTitle = format === "large" ? { en:"Large-format tiles", ar:"بلاط بمقاسات كبيرة", fr:"Carrelage grand format" }[locale] : format === "outdoor20" ? {en:"20 mm outdoor tiles",ar:"بلاط خارجي 20 مم",fr:"Carrelage extérieur 20 mm"}[locale] : null;
   const materialTitle = material === "marble"
     ? { en: "Marble surfaces", ar: "أسطح رخامية", fr: "Surfaces marbrées" }[locale]
     : material === "tiles" ? { en: "Tiles", ar: "بلاط", fr: "Carrelage" }[locale] : null;
@@ -87,9 +103,9 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
       <Container>
         {/* Page heading */}
         <div style={{ marginBottom: "var(--idea-space-6)" }}>
-          <div className="idea-eyebrow">{meta ? COLLECTIONS.find((c) => c.slug === fixedCollection)?.group : "Gallery"}</div>
+          <div className="idea-eyebrow">{locale === "ar" ? "كتالوج المنتجات" : locale === "fr" ? "Catalogue produits" : "Product catalogue"}</div>
           <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 0" }}>
-            {meta ? meta.title[locale] : materialTitle ?? t("nav.products")}
+            {formatTitle ?? (meta ? meta.title[locale] : materialTitle ?? t("nav.products"))}
           </h1>
           {q && <p style={{ color: "var(--idea-text-muted)", marginTop: 8 }}>“{q}”</p>}
           {!q && !meta && (
@@ -128,10 +144,11 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
               <span className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{t("filters.title")}</span>
               <button onClick={clear} style={{ background: "none", border: "none", color: "var(--idea-gold)", cursor: "pointer", fontSize: "var(--idea-text-xs)" }}>{t("filters.clear")}</button>
             </div>
+            {group(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", facets.application, application, v => setFilter("application",v))}
             {group(t("filters.finish"), facets.finish, finish, setFinish)}
             {group(t("filters.size"), facets.size, size, setSize)}
             {group(t("label.usage"), facets.usage, usage, setUsage)}
-            {group("Color", facets.color, color, setColor)}
+            {group(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", facets.color, color, setColor)}
             <button className="idea-filter-show" onClick={() => setMobileOpen(false)}
               style={{
                 display: "none", width: "100%", marginTop: "var(--idea-space-4)", padding: "12px 20px",
@@ -144,16 +161,23 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           </aside>
 
           {/* Results */}
-          <div>
+          <div style={{minWidth:0}}>
+            <form onSubmit={e=>{e.preventDefault(); const data = new FormData(e.currentTarget); setFilter("q", String(data.get("q")??"").trim());}} style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>
+              <input key={q} name="q" defaultValue={q} aria-label={locale === "ar" ? "البحث بالاسم" : locale === "fr" ? "Recherche par nom" : "Search by name"} placeholder={locale === "ar" ? "اسم المنتج أو الكود" : locale === "fr" ? "Nom ou référence" : "Product name or code"} style={{flex:"1 1 180px",minWidth:0,padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}/>
+              <button type="submit" className="idea-discovery-submit">{locale === "ar" ? "ابحث" : locale === "fr" ? "Rechercher" : "Search"}</button>
+              <select aria-label={locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort products"} value={sort} onChange={e=>setFilter("sort",e.target.value)} style={{padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}><option value="source">{locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order"}</option><option value="az">A → Z</option><option value="za">Z → A</option></select>
+            </form>
             <div style={{ color: "var(--idea-text-muted)", marginBottom: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)" }}>
               {results.length} {t("label.results")}
             </div>
             {results.length === 0 ? (
               <div style={{ padding: "var(--idea-space-8)", textAlign: "center", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", color: "var(--idea-text-muted)", lineHeight: 1.7 }}>
                 {t("empty.products")}
+                {(category === "porcelain" || material === "marble" || format) && <p>{locale === "ar" ? "لا توجد منتجات موثقة بهذه المواصفات في البيانات الحالية. لا يعني ذلك تأكيد عدم توفرها لدى الموردين." : locale === "fr" ? "Aucun produit documenté avec ces spécifications. Cela ne confirme pas l’absence de stock chez les fournisseurs." : "No products are documented with these specifications in the current data. Supplier stock has not been confirmed."}</p>}
+                <button onClick={clear} style={{color:"var(--idea-gold-bright)",background:"none",border:0,cursor:"pointer",marginTop:16}}>{t("filters.clear")}</button>
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
+              <div className="idea-product-results" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-5)" }}>
                 {results.map((p) => <ProductCard key={p.id} product={p} />)}
               </div>
             )}
@@ -161,6 +185,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
         </div>
       </Container>
       <style>{`
+        @media (max-width: 1200px){ .idea-product-results {grid-template-columns:repeat(2,minmax(0,1fr)) !important;} }
         @media (max-width: 860px){
           .idea-gallery-grid{ grid-template-columns: 1fr !important; }
           .idea-filter-toolbar{ display: flex !important; }

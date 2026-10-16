@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { X } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
+import { useStore } from "../store/store";
 
 const MESSAGES = [
   { en: "475 Products · Ceramics · Porcelain · Sanitary Ware · Faucets", ar: "475 منتجاً · سيراميك · بورسلين · أدوات صحية · خلاطات", fr: "475 produits · Céramique · Porcelaine · Sanitaire · Robinetterie" },
@@ -11,6 +12,7 @@ const MESSAGES = [
 
 export function AnnouncementBar() {
   const { locale } = useI18n();
+  const { products } = useStore();
   const [dismissed, setDismissed] = useState(false);
   const [msgIndex] = useState(0);
 
@@ -51,7 +53,7 @@ export function AnnouncementBar() {
         lineHeight: 1,
       }}>
         <span style={{ color: "var(--idea-gold-bright)", marginInlineEnd: 10 }}>✦</span>
-        {msg[locale]}
+        {locale === "ar" ? `${products.length} منتج في الكتالوج · استكشف الخامات وخطط مساحتك` : locale === "fr" ? `${products.length} produits au catalogue · Explorez et concevez` : `${products.length} products in the catalogue · Explore surfaces & plan your space`}
         <span style={{ color: "var(--idea-gold-bright)", marginInlineStart: 10 }}>✦</span>
         {" "}
         <Link

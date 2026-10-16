@@ -8,6 +8,7 @@ import { useBackend } from "../backend/db";
 import type { Locale } from "../data/types";
 import { Container } from "./ui";
 import { IdeaLogo } from "./IdeaLogo";
+import { DiscoveryNavigation } from "./DiscoveryNavigation";
 
 const LOCALES: { code: Locale; label: string }[] = [
   { code: "en", label: "EN" },
@@ -67,19 +68,9 @@ export function Header() {
     }}>
       <Container style={{ display: "flex", alignItems: "center", gap: "var(--idea-space-4)", height: 78 }}>
         {/* Logo */}
-        <Link to="/" aria-label="IDEA Business Administration — Home" style={{ display: "inline-flex", lineHeight: 1, textDecoration: "none", flexShrink: 0 }}>
+        <Link to="/" aria-label="IDEA — Home" style={{ display: "inline-flex", lineHeight: 1, textDecoration: "none", flexShrink: 0 }}>
           <IdeaLogo compact />
         </Link>
-
-        {/* Desktop nav */}
-        <nav style={{ display: "flex", gap: "var(--idea-space-4)", marginInlineStart: "var(--idea-space-3)" }} className="idea-desktop-nav">
-          {links.map((l) => (
-            <Link key={l.to} to={l.to} className="idea-nav-link" style={{
-              color: "var(--idea-text-muted)", textDecoration: "none", fontSize: "var(--idea-text-xs)",
-              letterSpacing: "0.04em", textTransform: "uppercase", transition: "color .2s", position: "relative", whiteSpace: "nowrap",
-            }}>{l.label}</Link>
-          ))}
-        </nav>
 
         <div className="idea-header-actions" style={{ marginInlineStart: "auto", display: "flex", alignItems: "center", gap: "var(--idea-space-4)" }}>
           {/* Search (desktop) */}
@@ -113,22 +104,24 @@ export function Header() {
           <span className="idea-mobile-optional"><IconLink to="/request-quote/new" label={t("quote.title")} count={quote.length}><FileText size={20} /></IconLink></span>
           <IconLink to={session ? (session.role === "business" ? "/business" : session.role === "admin" ? "/admin" : "/account") : "/login"} label={session ? t("nav.account") : t("nav.signIn")}><User size={20} /></IconLink>
 
-          <button className="idea-menu-btn" onClick={() => setOpen((o) => !o)} aria-label="Menu"
+          <button className="idea-menu-btn" onClick={() => setOpen((o) => !o)} aria-label="Menu" aria-expanded={open}
             style={{ background: "none", border: "none", color: "var(--idea-text)", cursor: "pointer", display: "none" }}>
             {open ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </Container>
 
+      <div className="idea-discovery-desktop-only"><DiscoveryNavigation /></div>
       {/* Mobile drawer */}
       {open && (
-        <div style={{ borderTop: "var(--idea-hairline)", background: "var(--idea-bg-2)", padding: "var(--idea-space-4) 0" }}>
+        <div onKeyDown={e => {if(e.key === "Escape") setOpen(false);}} style={{ borderTop: "var(--idea-hairline)", background: "var(--idea-bg-2)", padding: "var(--idea-space-4) 0", maxHeight: "calc(100dvh - 120px)", overflowY: "auto" }}>
           <Container style={{ display: "flex", flexDirection: "column", gap: "var(--idea-space-3)" }}>
             <form onSubmit={submit} style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--idea-surface-2)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)", padding: "10px 16px" }}>
               <Search size={16} color="var(--idea-gold)" />
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("search.placeholder")}
                 style={{ background: "transparent", border: "none", outline: "none", color: "var(--idea-text)", width: "100%", fontFamily: "var(--idea-font-body)" }} />
             </form>
+            <div className="idea-discovery-mobile-only"><DiscoveryNavigation onNavigate={() => setOpen(false)} /></div>
             {links.map((l) => (
               <Link key={l.to} to={l.to} onClick={() => setOpen(false)} style={{ color: "var(--idea-text)", textDecoration: "none", padding: "8px 0", textTransform: "uppercase", fontSize: "var(--idea-text-sm)", letterSpacing: "0.06em" }}>{l.label}</Link>
             ))}
