@@ -18,3 +18,92 @@
 @media(max-width:800px) { .idea-home-section { width:calc(100% - 40px); padding:48px 0; }.idea-home-story,.idea-home-story-reverse { grid-template-columns:1fr; gap:24px; margin-bottom:48px; }.idea-home-story-reverse .idea-home-story-image { order:0; }.idea-home-story-image { aspect-ratio:16/10; }.idea-home-looks { gap:12px; }.idea-home-looks span { font-size:12px; }.idea-home-room { min-height:460px; padding:48px 24px; }.idea-home-bath-grid,.idea-home-products { grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }.idea-home-story-copy h2 { font-size:30px; } }
 @media(max-width:420px) { .idea-home-looks { grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }.idea-home-bath-card span { inset-inline-start:8px; bottom:8px; font-size:14px; max-width:calc(100% - 16px); }.idea-home-products { gap:10px; } }
 @media(prefers-reduced-motion:reduce) { .idea-home-story-image img { transition:none; } }
+
+
+/* IDEA mobile discovery QA: even rows across iPhone and Android.
+   Six look cards: 3+3 (>= 361px), 2+2+2 on narrower phones.
+   Eight destination cards: four complete 2-card rows on phones. */
+.idea-home-looks {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(12px, 2vw, 22px);
+  max-width: 1080px;
+  justify-items: stretch;
+}
+.idea-home-looks > a,
+.idea-destination-grid > a {
+  display: block;
+  min-width: 0;
+  width: 100%;
+  text-decoration: none;
+}
+.idea-home-looks > a img,
+.idea-destination-grid > a img {
+  display: block;
+  width: 100%;
+}
+.idea-home-looks > a img {
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.idea-home-looks > a span,
+.idea-destination-grid > a span {
+  display: block;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+  line-height: 1.35;
+}
+.idea-home-looks > a:focus-visible,
+.idea-destination-grid > a:focus-visible {
+  outline: 2px solid var(--idea-gold-bright);
+  outline-offset: 4px;
+}
+@media (max-width: 1000px) {
+  .idea-home-looks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .idea-home-look-section,
+  .idea-home-editorial .idea-home-section:has(.idea-destination-grid) {
+    width: min(100% - 32px, 560px);
+  }
+  .idea-home-looks {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px 12px;
+  }
+  .idea-home-looks > a span {
+    margin-top: 9px;
+    font-size: clamp(11px, 2.9vw, 13px);
+    min-height: 2.7em;
+  }
+  .idea-destination-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 14px;
+  }
+  .idea-destination-grid > a img {
+    aspect-ratio: 4 / 3;
+  }
+  .idea-destination-grid > a span {
+    padding-top: 9px;
+    font-size: clamp(13px, 3.5vw, 15px);
+    min-height: 2.7em;
+  }
+  .idea-home-centered-title {
+    font-size: clamp(24px, 6vw, 32px);
+    margin-bottom: 26px;
+    overflow-wrap: break-word;
+    text-wrap: balance;
+  }
+}
+@media (max-width: 360px) {
+  .idea-home-looks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 300px;
+    gap: 18px 20px;
+    margin-inline: auto;
+  }
+  .idea-destination-grid {
+    gap: 18px 10px;
+  }
+}
