@@ -54,7 +54,7 @@ export function ProductCard({ product }: { product: Product }) {
           {product.finish && <Tag>{product.finish}</Tag>}
           {product.variant && <Tag>{product.variant}</Tag>}
         </div>
-        <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+        <div className="idea-product-actions" style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
           <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{t("price.hidden")}</span>
           <button onClick={() => addToQuote(product.id, unit)} style={{
             display: "inline-flex", alignItems: "center", gap: 6, background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)",
