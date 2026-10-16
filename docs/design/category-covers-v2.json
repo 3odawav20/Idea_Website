@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image generation",
+  "assetType": "Inspirational exterior category cover; not a specific SKU photograph",
+  "format": "1600x900 WebP",
+  "sharedPrompt": "One standalone landscape 16:9 photorealistic premium architectural interior category cover, high resolution, natural materials and lighting, rich harmonious colours, no people/text/logos/watermarks/collage. Category material is the clear visual subject.",
+  "scenes": {
+    "porcelain": "A sophisticated airy penthouse living room with enormous ivory satin-finish porcelain slabs on the floor and a matching feature wall, precise minimal grout lines, subtle cloudlike cream mineral movement, rich curved cognac leather sofa, single olive tree, warm bronze accents and broad soft daylight. Porcelain floor fills 60 percent of the image, floor-level architectural wide lens, very elegant contemporary Italian catalog composition. Visually distinct from natural marble, restrained pattern, large smooth slabs.",
+    "ceramics": "A joyful sophisticated designer bathroom with small rich emerald and jade glazed ceramic tiles, handmade tactile glaze variations and visible neat grout on the wall, a sculptural ivory ceramic basin, walnut floating vanity, soft brass fixtures, delicate plants and daylight. Teal green and warm walnut palette, clearly glazed ceramic rather than marble. Beautiful realistic ceramic surface reflections, uncluttered composition, wall tiles fill 60 percent.",
+    "tiles": "An exquisite sunlit Mediterranean indoor-outdoor dining patio featuring decorative geometric terracotta, cobalt blue and ivory patterned cement-look floor tiles with accurate repeating layout and clearly visible grout, cream limewash walls, refined woven chairs, olive branches. The patterned tile floor fills 65 percent of the frame, inviting rich fresh colors, luxurious architectural magazine style. Strong category cover for decorative floor tiles.",
+    "marble": "A breathtaking contemporary interior with a monumental genuine natural green Verde Alpi marble feature wall with expressive white crystalline veins, polished green marble console and a calm cream stone floor, warm sculptural bronze lamp, a single burgundy velvet chair. Rich forest green, wine red and champagne palette, close architectural wide composition focused on the unique natural marble veining and depth. Natural marble is unmistakable hero, exceptionally premium."
+  }
+}
