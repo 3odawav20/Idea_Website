@@ -4,6 +4,8 @@ import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
 import { useBackend } from "../backend/db";
 import { requireSupabase } from "../backend/supabaseClient";
+import { supabase } from "../backend/supabaseClient";
+import { applyAdminOverride, normalizeAdminOverride, type AdminOverride } from "../data/catalogueOverrides";
 
 export interface QuoteItem {
   productId: string;
@@ -13,6 +15,7 @@ export interface QuoteItem {
 
 interface StoreCtx {
   products: Product[];
+  adminProducts: Product[];
   favorites: string[];
   quote: QuoteItem[];
   compare: string[];
@@ -48,12 +51,43 @@ function usePersisted<T>(key: string, initial: T): [T, React.Dispatch<React.SetS
 
 export function StoreProvider({ children }: { children: ReactNode }) {
   // Products imported from the source export. Unconfirmed fields stay empty.
-  const [products, setProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS);
+  const [rawProducts, setRawProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS);
+  const [overrides, setOverrides] = useState<Map<string, AdminOverride>>(new Map());
   useEffect(() => {
     fetchAbaElMozahemProducts()
-      .then((incoming) => setProducts((current) => [...current, ...incoming.filter((product) => !current.some((existing) => existing.id === product.id))]))
-      .catch(() => { /* Source remains staged in registry; keep verified local catalogue available. */ });
+      .then((incoming) => setRawProducts((current) => [...current, ...incoming.filter((product) => !current.some((existing) => existing.id === product.id))]))
+      .catch(() => { /* Imports stay staged; no public approval is implied. */ });
   }, []);
+  useEffect(() => {
+    if (!supabase) return;
+    let active = true;
+    const fetchOverrides = async () => {
+      const { data, error } = await supabase.from("catalogue_admin_overrides")
+        .select("product_id,visible,name_en,brand,collection,image_url,source_proof_url,updated_at");
+      if (!active) return;
+      if (error) {
+        // The dashboard reports missing schema; the public site keeps its static,
+        // approved catalogue instead of failing or inventing data.
+        console.warn("IDEA admin overrides unavailable:", error.message);
+        return;
+      }
+      setOverrides(new Map((data || []).map(row => [row.product_id, normalizeAdminOverride(row)])));
+    };
+    void fetchOverrides();
+    window.addEventListener("idea:catalogue-updated", fetchOverrides);
+    return () => {
+      active = false;
+      window.removeEventListener("idea:catalogue-updated", fetchOverrides);
+    };
+  }, []);
+  const adminProducts = useMemo(() => rawProducts.map(product => {
+    const correction = overrides.get(product.id);
+    return correction ? applyAdminOverride(product, correction) : product;
+  }), [rawProducts, overrides]);
+  // Static approval cannot be granted through a cosmetic admin override.
+  const products = useMemo(() => adminProducts.filter(product =>
+    product.approved && overrides.get(product.id)?.visible !== false
+  ), [adminProducts, overrides]);
   const { session } = useBackend();
   const [favorites, setFavorites] = useState<string[]>([]);
   useEffect(() => {
@@ -67,6 +101,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const value = useMemo<StoreCtx>(
     () => ({
       products,
+      adminProducts,
       favorites,
       quote,
       compare,
@@ -92,7 +127,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       removeFromQuote: (id) => setQuote((q) => q.filter((i) => i.productId !== id)),
       clearQuote: () => setQuote([]),
     }),
-    [products, favorites, quote, compare, session, setQuote, setCompare]
+    [products, adminProducts, favorites, quote, compare, session, setQuote, setCompare]
   );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
