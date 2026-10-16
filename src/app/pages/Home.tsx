@@ -25,6 +25,7 @@ export function Home() {
   return (
     <div className="idea-home-editorial">
       <HeroCarousel />
+      <HeroSearchPanel />
       <FeaturedCollectionStrip />
       <section className="idea-home-section">
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
@@ -62,7 +63,6 @@ export function Home() {
         <div className="idea-home-products">{products.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} />)}</div>
         <div className="idea-home-center"><Link className="idea-home-text-link" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link></div>
       </section>}
-      <HeroSearchPanel />
       <section className="idea-home-section idea-home-quote"><h2>{t("home.bestPrice")}</h2><p>{t("home.bestPriceBody")}</p>
         <Link className="idea-home-text-link" to="/request-quote/new">{t("action.requestPrice")} <ArrowRight size={16} /></Link>
       </section>
