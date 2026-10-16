@@ -55,8 +55,7 @@ export function FeaturedCollectionStrip() {
   const move = (step: number) => {
     const el = rail.current;
     if (!el) return;
-    const card = el.firstElementChild as HTMLElement | null;
-    el.scrollBy({ left: step * ((card?.offsetWidth ?? el.clientWidth) + Number.parseFloat(getComputedStyle(el).columnGap || "0")), behavior: reduced.current ? "instant" : "smooth" });
+    el.scrollBy({ left: step * (el.clientWidth + Number.parseFloat(getComputedStyle(el).columnGap || "0")), behavior: reduced.current ? "instant" : "smooth" });
   };
   useEffect(() => {
     if (!playing || interacting) return;
@@ -105,7 +104,7 @@ export function FeaturedCollectionStrip() {
           onKeyDown={(e) => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); setPlaying(false); move(e.key === "ArrowLeft" ? -1 : 1); } }}>
           {featured.map((look) => (
             <Link key={look.id} className="idea-featured-card" to={destinations[look.id as keyof typeof destinations]} draggable={false} dir={locale === "ar" ? "rtl" : "ltr"}>
-              <img src={`/images/featured/${look.id}.webp`} alt={look.label[locale]} loading="lazy" width={1600} height={900} draggable={false} />
+              <img src={`/images/category-covers/${look.id}-v2.webp`} alt={look.label[locale]} loading="lazy" width={1600} height={900} draggable={false} />
               <span className="idea-featured-label">{look.label[locale]}</span>
             </Link>
           ))}

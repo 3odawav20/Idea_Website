@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-16",
+  "scope": "Repository import adapters, embedded Art Ceramic export, and current AbaElMozahem ceramic products endpoint; not a physical stock verification.",
+  "productRecords": {
+    "artCeramic": 475,
+    "abaElMozahem": 224,
+    "combined": 699
+  },
+  "materialClassification": {
+    "renderedCollection": "All imported records are currently assigned ceramics by the two adapters. This is not independent material certification.",
+    "certifiedPorcelainRecords": 0,
+    "certifiedNaturalMarbleRecords": 0,
+    "separateTilesCollection": false,
+    "artCeramicRecordsWithExplicitMaterialField": 0,
+    "abaRecordsWithEmptyProductType": 224
+  },
+  "artCeramic": {
+    "distinctNormalizedColorStrings": 46,
+    "missingColor": 11,
+    "finishes": {
+      "Matt": 255,
+      "Glossy": 119,
+      "Nature / Matt": 71,
+      "High Resistance / Matt": 22,
+      "Anti Slip / Matt": 8
+    },
+    "uniqueImageUrls": 3434,
+    "recordsWithTileImages": 475
+  },
+  "abaElMozahem": {
+    "brands": {
+      "ART": 49,
+      "Prima": 36,
+      "Cleopatra": 62,
+      "Granito": 69,
+      "GEMMA": 8
+    },
+    "uniqueImageUrls": 692,
+    "missingImages": 0,
+    "porcelainOrMarbleNameTagMentions": 0
+  },
+  "strip": {
+    "realProductSwatches": 17,
+    "source": "Art Ceramic source tiles[] images",
+    "localOptimizedImages": true,
+    "eachLinksToProduct": true
+  },
+  "limits": [
+    "All image URLs were counted, not all checked for availability. The 17 selected swatch images were downloaded and decoded successfully.",
+    "Source records remain staged/needs-human-review in the adapters.",
+    "No supplier stock, complete porcelain coverage, natural marble inventory or every tile type has been verified.",
+    "The old material showcase was demonstrative; the new material rail links actual source products.",
+    "Aba catalogue is fetched at runtime and cached; count may differ if that fetch fails or the source changes."
+  ]
+}

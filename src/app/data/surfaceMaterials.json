@@ -1,0 +1,189 @@
+[
+  {
+    "id": "58",
+    "slug": "galaxy-blue-58",
+    "name": "Galaxy Blue",
+    "color": "BLUE",
+    "finish": "Matt",
+    "image": "/images/materials/58.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_GALAXY_BLUE_2_4680f7f340.jpg",
+    "width": 375,
+    "height": 750
+  },
+  {
+    "id": "59",
+    "slug": "galaxy-dark-green-59",
+    "name": "Galaxy  Dark Green",
+    "color": "GREEN",
+    "finish": "Matt",
+    "image": "/images/materials/59.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_GALAXY_GREEN_8_96c3de8dd8.jpg",
+    "width": 375,
+    "height": 750
+  },
+  {
+    "id": "147",
+    "slug": "mosaic-ocean-teal-147",
+    "name": "Mosaic Ocean Teal",
+    "color": "TEAL",
+    "finish": "Matt",
+    "image": "/images/materials/147.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_Mosaic_Ocean_Teel_F1_7adf77ffa4.jpg",
+    "width": 750,
+    "height": 250
+  },
+  {
+    "id": "146",
+    "slug": "mosaic-ocean-blue-146",
+    "name": "Mosaic Ocean Blue",
+    "color": "BLUE",
+    "finish": "Matt",
+    "image": "/images/materials/146.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_Mosaic_Ocean_Blue_F6_d2c74f8c69.jpg",
+    "width": 750,
+    "height": 250
+  },
+  {
+    "id": "32",
+    "slug": "lava-32",
+    "name": "Lava",
+    "color": "RED",
+    "finish": "Nature / Matt",
+    "image": "/images/materials/32.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_LAVA_RED_F2_2066088445.jpg",
+    "width": 258,
+    "height": 750
+  },
+  {
+    "id": "190",
+    "slug": "euphoria-mauve-190",
+    "name": "Euphoria Mauve",
+    "color": "MAUVE",
+    "finish": "Matt",
+    "image": "/images/materials/190.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_EUPHORIA_LIGHT_GREY_F2_b230bff480.jpg",
+    "width": 750,
+    "height": 252
+  },
+  {
+    "id": "166",
+    "slug": "image-wood-cafe-166",
+    "name": "Image Wood Cafe",
+    "color": "CAFE",
+    "finish": "Matt",
+    "image": "/images/materials/166.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_IMAGE_WOOD_CAFE_F3_c240c7e03d.jpg",
+    "width": 750,
+    "height": 250
+  },
+  {
+    "id": "170",
+    "slug": "image-wood-greyish-170",
+    "name": "Image Wood Greyish",
+    "color": "GREYISH",
+    "finish": "Matt",
+    "image": "/images/materials/170.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_Image_Wood_Greyish_F1_cdb88a72b3.jpg",
+    "width": 750,
+    "height": 251
+  },
+  {
+    "id": "106",
+    "slug": "soil-106",
+    "name": "Soil",
+    "color": "BLACK MIX",
+    "finish": "Glossy",
+    "image": "/images/materials/106.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_Soil_4_b3c760a820.jpg",
+    "width": 375,
+    "height": 750
+  },
+  {
+    "id": "48",
+    "slug": "canyon-48",
+    "name": "Canyon",
+    "color": "GREEN X TEAL",
+    "finish": "Nature / Matt",
+    "image": "/images/materials/48.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_CANYON_GREEN_X_TEAL_F2_7a97b8b98c.jpg",
+    "width": 750,
+    "height": 380
+  },
+  {
+    "id": "199",
+    "slug": "beaurivage-green-199",
+    "name": "Beaurivage Green",
+    "color": "GREEN",
+    "finish": "Glossy",
+    "image": "/images/materials/199.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_BEAURIVAGE_LIGHT_GREY_F3_23735cd1dc.jpg",
+    "width": 750,
+    "height": 376
+  },
+  {
+    "id": "53",
+    "slug": "cuba-ivory-53",
+    "name": "Cuba   Ivory",
+    "color": "IVORY",
+    "finish": "Glossy",
+    "image": "/images/materials/53.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_CUBA_IVORY_F3_c9e44c1154.jpg",
+    "width": 750,
+    "height": 375
+  },
+  {
+    "id": "93",
+    "slug": "grand-black-93",
+    "name": "Grand Black",
+    "color": "BLACK",
+    "finish": "Matt",
+    "image": "/images/materials/93.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_Grand_black_3_c448ccac94.jpg",
+    "width": 375,
+    "height": 750
+  },
+  {
+    "id": "95",
+    "slug": "manila-95",
+    "name": "Manila",
+    "color": "GREY",
+    "finish": "Matt",
+    "image": "/images/materials/95.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_MANILA_F4_502143991b.jpg",
+    "width": 375,
+    "height": 750
+  },
+  {
+    "id": "67",
+    "slug": "orbit-67",
+    "name": "Orbit",
+    "color": "DARK BEIGE",
+    "finish": "Matt",
+    "image": "/images/materials/67.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_ORBIT_DARK_BEIGE_f7_1832968df2.jpg",
+    "width": 380,
+    "height": 750
+  },
+  {
+    "id": "42",
+    "slug": "oprah-42",
+    "name": "Oprah",
+    "color": "CELESTE",
+    "finish": "Matt",
+    "image": "/images/materials/42.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_OPRAH_CELESTE_F2_ab905b8878.jpg",
+    "width": 250,
+    "height": 750
+  },
+  {
+    "id": "96",
+    "slug": "rocket-96",
+    "name": "Rocket",
+    "color": "IVORY /  TEAL",
+    "finish": "Matt",
+    "image": "/images/materials/96.webp",
+    "sourceImage": "https://dashboard.artceramic-egypt.com/uploads/medium_ROCKET_IVORY_23_4e00d44217.jpg",
+    "width": 381,
+    "height": 750
+  }
+]

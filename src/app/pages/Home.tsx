@@ -6,6 +6,7 @@ import { COLLECTIONS } from "../data/catalog";
 import { HeroCarousel } from "../components/HeroCarousel";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
+import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import "./Home.css";
 import { useCollectionDestinations } from "../components/useCollectionDestinations";
@@ -13,12 +14,6 @@ import { useCollectionDestinations } from "../components/useCollectionDestinatio
 const EDITORIALS = [
   { image: "porcelain", href: "/collections/porcelain", title: { en: "Porcelain. A new perspective on space.", ar: "بورسلين. منظور جديد للمساحة.", fr: "Porcelaine. Une nouvelle perspective." }, body: { en: "Explore luminous surfaces, subtle veining and generous formats for considered interiors.", ar: "اكتشف أسطح مضيئة وعروق ناعمة ومقاسات واسعة لمساحات متناسقة.", fr: "Des surfaces lumineuses et de grands formats pour des intérieurs raffinés." } },
   { image: "ceramics", href: "/collections/ceramics", title: { en: "Ceramics. Colour with character.", ar: "سيراميك. ألوان لها شخصية.", fr: "Céramique. Des couleurs de caractère." }, body: { en: "From rich glazed walls to elegant floors, find the finish that makes a room yours.", ar: "من الحوائط اللامعة للأرضيات الأنيقة، اختار اللمسة اللي تعبّر عنك.", fr: "Des murs émaillés aux sols élégants, trouvez la finition qui vous ressemble." } },
-];
-const LOOKS = [
-  { id: "stone", en: "Stone", ar: "حجر", fr: "Pierre" },
-  { id: "wood", en: "Wood", ar: "خشب", fr: "Bois" },
-  { id: "colour", en: "Colour", ar: "ألوان", fr: "Couleur" },
-  { id: "pattern", en: "Pattern", ar: "نقوش", fr: "Motif" },
 ];
 const BATH_SLUGS = ["bathroom-sets", "bathroom-units", "faucets", "shower-units", "bathtubs", "bathroom-accessories"];
 
@@ -44,15 +39,7 @@ export function Home() {
           </article>
         ))}
       </section>
-      <section className="idea-home-section idea-home-look-section">
-        <h2 className="idea-home-centered-title">{text("Search by look", "اختار حسب الخامة", "Rechercher par aspect")}</h2>
-        <div className="idea-home-looks">{LOOKS.map((look) => (
-          <Link key={look.id} to={`/tile-showroom/${look.id}`}>
-            <img src={`/images/featured/${look.id}.webp`} alt="" width={320} height={320} loading="lazy" />
-            <span>{look[locale]}</span>
-          </Link>
-        ))}</div>
-      </section>
+      <SurfaceMaterialStrip />
       <section className="idea-home-room">
         <img src="/images/featured/wood.webp" alt={text("Warm wood-effect floor in a living room", "أرضية بتأثير خشبي في غرفة معيشة", "Sol effet bois dans un salon")} loading="lazy" width={1600} height={900} />
         <div><h2>{text("Imagine it in your home.", "تخيّلها في بيتك.", "Imaginez-le chez vous.")}</h2>
