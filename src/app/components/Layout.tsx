@@ -4,6 +4,7 @@ import { motion, useScroll, useSpring, useReducedMotion, AnimatePresence } from 
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { AnnouncementBar } from "./AnnouncementBar";
+import { VisitorWelcome } from "./VisitorWelcome";
 
 export function Layout() {
   const { pathname } = useLocation();
@@ -46,6 +47,7 @@ export function Layout() {
         </AnimatePresence>
       </main>
       <Footer />
+      <VisitorWelcome />
     </div>
   );
 }
