@@ -1,0 +1,39 @@
+import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';import fs from 'node:fs';
+const php=process.env.IDEA_TEST_PHP||'php';
+const root=process.cwd(),fixture=root+'/artifacts/php-accounts-test/accounts.sqlite';
+const maintenance=(...args)=>execFileSync(php,[...(process.platform==='win32'&&process.env.IDEA_TEST_PHP?['-d','extension_dir='+php.replaceAll('\\','/').slice(0,php.replaceAll('\\','/').lastIndexOf('/'))+'/ext','-d','extension=pdo_sqlite']:[]),'scripts/account-test-fixture.php',fixture,...args]);maintenance('clear-rates');
+const used=JSON.parse(maintenance('used-products').toString()),catalogue=JSON.parse(fs.readFileSync('src/app/data/artceramic.json'));
+const [catalogueProduct,unrelatedProduct]=catalogue.filter(item=>!used.includes(item.id)).slice(0,2);
+const catalogueId=catalogueProduct.id,otherId=unrelatedProduct.id;
+const suffix=Date.now(),profile={categories:['ceramic','porcelain','marble'],primary_category:'ceramic',contract_volume:'500k_2m',company_type:'wholesaler',governorate:'Cairo',service_areas:'Cairo, Giza',brands:'Art Ceramic',capacity:'5000',minimum_order:'10',years_active:'8',website:'',commercial_registration:'TEST-CR',tax_number:'TEST-TAX'};
+function client(){let cookie='',csrf='';return {async call(action,data,expected=200){const res=await fetch('http://127.0.0.1:5180/api/accounts.php?action='+action,{method:data?'POST':'GET',headers:{...(cookie?{Cookie:cookie}:{}),...(data?{'X-CSRF-Token':csrf,...(data instanceof FormData?{}:{'Content-Type':'application/json'})}:{})},body:data?data instanceof FormData?data:JSON.stringify(data):undefined});for(const line of res.headers.getSetCookie())if(line.startsWith('IDEASESSID='))cookie=line.split(';')[0];const payload=await res.json();if(payload.csrf)csrf=payload.csrf;assert.equal(res.status,expected,action+': '+JSON.stringify(payload));return payload;},get cookie(){return cookie;}};}
+const buyer=client(),a=client(),b=client(),other=client(),admin=client(),outsider=client();for(const c of [buyer,a,b,other,admin,outsider])await c.call('session');
+const password='Local-Test-Password-123';
+const buyerData=await buyer.call('register',{email:`buyer-${suffix}@example.test`,password,display_name:'Test Buyer',account_type:'customer',role:'admin'});assert.equal(buyerData.user.role,'buyer');
+const suppliers=[];for(const [index,c] of [a,b,other].entries()){
+ const email=`supplier-${index}-${suffix}@example.test`;const record=await c.call('register',{email,password,display_name:'Test Supplier '+index,account_type:'business',company_name:'Test Tiles '+index,legal_name:'Test Tiles '+index+' LLC',phone:'+201000000000',business_profile:profile,status:'verified',role:'admin'});
+ assert.equal(record.user.role,'supplier');assert.equal(record.company.status,'submitted');assert.deepEqual(record.company.business_details,profile);suppliers.push({...record,email});
+}
+await outsider.call('register',{email:`outsider-${suffix}@example.test`,password,display_name:'Other buyer',account_type:'customer'});
+const adminEmail=`admin-${suffix}@example.test`;const adminRecord=await admin.call('register',{email:adminEmail,password,display_name:'Local test administrator',account_type:'customer'});maintenance('admin',adminEmail);
+await admin.call('login',{email:adminEmail,password});
+const specs={brand:'Art Ceramic',material:'ceramic',dimensions:'30 × 90',description:'Test tile',image:''};
+const pa=await a.call('product',{title:catalogueProduct.name,catalog_product_id:catalogueId,sku:'TEST',specifications:specs});
+await a.call('publish',{id:pa.id},403);await a.call('admin-overview',undefined,403);await buyer.call('products',undefined,403);await a.call('membership',{audience:'customer',interval:'monthly'},403);
+const pb=await b.call('product',{title:catalogueProduct.name,catalog_product_id:catalogueId,specifications:specs}),po=await other.call('product',{title:unrelatedProduct.name,catalog_product_id:otherId,specifications:specs});
+for(const record of suppliers)await admin.call('admin-company',{id:record.company.id,status:'verified'});
+await a.call('publish',{id:pa.id});await b.call('publish',{id:pb.id});await other.call('publish',{id:po.id});
+const request=await buyer.call('request-quotes',{items:[{product_id:catalogueId,quantity:10,unit:'sqm'}],governorate:'Cairo',destination:'Test address',notes:'10 square metres',hours:24});assert.equal(request.requests[0].recipient_count,2);const requestId=request.requests[0].id;
+assert.equal((await a.call('mailbox')).requests.length,1);assert.equal((await b.call('mailbox')).requests.length,1);assert.equal((await other.call('mailbox')).requests.length,0);assert.equal((await outsider.call('mailbox')).requests.length,0);
+const quote={request_id:requestId,unit_price:100,quantity:10,shipping:50,tax_percent:14,delivery_days:3,validity_days:7,notes:'Test offer'};
+await other.call('price-quote',quote,404);await buyer.call('price-quote',quote,403);
+const qa=await a.call('price-quote',quote);assert.equal(qa.total,1190);await b.call('price-quote',{...quote,unit_price:90,shipping:100});
+const incoming=await buyer.call('mailbox');assert.equal(incoming.quotes.length,2);assert.equal((await a.call('mailbox')).quotes.length,1);assert.equal((await outsider.call('mailbox')).quotes.length,0);
+await admin.call('admin-reply',{id:buyerData.user.id,body:'Your quotation request is being reviewed.'});assert.equal((await buyer.call('mailbox')).messages.length,1);
+await buyer.call('favorite',{product_id:'494',active:true});assert.deepEqual((await buyer.call('favorites')).favorites,['494']);
+const bad=await fetch('http://127.0.0.1:5180/api/accounts.php?action=membership',{method:'POST',headers:{Cookie:buyer.cookie,'Content-Type':'application/json'},body:JSON.stringify({audience:'customer',interval:'monthly'})});assert.equal(bad.status,403);
+const overview=await admin.call('admin-overview');assert(overview.requests.some(r=>r.id===requestId));assert(overview.quotes.length>=2);
+await buyer.call('logout',{});assert.equal((await buyer.call('session')).user,null);
+await buyer.call('login',{email:`buyer-${suffix}@example.test`,password});assert.equal((await buyer.call('mailbox')).quotes.length,2);
+fs.writeFileSync('artifacts/account-test-records.json',JSON.stringify({password,buyerEmail:`buyer-${suffix}@example.test`,adminEmail,suppliers:suppliers.map(s=>({email:s.email,id:s.user.id,companyId:s.company.id})),requestId,productId:pa.id,catalogueId,productName:catalogueProduct.name,slug:catalogueProduct.slug}));
+console.log('PASS: real PHP sessions and password hashing; customer/company questionnaire persistence; company approval; same-product fan-out to 2 suppliers; unrelated suppliers/buyers excluded; private quotes and totals; admin replies; favourites; CSRF; logout/login persistence. Local DB fixture is SQLite; production MySQL deployment remains untested.');

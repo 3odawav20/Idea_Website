@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { ShieldCheck, Lock } from "lucide-react";
@@ -17,6 +18,8 @@ const METHODS: { key: PaymentMethodKey; tKey: string; marks: () => React.ReactNo
 const chip: React.CSSProperties = { background: "var(--idea-surface)", borderRadius: "var(--idea-radius-sm)", padding: "var(--idea-space-1) var(--idea-space-2)", display: "inline-flex", alignItems: "center" };
 
 export function Checkout() {
+  const uiText = useLocaleText();
+
   const [sp] = useSearchParams();
   const { t } = useI18n();
   const { db, api, session } = useBackend();
@@ -33,7 +36,7 @@ export function Checkout() {
   const cfg = db.payments.find((p) => p.key === method);
 
   if (!session) { nav("/login"); return null; }
-  if (!order && !plan) return <Section style={{ paddingTop: "var(--idea-space-8)" }}><Container style={{ maxWidth: 560 }}><EmptyState title="Nothing to pay" sub="Accept an offer or choose a subscription plan." /></Container></Section>;
+  if (!order && !plan) return <Section style={{ paddingTop: "var(--idea-space-8)" }}><Container style={{ maxWidth: 560 }}><EmptyState title={uiText("Nothing to pay")} sub={uiText("Accept an offer or choose a subscription plan.")} /></Container></Section>;
 
   const pay = () => {
     // Sandbox only: a method must be enabled with configured merchant creds to "authorize".
@@ -49,14 +52,14 @@ export function Checkout() {
         <Container style={{ maxWidth: 520, textAlign: "center" }}>
           <Panel>
             <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: done === "ok" ? "var(--idea-gold-bright)" : "var(--idea-danger)" }}>
-              {done === "ok" ? "Sandbox payment authorized" : "Payment could not be completed"}
+              {uiText(done === "ok" ? "Sandbox payment authorized" : "Payment could not be completed")}
             </div>
             <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", margin: "10px 0 16px" }}>
-              {done === "ok"
+              {uiText(done === "ok"
                 ? (order ? "Your order is now preparing and an invoice was generated." : "Your subscription is now active.")
-                : "This payment method has no configured merchant credentials, so it cannot authorize. An administrator must configure and test it in Admin → Payment Settings before it can be used in production."}
+                : "This payment method has no configured merchant credentials, so it cannot authorize. An administrator must configure and test it in Admin → Payment Settings before it can be used in production.")}
             </p>
-            <Button onClick={() => nav(order ? "/account/orders" : "/account/subscription")}>{order ? "View orders" : "View subscription"}</Button>
+            <Button onClick={() => nav(order ? "/account/orders" : "/account/subscription")}>{uiText(order ? "View orders" : "View subscription")}</Button>
           </Panel>
         </Container>
       </Section>
@@ -66,17 +69,17 @@ export function Checkout() {
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container style={{ maxWidth: 620 }}>
-        <SectionHeader eyebrow="Secure checkout" title={order ? "Confirm & Pay" : `Subscribe — ${plan?.name}`} />
+        <SectionHeader eyebrow={uiText("Secure checkout")} title={uiText(order ? "Confirm & Pay" : `Subscribe — ${plan?.name}`)} />
         <Panel style={{ marginBottom: "var(--idea-space-4)" }}>
           <div style={{ display: "flex", justifyContent: "space-between", color: "var(--idea-text)" }}>
-            <span>{order ? `Order ${order.id}` : `${plan?.name} (${interval})`}</span>
-            <span className="idea-display" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-xl)" }}>{amount.toLocaleString()} {t("common.egp")}</span>
+            <span>{uiText(order ? `Order ${order.id}` : `${plan?.name} (${interval})`)}</span>
+            <span className="idea-display" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-xl)" }}>{uiText(amount.toLocaleString())} {uiText(t("common.egp"))}</span>
           </div>
         </Panel>
         <Panel>
-          <div className="idea-eyebrow" style={{ marginBottom: 12 }}>Payment method</div>
+          <div className="idea-eyebrow" style={{ marginBottom: 12 }}>{uiText("Payment method")}</div>
           <div style={{ display: "grid", gap: 8 }}>
-            {METHODS.map((m) => {
+            {uiText(METHODS.map((m) => {
               const mc = db.payments.find((p) => p.key === m.key);
               const active = method === m.key;
               return (
@@ -88,20 +91,19 @@ export function Checkout() {
                 }}>
                   <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={{ width: 16, height: 16, borderRadius: 999, border: `4px solid ${active ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`, background: active ? "var(--idea-gold-bright)" : "transparent" }} />
-                    <span style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-sm)" }}>{t(m.tKey)}</span>
+                    <span style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-sm)" }}>{uiText(t(m.tKey))}</span>
                   </span>
                   <span style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                    {m.marks()}
-                    {!mc?.merchantConfigured && <span style={{ color: "var(--idea-text-faint)", fontSize: 10 }}>not configured</span>}
+                    {uiText(m.marks())}
+                    {uiText(!mc?.merchantConfigured && <span style={{ color: "var(--idea-text-faint)", fontSize: 10 }}>{uiText("not configured")}</span>)}
                   </span>
                 </button>
               );
-            })}
+            }))}
           </div>
-          <Button style={{ width: "100%", marginTop: "var(--idea-space-5)" }} onClick={pay}><Lock size={15} /> Pay {amount.toLocaleString()} EGP (sandbox)</Button>
+          <Button style={{ width: "100%", marginTop: "var(--idea-space-5)" }} onClick={pay}><Lock size={15} />{uiText(" Pay ")}{uiText(amount.toLocaleString())}{uiText(" EGP (sandbox)")}</Button>
           <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center", marginTop: 12, color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>
-            <ShieldCheck size={13} color="var(--idea-gold)" /> Sandbox environment · no real charge · card data is never stored
-          </div>
+            <ShieldCheck size={13} color="var(--idea-gold)" />{uiText(" Sandbox environment · no real charge · card data is never stored")}</div>
         </Panel>
       </Container>
     </Section>

@@ -7,7 +7,8 @@
     "build": "vite build",
     "dev": "vite",
     "dev:studio": "vite --host 127.0.0.1 --port 5178 --strictPort",
-    "test:studio": "playwright test"
+    "test:studio": "playwright test",
+    "test:accounts": "node scripts/test-cpanel-accounts.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -19,6 +20,7 @@
     "cmdk": "1.1.1",
     "date-fns": "3.6.0",
     "embla-carousel-react": "8.6.0",
+    "firebase": "^12.0.0",
     "input-otp": "1.4.2",
     "lucide-react": "0.487.0",
     "motion": "12.23.24",
@@ -36,15 +38,14 @@
     "sonner": "2.0.3",
     "tailwind-merge": "3.2.0",
     "tw-animate-css": "1.3.8",
-    "vaul": "1.1.2",
-    "firebase": "^12.0.0"
+    "vaul": "1.1.2"
   },
   "devDependencies": {
+    "@playwright/test": "^1.56.0",
     "@tailwindcss/vite": "4.1.12",
     "@vitejs/plugin-react": "4.7.0",
     "tailwindcss": "4.1.12",
-    "vite": "6.3.5",
-    "@playwright/test": "^1.56.0"
+    "vite": "6.3.5"
   },
   "peerDependencies": {
     "react": "18.3.1",

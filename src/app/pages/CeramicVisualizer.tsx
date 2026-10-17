@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/store";
-import { supabase } from "../backend/supabaseClient";
+import { generationAccess } from "../backend/accountsApi";
 import { useBackend } from "../backend/db";
 import CeramicStudio from "../ceramic-studio/CeramicStudio.jsx";
 import "../ceramic-studio/studio.css";
@@ -49,39 +49,7 @@ export function CeramicVisualizer() {
     [products],
   );
 
-  async function authenticate() {
-    if (!supabase)
-      throw new Error("خدمة الحسابات غير مُعدّة. راجع إعدادات الموقع.");
-    const { data, error } = await supabase.auth.getSession();
-    if (error || !data.session)
-      throw new Error(
-        "سجّل الدخول من حساب IDEA أولًا لتفعيل التوليد الذكي. المعاينة المحلية متاحة بدون حساب.",
-      );
-    const uid = data.session.user.id;
-    const [roleResult, membershipResult] = await Promise.all([
-      supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", uid)
-        .maybeSingle(),
-      supabase
-        .from("company_members")
-        .select("company_id")
-        .eq("user_id", uid)
-        .limit(1),
-    ]);
-    if (roleResult.error || membershipResult.error)
-      throw new Error("تعذّر التحقق من صلاحية الحساب. حاول لاحقًا.");
-    if (
-      roleResult.data?.role !== "buyer" ||
-      !Array.isArray(membershipResult.data) ||
-      membershipResult.data.length
-    )
-      throw new Error(
-        "توليد الصور مخصص للعملاء المشترين فقط، وغير متاح لحسابات الشركات أو الأدمين.",
-      );
-    return data.session.access_token;
-  }
+  const authenticate = generationAccess;
 
   return (
     <CeramicStudio
@@ -90,6 +58,7 @@ export function CeramicVisualizer() {
       initialMaterialId={requestedProduct}
       authenticate={authenticate}
       generationDisabled={restricted}
+      savedPreview={import.meta.env.DEV && params.get("preview") === "amazon-room" ? `${import.meta.env.BASE_URL}ceramic-studio/private-previews/amazon-room.json` : null}
       onRequestQuote={(id: string) => {
         addToQuote(id, "sqm");
         navigate("/request-quote/new");

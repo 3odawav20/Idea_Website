@@ -11,11 +11,13 @@ Repository: `3odawav20/Idea_Website`; base commit `b54a755f6865e1596a2c6dafaa0df
 - Local PHP HTTP checks: GET generation = 405; unconfigured generation = 503; arbitrary proxy host = 400; direct include access = 404.
 - Rendered desktop inspection at 1600 px: no horizontal overflow, embedded IDEA header, local Arabic font loaded, default automatic AI mode, 475 approved catalogue entries exposed through filtering/pagination. Catalogue count may change with the existing store data.
 - Mobile inspection at 390 px: no horizontal overflow; inputs, gallery and summary stack vertically.
-- Existing Supabase authentication, old room editor and storefront are preserved.
+- The old room editor and storefront are preserved. Customer/company/admin authentication now uses PHP sessions and MySQL for cPanel; see `ACCOUNTS-AND-LANGUAGE.md`.
 
 ## Activation still required
 
-Customer access update: PHP policy test passes for buyer-only access. Suppliers, admins, company members, designer/contractor roles and missing or invalid permission data are denied. The server checks the persisted Supabase role and company membership before processing images or charging the generation quota. Live checks with real buyer/company/admin accounts still require configured account access.
+Customer access update: the native PHP endpoint checks the HttpOnly session, CSRF token, persisted MySQL role and company ownership before processing images or charging the generation quota. Local real-PHP account tests verify buyer/company separation. The cPanel production database and AI provider still need deployment/configuration and real validation.
+
+Current account/UI checks: eight Playwright tests passed; real PHP integration verified registration, company questionnaires, role checks, company approval, exact-product fan-out to two suppliers, exclusion of unrelated suppliers/buyers, quote totals, admin replies, favourite persistence and CSRF. A real browser completed product-to-cart, quantity/unit submission, supplier reply, customer receipt and admin visibility, including mobile cart layout. The local account integration fixture is SQLite, not a tested production MySQL instance.
 
 - No cPanel account/domain credentials were provided; no production deployment was performed.
 - No Gemini API key was provided; no actual paid image-generation or real-image surface-detection call was made.

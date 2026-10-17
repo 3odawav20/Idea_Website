@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { Link } from "react-router";
 import { motion } from "motion/react";
 import { ArrowRight, Layers } from "lucide-react";
@@ -17,6 +18,8 @@ const LOOK_COLOR: Record<string, string> = {
 // ─── Look thumbnail grid ──────────────────────────────────────────────────────
 
 function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }) {
+  const uiText = useLocaleText();
+
   const { locale } = useI18n();
   const accent = LOOK_COLOR[look.id] ?? "#e2d4b4";
 
@@ -42,7 +45,7 @@ function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number 
         }}>
           <img
             src={look.image}
-            alt={look.label[locale as Locale]}
+            alt={uiText(look.label[locale as Locale])}
             loading="lazy"
             className="idea-sf-thumb-img"
             style={{
@@ -80,14 +83,14 @@ function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number 
               color: "white",
               letterSpacing: "0.04em",
               fontWeight: 500,
-            }}>{look.label[locale as Locale]}</div>
+            }}>{uiText(look.label[locale as Locale])}</div>
             <div style={{
               fontFamily: "var(--idea-font-body)",
               fontSize: "var(--idea-text-xs)",
               color: "rgba(255,255,255,0.52)",
               marginTop: 4,
               letterSpacing: "0.01em",
-            }}>{look.sub[locale as Locale]}</div>
+            }}>{uiText(look.sub[locale as Locale])}</div>
           </div>
 
           {/* Explore pill */}
@@ -105,7 +108,7 @@ function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number 
             color: accent,
             textTransform: "uppercase",
           }}>
-            {look.id === "marble" ? "01" : look.id === "wood" ? "02" : look.id === "stone" ? "03" : look.id === "pattern" ? "04" : "05"}
+            {uiText(look.id === "marble" ? "01" : look.id === "wood" ? "02" : look.id === "stone" ? "03" : look.id === "pattern" ? "04" : "05")}
           </div>
         </div>
 
@@ -114,15 +117,15 @@ function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number 
           display: "flex", gap: "var(--idea-space-2)",
           flexWrap: "wrap", padding: "var(--idea-space-3) 0 0",
         }}>
-          {look.featured.map(name => (
+          {uiText(look.featured.map(name => (
             <span key={name} style={{
               fontFamily: "var(--idea-font-display)",
               fontSize: "var(--idea-text-xs)",
               letterSpacing: "0.08em",
               color: "var(--idea-text-faint)",
               textTransform: "uppercase",
-            }}>{name}</span>
-          ))}
+            }}>{uiText(name)}</span>
+          )))}
         </div>
       </Link>
     </motion.div>
@@ -132,6 +135,8 @@ function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export function SurfaceStyles() {
+  const uiText = useLocaleText();
+
   const { locale } = useI18n();
 
   const heading = locale === "ar"
@@ -171,7 +176,7 @@ export function SurfaceStyles() {
             color: "var(--idea-gold-bright)",
             textTransform: "uppercase",
           }}>
-            {locale === "ar" ? "الأسطح والمواد" : locale === "fr" ? "Surfaces & Matériaux" : "Surface Styles & Materials"}
+            {uiText(locale === "ar" ? "الأسطح والمواد" : locale === "fr" ? "Surfaces & Matériaux" : "Surface Styles & Materials")}
           </span>
         </motion.div>
 
@@ -191,7 +196,7 @@ export function SurfaceStyles() {
             maxWidth: 820,
           }}
         >
-          {heading}
+          {uiText(heading)}
         </motion.h1>
 
         {/* Sub */}
@@ -208,7 +213,7 @@ export function SurfaceStyles() {
             lineHeight: 1.7,
           }}
         >
-          {sub}
+          {uiText(sub)}
         </motion.p>
 
         {/* Colour swatches — visual preview of look accents */}
@@ -218,11 +223,11 @@ export function SurfaceStyles() {
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
           style={{ display: "flex", gap: "var(--idea-space-2)", alignItems: "center", flexWrap: "wrap" }}
         >
-          {MATERIAL_LOOKS.map(look => (
+          {uiText(MATERIAL_LOOKS.map(look => (
             <Link
               key={look.id}
               to={`/tile-showroom/${look.id}`}
-              title={look.label[locale as Locale]}
+              title={uiText(look.label[locale as Locale])}
               style={{
                 display: "flex", alignItems: "center", gap: "var(--idea-space-2)",
                 padding: "6px 14px 6px 8px",
@@ -246,9 +251,9 @@ export function SurfaceStyles() {
                 color: "var(--idea-text-muted)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-              }}>{look.label[locale as Locale]}</span>
+              }}>{uiText(look.label[locale as Locale])}</span>
             </Link>
-          ))}
+          )))}
         </motion.div>
       </div>
 
@@ -277,7 +282,7 @@ export function SurfaceStyles() {
               color: "var(--idea-gold-bright)",
               textTransform: "uppercase",
             }}>
-              {locale === "ar" ? "جميع الأسطح" : locale === "fr" ? "Tous les styles" : "All Surface Styles"}
+              {uiText(locale === "ar" ? "جميع الأسطح" : locale === "fr" ? "Tous les styles" : "All Surface Styles")}
             </span>
           </div>
           <h2 style={{
@@ -287,7 +292,7 @@ export function SurfaceStyles() {
             margin: 0, fontWeight: 500,
             letterSpacing: "0.03em",
           }}>
-            {locale === "ar" ? "تصفّح حسب نوع السطح" : locale === "fr" ? "Parcourir par surface" : "Browse by Surface Type"}
+            {uiText(locale === "ar" ? "تصفّح حسب نوع السطح" : locale === "fr" ? "Parcourir par surface" : "Browse by Surface Type")}
           </h2>
         </motion.div>
 
@@ -296,9 +301,9 @@ export function SurfaceStyles() {
           gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
           gap: "var(--idea-space-5)",
         }}>
-          {MATERIAL_LOOKS.map((look, idx) => (
+          {uiText(MATERIAL_LOOKS.map((look, idx) => (
             <LookThumb key={look.id} look={look} idx={idx} />
-          ))}
+          )))}
         </div>
       </div>
 
@@ -324,7 +329,7 @@ export function SurfaceStyles() {
             textTransform: "uppercase",
             marginBottom: "var(--idea-space-3)",
           }}>
-            {locale === "ar" ? "غرفتك ستبدو مختلفة" : locale === "fr" ? "Visualisez votre espace" : "See It In Your Space"}
+            {uiText(locale === "ar" ? "غرفتك ستبدو مختلفة" : locale === "fr" ? "Visualisez votre espace" : "See It In Your Space")}
           </div>
 
           <h3 style={{
@@ -334,11 +339,11 @@ export function SurfaceStyles() {
             margin: "0 0 var(--idea-space-3)",
             fontWeight: 500,
           }}>
-            {locale === "ar"
+            {uiText(locale === "ar"
               ? "جرّب أي سطح في غرفتك الحقيقية"
               : locale === "fr"
               ? "Essayez n'importe quelle surface dans votre pièce"
-              : "Try Any Surface in Your Real Room"}
+              : "Try Any Surface in Your Real Room")}
           </h3>
 
           <p style={{
@@ -349,11 +354,11 @@ export function SurfaceStyles() {
             maxWidth: 480,
             lineHeight: 1.7,
           }}>
-            {locale === "ar"
+            {uiText(locale === "ar"
               ? "افتح المرئي ثلاثي الأبعاد، ضع البلاط على جدران وأرضية حمامك أو صالتك."
               : locale === "fr"
               ? "Ouvrez le visualiseur 3D et appliquez le carrelage sur vos murs et sols."
-              : "Open the 3D room visualizer and apply any tile to your bathroom or living room walls and floors."}
+              : "Open the 3D room visualizer and apply any tile to your bathroom or living room walls and floors.")}
           </p>
 
           <div style={{ display: "flex", gap: "var(--idea-space-4)", justifyContent: "center", flexWrap: "wrap" }}>
@@ -376,7 +381,7 @@ export function SurfaceStyles() {
                 boxShadow: "var(--idea-shadow-gold)",
               }}
             >
-              {locale === "ar" ? "افتح المرئي" : locale === "fr" ? "Ouvrir le visualiseur" : "Open Room Visualizer"}
+              {uiText(locale === "ar" ? "افتح المرئي" : locale === "fr" ? "Ouvrir le visualiseur" : "Open Room Visualizer")}
               <ArrowRight size={15} />
             </Link>
 
@@ -398,7 +403,7 @@ export function SurfaceStyles() {
                 transition: "border-color 0.22s, color 0.22s",
               }}
             >
-              {locale === "ar" ? "تصفّح المنتجات" : locale === "fr" ? "Parcourir les produits" : "Browse All Products"}
+              {uiText(locale === "ar" ? "تصفّح المنتجات" : locale === "fr" ? "Parcourir les produits" : "Browse All Products")}
             </Link>
           </div>
         </motion.div>

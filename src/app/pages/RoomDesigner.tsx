@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { Upload, Ruler, Camera, Save, Layers, Grid3x3, RotateCw, Info, ArrowLeftRight } from "lucide-react";
@@ -9,27 +10,29 @@ import { Panel, Field, inputStyle, EmptyState } from "../components/dash";
 
 /* ── Landing ─────────────────────────────────────────────────────────────── */
 export function RoomDesignerHome() {
+  const uiText = useLocaleText();
+
   const { t } = useI18n();
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container style={{ maxWidth: 960 }}>
-        <SectionHeader eyebrow="Visualize" title={t("room.title")} sub="Preview real IDEA surfaces on your own room. Two ways to start:" />
+        <SectionHeader eyebrow={uiText("Visualize")} title={uiText(t("room.title"))} sub={uiText("Preview real IDEA surfaces on your own room. Two ways to start:")} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--idea-space-4)" }} className="idea-room-grid">
           <Panel>
             <Upload size={26} color="var(--idea-gold-bright)" />
-            <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)", margin: "10px 0 6px" }}>{t("room.upload")}</div>
-            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>Bathroom, kitchen, living room, bedroom, office or façade photo. Apply floor & wall surfaces.</p>
-            <Link to="/room-designer/new?mode=photo"><Button style={{ marginTop: 12 }}>Upload a photo</Button></Link>
+            <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)", margin: "10px 0 6px" }}>{uiText(t("room.upload"))}</div>
+            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{uiText("Bathroom, kitchen, living room, bedroom, office or façade photo. Apply floor & wall surfaces.")}</p>
+            <Link to="/room-designer/new?mode=photo"><Button style={{ marginTop: 12 }}>{uiText("Upload a photo")}</Button></Link>
           </Panel>
           <Panel>
             <Ruler size={26} color="var(--idea-gold-bright)" />
-            <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)", margin: "10px 0 6px" }}>{t("room.measured")}</div>
-            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>Enter length, width, height, doors and windows in m, cm or mm.</p>
-            <Link to="/room-designer/new?mode=measured"><Button variant="outline" style={{ marginTop: 12 }}>Create a room</Button></Link>
+            <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)", margin: "10px 0 6px" }}>{uiText(t("room.measured"))}</div>
+            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{uiText("Enter length, width, height, doors and windows in m, cm or mm.")}</p>
+            <Link to="/room-designer/new?mode=measured"><Button variant="outline" style={{ marginTop: 12 }}>{uiText("Create a room")}</Button></Link>
           </Panel>
         </div>
         <div style={{ marginTop: "var(--idea-space-5)", display: "flex", gap: 12 }}>
-          <Link to="/room-designer/photo-guide"><Button variant="ghost"><Camera size={16} /> {t("room.photoGuide")}</Button></Link>
+          <Link to="/room-designer/photo-guide"><Button variant="ghost"><Camera size={16} /> {uiText(t("room.photoGuide"))}</Button></Link>
         </div>
       </Container>
       <style>{`@media (max-width: 720px){ .idea-room-grid{ grid-template-columns: 1fr !important; } }`}</style>
@@ -39,6 +42,8 @@ export function RoomDesignerHome() {
 
 /* ── Photo guide ────────────────────────────────────────────────────────── */
 export function PhotoGuide() {
+  const uiText = useLocaleText();
+
   const { t } = useI18n();
   const guides = [
     { title: "General", steps: ["Stand in a corner showing the largest floor area.", "Hold the phone near chest height and keep it level.", "Capture the floor and two connected walls.", "Avoid direct flash and people in frame.", "Include a known measurement reference where possible.", "Take additional angles for accuracy."] },
@@ -49,19 +54,19 @@ export function PhotoGuide() {
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container style={{ maxWidth: 860 }}>
-        <SectionHeader eyebrow={t("room.title")} title={t("room.photoGuide")} sub="A good photo makes surface detection far more accurate." />
+        <SectionHeader eyebrow={uiText(t("room.title"))} title={uiText(t("room.photoGuide"))} sub={uiText("A good photo makes surface detection far more accurate.")} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--idea-space-4)" }} className="idea-room-grid">
-          {guides.map((g) => (
+          {uiText(guides.map((g) => (
             <Panel key={g.title}>
-              <div className="idea-display" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-lg)", marginBottom: 10 }}>{g.title}</div>
+              <div className="idea-display" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-lg)", marginBottom: 10 }}>{uiText(g.title)}</div>
               <ol style={{ margin: 0, paddingInlineStart: 18, color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", display: "flex", flexDirection: "column", gap: 6 }}>
-                {g.steps.map((s, i) => <li key={i}>{s}</li>)}
+                {uiText(g.steps.map((s, i) => <li key={i}>{uiText(s)}</li>))}
               </ol>
             </Panel>
-          ))}
+          )))}
         </div>
-        <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: "var(--idea-space-5)" }}>We do not claim engineering-level measurement accuracy from a single photograph.</p>
-        <div style={{ marginTop: 16 }}><Link to="/room-designer/new?mode=photo"><Button>Start designing</Button></Link></div>
+        <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: "var(--idea-space-5)" }}>{uiText("We do not claim engineering-level measurement accuracy from a single photograph.")}</p>
+        <div style={{ marginTop: 16 }}><Link to="/room-designer/new?mode=photo"><Button>{uiText("Start designing")}</Button></Link></div>
       </Container>
       <style>{`@media (max-width: 720px){ .idea-room-grid{ grid-template-columns: 1fr !important; } }`}</style>
     </Section>
@@ -73,6 +78,8 @@ type SurfaceId = "floor" | "wallA" | "wallB";
 interface Fixture { id: string; label: string; x: number; y: number; }
 
 export function RoomDesignerEditor() {
+  const uiText = useLocaleText();
+
   const { t, locale } = useI18n();
   const { products, addToQuote } = useStore();
   const { api, session, db } = useBackend();
@@ -165,44 +172,44 @@ export function RoomDesignerEditor() {
       <div style={{ display: "flex", gap: "var(--idea-space-5)", alignItems: "flex-start" }} className="idea-editor">
         {/* Material panel */}
         <aside style={{ width: 280, flexShrink: 0 }} className="idea-editor-side">
-          <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 8 }}><Layers size={16} style={{ verticalAlign: "-2px" }} /> Materials</div>
-          <input style={{ ...inputStyle, marginBottom: 10 }} placeholder="Search catalogue…" value={q} onChange={(e) => setQ(e.target.value)} />
+          <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 8 }}><Layers size={16} style={{ verticalAlign: "-2px" }} />{uiText(" Materials")}</div>
+          <input style={{ ...inputStyle, marginBottom: 10 }} placeholder={uiText("Search catalogue…")} value={q} onChange={(e) => setQ(e.target.value)} />
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, maxHeight: 420, overflowY: "auto" }}>
-            {gallery.map((p) => (
-              <button key={p.id} onClick={() => setAssign((a) => ({ ...a, [active]: p.id }))} title={p.name[locale]} style={{
+            {uiText(gallery.map((p) => (
+              <button key={p.id} onClick={() => setAssign((a) => ({ ...a, [active]: p.id }))} title={uiText(p.name[locale])} style={{
                 border: assign[active] === p.id ? "2px solid var(--idea-gold)" : "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)",
                 overflow: "hidden", cursor: "pointer", background: "var(--idea-surface-2)", padding: 0,
               }}>
-                <img src={p.image} alt={p.name[locale]} style={{ width: "100%", height: 60, objectFit: "cover", display: "block" }} />
-                <div style={{ fontSize: 10, color: "var(--idea-text-muted)", padding: "3px 4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.name[locale]}</div>
+                <img src={p.image} alt={uiText(p.name[locale])} style={{ width: "100%", height: 60, objectFit: "cover", display: "block" }} />
+                <div style={{ fontSize: 10, color: "var(--idea-text-muted)", padding: "3px 4px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{uiText(p.name[locale])}</div>
               </button>
-            ))}
+            )))}
           </div>
         </aside>
 
         {/* Stage */}
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: "flex", gap: 8, marginBottom: 10, flexWrap: "wrap" }}>
-            {(["floor", "wallA", "wallB"] as SurfaceId[]).map((s) => (
+            {uiText((["floor", "wallA", "wallB"] as SurfaceId[]).map((s) => (
               <button key={s} onClick={() => setActive(s)} style={{
                 padding: "6px 14px", borderRadius: "var(--idea-radius-full)", cursor: "pointer", textTransform: "capitalize", fontSize: "var(--idea-text-sm)",
                 border: `1px solid ${active === s ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
                 background: active === s ? "var(--idea-gold-soft)" : "transparent", color: active === s ? "var(--idea-gold-bright)" : "var(--idea-text-muted)",
-              }}>{s === "wallA" ? "Wall A" : s === "wallB" ? "Wall B" : "Floor"}</button>
-            ))}
+              }}>{uiText(s === "wallA" ? "Wall A" : s === "wallB" ? "Wall B" : "Floor")}</button>
+            )))}
             <label style={{ marginInlineStart: "auto", display: "inline-flex" }}>
               <input type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={(e) => selectPhoto(e.target.files?.[0])} />
-              <span style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-sm)" }}><Upload size={15} /> Photo</span>
+              <span style={{ cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6, color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-sm)" }}><Upload size={15} />{uiText(" Photo")}</span>
             </label>
           </div>
 
-          {photoError && <p role="alert" style={{ margin: "0 0 var(--idea-space-3)", color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{photoError}</p>}
+          {uiText(photoError && <p role="alert" style={{ margin: "0 0 var(--idea-space-3)", color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{uiText(photoError)}</p>)}
 
           {/* Perspective room box */}
           <div onMouseMove={onDrag} onMouseUp={() => (dragRef.current = null)} onMouseLeave={() => (dragRef.current = null)}
             style={{ position: "relative", aspectRatio: "16/10", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", background: "var(--idea-bg-2)", perspective: "900px" }}>
-            {photo && <img src={photo} alt="Room" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: compareBefore ? 1 : 0.28 }} />}
-            {!compareBefore && <>
+            {uiText(photo && <img src={photo} alt={uiText("Room")} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: compareBefore ? 1 : 0.28 }} />)}
+            {uiText(!compareBefore && <>
               {/* Wall B (left) */}
               <div onClick={() => setActive("wallB")} style={{ position: "absolute", top: 0, left: 0, width: "34%", height: "66%", transformOrigin: "left center", transform: "rotateY(28deg)", ...tileStyle("wallB"), cursor: "pointer", borderInlineEnd: active === "wallB" ? "2px solid var(--idea-gold)" : undefined }} />
               {/* Wall A (back) */}
@@ -210,52 +217,52 @@ export function RoomDesignerEditor() {
               {/* Floor */}
               <div onClick={() => setActive("floor")} style={{ position: "absolute", bottom: 0, left: 0, width: "100%", height: "40%", transformOrigin: "bottom", transform: "rotateX(52deg)", ...tileStyle("floor"), cursor: "pointer", outline: active === "floor" ? "2px solid var(--idea-gold)" : undefined }} />
               {/* Movable fixtures */}
-              {fixtures.map((f) => (
+              {uiText(fixtures.map((f) => (
                 <div key={f.id} onMouseDown={() => (dragRef.current = { id: f.id, ox: 0, oy: 0 })} style={{
                   position: "absolute", left: `${f.x}%`, top: `${f.y}%`, cursor: "grab", userSelect: "none",
                   background: "var(--idea-overlay)", border: "1px solid var(--idea-gold)", color: "var(--idea-text)",
                   borderRadius: "var(--idea-radius-sm)", padding: "4px 10px", fontSize: "var(--idea-text-xs)", backdropFilter: "blur(4px)",
-                }}>{f.label}</div>
-              ))}
-            </>}
+                }}>{uiText(f.label)}</div>
+              )))}
+            </>)}
           </div>
 
           <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
-            <Button size="sm" variant="ghost" onClick={() => setCompareBefore((v) => !v)}><ArrowLeftRight size={14} /> {compareBefore ? "After" : "Before"}</Button>
-            <Button size="sm" onClick={save}><Save size={14} /> Save project</Button>
-            <Button size="sm" variant="outline" onClick={addAllToQuote}>Add surfaces to quote</Button>
+            <Button size="sm" variant="ghost" onClick={() => setCompareBefore((v) => !v)}><ArrowLeftRight size={14} /> {uiText(compareBefore ? "After" : "Before")}</Button>
+            <Button size="sm" onClick={save}><Save size={14} />{uiText(" Save project")}</Button>
+            <Button size="sm" variant="outline" onClick={addAllToQuote}>{uiText("Add surfaces to quote")}</Button>
           </div>
-          {formError && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", margin: "var(--idea-space-3) 0 0" }}>{formError}</p>}
+          {uiText(formError && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", margin: "var(--idea-space-3) 0 0" }}>{uiText(formError)}</p>)}
 
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 12, padding: "10px 14px", background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)", borderRadius: "var(--idea-radius-md)", color: "var(--idea-text)", fontSize: "var(--idea-text-xs)" }}>
-            <Info size={16} color="var(--idea-gold-bright)" style={{ flexShrink: 0 }} /> {t("room.aiNote")}
+            <Info size={16} color="var(--idea-gold-bright)" style={{ flexShrink: 0 }} /> {uiText(t("room.aiNote"))}
           </div>
         </div>
 
         {/* Controls */}
         <aside style={{ width: 240, flexShrink: 0 }} className="idea-editor-side">
-          <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 10 }}><Grid3x3 size={16} style={{ verticalAlign: "-2px" }} /> {active === "floor" ? "Floor" : active === "wallA" ? "Wall A" : "Wall B"} controls</div>
-          <Field label={`Tile scale (${tile}px)`}><input type="range" min={24} max={120} value={tile} onChange={(e) => setTile(Number(e.target.value))} style={{ width: "100%" }} /></Field>
-          <Field label={`Grout width (${grout}px)`}><input type="range" min={0} max={8} value={grout} onChange={(e) => setGrout(Number(e.target.value))} style={{ width: "100%" }} /></Field>
-          <Field label="Grout color"><input type="color" value={groutColor} onChange={(e) => setGroutColor(e.target.value)} style={{ width: "100%", height: 34, background: "none", border: "none" }} /></Field>
-          <Button size="sm" variant="ghost" onClick={() => setRotate((r) => (r + 45) % 360)}><RotateCw size={14} /> Rotate {rotate}°</Button>
+          <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 10 }}><Grid3x3 size={16} style={{ verticalAlign: "-2px" }} /> {uiText(active === "floor" ? "Floor" : active === "wallA" ? "Wall A" : "Wall B")}{uiText(" controls")}</div>
+          <Field label={`${uiText("Tile scale")} (${tile} ${uiText("px")})`}><input type="range" min={24} max={120} value={tile} onChange={(e) => setTile(Number(e.target.value))} style={{ width: "100%" }} /></Field>
+          <Field label={`${uiText("Grout width")} (${grout} ${uiText("px")})`}><input type="range" min={0} max={8} value={grout} onChange={(e) => setGrout(Number(e.target.value))} style={{ width: "100%" }} /></Field>
+          <Field label={uiText("Grout color")}><input type="color" value={groutColor} onChange={(e) => setGroutColor(e.target.value)} style={{ width: "100%", height: 34, background: "none", border: "none" }} /></Field>
+          <Button size="sm" variant="ghost" onClick={() => setRotate((r) => (r + 45) % 360)}><RotateCw size={14} />{uiText(" Rotate ")}{uiText(rotate)}{uiText("°")}</Button>
 
-          <div className="idea-display" style={{ color: "var(--idea-text)", margin: "18px 0 8px" }}><Ruler size={16} style={{ verticalAlign: "-2px" }} /> Room</div>
+          <div className="idea-display" style={{ color: "var(--idea-text)", margin: "18px 0 8px" }}><Ruler size={16} style={{ verticalAlign: "-2px" }} />{uiText(" Room")}</div>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-            <Field label="Length"><input type="number" style={inputStyle} value={dims.length} onChange={(e) => setDims({ ...dims, length: Number(e.target.value) })} /></Field>
-            <Field label="Width"><input type="number" style={inputStyle} value={dims.width} onChange={(e) => setDims({ ...dims, width: Number(e.target.value) })} /></Field>
-            <Field label="Height"><input type="number" style={inputStyle} value={dims.height} onChange={(e) => setDims({ ...dims, height: Number(e.target.value) })} /></Field>
-            <Field label="Unit"><select style={inputStyle} value={dims.unit} onChange={(e) => setDims({ ...dims, unit: e.target.value as "m" | "cm" | "mm" })}><option value="m">m</option><option value="cm">cm</option><option value="mm">mm</option></select></Field>
+            <Field label={uiText("Length")}><input type="number" style={inputStyle} value={dims.length} onChange={(e) => setDims({ ...dims, length: Number(e.target.value) })} /></Field>
+            <Field label={uiText("Width")}><input type="number" style={inputStyle} value={dims.width} onChange={(e) => setDims({ ...dims, width: Number(e.target.value) })} /></Field>
+            <Field label={uiText("Height")}><input type="number" style={inputStyle} value={dims.height} onChange={(e) => setDims({ ...dims, height: Number(e.target.value) })} /></Field>
+            <Field label={uiText("Unit")}><select style={inputStyle} value={dims.unit} onChange={(e) => setDims({ ...dims, unit: e.target.value as "m" | "cm" | "mm" })}><option value="m">{uiText("m")}</option><option value="cm">{uiText("cm")}</option><option value="mm">{uiText("mm")}</option></select></Field>
           </div>
-          <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>Estimated floor area ≈ <strong style={{ color: "var(--idea-gold-bright)" }}>{estM2.toFixed(1)} m²</strong> (estimate until confirmed)</div>
+          <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{uiText("Estimated floor area ≈ ")}<strong style={{ color: "var(--idea-gold-bright)" }}>{uiText(estM2.toFixed(1))}{uiText(" m²")}</strong>{uiText(" (estimate until confirmed)")}</div>
         </aside>
       </div>
-      <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: 16 }}>
-        Real-time surface detection & photorealistic 3D relighting require a server-side vision model and are not enabled in this frontend build (see report). This 2D preview applies real catalogue textures with correct grout/scale.
-      </p>
+      <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: 16 }}>{uiText("Real-time surface detection & photorealistic 3D relighting require a server-side vision model and are not enabled in this frontend build (see report). This 2D preview applies real catalogue textures with correct grout/scale.")}</p>
       <style>{`@media (max-width: 1040px){ .idea-editor{ flex-direction: column !important; } .idea-editor-side{ width: 100% !important; } }`}</style>
     </Container>
   );
 }
 
-export function RoomProjectMissing() { return <Container style={{ padding: "var(--idea-space-8)" }}><EmptyState title="Project not found" /></Container>; }
+export function RoomProjectMissing() {
+  const uiText = useLocaleText();
+ return <Container style={{ padding: "var(--idea-space-8)" }}><EmptyState title={uiText("Project not found")} /></Container>; }

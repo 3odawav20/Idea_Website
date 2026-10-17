@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { motion, useReducedMotion, type Variants } from "motion/react";
 import type { ReactNode, CSSProperties } from "react";
 
@@ -28,6 +29,8 @@ export function Reveal({
   className?: string;
   once?: boolean;
 }) {
+  const uiText = useLocaleText();
+
   const reduce = useReducedMotion();
   const MotionTag = motion[as] as typeof motion.div;
   return (
@@ -39,7 +42,7 @@ export function Reveal({
       viewport={{ once, amount: 0.2 }}
       transition={{ duration: 0.6, ease: EASE, delay }}
     >
-      {children}
+      {uiText(children)}
     </MotionTag>
   );
 }
@@ -56,6 +59,8 @@ export function Stagger({
   style?: CSSProperties;
   className?: string;
 }) {
+  const uiText = useLocaleText();
+
   const container: Variants = {
     hidden: {},
     show: { transition: { staggerChildren: step } },
@@ -69,12 +74,14 @@ export function Stagger({
       whileInView="show"
       viewport={{ once: true, amount: 0.15 }}
     >
-      {children}
+      {uiText(children)}
     </motion.div>
   );
 }
 
 export function StaggerItem({ children, style, className }: { children: ReactNode; style?: CSSProperties; className?: string }) {
+  const uiText = useLocaleText();
+
   const reduce = useReducedMotion();
   const item: Variants = {
     hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 16 },
@@ -82,16 +89,18 @@ export function StaggerItem({ children, style, className }: { children: ReactNod
   };
   return (
     <motion.div className={className} style={style} variants={item}>
-      {children}
+      {uiText(children)}
     </motion.div>
   );
 }
 
 /** Heading where each word rises into place — used sparingly on hero titles. */
 export function AnimatedWords({ text, style, className }: { text: string; style?: CSSProperties; className?: string }) {
+  const uiText = useLocaleText();
+
   const reduce = useReducedMotion();
   const words = text.split(" ");
-  if (reduce) return <span className={className} style={style}>{text}</span>;
+  if (reduce) return <span className={className} style={style}>{uiText(text)}</span>;
   return (
     <motion.span
       className={className}
@@ -100,21 +109,23 @@ export function AnimatedWords({ text, style, className }: { text: string; style?
       animate="show"
       variants={{ hidden: {}, show: { transition: { staggerChildren: 0.06 } } }}
     >
-      {words.map((w, i) => (
+      {uiText(words.map((w, i) => (
         <motion.span
           key={`${w}-${i}`}
           style={{ display: "inline-block", whiteSpace: "pre" }}
           variants={{ hidden: { opacity: 0, y: "0.5em" }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } } }}
         >
-          {w}{i < words.length - 1 ? " " : ""}
+          {uiText(w)}{uiText(i < words.length - 1 ? " " : "")}
         </motion.span>
-      ))}
+      )))}
     </motion.span>
   );
 }
 
 /** Gold gradient sheen that sweeps across text on view — luxury accent. */
 export function ShimmerText({ children, style, className }: { children: ReactNode; style?: CSSProperties; className?: string }) {
+  const uiText = useLocaleText();
+
   const reduce = useReducedMotion();
   const base: CSSProperties = {
     backgroundImage:
@@ -126,7 +137,7 @@ export function ShimmerText({ children, style, className }: { children: ReactNod
     WebkitTextFillColor: "transparent",
     ...style,
   };
-  if (reduce) return <span className={className} style={{ ...base, backgroundPosition: "0% 0" }}>{children}</span>;
+  if (reduce) return <span className={className} style={{ ...base, backgroundPosition: "0% 0" }}>{uiText(children)}</span>;
   return (
     <motion.span
       className={className}
@@ -136,13 +147,15 @@ export function ShimmerText({ children, style, className }: { children: ReactNod
       viewport={{ once: true }}
       transition={{ duration: 1.4, ease: EASE }}
     >
-      {children}
+      {uiText(children)}
     </motion.span>
   );
 }
 
 /** Interactive lift used on cards; disabled under reduced motion. */
 export function Lift({ children, style, className, to }: { children: ReactNode; style?: CSSProperties; className?: string; to?: number }) {
+  const uiText = useLocaleText();
+
   const reduce = useReducedMotion();
   return (
     <motion.div
@@ -151,7 +164,7 @@ export function Lift({ children, style, className, to }: { children: ReactNode; 
       whileHover={reduce ? undefined : { y: to ?? -6 }}
       transition={{ type: "spring", stiffness: 320, damping: 24 }}
     >
-      {children}
+      {uiText(children)}
     </motion.div>
   );
 }

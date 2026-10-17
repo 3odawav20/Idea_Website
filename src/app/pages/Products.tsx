@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import type { CollectionSlug, Product } from "../data/types";
@@ -16,6 +17,8 @@ function uniq<T>(arr: (T | undefined)[]): T[] {
 }
 
 export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug }) {
+  const uiText = useLocaleText();
+
   const { t, locale } = useI18n();
   const { products } = useStore();
   const [params, setParams] = useSearchParams();
@@ -91,9 +94,9 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const group = (label: string, values: string[], val: string | null, set: (v: string | null) => void) =>
     values.length > 1 && (
       <div style={{ marginBottom: "var(--idea-space-4)" }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)", marginBottom: 10 }}>{label}</div>
+        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)", marginBottom: 10 }}>{uiText(label)}</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {values.map((v) => <Chip key={v} active={val === v} onClick={() => set(val === v ? null : v)}>{v}</Chip>)}
+          {uiText(values.map((v) => <Chip key={v} active={val === v} onClick={() => set(val === v ? null : v)}>{uiText(v)}</Chip>))}
         </div>
       </div>
     );
@@ -103,16 +106,16 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
       <Container>
         {/* Page heading */}
         <div style={{ marginBottom: "var(--idea-space-6)" }}>
-          <div className="idea-eyebrow">{locale === "ar" ? "كتالوج المنتجات" : locale === "fr" ? "Catalogue produits" : "Product catalogue"}</div>
+          <div className="idea-eyebrow">{uiText(locale === "ar" ? "كتالوج المنتجات" : locale === "fr" ? "Catalogue produits" : "Product catalogue")}</div>
           <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 0" }}>
-            {formatTitle ?? (meta ? meta.title[locale] : materialTitle ?? t("nav.products"))}
+            {uiText(formatTitle ?? (meta ? meta.title[locale] : materialTitle ?? t("nav.products")))}
           </h1>
-          {q && <p style={{ color: "var(--idea-text-muted)", marginTop: 8 }}>“{q}”</p>}
-          {!q && !meta && (
+          {uiText(q && <p style={{ color: "var(--idea-text-muted)", marginTop: 8 }}>{uiText("“")}{uiText(q)}{uiText("”")}</p>)}
+          {uiText(!q && !meta && (
             <p style={{ color: "var(--idea-text-muted)", marginTop: "var(--idea-space-2)", fontSize: "var(--idea-text-sm)" }}>
-              {catalogueSummary}
+              {uiText(catalogueSummary)}
             </p>
-          )}
+          ))}
         </div>
 
         {/* Mobile filter toolbar */}
@@ -124,31 +127,31 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
               color: "var(--idea-text)", cursor: "pointer", fontFamily: "var(--idea-font-body)", fontSize: "var(--idea-text-sm)",
             }}>
             <SlidersHorizontal size={16} color="var(--idea-gold)" />
-            {t("filters.title")}
-            {activeCount > 0 && (
-              <span style={{ minWidth: 20, height: 20, display: "inline-grid", placeItems: "center", padding: "0 6px", borderRadius: "var(--idea-radius-full)", background: "var(--idea-gold)", color: "var(--idea-on-gold)", fontSize: "var(--idea-text-xs)", fontWeight: 600 }}>{activeCount}</span>
-            )}
+            {uiText(t("filters.title"))}
+            {uiText(activeCount > 0 && (
+              <span style={{ minWidth: 20, height: 20, display: "inline-grid", placeItems: "center", padding: "0 6px", borderRadius: "var(--idea-radius-full)", background: "var(--idea-gold)", color: "var(--idea-on-gold)", fontSize: "var(--idea-text-xs)", fontWeight: 600 }}>{uiText(activeCount)}</span>
+            ))}
           </button>
-          <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{results.length} {t("label.results")}</span>
+          <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{uiText(results.length)} {uiText(t("label.results"))}</span>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "var(--idea-space-6)", alignItems: "start" }} className="idea-gallery-grid">
           {/* Filters */}
-          {mobileOpen && <div onClick={() => setMobileOpen(false)} className="idea-filter-scrim" style={{ display: "none", position: "fixed", inset: 0, zIndex: 60, background: "var(--idea-scrim)" }} />}
+          {uiText(mobileOpen && <div onClick={() => setMobileOpen(false)} className="idea-filter-scrim" style={{ display: "none", position: "fixed", inset: 0, zIndex: 60, background: "var(--idea-scrim)" }} />)}
           <aside className={`idea-filters-panel${mobileOpen ? " is-open" : ""}`} style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)", padding: "var(--idea-space-5)", position: "sticky", top: 90 }}>
             <button className="idea-filter-close" onClick={() => setMobileOpen(false)}
               style={{ display: "none", position: "absolute", insetInlineEnd: "var(--idea-space-4)", top: "var(--idea-space-4)", background: "none", border: "none", color: "var(--idea-text-muted)", cursor: "pointer" }}>
               <X size={20} />
             </button>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "var(--idea-space-4)" }}>
-              <span className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{t("filters.title")}</span>
-              <button onClick={clear} style={{ background: "none", border: "none", color: "var(--idea-gold)", cursor: "pointer", fontSize: "var(--idea-text-xs)" }}>{t("filters.clear")}</button>
+              <span className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{uiText(t("filters.title"))}</span>
+              <button onClick={clear} style={{ background: "none", border: "none", color: "var(--idea-gold)", cursor: "pointer", fontSize: "var(--idea-text-xs)" }}>{uiText(t("filters.clear"))}</button>
             </div>
-            {group(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", facets.application, application, v => setFilter("application",v))}
-            {group(t("filters.finish"), facets.finish, finish, setFinish)}
-            {group(t("filters.size"), facets.size, size, setSize)}
-            {group(t("label.usage"), facets.usage, usage, setUsage)}
-            {group(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", facets.color, color, setColor)}
+            {uiText(group(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", facets.application, application, v => setFilter("application",v)))}
+            {uiText(group(t("filters.finish"), facets.finish, finish, setFinish))}
+            {uiText(group(t("filters.size"), facets.size, size, setSize))}
+            {uiText(group(t("label.usage"), facets.usage, usage, setUsage))}
+            {uiText(group(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", facets.color, color, setColor))}
             <button className="idea-filter-show" onClick={() => setMobileOpen(false)}
               style={{
                 display: "none", width: "100%", marginTop: "var(--idea-space-4)", padding: "12px 20px",
@@ -156,31 +159,31 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                 border: "none", borderRadius: "var(--idea-radius-md)", cursor: "pointer", fontFamily: "var(--idea-font-body)",
                 fontSize: "var(--idea-text-sm)", fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase",
               }}>
-              {results.length} {t("label.results")}
+              {uiText(results.length)} {uiText(t("label.results"))}
             </button>
           </aside>
 
           {/* Results */}
           <div style={{minWidth:0}}>
             <form onSubmit={e=>{e.preventDefault(); const data = new FormData(e.currentTarget); setFilter("q", String(data.get("q")??"").trim());}} style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>
-              <input key={q} name="q" defaultValue={q} aria-label={locale === "ar" ? "البحث بالاسم" : locale === "fr" ? "Recherche par nom" : "Search by name"} placeholder={locale === "ar" ? "اسم المنتج أو الكود" : locale === "fr" ? "Nom ou référence" : "Product name or code"} style={{flex:"1 1 180px",minWidth:0,padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}/>
-              <button type="submit" className="idea-discovery-submit">{locale === "ar" ? "ابحث" : locale === "fr" ? "Rechercher" : "Search"}</button>
-              <select aria-label={locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort products"} value={sort} onChange={e=>setFilter("sort",e.target.value)} style={{padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}><option value="source">{locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order"}</option><option value="az">A → Z</option><option value="za">Z → A</option></select>
+              <input key={q} name="q" defaultValue={q} aria-label={uiText(locale === "ar" ? "البحث بالاسم" : locale === "fr" ? "Recherche par nom" : "Search by name")} placeholder={uiText(locale === "ar" ? "اسم المنتج أو الكود" : locale === "fr" ? "Nom ou référence" : "Product name or code")} style={{flex:"1 1 180px",minWidth:0,padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}/>
+              <button type="submit" className="idea-discovery-submit">{uiText(locale === "ar" ? "ابحث" : locale === "fr" ? "Rechercher" : "Search")}</button>
+              <select aria-label={uiText(locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort products")} value={sort} onChange={e=>setFilter("sort",e.target.value)} style={{padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}><option value="source">{uiText(locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order")}</option><option value="az">{uiText("A → Z")}</option><option value="za">{uiText("Z → A")}</option></select>
             </form>
             <div style={{ color: "var(--idea-text-muted)", marginBottom: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)" }}>
-              {results.length} {t("label.results")}
+              {uiText(results.length)} {uiText(t("label.results"))}
             </div>
-            {results.length === 0 ? (
+            {uiText(results.length === 0 ? (
               <div style={{ padding: "var(--idea-space-8)", textAlign: "center", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", color: "var(--idea-text-muted)", lineHeight: 1.7 }}>
-                {t("empty.products")}
-                {(category === "porcelain" || material === "marble" || format) && <p>{locale === "ar" ? "لا توجد منتجات موثقة بهذه المواصفات في البيانات الحالية. لا يعني ذلك تأكيد عدم توفرها لدى الموردين." : locale === "fr" ? "Aucun produit documenté avec ces spécifications. Cela ne confirme pas l’absence de stock chez les fournisseurs." : "No products are documented with these specifications in the current data. Supplier stock has not been confirmed."}</p>}
-                <button onClick={clear} style={{color:"var(--idea-gold-bright)",background:"none",border:0,cursor:"pointer",marginTop:16}}>{t("filters.clear")}</button>
+                {uiText(t("empty.products"))}
+                {uiText((category === "porcelain" || material === "marble" || format) && <p>{uiText(locale === "ar" ? "لا توجد منتجات موثقة بهذه المواصفات في البيانات الحالية. لا يعني ذلك تأكيد عدم توفرها لدى الموردين." : locale === "fr" ? "Aucun produit documenté avec ces spécifications. Cela ne confirme pas l’absence de stock chez les fournisseurs." : "No products are documented with these specifications in the current data. Supplier stock has not been confirmed.")}</p>)}
+                <button onClick={clear} style={{color:"var(--idea-gold-bright)",background:"none",border:0,cursor:"pointer",marginTop:16}}>{uiText(t("filters.clear"))}</button>
               </div>
             ) : (
               <div className="idea-product-results" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-5)" }}>
-                {results.map((p) => <ProductCard key={p.id} product={p} />)}
+                {uiText(results.map((p) => <ProductCard key={p.id} product={p} />))}
               </div>
-            )}
+            ))}
           </div>
         </div>
       </Container>

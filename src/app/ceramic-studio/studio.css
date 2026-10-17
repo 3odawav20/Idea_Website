@@ -1,18 +1,11 @@
-@font-face {
-  font-family: "IDEA Studio Cairo";
-  src: url("/ceramic-studio/fonts/Cairo.ttf") format("truetype");
-  font-style: normal;
-  font-weight: 200 1000;
-  font-display: swap;
-}
 .studio {
-  --idea-font-arabic: "IDEA Studio Cairo";
-  --idea-font-body: "IDEA Studio Cairo";
+  --idea-font-arabic: "IDEA Cairo";
+  --idea-font-body: "IDEA Cairo";
   --ink: #263b32;
   --accent: #b2956c;
   --line: #e7e7dd;
   --paper: #fafaf6;
-  direction: rtl;
+  direction: inherit;
   color: var(--ink);
   background: var(--paper);
   font-family: var(--idea-font-arabic), sans-serif;
@@ -93,7 +86,7 @@
 .studio .brand small {
   display: block;
   font:
-    8px var(--idea-font-body),
+    12px var(--idea-font-body),
     sans-serif;
   letter-spacing: 2.5px;
   margin-top: 7px;
@@ -121,7 +114,7 @@
   width: 100%;
 }
 .studio .count {
-  font: 10px var(--idea-font-body);
+  font: 12px var(--idea-font-body);
   background: #eeefe8;
   border-radius: 50%;
   padding: 3px 6px;
@@ -155,7 +148,7 @@
 }
 .studio .eyebrow {
   font:
-    9px var(--idea-font-body),
+    12px var(--idea-font-body),
     sans-serif;
   letter-spacing: 2px;
   color: #8b806c;
@@ -187,7 +180,7 @@
   display: flex;
   gap: 9px;
   align-items: center;
-  font-size: 11px;
+  font-size:12px;
   padding: 12px;
   border-bottom: 1px solid #d9d9cb;
 }
@@ -227,7 +220,7 @@
   align-items: center;
 }
 .studio h2 em {
-  font: 10px var(--idea-font-body);
+  font: 12px var(--idea-font-body);
   font-style: normal;
   color: #a49c8d;
   border: 1px solid var(--line);
@@ -257,10 +250,10 @@
   margin-top: 7px;
 }
 .studio .upload-box span {
-  font-size: 10px;
+  font-size:12px;
 }
 .studio .upload-box small {
-  font: 8px var(--idea-font-body);
+  font: 12px var(--idea-font-body);
   color: #989c8e;
   margin-top: 9px;
 }
@@ -282,11 +275,11 @@
   flex-direction: column;
 }
 .studio .sample-row b {
-  font-size: 9px;
+  font-size:12px;
   font-weight: 500;
 }
 .studio .sample-row small {
-  font-size: 8px;
+  font-size:12px;
   color: #97988e;
 }
 .studio .sample-row svg {
@@ -295,11 +288,11 @@
 .studio .field-label {
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
+  font-size:12px;
   margin-bottom: 7px;
 }
 .studio .field-label small {
-  font-size: 9px;
+  font-size:12px;
   color: #999;
 }
 .studio .select-wrap {
@@ -313,7 +306,7 @@
   border-radius: 5px;
   padding: 8px 10px;
   color: var(--ink);
-  font-size: 11px;
+  font-size:12px;
 }
 .studio .select-wrap > svg {
   position: absolute;
@@ -334,7 +327,7 @@
   gap: 6px;
   align-items: center;
   flex: 1;
-  font-size: 10px;
+  font-size:12px;
   padding: 7px 3px;
   border-radius: 3px;
 }
@@ -351,11 +344,11 @@
   width: 100%;
   align-items: center;
   justify-content: space-between;
-  font-size: 9px;
+  font-size:12px;
 }
 .studio .muted {
   display: block;
-  font-size: 8px;
+  font-size:12px;
   color: #94978d;
   margin-top: 7px;
 }
@@ -363,7 +356,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 10px;
+  font-size:12px;
   margin: 13px 0 4px;
 }
 .studio input[type="range"] {
@@ -394,7 +387,7 @@
   color: #7e8773;
 }
 .studio .settings-note p {
-  font-size: 10px;
+  font-size:12px;
   line-height: 1.8;
 }
 .studio .settings-note b {
@@ -418,7 +411,7 @@
   gap: 8px;
 }
 .studio .preview-toolbar small {
-  font-size: 10px;
+  font-size:12px;
   color: #96998b;
 }
 .studio .live-dot,
@@ -468,10 +461,10 @@
   align-items: center;
   justify-content: space-between;
   pointer-events: none;
-  direction: rtl;
+  direction: inherit;
 }
 .studio .stage-bottom > span {
-  font-size: 9px;
+  font-size:12px;
   display: flex;
   align-items: center;
   gap: 6px;
@@ -497,7 +490,7 @@
   justify-content: space-between;
   align-items: center;
   color: #999d90;
-  font-size: 9px;
+  font-size:12px;
   padding: 13px 0 20px;
   border-bottom: 1px solid var(--line);
 }
@@ -523,14 +516,14 @@
   margin-top: 7px;
 }
 .studio .materials .eyebrow {
-  font-size: 8px;
+  font-size:12px;
   letter-spacing: 1.6px;
 }
 .studio .upload-material {
   display: flex;
   flex-direction: row;
   gap: 6px;
-  font-size: 10px;
+  font-size:12px;
   padding: 7px 11px;
   border: 1px solid #d9ddcf;
   background: white;
@@ -543,7 +536,7 @@
   margin: 17px 0 15px;
 }
 .studio .filters button {
-  font-size: 10px;
+  font-size:12px;
   padding: 4px 12px;
   border-radius: 4px;
   color: #8a8c7e;
@@ -556,7 +549,7 @@
 }
 .studio .filters > span {
   margin-right: auto;
-  font-size: 9px;
+  font-size:12px;
   color: #a2a393;
 }
 .studio .material-grid {
@@ -566,7 +559,7 @@
 }
 .studio .material-card {
   padding: 0;
-  text-align: right;
+  text-align:start;
   min-width: 0;
 }
 .studio .material-image {
@@ -600,7 +593,7 @@
 }
 .studio .material-card > b {
   display: block;
-  font-size: 10px;
+  font-size:12px;
   font-weight: 500;
   margin: 6px 3px 1px;
   overflow: hidden;
@@ -609,7 +602,7 @@
 }
 .studio .material-card > small {
   display: block;
-  font-size: 8px;
+  font-size:12px;
   color: #929485;
   margin: 0 3px;
 }
@@ -626,7 +619,7 @@
   margin: 9px 0 3px;
 }
 .studio .summary-head p {
-  font-size: 10px;
+  font-size:12px;
   color: #989887;
 }
 .studio .selected-texture {
@@ -650,7 +643,7 @@
   gap: 8px;
   background: #ffffffe0;
   padding: 3px 7px;
-  font-size: 8px;
+  font-size:12px;
   border-radius: 3px;
 }
 .studio .design-summary h3 {
@@ -659,7 +652,7 @@
   margin-top: 14px;
 }
 .studio .texture-type {
-  font-size: 10px;
+  font-size:12px;
   color: #a2a08f;
   margin-top: 2px;
 }
@@ -672,7 +665,7 @@
 .studio dl > div {
   display: flex;
   justify-content: space-between;
-  font-size: 10px;
+  font-size:12px;
   margin-bottom: 9px;
 }
 .studio dl > div:last-child {
@@ -685,7 +678,7 @@
   margin: 0;
 }
 .studio .mode-note {
-  font-size: 9px;
+  font-size:12px;
   color: #919485;
   line-height: 1.8;
   margin: 10px 0 17px;
@@ -700,7 +693,7 @@
   color: #fff;
   width: 100%;
   padding: 12px 6px;
-  font-size: 11px;
+  font-size:12px;
   border-radius: 5px;
   transition: background 0.2s;
 }
@@ -714,7 +707,7 @@
   display: block;
   text-align: center;
   color: #9b9e8e;
-  font-size: 8px;
+  font-size:12px;
   margin: 9px 0 18px;
 }
 .studio .result-actions {
@@ -730,7 +723,7 @@
   border: 1px solid #dfe1d5;
   border-radius: 4px;
   padding: 8px;
-  font-size: 10px;
+  font-size:12px;
 }
 .studio .tip {
   border-top: 1px solid var(--line);
@@ -738,11 +731,11 @@
   padding-top: 18px;
 }
 .studio .tip span {
-  font-size: 10px;
+  font-size:12px;
   color: #8c805f;
 }
 .studio .tip p {
-  font-size: 9px;
+  font-size:12px;
   color: #9b9e90;
   margin-top: 5px;
   line-height: 1.9;
@@ -753,7 +746,7 @@
   justify-content: space-between;
   padding: 24px 0 27px;
   color: #969a8d;
-  font-size: 10px;
+  font-size:12px;
 }
 .studio footer > span {
   display: flex;
@@ -769,7 +762,7 @@
   margin: 0 5px;
 }
 .studio footer small {
-  font-size: 9px;
+  font-size:12px;
 }
 .studio .compare-range {
   position: absolute;
@@ -808,7 +801,7 @@
   top: 15px;
   background: #10241999;
   color: white;
-  font-size: 10px;
+  font-size:12px;
   padding: 4px 12px;
   border: 1px solid #ffffff30;
   border-radius: 4px;
@@ -838,9 +831,9 @@
   color: #fff;
   padding: 8px 15px;
   border-radius: 6px;
-  font-size: 11px;
+  font-size:12px;
   white-space: nowrap;
-  direction: rtl;
+  direction: inherit;
 }
 .studio .rendering {
   position: absolute;
@@ -942,7 +935,7 @@
   border-radius: 4px;
 }
 .studio .saved-item a {
-  font-size: 11px;
+  font-size:12px;
   text-decoration: underline;
 }
 .studio .saved-item b {
@@ -992,7 +985,7 @@
     font-size: 17px;
   }
   .studio .upload-material {
-    font-size: 9px;
+    font-size:12px;
     padding: 6px;
   }
   .studio .intro {
@@ -1062,7 +1055,7 @@
   }
   .studio nav {
     gap: 18px;
-    font-size: 11px;
+    font-size:12px;
   }
   .studio .intro .quiet-button {
     font-size: 0;
@@ -1100,7 +1093,7 @@
     display: none;
   }
   .studio nav {
-    font-size: 10px;
+    font-size:12px;
   }
   .studio .studio-main {
     padding: 0 13px;
@@ -1112,7 +1105,7 @@
     font-size: 27px;
   }
   .studio .intro p {
-    font-size: 10px;
+    font-size:12px;
   }
   .studio .intro .eyebrow {
     font-size: 7px;
@@ -1190,7 +1183,7 @@
     width: 20px;
   }
   .studio .upload-box b {
-    font-size: 10px;
+    font-size:12px;
   }
   .studio .upload-box small {
     font-size: 6px;
@@ -1199,7 +1192,7 @@
     padding-bottom: 0;
   }
   .studio .sample-row b {
-    font-size: 8px;
+    font-size:12px;
   }
   .studio .sample-row small {
     font-size: 7px;
@@ -1233,10 +1226,10 @@
     padding: 4px 9px;
   }
   .studio .material-card > b {
-    font-size: 11px;
+    font-size:12px;
   }
   .studio .material-card > small {
-    font-size: 9px;
+    font-size:12px;
   }
   .studio .design-summary {
     border: 1px solid var(--line);
@@ -1256,23 +1249,23 @@
     gap: 15px;
     flex-wrap: wrap;
     padding: 22px 4px;
-    font-size: 8px;
+    font-size:12px;
   }
   .studio footer small {
     width: 100%;
-    font-size: 8px;
+    font-size:12px;
   }
   .studio .modal {
     padding: 32px 22px;
   }
   .studio .preview-caption {
-    font-size: 8px;
+    font-size:12px;
   }
   .studio .toast {
-    font-size: 10px;
+    font-size:12px;
   }
   .studio .edit-hint {
-    font-size: 9px;
+    font-size:12px;
   }
   .studio .upload-material {
     padding: 7px 10px;
@@ -1291,7 +1284,7 @@
   border-radius: 5px;
   padding: 8px 10px;
   margin: 0 0 13px;
-  font-size: 11px;
+  font-size:12px;
   background: var(--idea-surface);
   color: var(--ink);
 }
@@ -1301,13 +1294,13 @@
   border: 1px solid var(--line);
   border-radius: 4px;
   padding: 8px;
-  font-size: 11px;
+  font-size:12px;
 }
 .studio .saved-button {
   display: flex;
   gap: 6px;
   align-items: center;
-  font-size: 10px;
+  font-size:12px;
   margin-right: auto;
   margin-left: 12px;
   color: var(--idea-gold);
@@ -1339,7 +1332,7 @@
   border: 1px solid var(--idea-border);
   border-radius: 5px;
   padding: 10px;
-  font-size: 11px;
+  font-size:12px;
   margin-top: 13px;
   color: var(--idea-gold);
 }
@@ -1354,14 +1347,14 @@
 }
 .studio .review-mask {
   color: var(--idea-gold);
-  font-size: 10px;
+  font-size:12px;
   text-decoration: underline;
 }
 .studio .auto-apply {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 10px;
+  font-size:12px;
   margin: 0 0 15px;
   color: var(--idea-text-muted);
 }
@@ -1375,7 +1368,7 @@
   flex-direction: column;
   gap: 5px;
   margin: 12px 0;
-  font-size: 11px;
+  font-size:12px;
   color: var(--idea-text-muted);
 }
 
@@ -1437,7 +1430,7 @@
   background: var(--idea-surface);
 }
 .idea-ceramic-studio .library-note {
-  font-size: 10px;
+  font-size:12px;
   line-height: 1.8;
   color: var(--idea-text-muted);
   margin-top: 10px;

@@ -1,5 +1,9 @@
 import { test, expect } from "@playwright/test";
 import path from "node:path";
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("idea.locale", "ar"));
+  await page.route('**/api/accounts.php?action=session',route=>route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({user:null,company:null,membership:null,csrf:'guest-csrf'})}));
+});
 
 test("room upload, custom material, surface selection, compare, download and save work end to end", async ({
   page,

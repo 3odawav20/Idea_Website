@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
@@ -13,6 +14,8 @@ const COPY = {
 };
 
 export function SurfaceMaterialStrip() {
+  const uiText = useLocaleText();
+
   const { locale } = useI18n();
   const copy = COPY[locale];
 
@@ -56,18 +59,18 @@ export function SurfaceMaterialStrip() {
     return () => window.clearInterval(timer);
   }, [playing, interacting]);
   return (
-    <section className="idea-featured idea-materials" aria-label={copy.title} aria-roledescription="carousel"
+    <section className="idea-featured idea-materials" aria-label={uiText(copy.title)} aria-roledescription="carousel"
       onMouseEnter={() => setInteracting(true)} onMouseLeave={() => setInteracting(false)}
       onFocusCapture={() => setInteracting(true)}
       onBlurCapture={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setInteracting(false); }}>
       <header className="idea-featured-heading">
-        <h2>{copy.title}</h2><p>{copy.sub}</p>
-        <button className="idea-featured-play" onClick={() => setPlaying(!playing)} aria-label={playing ? copy.pause : copy.play}>
-          {playing ? <Pause size={16} /> : <Play size={16} />}
+        <h2>{uiText(copy.title)}</h2><p>{uiText(copy.sub)}</p>
+        <button className="idea-featured-play" onClick={() => setPlaying(!playing)} aria-label={uiText(playing ? copy.pause : copy.play)}>
+          {uiText(playing ? <Pause size={16} /> : <Play size={16} />)}
         </button>
       </header>
       <div className="idea-featured-stage">
-        <div ref={rail} className="idea-featured-rail" dir="ltr" tabIndex={0} aria-label={copy.title}
+        <div ref={rail} className="idea-featured-rail" dir="ltr" tabIndex={0} aria-label={uiText(copy.title)}
           onPointerDown={(e) => {
             setPlaying(false); suppressClick.current = false;
             if (e.pointerType !== "mouse" || e.button !== 0) return;
@@ -88,15 +91,15 @@ export function SurfaceMaterialStrip() {
           onPointerLeave={() => { if (drag.current && !drag.current.moved) drag.current = null; }}
           onClickCapture={(e) => { if (suppressClick.current) { e.preventDefault(); e.stopPropagation(); suppressClick.current = false; } }}
           onKeyDown={(e) => { if (e.key === "ArrowLeft" || e.key === "ArrowRight") { e.preventDefault(); setPlaying(false); move(e.key === "ArrowLeft" ? -1 : 1); } }}>
-          {materials.map((look) => (
+          {uiText(materials.map((look) => (
             <Link key={look.id} className="idea-featured-card" to={`/product/${look.slug}`} draggable={false} dir={locale === "ar" ? "rtl" : "ltr"}>
-              <img src={look.image} alt={look.name} loading="lazy" width={look.width} height={look.height} draggable={false} />
-              <span className="idea-featured-label">{look.name}<small>{look.finish === "Glossy" ? ({ en: "Glossy", ar: "لامع", fr: "Brillant" })[locale] : ({ en: "Matte", ar: "مط", fr: "Mat" })[locale]}</small></span>
+              <img src={look.image} alt={uiText(look.name)} loading="lazy" width={look.width} height={look.height} draggable={false} />
+              <span className="idea-featured-label">{uiText(look.name)}<small>{uiText(look.finish === "Glossy" ? ({ en: "Glossy", ar: "لامع", fr: "Brillant" })[locale] : ({ en: "Matte", ar: "مط", fr: "Mat" })[locale])}</small></span>
             </Link>
-          ))}
+          )))}
         </div>
-        <button className="idea-featured-arrow idea-featured-prev" aria-label={copy.previous} disabled={edges.start} onClick={() => { setPlaying(false); move(-1); }}><ChevronLeft /></button>
-        <button className="idea-featured-arrow idea-featured-next" aria-label={copy.next} disabled={edges.end} onClick={() => { setPlaying(false); move(1); }}><ChevronRight /></button>
+        <button className="idea-featured-arrow idea-featured-prev" aria-label={uiText(copy.previous)} disabled={edges.start} onClick={() => { setPlaying(false); move(-1); }}><ChevronLeft /></button>
+        <button className="idea-featured-arrow idea-featured-next" aria-label={uiText(copy.next)} disabled={edges.end} onClick={() => { setPlaying(false); move(1); }}><ChevronRight /></button>
       </div>
     </section>
   );

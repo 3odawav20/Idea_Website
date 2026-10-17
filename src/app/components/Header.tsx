@@ -1,6 +1,7 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User } from "lucide-react";
+import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User, Building2 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import { useStore } from "../store/store";
@@ -17,20 +18,24 @@ const LOCALES: { code: Locale; label: string }[] = [
 ];
 
 function IconLink({ to, label, count, children }: { to: string; label: string; count?: number; children: React.ReactNode }) {
+  const uiText = useLocaleText();
+
   return (
-    <Link to={to} aria-label={label} style={{ position: "relative", color: "var(--idea-text)", display: "inline-flex" }}>
-      {children}
-      {count ? (
+    <Link to={to} aria-label={uiText(label)} style={{ position: "relative", color: "var(--idea-text)", display: "inline-flex" }}>
+      {uiText(children)}
+      {uiText(count ? (
         <span style={{
           position: "absolute", top: -8, insetInlineEnd: -8, background: "var(--idea-gold)", color: "var(--idea-on-gold)",
           fontSize: 10, minWidth: 16, height: 16, borderRadius: 999, display: "grid", placeItems: "center", padding: "0 3px", fontWeight: 600,
-        }}>{count}</span>
-      ) : null}
+        }}>{uiText(count)}</span>
+      ) : null)}
     </Link>
   );
 }
 
 export function Header() {
+  const uiText = useLocaleText();
+
   const { t, locale, setLocale } = useI18n();
   const { mode, toggle } = useTheme();
   const { favorites, quote } = useStore();
@@ -68,7 +73,7 @@ export function Header() {
     }}>
       <Container style={{ display: "flex", alignItems: "center", gap: "var(--idea-space-4)", height: 78 }}>
         {/* Logo */}
-        <Link to="/" aria-label="IDEA — Home" style={{ display: "inline-flex", lineHeight: 1, textDecoration: "none", flexShrink: 0 }}>
+        <Link to="/" aria-label={uiText("IDEA — Home")} style={{ display: "inline-flex", lineHeight: 1, textDecoration: "none", flexShrink: 0 }}>
           <IdeaLogo compact />
         </Link>
 
@@ -79,55 +84,63 @@ export function Header() {
             border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)", padding: "8px 16px", minWidth: 220,
           }}>
             <Search size={16} color="var(--idea-gold)" />
-            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("search.placeholder")}
+            <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={uiText(t("search.placeholder"))}
               style={{ background: "transparent", border: "none", outline: "none", color: "var(--idea-text)", width: "100%", fontFamily: "var(--idea-font-body)", fontSize: "var(--idea-text-sm)" }} />
           </form>
 
           {/* Language */}
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
             <Globe size={16} color="var(--idea-text-muted)" />
-            {LOCALES.map((l) => (
+            {uiText(LOCALES.map((l) => (
               <button key={l.code} onClick={() => setLocale(l.code)} style={{
                 background: "none", border: "none", cursor: "pointer", fontSize: "var(--idea-text-xs)", fontWeight: 600, padding: 2,
                 color: locale === l.code ? "var(--idea-gold-bright)" : "var(--idea-text-faint)",
-              }}>{l.label}</button>
-            ))}
+              }}>{uiText(l.label)}</button>
+            )))}
           </div>
 
-          <button onClick={toggle} aria-label="Toggle theme" style={{
+          <button onClick={toggle} aria-label={uiText("Toggle theme")} style={{
             background: "none", border: "none", cursor: "pointer", color: "var(--idea-gold-bright)", display: "inline-flex",
           }}>
-            {mode === "dark" ? <Sun size={20} /> : <Moon size={20} />}
+            {uiText(mode === "dark" ? <Sun size={20} /> : <Moon size={20} />)}
           </button>
 
-          <span className="idea-mobile-optional"><IconLink to="/favorites" label={t("fav.title")} count={favorites.length}><Heart size={20} /></IconLink></span>
-          <span className="idea-mobile-optional"><IconLink to="/request-quote/new" label={t("quote.title")} count={quote.length}><FileText size={20} /></IconLink></span>
-          <IconLink to={session ? (session.role === "business" ? "/business" : session.role === "admin" ? "/admin" : "/account") : "/login"} label={session ? t("nav.account") : t("nav.signIn")}><User size={20} /></IconLink>
+          <span className="idea-mobile-optional"><IconLink to="/favorites" label={uiText(t("fav.title"))} count={favorites.length}><Heart size={20} /></IconLink></span>
+          <span className="idea-mobile-optional"><IconLink to="/request-quote/new" label={uiText(t("quote.title"))} count={quote.length}><FileText size={20} /></IconLink></span>
+          <IconLink to={session ? (session.role === "business" ? "/business" : session.role === "admin" ? "/admin" : "/account") : "/login"} label={uiText(session ? t("nav.account") : t("nav.signIn"))}><User size={20} /></IconLink>
 
-          <button className="idea-menu-btn" onClick={() => setOpen((o) => !o)} aria-label="Menu" aria-expanded={open}
+          <button className="idea-menu-btn" onClick={() => setOpen((o) => !o)} aria-label={uiText("Menu")} aria-expanded={open}
             style={{ background: "none", border: "none", color: "var(--idea-text)", cursor: "pointer", display: "none" }}>
-            {open ? <X size={22} /> : <Menu size={22} />}
+            {uiText(open ? <X size={22} /> : <Menu size={22} />)}
           </button>
         </div>
       </Container>
 
       <div className="idea-discovery-desktop-only"><DiscoveryNavigation /></div>
+      <nav aria-label={locale === "ar" ? "الحسابات والاشتراكات" : "Accounts and memberships"} style={{ borderTop: "var(--idea-hairline)", background: "var(--idea-bg-2)" }}>
+        <Container style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: 8, paddingTop: 8, paddingBottom: 8 }}>
+          <Link className="idea-account-entry" to="/register/customer"><User size={15} />{locale === "ar" ? "حساب عميل" : "Customer account"}</Link>
+          <Link className="idea-account-entry" to="/register/business"><Building2 size={15} />{locale === "ar" ? "حساب شركة" : "Company account"}</Link>
+          <Link className="idea-account-entry" to="/subscriptions">{locale === "ar" ? "الاشتراكات" : "Memberships"}</Link>
+          <Link className="idea-account-entry" to="/suppliers">{locale === "ar" ? "متاجر الشركات" : "Company showrooms"}</Link>
+        </Container>
+      </nav>
       {/* Mobile drawer */}
-      {open && (
+      {uiText(open && (
         <div onKeyDown={e => {if(e.key === "Escape") setOpen(false);}} style={{ borderTop: "var(--idea-hairline)", background: "var(--idea-bg-2)", padding: "var(--idea-space-4) 0", maxHeight: "calc(100dvh - 120px)", overflowY: "auto" }}>
           <Container style={{ display: "flex", flexDirection: "column", gap: "var(--idea-space-3)" }}>
             <form onSubmit={submit} style={{ display: "flex", alignItems: "center", gap: 8, background: "var(--idea-surface-2)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)", padding: "10px 16px" }}>
               <Search size={16} color="var(--idea-gold)" />
-              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t("search.placeholder")}
+              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={uiText(t("search.placeholder"))}
                 style={{ background: "transparent", border: "none", outline: "none", color: "var(--idea-text)", width: "100%", fontFamily: "var(--idea-font-body)" }} />
             </form>
             <div className="idea-discovery-mobile-only"><DiscoveryNavigation onNavigate={() => setOpen(false)} /></div>
-            {links.map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} style={{ color: "var(--idea-text)", textDecoration: "none", padding: "8px 0", textTransform: "uppercase", fontSize: "var(--idea-text-sm)", letterSpacing: "0.06em" }}>{l.label}</Link>
-            ))}
+            {uiText(links.map((l) => (
+              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} style={{ color: "var(--idea-text)", textDecoration: "none", padding: "8px 0", textTransform: "uppercase", fontSize: "var(--idea-text-sm)", letterSpacing: "0.06em" }}>{uiText(l.label)}</Link>
+            )))}
           </Container>
         </div>
-      )}
+      ))}
 
       <style>{`
         .idea-nav-link::after {

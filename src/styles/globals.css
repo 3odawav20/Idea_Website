@@ -75,9 +75,9 @@
   --idea-shadow-drawer: 0 0 60px rgba(0, 0, 0, 0.6);
 
   /* ── Typography families ── */
-  --idea-font-display: 'Oswald', 'Jost';
-  --idea-font-body: 'Jost';
-  --idea-font-arabic: 'Cairo';
+  --idea-font-display: 'IDEA Cairo', sans-serif;
+  --idea-font-body: 'IDEA Cairo', sans-serif;
+  --idea-font-arabic: 'IDEA Cairo', sans-serif;
 
   /* ── Type scale ── */
   --idea-text-xs: 12px;
@@ -405,3 +405,22 @@ textarea:disabled {
   .idea-main-collection-footer {inset-inline:10px;bottom:10px;font-size:10px;gap:5px;}
   .idea-main-collection-footer svg {width:14px;height:14px;}
 }
+
+/* Stable type metrics and logical alignment in both languages. */
+button,input,textarea,select {font-family:inherit;}
+:lang(ar) {letter-spacing:normal;}
+.idea-display {line-height:1.5;}
+.idea-hero-title {line-height:1.3;}
+[lang='ar'] .idea-display,[lang='ar'] .idea-eyebrow,[lang='ar'] button {letter-spacing:normal!important;}
+input[type=email],input[type=tel],input[type=password] {direction:ltr;text-align:start;}
+label {line-height:1.7;}
+.idea-account-entry {display:flex;align-items:center;gap:8px;padding:8px 12px;border:var(--idea-hairline);border-radius:var(--idea-radius-sm);color:var(--idea-text);font-size:var(--idea-text-xs);text-decoration:none;white-space:nowrap;}
+.idea-account-entry:hover {border-color:var(--idea-gold);color:var(--idea-gold);}
+.idea-access-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;}
+.idea-access-card {display:flex;flex-direction:column;gap:16px;padding:32px;border:var(--idea-hairline);border-radius:var(--idea-radius-lg);background:var(--idea-surface);}
+.idea-access-card h2 {font-size:var(--idea-text-xl);margin:0;}
+.idea-access-card p {font-size:var(--idea-text-sm);line-height:1.9;color:var(--idea-text-muted);margin:0;}
+.idea-access-card ul {padding-inline-start:20px;line-height:2;color:var(--idea-text-muted);font-size:var(--idea-text-sm);}
+.idea-access-card a:last-child {margin-top:auto;}
+.idea-signup-fields {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 20px;}
+@media(max-width:640px){.idea-access-grid,.idea-signup-fields{grid-template-columns:1fr;}.idea-access-card{padding:24px;}.idea-account-entry{padding:7px 9px;}}

@@ -1,35 +1,44 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from "react";
 
 // ── Shared inline-style helpers bound to IDEA CSS tokens ──────────────────
 
 export function Container({ children, style, className }: { children: ReactNode; style?: CSSProperties; className?: string }) {
+  const uiText = useLocaleText();
+
   return (
     <div className={["idea-container", className].filter(Boolean).join(" ")} style={{ width: "100%", maxWidth: "var(--idea-content-max)", margin: "0 auto", paddingInline: "var(--idea-space-5)", ...style }}>
-      {children}
+      {uiText(children)}
     </div>
   );
 }
 
 export function Section({ children, style, alt }: { children: ReactNode; style?: CSSProperties; alt?: boolean }) {
+  const uiText = useLocaleText();
+
   return (
     <section style={{ padding: "var(--idea-space-9) 0", background: alt ? "var(--idea-bg-2)" : "transparent", ...style }}>
-      {children}
+      {uiText(children)}
     </section>
   );
 }
 
 export function Eyebrow({ children }: { children: ReactNode }) {
-  return <div className="idea-eyebrow">{children}</div>;
+  const uiText = useLocaleText();
+
+  return <div className="idea-eyebrow">{uiText(children)}</div>;
 }
 
 export function SectionHeader({ eyebrow, title, sub }: { eyebrow?: string; title: string; sub?: string }) {
+  const uiText = useLocaleText();
+
   return (
     <div style={{ marginBottom: "var(--idea-space-7)", maxWidth: 720 }}>
-      {eyebrow && <Eyebrow>{eyebrow}</Eyebrow>}
+      {uiText(eyebrow && <Eyebrow>{uiText(eyebrow)}</Eyebrow>)}
       <h2 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", margin: "var(--idea-space-3) 0 0", color: "var(--idea-text)" }}>
-        {title}
+        {uiText(title)}
       </h2>
-      {sub && <p style={{ color: "var(--idea-text-muted)", marginTop: "var(--idea-space-3)", fontSize: "var(--idea-text-base)", lineHeight: 1.6 }}>{sub}</p>}
+      {uiText(sub && <p style={{ color: "var(--idea-text-muted)", marginTop: "var(--idea-space-3)", fontSize: "var(--idea-text-base)", lineHeight: 1.6 }}>{uiText(sub)}</p>)}
     </div>
   );
 }
@@ -43,6 +52,8 @@ interface BtnProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export function Button({ variant = "gold", size = "md", style, children, ...rest }: BtnProps) {
+  const uiText = useLocaleText();
+
   const pad = size === "lg" ? "var(--idea-space-4) var(--idea-space-6)" : size === "sm" ? "var(--idea-space-2) var(--idea-space-4)" : "var(--idea-space-3) var(--idea-space-5)";
   const font = size === "lg" ? "var(--idea-text-base)" : "var(--idea-text-sm)";
   const base: CSSProperties = {
@@ -58,12 +69,14 @@ export function Button({ variant = "gold", size = "md", style, children, ...rest
   };
   return (
     <button {...rest} style={{ ...base, ...variants[variant], ...style }}>
-      {children}
+      {uiText(children)}
     </button>
   );
 }
 
 export function Chip({ active, children, onClick }: { active?: boolean; children: ReactNode; onClick?: () => void }) {
+  const uiText = useLocaleText();
+
   return (
     <button
       onClick={onClick}
@@ -75,18 +88,20 @@ export function Chip({ active, children, onClick }: { active?: boolean; children
         color: active ? "var(--idea-gold-bright)" : "var(--idea-text-muted)",
       }}
     >
-      {children}
+      {uiText(children)}
     </button>
   );
 }
 
 export function Tag({ children }: { children: ReactNode }) {
+  const uiText = useLocaleText();
+
   return (
     <span style={{
       fontSize: "var(--idea-text-xs)", color: "var(--idea-text-muted)", padding: "var(--idea-space-1) var(--idea-space-3)",
       border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)", letterSpacing: "0.04em",
     }}>
-      {children}
+      {uiText(children)}
     </span>
   );
 }

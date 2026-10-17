@@ -26,19 +26,11 @@ function requestJson(string $url, array $headers, ?array $body = null, int $time
 $authorization = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
 if (!preg_match('/^Bearer ([A-Za-z0-9._-]{20,4096})$/', $authorization, $match)) fail(401, 'سجّل الدخول لتفعيل التوليد.');
 $token = $match[1];
-// Only registered IDEA buyers can generate. Anonymous Firebase auth is not accepted.
-if (!empty($config['supabase_url']) && !empty($config['supabase_anon_key'])) {
-    [$authCode,$auth] = requestJson(rtrim($config['supabase_url'],'/').'/auth/v1/user', ['Authorization: Bearer '.$token,'apikey: '.$config['supabase_anon_key']]);
-    $uid = $auth['id'] ?? '';
-} else { fail(503, 'أضف إعدادات التحقق من الحساب على السيرفر.'); }
-if ($authCode !== 200 || !$uid) fail(401, 'انتهت جلسة الحساب. سجّل الدخول مجددًا.');
-require_once __DIR__.'/customer-access.php';
-$accessHeaders=['Authorization: Bearer '.$token,'apikey: '.$config['supabase_anon_key']];
-$rest=rtrim($config['supabase_url'],'/').'/rest/v1/';
-[$roleCode,$roles]=requestJson($rest.'user_roles?select=role&user_id=eq.'.rawurlencode($uid),$accessHeaders,null,20);
-[$memberCode,$members]=requestJson($rest.'company_members?select=company_id&user_id=eq.'.rawurlencode($uid).'&limit=1',$accessHeaders,null,20);
-if($roleCode!==200||$memberCode!==200)fail(503,'تعذّر التحقق من صلاحية حساب المشتري. حاول لاحقًا.');
-if(!customerMayGenerate($roles,$members))fail(403,'توليد الصور متاح لحسابات العملاء المشترين فقط، وغير متاح لحسابات الشركات أو الأدمين.');
+// The browser supplies its CSRF token; the HttpOnly PHP session identifies the account.
+require_once __DIR__.'/accounts-db.php';
+try {accountCsrf($token);$buyer=accountUser();accountCustomer($buyer);$uid=$buyer['id'];session_write_close();}
+catch(IdeaAccountError $e){fail($e->status,$e->getMessage()==='CUSTOMER_ONLY'?'توليد الصور متاح لحسابات العملاء المشترين فقط، وغير متاح لحسابات الشركات أو الأدمين.':'سجّل الدخول من حساب IDEA أولًا لتفعيل التوليد الذكي. المعاينة المحلية متاحة بدون حساب.');}
+catch(Throwable $e){fail(503,'خدمة الحسابات غير متاحة حاليًا.');}
 $raw = file_get_contents('php://input', false, null, 0, 12582913);
 if (strlen($raw) > 12582912) fail(413, 'حجم الطلب أكبر من المسموح.');
 $data = json_decode($raw, true);
