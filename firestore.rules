@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/designs/{id} {
+      allow read, delete: if request.auth != null && request.auth.uid == uid;
+      allow create: if request.auth != null && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['material','surface','size','roomType','mode','date','imageUrl','createdAt'])
+        && request.resource.data.material is string && request.resource.data.material.size() <= 256
+        && request.resource.data.imageUrl is string && request.resource.data.imageUrl.size() <= 4096
+        && request.resource.data.createdAt == request.time;
+    }
+  }
+}

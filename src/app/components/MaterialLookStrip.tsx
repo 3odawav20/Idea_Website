@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useRef, useState, useCallback, useEffect } from "react";
 import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
@@ -102,6 +103,8 @@ const GRAIN_URL = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/
 // ─── Single look card with 3D hover tilt + parallax ─────────────────────────
 
 function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }) {
+  const uiText = useLocaleText();
+
   const { locale } = useI18n();
   const pal = LOOK_PALETTE[look.id] ?? LOOK_PALETTE.marble;
 
@@ -188,7 +191,7 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
           <img
             ref={imgRef}
             src={look.image}
-            alt={look.label[locale as Locale]}
+            alt={uiText(look.label[locale as Locale])}
             draggable={false}
             loading="lazy"
             style={{
@@ -266,7 +269,7 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
               transition: "color 0.42s ease",
               userSelect: "none",
             }}>
-              {pal.n}
+              {uiText(pal.n)}
             </div>
 
             <div style={{
@@ -283,7 +286,7 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
               textTransform: "uppercase",
               marginTop: 8, flexShrink: 0,
             }}>
-              {look.label[locale as Locale]}
+              {uiText(look.label[locale as Locale])}
             </div>
           </div>
 
@@ -293,15 +296,15 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
             display: "flex", flexDirection: "column", gap: 3,
             pointerEvents: "none",
           }}>
-            {look.featured.map(name => (
+            {uiText(look.featured.map(name => (
               <span key={name} style={{
                 fontFamily: "var(--idea-font-display)",
                 fontSize: "var(--idea-text-xs)",
                 letterSpacing: "0.12em",
                 color: "rgba(255,255,255,0.30)",
                 textTransform: "uppercase",
-              }}>{name}</span>
-            ))}
+              }}>{uiText(name)}</span>
+            )))}
           </div>
 
           {/* ── BOTTOM: rule + label + desc ─────────────────────────────────── */}
@@ -334,7 +337,7 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
                 fontWeight: 500, color: "white",
                 letterSpacing: "0.04em", lineHeight: 1.1,
               }}>
-                {look.label[locale as Locale]}
+                {uiText(look.label[locale as Locale])}
               </div>
 
               <div
@@ -359,7 +362,7 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
               color: "rgba(255,255,255,0.46)",
               lineHeight: 1.65, letterSpacing: "0.01em",
             }}>
-              {look.sub[locale as Locale]}
+              {uiText(look.sub[locale as Locale])}
             </p>
           </div>
         </Link>
@@ -371,6 +374,8 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
 // ─── Main strip component ────────────────────────────────────────────────────
 
 export function MaterialLookStrip() {
+  const uiText = useLocaleText();
+
   const { locale } = useI18n();
   const stripRef   = useRef<HTMLDivElement>(null);
 
@@ -506,7 +511,7 @@ export function MaterialLookStrip() {
               letterSpacing: "var(--idea-tracking-wide)",
               color: "var(--idea-gold-bright)",
               textTransform: "uppercase",
-            }}>{eyebrow}</span>
+            }}>{uiText(eyebrow)}</span>
           </div>
           <h2 style={{
             fontFamily: "var(--idea-font-display)",
@@ -514,7 +519,7 @@ export function MaterialLookStrip() {
             color: "var(--idea-text)",
             margin: 0, fontWeight: 500,
             letterSpacing: "0.03em", lineHeight: 1.15,
-          }}>{heading}</h2>
+          }}>{uiText(heading)}</h2>
         </div>
 
         {/* Drag hint */}
@@ -529,7 +534,7 @@ export function MaterialLookStrip() {
           <svg width="22" height="14" viewBox="0 0 22 14" fill="none">
             <path d="M1 7h20M1 7l5-5M1 7l5 5M21 7l-5-5M21 7l-5 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
-          {locale === "ar" ? "اسحب للتصفح" : locale === "fr" ? "Glisser pour parcourir" : "Drag to explore"}
+          {uiText(locale === "ar" ? "اسحب للتصفح" : locale === "fr" ? "Glisser pour parcourir" : "Drag to explore")}
         </div>
       </motion.div>
 
@@ -572,7 +577,7 @@ export function MaterialLookStrip() {
             willChange: "transform, scroll-position",
           }}
         >
-          {MATERIAL_LOOKS.map((look, idx) => (
+          {uiText(MATERIAL_LOOKS.map((look, idx) => (
             <div
               key={look.id}
               data-ls-card
@@ -580,7 +585,7 @@ export function MaterialLookStrip() {
             >
               <LookCard look={look} idx={idx} />
             </div>
-          ))}
+          )))}
         </div>
       </div>
 
@@ -590,13 +595,13 @@ export function MaterialLookStrip() {
         gap: "var(--idea-space-2)",
         paddingTop: "var(--idea-space-4)",
       }}>
-        {MATERIAL_LOOKS.map((look, i) => {
+        {uiText(MATERIAL_LOOKS.map((look, i) => {
           const pal = LOOK_PALETTE[look.id];
           const active = i === activeDot;
           return (
             <button
               key={look.id}
-              aria-label={`Go to ${look.label.en}`}
+              aria-label={uiText(`Go to ${look.label.en}`)}
               onClick={() => {
                 const strip = stripRef.current;
                 if (!strip) return;
@@ -615,7 +620,7 @@ export function MaterialLookStrip() {
               }}
             />
           );
-        })}
+        }))}
       </div>
 
       {/* ── Scoped CSS ────────────────────────────────────────────────────── */}

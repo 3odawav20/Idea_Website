@@ -1,0 +1,14 @@
+node_modules/
+dist/
+.env
+.env.local
+test-results/
+playwright-report/
+artifacts/
+cpanel-upload.zip
+source-delivery.zip
+cpanel-setup.zip
+public/ceramic-studio/private-previews/
+public/uploads/company-products/*/
+idea-accounts-config.php
+ceramic-studio-config.php

@@ -1,11 +1,14 @@
 import { useEffect } from "react";
-import { Outlet, useLocation, useNavigationType } from "react-router";
+import { useOutlet, useLocation, useNavigationType } from "react-router";
 import { motion, useScroll, useSpring, useReducedMotion, AnimatePresence } from "motion/react";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { AnnouncementBar } from "./AnnouncementBar";
 
 export function Layout() {
+  // Capture the route element so the exiting animation keeps the previous page.
+  // Rendering a live <Outlet> inside it mounted a new signup form twice and lost input.
+  const outlet = useOutlet();
   const { pathname } = useLocation();
   const navigationType = useNavigationType();
   const reduce = useReducedMotion();
@@ -41,7 +44,7 @@ export function Layout() {
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
           >
-            <Outlet />
+            {outlet}
           </motion.div>
         </AnimatePresence>
       </main>

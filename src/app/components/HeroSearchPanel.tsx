@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { Search, SlidersHorizontal } from "lucide-react";
@@ -8,6 +9,8 @@ import { unique, isColourLabel } from "../data/discovery";
 import "./Discovery.css";
 
 export function HeroSearchPanel({ advanced = false }: { advanced?: boolean }) {
+  const uiText = useLocaleText();
+
   const { locale } = useI18n();
   const { products } = useStore();
   const nav = useNavigate();
@@ -30,19 +33,19 @@ export function HeroSearchPanel({ advanced = false }: { advanced?: boolean }) {
     else { if(category) params.set("category", category); for(const [k,v] of Object.entries(filters)) if(v) params.set(k,v); }
     nav(`/products?${params.toString()}`);
   };
-  return <section className={`idea-discovery-search${advanced ? " is-advanced" : ""}`} aria-label={text("Product finder", "البحث عن المنتجات", "Recherche produits")}>
-    {advanced && <h2>{text("Advanced search", "البحث المتقدم", "Recherche avancée")}</h2>}
-    <div className="idea-discovery-tabs" role="tablist" aria-label={text("Search method", "طريقة البحث", "Méthode de recherche")}>
-      {["filter", "search"].map(k => <button key={k} role="tab" aria-selected={tab === k} aria-controls={`${advanced ? "advanced" : "hero"}-finder`} id={`${advanced ? "advanced" : "hero"}-${k}`} onClick={() => setTab(k)}>{k === "filter" ? <SlidersHorizontal size={16}/> : <Search size={16}/>} {k === "filter" ? text("Filter by", "تصفية حسب", "Filtrer par") : text("Search by name", "البحث بالاسم", "Recherche par nom")}</button>)}
+  return <section className={`idea-discovery-search${advanced ? " is-advanced" : ""}`} aria-label={uiText(text("Product finder", "البحث عن المنتجات", "Recherche produits"))}>
+    {uiText(advanced && <h2>{uiText(text("Advanced search", "البحث المتقدم", "Recherche avancée"))}</h2>)}
+    <div className="idea-discovery-tabs" role="tablist" aria-label={uiText(text("Search method", "طريقة البحث", "Méthode de recherche"))}>
+      {uiText(["filter", "search"].map(k => <button key={k} role="tab" aria-selected={tab === k} aria-controls={`${advanced ? "advanced" : "hero"}-finder`} id={`${advanced ? "advanced" : "hero"}-${k}`} onClick={() => setTab(k)}>{uiText(k === "filter" ? <SlidersHorizontal size={16}/> : <Search size={16}/>)} {uiText(k === "filter" ? text("Filter by", "تصفية حسب", "Filtrer par") : text("Search by name", "البحث بالاسم", "Recherche par nom"))}</button>))}
     </div>
     <form id={`${advanced ? "advanced" : "hero"}-finder`} role="tabpanel" aria-labelledby={`${advanced ? "advanced" : "hero"}-${tab}`} onSubmit={go} className={`idea-discovery-form${tab === "search" ? " is-name" : ""}`}>
-      {tab === "search" ? <label>{text("Product name or code", "اسم المنتج أو الكود", "Nom ou référence")}<input aria-label={text("Product name or code", "اسم المنتج أو الكود", "Nom ou référence")} value={q} onChange={e => setQ(e.target.value)} placeholder={text("Search the catalogue…", "ابحث في الكتالوج…", "Rechercher dans le catalogue…")}/></label> : <>
-        <label>{text("Category", "الفئة", "Catégorie")}<select aria-label={text("Category", "الفئة", "Catégorie")} value={category} onChange={e => {setCategory(e.target.value); setFilters({});}} required><option value="">{text("Choose category first", "اختر الفئة أولًا", "Choisir une catégorie")}</option>{COLLECTIONS.filter(c => products.some(p => p.collection === c.slug)).map(c => <option key={c.slug} value={c.slug}>{c.title[locale]}</option>)}</select></label>
-        {keys.map((key,index) => <label key={key}>{labels[key]}<select aria-label={labels[key]} disabled={!category || !values(key).length} value={filters[key] ?? ""} onChange={e => setFilters(old => Object.fromEntries([...keys.slice(0,index).map(k => [k,old[k] ?? ""]),[key,e.target.value]]))}><option value="">{category && !values(key).length ? text("Not specified", "غير محدد", "Non précisé") : text("All", "الكل", "Tous")}</option>{values(key).map(v => <option key={v} value={v}>{v}</option>)}</select></label>)}
-      </>}
-      <button className="idea-discovery-submit" type="submit"><Search size={17}/>{text("Search", "ابحث", "Rechercher")}</button>
+      {uiText(tab === "search" ? <label>{uiText(text("Product name or code", "اسم المنتج أو الكود", "Nom ou référence"))}<input aria-label={uiText(text("Product name or code", "اسم المنتج أو الكود", "Nom ou référence"))} value={q} onChange={e => setQ(e.target.value)} placeholder={uiText(text("Search the catalogue…", "ابحث في الكتالوج…", "Rechercher dans le catalogue…"))}/></label> : <>
+        <label>{uiText(text("Category", "الفئة", "Catégorie"))}<select aria-label={uiText(text("Category", "الفئة", "Catégorie"))} value={category} onChange={e => {setCategory(e.target.value); setFilters({});}} required><option value="">{uiText(text("Choose category first", "اختر الفئة أولًا", "Choisir une catégorie"))}</option>{uiText(COLLECTIONS.filter(c => products.some(p => p.collection === c.slug)).map(c => <option key={c.slug} value={c.slug}>{uiText(c.title[locale])}</option>))}</select></label>
+        {uiText(keys.map((key,index) => <label key={key}>{uiText(labels[key])}<select aria-label={uiText(labels[key])} disabled={!category || !values(key).length} value={filters[key] ?? ""} onChange={e => setFilters(old => Object.fromEntries([...keys.slice(0,index).map(k => [k,old[k] ?? ""]),[key,e.target.value]]))}><option value="">{uiText(category && !values(key).length ? text("Not specified", "غير محدد", "Non précisé") : text("All", "الكل", "Tous"))}</option>{uiText(values(key).map(v => <option key={v} value={v}>{uiText(v)}</option>))}</select></label>))}
+      </>)}
+      <button className="idea-discovery-submit" type="submit"><Search size={17}/>{uiText(text("Search", "ابحث", "Rechercher"))}</button>
     </form>
-    {!category && tab === "filter" && <p className="idea-discovery-note">{text("Choose a category to see its available filters.", "اختر الفئة لعرض خياراتها المتاحة.", "Choisissez une catégorie pour afficher ses filtres.")}</p>}
-    {!advanced && <div className="idea-discovery-shortcuts"><Link to="/subscriptions">{text("Memberships", "العضويات", "Abonnements")}</Link><Link to="/register/business">{text("For professionals", "للمحترفين والشركات", "Pour les professionnels")}</Link><Link to="/room-designer">{text("Room designer", "مصمم الغرف", "Configurateur")}</Link></div>}
+    {uiText(!category && tab === "filter" && <p className="idea-discovery-note">{uiText(text("Choose a category to see its available filters.", "اختر الفئة لعرض خياراتها المتاحة.", "Choisissez une catégorie pour afficher ses filtres."))}</p>)}
+    {uiText(!advanced && <div className="idea-discovery-shortcuts"><Link to="/subscriptions">{uiText(text("Memberships", "العضويات", "Abonnements"))}</Link><Link to="/register/business">{uiText(text("For professionals", "للمحترفين والشركات", "Pour les professionnels"))}</Link><Link to="/room-designer">{uiText(text("Room designer", "مصمم الغرف", "Configurateur"))}</Link></div>)}
   </section>;
 }

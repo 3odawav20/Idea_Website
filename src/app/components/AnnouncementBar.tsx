@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useState } from "react";
 import { Link } from "react-router";
 import { X } from "lucide-react";
@@ -11,6 +12,8 @@ const MESSAGES = [
 ];
 
 export function AnnouncementBar() {
+  const uiText = useLocaleText();
+
   const { locale } = useI18n();
   const { products } = useStore();
   const [dismissed, setDismissed] = useState(false);
@@ -52,10 +55,10 @@ export function AnnouncementBar() {
         textTransform: "uppercase",
         lineHeight: 1,
       }}>
-        <span style={{ color: "var(--idea-gold-bright)", marginInlineEnd: 10 }}>✦</span>
-        {locale === "ar" ? `${products.length} منتج في الكتالوج · استكشف الخامات وخطط مساحتك` : locale === "fr" ? `${products.length} produits au catalogue · Explorez et concevez` : `${products.length} products in the catalogue · Explore surfaces & plan your space`}
-        <span style={{ color: "var(--idea-gold-bright)", marginInlineStart: 10 }}>✦</span>
-        {" "}
+        <span style={{ color: "var(--idea-gold-bright)", marginInlineEnd: 10 }}>{uiText("✦")}</span>
+        {uiText(locale === "ar" ? `${products.length} منتج في الكتالوج · استكشف الخامات وخطط مساحتك` : locale === "fr" ? `${products.length} produits au catalogue · Explorez et concevez` : `${products.length} products in the catalogue · Explore surfaces & plan your space`)}
+        <span style={{ color: "var(--idea-gold-bright)", marginInlineStart: 10 }}>{uiText("✦")}</span>
+        {uiText(" ")}
         <Link
           to="/how-it-works"
           style={{
@@ -65,12 +68,12 @@ export function AnnouncementBar() {
             marginInlineStart: 8,
           }}
         >
-          {locale === "ar" ? "اعرف أكثر" : locale === "fr" ? "En savoir plus" : "Learn more"}
+          {uiText(locale === "ar" ? "اعرف أكثر" : locale === "fr" ? "En savoir plus" : "Learn more")}
         </Link>
       </p>
 
       <button
-        aria-label="Dismiss announcement"
+        aria-label={uiText("Dismiss announcement")}
         onClick={() => setDismissed(true)}
         style={{
           position: "absolute",

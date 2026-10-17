@@ -1,3 +1,4 @@
+import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useState, useMemo } from "react";
 import { Link, useParams } from "react-router";
 import { ArrowLeft, Check } from "lucide-react";
@@ -25,6 +26,8 @@ function RoomSVG({
   wallTile: string | null;
   roomType: RoomType;
 }) {
+  const uiText = useLocaleText();
+
   const grout = "#cac7bc";
 
   return (
@@ -34,27 +37,27 @@ function RoomSVG({
       preserveAspectRatio="xMidYMid meet"
     >
       <defs>
-        {floorTile && (
+        {uiText(floorTile && (
           <pattern id="fp" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
             <image href={floorTile} x="0" y="0" width="120" height="120" preserveAspectRatio="xMidYMid slice" />
             <line x1="0" y1="0" x2="0" y2="120" stroke={grout} strokeWidth="2.5" />
             <line x1="0" y1="0" x2="120" y2="0" stroke={grout} strokeWidth="2.5" />
           </pattern>
-        )}
-        {wallTile && (
+        ))}
+        {uiText(wallTile && (
           <pattern id="wp" x="0" y="0" width="95" height="95" patternUnits="userSpaceOnUse">
             <image href={wallTile} x="0" y="0" width="95" height="95" preserveAspectRatio="xMidYMid slice" />
             <line x1="0" y1="0" x2="0" y2="95" stroke={grout} strokeWidth="1.8" />
             <line x1="0" y1="0" x2="95" y2="0" stroke={grout} strokeWidth="1.8" />
           </pattern>
-        )}
-        {wallTile && (
+        ))}
+        {uiText(wallTile && (
           <pattern id="sp" x="0" y="0" width="95" height="95" patternUnits="userSpaceOnUse">
             <image href={wallTile} x="0" y="0" width="95" height="95" preserveAspectRatio="xMidYMid slice" />
             <line x1="0" y1="0" x2="0" y2="95" stroke={grout} strokeWidth="1.8" />
             <line x1="0" y1="0" x2="95" y2="0" stroke={grout} strokeWidth="1.8" />
           </pattern>
-        )}
+        ))}
         <radialGradient id="atmos" cx="50%" cy="15%" r="65%">
           <stop offset="0%" stopColor="white" stopOpacity="0.18" />
           <stop offset="100%" stopColor="transparent" stopOpacity="0" />
@@ -102,16 +105,16 @@ function RoomSVG({
       />
 
       {/* Subtle floor perspective grid when no tile */}
-      {!floorTile && (
+      {uiText(!floorTile && (
         <g stroke={grout} strokeWidth="1" opacity="0.45">
-          {[100, 200, 300, 400, 600, 700, 800, 900].map((x) => (
+          {uiText([100, 200, 300, 400, 600, 700, 800, 900].map((x) => (
             <line key={x} x1={x} y1="620" x2={x * 0.5 + 250} y2="390" />
-          ))}
-          {[0.25, 0.5, 0.75].map((d) => (
+          )))}
+          {uiText([0.25, 0.5, 0.75].map((d) => (
             <line key={d} x1={d * 250} y1={620 - d * 230} x2={1000 - d * 250} y2={620 - d * 230} />
-          ))}
+          )))}
         </g>
-      )}
+      ))}
 
       {/* Room edge lines */}
       <g stroke="rgba(0,0,0,0.18)" strokeWidth="1.5" fill="none">
@@ -126,7 +129,7 @@ function RoomSVG({
       </g>
 
       {/* ── BATHROOM fixtures ── */}
-      {roomType === "bathroom" && (
+      {uiText(roomType === "bathroom" && (
         <g>
           {/* Bathtub — right foreground */}
           <rect x="790" y="430" width="185" height="82" rx="41" fill="white" stroke="#c8c4bc" strokeWidth="2" />
@@ -142,10 +145,10 @@ function RoomSVG({
           <ellipse cx="430" cy="388" rx="50" ry="10" fill="#e8e4de" stroke="#ccc" strokeWidth="1" />
           <line x1="430" y1="375" x2="430" y2="365" stroke="#bbb" strokeWidth="2" />
         </g>
-      )}
+      ))}
 
       {/* ── LIVING ROOM fixtures ── */}
-      {roomType === "living" && (
+      {uiText(roomType === "living" && (
         <g>
           {/* Sofa — center foreground */}
           <rect x="80" y="480" width="520" height="110" rx="22" fill="white" stroke="#c8c4bc" strokeWidth="2" />
@@ -164,10 +167,10 @@ function RoomSVG({
           {/* TV unit */}
           <rect x="310" y="288" width="330" height="16" rx="3" fill="#e0ddd6" stroke="#ccc" strokeWidth="1" />
         </g>
-      )}
+      ))}
 
       {/* ── HALLWAY fixtures ── */}
-      {roomType === "hallway" && (
+      {uiText(roomType === "hallway" && (
         <g>
           {/* Door on back wall */}
           <rect x="385" y="118" width="130" height="262" fill="none" stroke="#c0bcb4" strokeWidth="3.5" />
@@ -190,7 +193,7 @@ function RoomSVG({
           <rect x="874" y="166" width="88" height="128" fill="#f0ede6" />
           <ellipse cx="918" cy="310" rx="12" ry="6" fill="#b0a898" />
         </g>
-      )}
+      ))}
 
       {/* Atmosphere overlay */}
       <rect width="1000" height="620" fill="url(#atmos)" />
@@ -248,6 +251,8 @@ const ROOMS: { id: RoomType; label: Record<Locale, string> }[] = [
 ];
 
 export function TileShowroom() {
+  const uiText = useLocaleText();
+
   const { lookId } = useParams<{ lookId: string }>();
   const { locale } = useI18n();
   const { products } = useStore();
@@ -284,12 +289,11 @@ export function TileShowroom() {
             textDecoration: "none", flexShrink: 0,
           }}
         >
-          <ArrowLeft size={17} /> Home
-        </Link>
+          <ArrowLeft size={17} />{uiText(" Home")}</Link>
         <div style={{ width: 1, height: 20, background: "var(--idea-border)", flexShrink: 0 }} />
         {/* Look tabs */}
         <div style={{ display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", flexWrap: "nowrap" }}>
-          {MATERIAL_LOOKS.map((l) => (
+          {uiText(MATERIAL_LOOKS.map((l) => (
             <Link
               key={l.id}
               to={`/tile-showroom/${l.id}`}
@@ -308,9 +312,9 @@ export function TileShowroom() {
                 flexShrink: 0,
               }}
             >
-              {l.label[locale as Locale]}
+              {uiText(l.label[locale as Locale])}
             </Link>
-          ))}
+          )))}
         </div>
       </div>
 
@@ -328,7 +332,7 @@ export function TileShowroom() {
         }}>
           {/* Controls row */}
           <div style={{ display: "flex", alignItems: "center", gap: "var(--idea-space-2)", flexWrap: "wrap" }}>
-            {ROOMS.map((r) => (
+            {uiText(ROOMS.map((r) => (
               <button
                 key={r.id}
                 onClick={() => setRoomType(r.id)}
@@ -345,12 +349,12 @@ export function TileShowroom() {
                   transition: "all 0.18s",
                 }}
               >
-                {r.label[locale as Locale]}
+                {uiText(r.label[locale as Locale])}
               </button>
-            ))}
+            )))}
             <div style={{ flex: 1 }} />
             {/* Surface toggles */}
-            {[
+            {uiText([
               { key: "floor", label: locale === "ar" ? "أرضية" : "Floor", checked: applyFloor, toggle: () => setApplyFloor((v) => !v) },
               { key: "wall", label: locale === "ar" ? "جدار" : "Walls", checked: applyWall, toggle: () => setApplyWall((v) => !v) },
             ].map(({ key, label, checked, toggle }) => (
@@ -369,10 +373,10 @@ export function TileShowroom() {
                   transition: "all 0.18s",
                 }}
               >
-                {checked && <Check size={13} />}
-                {label}
+                {uiText(checked && <Check size={13} />)}
+                {uiText(label)}
               </button>
-            ))}
+            )))}
           </div>
 
           {/* Room SVG */}
@@ -393,9 +397,9 @@ export function TileShowroom() {
           </div>
 
           <p style={{ fontSize: "var(--idea-text-xs)", color: "var(--idea-text-faint)", margin: 0, lineHeight: 1.5 }}>
-            {locale === "ar"
+            {uiText(locale === "ar"
               ? "معاينة فقط. قد يختلف مظهر البلاط الفعلي حسب الحجم والتشطيب والإضاءة."
-              : "Preview only. Actual tile appearance may vary by size, finish, and lighting."}
+              : "Preview only. Actual tile appearance may vary by size, finish, and lighting.")}
           </p>
         </div>
 
@@ -423,10 +427,10 @@ export function TileShowroom() {
               marginBottom: 4,
               textTransform: "uppercase",
             }}>
-              {locale === "ar" ? "اختر البلاطة" : "Select Tile"}
+              {uiText(locale === "ar" ? "اختر البلاطة" : "Select Tile")}
             </div>
             <div style={{ fontSize: "var(--idea-text-sm)", color: "var(--idea-text-muted)" }}>
-              {look.label[locale as Locale]} · {lookProducts.length} {locale === "ar" ? "منتج" : "surfaces"}
+              {uiText(look.label[locale as Locale])}{uiText(" · ")}{uiText(lookProducts.length)} {uiText(locale === "ar" ? "منتج" : "surfaces")}
             </div>
           </div>
 
@@ -449,7 +453,7 @@ export function TileShowroom() {
             >
               <img
                 src={look.tileImage}
-                alt="Default"
+                alt={uiText("Default")}
                 style={{ width: 44, height: 44, objectFit: "cover", borderRadius: "var(--idea-radius-sm)", flexShrink: 0 }}
               />
               <div>
@@ -459,10 +463,10 @@ export function TileShowroom() {
                   color: "var(--idea-text)",
                   letterSpacing: "0.04em",
                 }}>
-                  {locale === "ar" ? "النمط الافتراضي" : "Look Preview"}
+                  {uiText(locale === "ar" ? "النمط الافتراضي" : "Look Preview")}
                 </div>
                 <div style={{ fontSize: "var(--idea-text-xs)", color: "var(--idea-text-muted)" }}>
-                  {look.label[locale as Locale]}
+                  {uiText(look.label[locale as Locale])}
                 </div>
               </div>
             </button>
@@ -479,7 +483,7 @@ export function TileShowroom() {
             alignContent: "start",
             scrollbarWidth: "thin",
           }}>
-            {lookProducts.map((p) => {
+            {uiText(lookProducts.map((p) => {
               const isSelected = selectedProduct?.id === p.id;
               return (
                 <button
@@ -499,7 +503,7 @@ export function TileShowroom() {
                     position: "relative",
                   }}
                 >
-                  {isSelected && (
+                  {uiText(isSelected && (
                     <div style={{
                       position: "absolute",
                       top: 6, right: 6,
@@ -511,10 +515,10 @@ export function TileShowroom() {
                     }}>
                       <Check size={12} color="white" />
                     </div>
-                  )}
+                  ))}
                   <img
                     src={p.image}
-                    alt={p.name[locale as Locale]}
+                    alt={uiText(p.name[locale as Locale])}
                     style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }}
                     onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
                   />
@@ -528,21 +532,21 @@ export function TileShowroom() {
                       fontFamily: "var(--idea-font-display)",
                       letterSpacing: "0.04em",
                     }}>
-                      {p.name[locale as Locale]}
+                      {uiText(p.name[locale as Locale])}
                     </div>
-                    {p.sizes?.[0] && (
+                    {uiText(p.sizes?.[0] && (
                       <div style={{ fontSize: 10, color: "var(--idea-text-faint)" }}>
-                        {p.sizes[0].label}
+                        {uiText(p.sizes[0].label)}
                       </div>
-                    )}
+                    ))}
                   </div>
                 </button>
               );
-            })}
+            }))}
           </div>
 
           {/* CTA strip */}
-          {selectedProduct && (
+          {uiText(selectedProduct && (
             <div style={{
               padding: "var(--idea-space-4)",
               borderTop: "var(--idea-hairline)",
@@ -559,7 +563,7 @@ export function TileShowroom() {
                 overflow: "hidden",
                 textOverflow: "ellipsis",
               }}>
-                {selectedProduct.name[locale as Locale]}
+                {uiText(selectedProduct.name[locale as Locale])}
               </div>
               <div style={{ display: "flex", gap: 8 }}>
                 <Link
@@ -578,7 +582,7 @@ export function TileShowroom() {
                     letterSpacing: "0.04em",
                   }}
                 >
-                  {locale === "ar" ? "عرض" : "View"}
+                  {uiText(locale === "ar" ? "عرض" : "View")}
                 </Link>
                 <Link
                   to="/request-quote/new"
@@ -595,11 +599,11 @@ export function TileShowroom() {
                     letterSpacing: "0.04em",
                   }}
                 >
-                  {locale === "ar" ? "طلب سعر" : "Get Quote"}
+                  {uiText(locale === "ar" ? "طلب سعر" : "Get Quote")}
                 </Link>
               </div>
             </div>
-          )}
+          ))}
         </div>
       </div>
 

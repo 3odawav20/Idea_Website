@@ -1,14 +1,20 @@
-import { Link } from "react-router";
-import { Heart, GitCompare, FileText } from "lucide-react";
+import { useUiText as useLocaleText } from "../i18n/useUiText";
+import { Link, useNavigate } from "react-router";
+import { Heart, GitCompare, ShoppingCart, Check } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
+import { TryMaterialLink, isSurfaceProduct } from './TryMaterialLink';
 
 export function ProductCard({ product }: { product: Product }) {
+  const uiText = useLocaleText();
+  const navigate=useNavigate();
+
   const { t, locale } = useI18n();
-  const { isFavorite, toggleFavorite, toggleCompare, compare, addToQuote } = useStore();
+  const { isFavorite, toggleFavorite, toggleCompare, compare, addToQuote, quote } = useStore();
+  const inQuote=quote.some(item=>item.productId===product.id);
   const fav = isFavorite(product.id);
   const inCompare = compare.includes(product.id);
   const [imageFailed, setImageFailed] = useState(false);
@@ -23,43 +29,44 @@ export function ProductCard({ product }: { product: Product }) {
       onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
     >
       <Link to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
-        {imageFailed ? (
-          <span className="idea-image-unavailable">Image unavailable</span>
+        {uiText(imageFailed ? (
+          <span className="idea-image-unavailable">{uiText("Image unavailable")}</span>
         ) : (
-          <img className="idea-product-img idea-vivid-image" src={product.image} alt={product.name[locale]} loading="lazy" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
-        )}
+          <img className="idea-product-img idea-vivid-image" src={product.image} alt={uiText(product.name[locale])} loading="lazy" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
+        ))}
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
-          {product.type && <span style={badgeStyle}>{product.type}</span>}
+          {uiText(product.type && <span style={badgeStyle}>{uiText(product.type)}</span>)}
         </div>
         <div style={{ position: "absolute", top: 12, insetInlineEnd: 12, display: "flex", gap: 6 }}>
-          <button aria-label={t("action.favorite")} onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }} style={roundBtn(fav)}>
+          <button aria-label={uiText(t("action.favorite"))} onClick={(e) => { e.preventDefault(); try{toggleFavorite(product.id);}catch{navigate('/login');} }} style={roundBtn(fav)}>
             <Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} />
           </button>
-          <button aria-label={t("action.compare")} onClick={(e) => { e.preventDefault(); toggleCompare(product.id); }} style={roundBtn(inCompare)}>
+          <button aria-label={uiText(t("action.compare"))} onClick={(e) => { e.preventDefault(); toggleCompare(product.id); }} style={roundBtn(inCompare)}>
             <GitCompare size={16} />
           </button>
         </div>
       </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>
+        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{uiText(product.brand)}</div>
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
-          {product.name[locale]}
+          {uiText(product.name[locale])}
         </Link>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
-          {product.sizes[0] && <Tag>{product.sizes[0].label}</Tag>}
-          {product.finish && <Tag>{product.finish}</Tag>}
-          {product.variant && <Tag>{product.variant}</Tag>}
+          {uiText(product.sizes[0] && <Tag>{uiText(product.sizes[0].label)}</Tag>)}
+          {uiText(product.finish && <Tag>{uiText(product.finish)}</Tag>)}
+          {uiText(product.variant && <Tag>{uiText(product.variant)}</Tag>)}
         </div>
         <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{t("price.hidden")}</span>
+          <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{uiText(t("price.hidden"))}</span>
           <button onClick={() => addToQuote(product.id, unit)} style={{
             display: "inline-flex", alignItems: "center", gap: 6, background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)",
             color: "var(--idea-gold-bright)", borderRadius: "var(--idea-radius-full)", padding: "6px 14px", cursor: "pointer", fontSize: "var(--idea-text-xs)", textTransform: "uppercase", letterSpacing: "0.05em",
           }}>
-            <FileText size={13} /> {t("action.requestPrice")}
+            {inQuote?<Check size={13}/>:<ShoppingCart size={13}/>} {inQuote?(locale==='ar'?'أُضيف لسلة الأسعار':'Added to quote cart'):uiText(t("action.requestPrice"))}
           </button>
         </div>
+        {isSurfaceProduct(product) && product.image && <TryMaterialLink productId={product.id} />}
       </div>
       <style>{`
         .idea-product-card:hover .idea-product-img { transform: scale(1.06); }

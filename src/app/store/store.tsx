@@ -3,7 +3,7 @@ import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
 import { useBackend } from "../backend/db";
-import { requireSupabase } from "../backend/supabaseClient";
+import { accountRequest } from "../backend/accountsApi";
 import { supabase } from "../backend/supabaseClient";
 import { applyAdminOverride, normalizeAdminOverride, type AdminOverride } from "../data/catalogueOverrides";
 
@@ -59,7 +59,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .catch(() => { /* Imports stay staged; no public approval is implied. */ });
   }, []);
   useEffect(() => {
-    if (!supabase) return;
+    if (import.meta.env.VITE_ENABLE_LEGACY_SUPABASE !== 'true' || !supabase) return;
     let active = true;
     const fetchOverrides = async () => {
       const { data, error } = await supabase.from("catalogue_admin_overrides")
@@ -92,8 +92,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [favorites, setFavorites] = useState<string[]>([]);
   useEffect(() => {
     if (!session) { setFavorites([]); return; }
-    void requireSupabase().from("favorites").select("catalog_product_id").eq("profile_id", session.id)
-      .then(({ data, error }) => { if (error) console.error("IDEA favorites load failed", error); else setFavorites((data || []).map((row) => row.catalog_product_id)); });
+    void accountRequest('favorites').then(data=>setFavorites(data.favorites||[])).catch(()=>setFavorites([]));
   }, [session?.id]);
   const [quote, setQuote] = usePersisted<QuoteItem[]>("idea.quote", []);
   const [compare, setCompare] = usePersisted<string[]>("idea.compare", []);
@@ -110,9 +109,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         if (!session) throw new Error("Sign in to save favorites.");
         const wasFavorite = favorites.includes(id);
         setFavorites((current) => wasFavorite ? current.filter((value) => value !== id) : [...current, id]);
-        const query = requireSupabase().from("favorites");
-        void (wasFavorite ? query.delete().eq("profile_id", session.id).eq("catalog_product_id", id) : query.insert({ profile_id: session.id, catalog_product_id: id }))
-          .then(({ error }) => { if (error) { console.error("IDEA favorite update failed", error); void requireSupabase().from("favorites").select("catalog_product_id").eq("profile_id", session.id).then(({ data }) => setFavorites((data || []).map((row) => row.catalog_product_id))); } });
+        void accountRequest('favorite',{product_id:id,active:!wasFavorite}).catch(()=>setFavorites(current=>wasFavorite?[...new Set([...current,id])]:current.filter(value=>value!==id)));
       },
       toggleCompare: (id) =>
         setCompare((c) => (c.includes(id) ? c.filter((x) => x !== id) : [...c, id].slice(-4))),
@@ -123,7 +120,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             : [...q, { productId: id, quantity: unit === "sqm" ? 10 : 1, unit }]
         ),
       updateQuoteQty: (id, qty) =>
-        setQuote((q) => q.map((i) => (i.productId === id ? { ...i, quantity: Math.max(1, qty) } : i))),
+        setQuote((q) => q.map((i) => (i.productId === id ? { ...i, quantity: Number.isFinite(qty)?Math.min(1000000,Math.max(0.001,qty)):1 } : i))),
       removeFromQuote: (id) => setQuote((q) => q.filter((i) => i.productId !== id)),
       clearQuote: () => setQuote([]),
     }),
