@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Heart, GitCompare, FileText } from "lucide-react";
+import { Heart, GitCompare, FileText, Sparkles } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
@@ -60,6 +60,9 @@ export function ProductCard({ product }: { product: Product }) {
             <FileText size={13} /> {t("action.requestPrice")}
           </button>
         </div>
+        <Link to={"/ai-room-visualizer?product=" + encodeURIComponent(product.id)} style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7, borderTop: "1px solid var(--idea-border-neutral)", paddingTop: 11, marginTop: 5, color: "var(--idea-gold-deep)", minHeight: 42, fontWeight: 600, fontSize: "var(--idea-text-sm)", textDecoration: "none" }}>
+          <Sparkles size={15} /> {locale === "ar" ? "جرّبه في شقتك" : locale === "fr" ? "Essayez-le chez vous" : "Try it in your home"}
+        </Link>
       </div>
       <style>{`
         .idea-product-card:hover .idea-product-img { transform: scale(1.06); }

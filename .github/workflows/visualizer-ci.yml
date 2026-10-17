@@ -1,0 +1,27 @@
+name: IDEA visualizer checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install app
+        run: npm install --no-audit --no-fund --no-package-lock
+      - name: Verify visualizer tests
+        run: node --test tests/visualizer.test.mjs
+      - name: Build application
+        run: npm run build
+      - name: Build cPanel bundle
+        run: npm run build:cpanel
+      - name: Check PHP syntax
+        run: php -l server/cpanel/api/visualize.php
+      - name: Check cPanel routing assets
+        run: test -s dist/api/visualize.php && test -s dist/.htaccess

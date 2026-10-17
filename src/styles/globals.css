@@ -77,7 +77,7 @@
   /* ── Typography families ── */
   --idea-font-display: 'Oswald', 'Jost';
   --idea-font-body: 'Jost';
-  --idea-font-arabic: 'Cairo';
+  --idea-font-arabic: 'IBM Plex Sans Arabic', sans-serif;
 
   /* ── Type scale ── */
   --idea-text-xs: 12px;

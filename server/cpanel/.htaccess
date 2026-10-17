@@ -1,0 +1,15 @@
+Options -MultiViews
+DirectoryIndex index.html
+RewriteEngine On
+
+# Never rewrite API calls to the SPA entry point.
+RewriteRule ^api/ - [END]
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [END]
+RewriteRule ^ index.html [END]
+
+<IfModule mod_headers.c>
+Header always set X-Content-Type-Options "nosniff"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
