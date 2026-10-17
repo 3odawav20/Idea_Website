@@ -15,6 +15,16 @@ function readImage(file: File | undefined): string | null {
   if (!file || !ALLOWED.includes(file.type) || file.size > MAX_BYTES || file.size === 0) return null;
   return URL.createObjectURL(file);
 }
+function sanitizeImageUrl(url: string | null): string | null {
+  if (!url) return null;
+  try {
+    const parsed = new URL(url, window.location.origin);
+    if (parsed.protocol === "blob:" || parsed.protocol === "https:" || parsed.protocol === "http:") return url;
+  } catch {
+    return null;
+  }
+  return null;
+}
 function titleFor(locale: string, ar: string, en: string, fr?: string) {
   return locale === "ar" ? ar : locale === "fr" ? (fr || en) : en;
 }
@@ -31,6 +41,7 @@ export function AiVisualizerStudio() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [material, setMaterial] = useState<File | null>(null);
   const [materialUrl, setMaterialUrl] = useState<string | null>(null);
+  const safeMaterialUrl = sanitizeImageUrl(materialUrl);
   const [surface, setSurface] = useState<Surface>("floor");
   const [roomKind, setRoomKind] = useState<RoomKind>("living");
   const [rotation, setRotation] = useState(0);
@@ -169,7 +180,7 @@ export function AiVisualizerStudio() {
           <h3>{productName}</h3>
           {selectedProduct && <><p>{selectedProduct.brand}</p><dl><div><dt>{tr("النوع","Type")}</dt><dd>{selectedProduct.type || "—"}</dd></div><div><dt>{tr("التشطيب","Finish")}</dt><dd>{selectedProduct.finish || "—"}</dd></div><div><dt>{tr("المقاس","Size")}</dt><dd>{selectedProduct.sizes[0]?.label || "—"}</dd></div></dl><Link className="idea-studio-text-link" to={"/product/" + selectedProduct.slug}>{tr("تفاصيل المنتج ←", "Product details →")}</Link></>}
           <label className="idea-studio-sample"><ImagePlus size={18}/>{tr("ارفع صورة خامة أو عينة أوضح (اختياري)", "Upload a clearer material sample (optional)")}<input type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={setMaterialFile}/></label>
-          {materialUrl && <div className="idea-studio-material-thumb"><img src={materialUrl} alt={tr("العينة المرفوعة", "Uploaded sample")}/><Check size={15}/></div>}
+          {safeMaterialUrl && <div className="idea-studio-material-thumb"><img src={safeMaterialUrl} alt={tr("العينة المرفوعة", "Uploaded sample")}/><Check size={15}/></div>}
           <p className="idea-studio-fine">{tr("صورة المنتج الحقيقية هي المرجع الأساسي. في حالة منع تحميلها، ارفع صورة أصلية للخامة.", "The actual product image is the reference. If blocked by its source, upload a genuine material sample.")}</p>
         </aside>
         <section className="idea-studio-center" aria-label={tr("معاينة الغرفة", "Room preview")}>
