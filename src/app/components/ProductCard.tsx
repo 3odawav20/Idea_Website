@@ -3,6 +3,7 @@ import { Heart, GitCompare, FileText } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
+import { localizedFacet } from "../data/localizedFacets";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
 
@@ -24,12 +25,12 @@ export function ProductCard({ product }: { product: Product }) {
     >
       <Link to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
         {imageFailed ? (
-          <span className="idea-image-unavailable">Image unavailable</span>
+          <span className="idea-image-unavailable">{locale==="ar"?"الصورة غير متاحة":locale==="fr"?"Image indisponible":"Image unavailable"}</span>
         ) : (
           <img className="idea-product-img idea-vivid-image" src={product.image} alt={product.name[locale]} loading="lazy" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
         )}
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
-          {product.type && <span style={badgeStyle}>{product.type}</span>}
+          {product.type && <span style={badgeStyle}>{localizedFacet(product.type,locale)}</span>}
         </div>
         <div style={{ position: "absolute", top: 12, insetInlineEnd: 12, display: "flex", gap: 6 }}>
           <button aria-label={t("action.favorite")} onClick={(e) => { e.preventDefault(); toggleFavorite(product.id); }} style={roundBtn(fav)}>
@@ -48,7 +49,7 @@ export function ProductCard({ product }: { product: Product }) {
         </Link>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
           {product.sizes[0] && <Tag>{product.sizes[0].label}</Tag>}
-          {product.finish && <Tag>{product.finish}</Tag>}
+          {product.finish && <Tag>{localizedFacet(product.finish,locale)}</Tag>}
           {product.variant && <Tag>{product.variant}</Tag>}
         </div>
         <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
