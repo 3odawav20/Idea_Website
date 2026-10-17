@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
+    "build:cpanel": "npm run build && node scripts/build-cpanel.mjs",
+    "test:visualizer": "node --test tests/visualizer.test.mjs",
     "dev": "vite"
   },
   "dependencies": {

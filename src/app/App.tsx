@@ -12,7 +12,8 @@ import { Collections, CollectionDetail } from "./pages/Collections";
 import { ProductDetail } from "./pages/ProductDetail";
 import { Favorites } from "./pages/Favorites";
 import { RequestQuote } from "./pages/RequestQuote";
-import { HowItWorks, AiVisualizer } from "./pages/Static";
+import { HowItWorks } from "./pages/Static";
+import { AiVisualizerStudio } from "./pages/AiVisualizerStudio";
 import { Login, Register, RegisterCustomer, RegisterBusiness, RoleSelect } from "./pages/Auth";
 import {
   AccountLayout, AccountProfile, AccountInbox, AccountRequests, AccountRequestOffers,
@@ -62,7 +63,7 @@ export default function App() {
               <Route path="/product/:slug" element={<ProductDetail />} />
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route path="/ai-room-visualizer" element={<AiVisualizer />} />
+              <Route path="/ai-room-visualizer" element={<AiVisualizerStudio />} />
               <Route path="/tile-showroom/:lookId" element={<TileShowroom />} />
               <Route path="/tile-showroom" element={<TileShowroom />} />
               <Route path="/surface-styles" element={<SurfaceStyles />} />
