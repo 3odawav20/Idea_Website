@@ -3,11 +3,11 @@ declare(strict_types=1);
 if(realpath($_SERVER['SCRIPT_FILENAME']??'')===__FILE__){http_response_code(404);exit;}
 
 function nvidiaDetectSurfaces(array $config,string $prompt,array $room,array $material): array {
-    $model=$config['nvidia_vision_model']??'nvidia/nemotron-nano-12b-v2-vl';
+    $model=$config['nvidia_vision_model']??'nvidia/nemotron-3.5-super-vl-120b-a12b';
     if(!preg_match('#^[a-zA-Z0-9._/-]+$#D',$model))fail(503,'إعدادات موديل تحليل الصورة غير صالحة.');
     $parts=[['type'=>'text','text'=>$prompt.' Reference image 1 is the room. Reference image 2 is a material swatch. Also include material_description: a precise English description of ONLY the swatch color, pattern, vein shapes, texture and finish. Return only a JSON object, without markdown.']];
     foreach([$room,$material] as $image)$parts[]=['type'=>'image_url','image_url'=>['url'=>'data:'.$image['inlineData']['mimeType'].';base64,'.$image['inlineData']['data']]];
-    [$code,$response]=requestJson('https://integrate.api.nvidia.com/v1/chat/completions',['Content-Type: application/json','Authorization: Bearer '.$config['nvidia_key']],['model'=>$model,'messages'=>[['role'=>'system','content'=>'/no_think'],['role'=>'user','content'=>$parts]],'temperature'=>0,'max_tokens'=>8192,'stream'=>false],90);
+    [$code,$response]=requestJson('https://integrate.api.nvidia.com/v1/chat/completions',['Content-Type: application/json','Authorization: Bearer '.$config['nvidia_key']],['model'=>$model,'messages'=>[['role'=>'system','content'=>'Return only the requested JSON.'],['role'=>'user','content'=>$parts]],'reasoning_effort'=>'none','temperature'=>0,'max_tokens'=>8192,'stream'=>false],90);
     if($code!==200)fail($code===429?429:502,$code===429?'وصل حساب NVIDIA لحد الاستخدام المتاح. حاول لاحقًا.':'تعذّر تحليل حدود السطح من NVIDIA. راجع تفعيل الموديل والمفتاح.');
     $text=$response['choices'][0]['message']['content']??'';
     if(!is_string($text))fail(502,'رد تحليل السطح غير صالح.');
@@ -22,8 +22,10 @@ function nvidiaEditRoom(array $config,array $room,string $description,array $set
     // model describes the selected swatch; FLUX receives the original room and
     // that description. This does not establish exact swatch reproduction.
     $prompt='Edit the supplied '.$roomType.' room photograph. Replace only the '.$surface.' finish with '.$settings['materialType'].' tiles, '.$settings['size'].' cm, rotated '.$settings['angle'].' degrees, narrow '.$settings['grout'].' grout. Material appearance: '.substr($description,0,1000).'. Keep furniture, fixtures, rugs, doors, windows, architecture, lighting, perspective, framing and camera position unchanged. Return only the edited room, no labels or collage.';
-    $body=['mode'=>'Image Editing','prompt'=>substr($prompt,0,1990),'image'=>'data:'.$room['inlineData']['mimeType'].';base64,'.$room['inlineData']['data'],'height'=>1024,'width'=>1024,'cfg_scale'=>3.5,'samples'=>1,'seed'=>0,'steps'=>30];
-    [$code,$response]=requestJson('https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux.3-image-klein',['Content-Type: application/json','Accept: application/json','Authorization: Bearer '.$config['nvidia_key'],'NVCF-POLL-SECONDS: 120'],$body,150);
+    // Verified against the signed-in NVIDIA Build example and live validation.
+    // The reference documentation currently uses an outdated dotted URL/mode.
+    $body=['mode'=>'i2i','prompt'=>substr($prompt,0,1990),'image'=>'data:'.$room['inlineData']['mimeType'].';base64,'.$room['inlineData']['data'],'height'=>1024,'width'=>1024,'cfg_scale'=>3.5,'samples'=>1,'seed'=>0,'steps'=>30];
+    [$code,$response]=requestJson('https://ai.api.nvidia.com/v1/genai/black-forest-labs/flux-3-image-klein',['Content-Type: application/json','Accept: application/json','Authorization: Bearer '.$config['nvidia_key'],'NVCF-POLL-SECONDS: 120'],$body,150);
     if($code!==200){
         error_log('IDEA NVIDIA FLUX provider status: '.$code);
         if($code===422)fail(422,'NVIDIA رفض الصورة المرفوعة أو إعدادات التعديل. واجهة Preview الموثقة تقبل صور أمثلة جاهزة فقط؛ يلزم endpoint يدعم صور العملاء لتشغيل الميزة.');

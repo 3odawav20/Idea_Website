@@ -14,6 +14,6 @@ $config=['nvidia_key'=>'dummy-test-key'];$room=['inlineData'=>['mimeType'=>'imag
 $detected=nvidiaDetectSurfaces($config,'Segment floor',$room,$room);
 check(count($calls[0]['body']['messages'][1]['content'])===3);check(count($detected['regions'])===1);
 $settings=['materialType'=>'سيراميك','size'=>'30 × 90','angle'=>0,'grout'=>'#eeeeee'];
-$bytes=nvidiaEditRoom($config,$room,$detected['material_description'],$settings,'floor','living room');check($bytes===base64_decode($png));check($calls[1]['body']['mode']==='Image Editing');check(str_starts_with($calls[1]['body']['image'],'data:image/png;base64,'));check(str_contains($calls[1]['body']['prompt'],'Beige stone'));
+$bytes=nvidiaEditRoom($config,$room,$detected['material_description'],$settings,'floor','living room');check($bytes===base64_decode($png));check($calls[1]['body']['mode']==='i2i');check(str_ends_with($calls[1]['url'],'/flux-3-image-klein'));check(str_starts_with($calls[1]['body']['image'],'data:image/png;base64,'));check(str_contains($calls[1]['body']['prompt'],'Beige stone'));
 $status=422;$rejected=false;try{nvidiaEditRoom($config,$room,'Beige stone',$settings,'floor','living room');}catch(RuntimeException $e){$rejected=$e->getCode()===422&&str_contains($e->getMessage(),'Preview');}check($rejected);
 echo "PASS: NVIDIA vision receives room + swatch, FLUX receives the original room in editing mode and swatch description, returned image validated, unsupported custom images fail explicitly. Provider responses mocked; no live generation claimed.\n";

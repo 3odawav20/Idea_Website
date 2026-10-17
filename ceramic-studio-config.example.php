@@ -6,7 +6,8 @@ return [
     // custom-room edit must succeed before this provider can be called active.
     'provider' => 'nvidia',
     'nvidia_key' => '',
-    'nvidia_vision_model' => 'nvidia/nemotron-nano-12b-v2-vl',
+    'nvidia_custom_images_verified' => false,
+    'nvidia_vision_model' => 'nvidia/nemotron-3.5-super-vl-120b-a12b',
     'gemini_key' => 'YOUR_SERVER_SIDE_GEMINI_API_KEY',
     'model' => 'gemini-2.5-flash-image',
     'vision_model' => 'gemini-2.5-flash',

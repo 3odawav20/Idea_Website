@@ -14,6 +14,7 @@ if (!is_array($config)) fail(503, 'إعدادات خدمة التوليد غير
 $provider=$config['provider']??'gemini';
 if(!in_array($provider,['gemini','nvidia'],true))fail(503,'إعدادات مزوّد التوليد غير صالحة.');
 if(empty($config[$provider==='nvidia'?'nvidia_key':'gemini_key']))fail(503,$provider==='nvidia'?'خدمة NVIDIA تحتاج مفتاح API على الاستضافة قبل بدء التجربة.':'إعدادات خدمة التوليد غير مكتملة.');
+if($provider==='nvidia'&&array_key_exists('nvidia_custom_images_verified',$config)&&!$config['nvidia_custom_images_verified'])fail(503,'مفتاح NVIDIA مُعدّ، لكن واجهة FLUX 3 التجريبية رفضت صور الغرف الخاصة وتقبل صور أمثلة فقط. توليد صورتك غير متاح بهذه الواجهة حاليًا.');
 if (!extension_loaded('curl') || !extension_loaded('fileinfo') || !extension_loaded('gd')) fail(503, 'الاستضافة تحتاج إضافات cURL وfileinfo وGD لحماية باقي الصورة.');
 require_once __DIR__.'/image-tools.php';
 function requestJson(string $url, array $headers, ?array $body = null, int $timeout = 150): array {
