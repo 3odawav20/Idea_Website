@@ -7,6 +7,7 @@ import { Panel } from "../components/dash";
 import { useMembershipText } from "./Membership";
 import { useStore } from "../store/store";
 import { ShoppingCart } from "lucide-react";
+import { TryMaterialLink } from '../components/TryMaterialLink';
 
 export function CompanyShowcase() {
   const {addToQuote,quote}=useStore();
@@ -36,6 +37,7 @@ export function CompanyShowcase() {
           cache[item.id]=item;localStorage.setItem('idea.supplierProducts',JSON.stringify(cache));addToQuote('supplier:'+item.id,'sqm');
         }}><ShoppingCart size={16}/>{quote.some(row=>row.productId==='supplier:'+item.id)?text('Added to quote cart','أُضيف لسلة الأسعار'):text('Add to quote cart','أضف لسلة الأسعار')}</Button>
         <Link to="/request-quote/new" style={{display:'inline-block',marginTop:12}}>{text('Open quotation cart','فتح سلة طلبات الأسعار')}</Link>
+        {['ceramic','porcelain','marble','granite'].includes(item.specifications?.material) && item.specifications?.image && <TryMaterialLink supplierId={item.id} />}
       </Panel>)}</div>
     </div>)}
   </Container></Section>;

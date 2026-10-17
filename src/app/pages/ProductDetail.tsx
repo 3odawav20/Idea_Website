@@ -1,6 +1,7 @@
 import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { Link, useParams, useNavigate } from "react-router";
-import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
+import { Heart, GitCompare, ChevronRight } from "lucide-react";
+import { TryMaterialLink, isSurfaceProduct } from '../components/TryMaterialLink';
 import { useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
@@ -100,9 +101,7 @@ export function ProductDetail() {
                 <Button variant="ghost" onClick={() => {try{toggleFavorite(product.id);}catch{navigate('/login');}}}><Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} /> {uiText(t("action.favorite"))}</Button>
               <Button variant="ghost" onClick={() => toggleCompare(product.id)}><GitCompare size={16} /> {uiText(t("action.compare"))}</Button>
             </div>
-            <Link to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`} style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--idea-gold)", marginTop: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)" }}>
-              <Sparkles size={14} /> {uiText(t("action.addVisualizer"))}
-            </Link>
+            {isSurfaceProduct(product) && product.image && <TryMaterialLink productId={product.id} />}
           </div>
         </div>
 

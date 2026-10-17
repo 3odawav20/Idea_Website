@@ -1,6 +1,12 @@
 <?php
 // Copy OUTSIDE public_html as ceramic-studio-config.php. Never ship real secrets.
 return [
+    // Temporary NVIDIA trial: provider=nvidia and set nvidia_key privately.
+    // NVIDIA FLUX 3 Preview currently documents example images only. A real
+    // custom-room edit must succeed before this provider can be called active.
+    'provider' => 'nvidia',
+    'nvidia_key' => '',
+    'nvidia_vision_model' => 'nvidia/nemotron-nano-12b-v2-vl',
     'gemini_key' => 'YOUR_SERVER_SIDE_GEMINI_API_KEY',
     'model' => 'gemini-2.5-flash-image',
     'vision_model' => 'gemini-2.5-flash',

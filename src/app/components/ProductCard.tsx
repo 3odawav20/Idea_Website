@@ -6,6 +6,7 @@ import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
+import { TryMaterialLink, isSurfaceProduct } from './TryMaterialLink';
 
 export function ProductCard({ product }: { product: Product }) {
   const uiText = useLocaleText();
@@ -65,6 +66,7 @@ export function ProductCard({ product }: { product: Product }) {
             {inQuote?<Check size={13}/>:<ShoppingCart size={13}/>} {inQuote?(locale==='ar'?'أُضيف لسلة الأسعار':'Added to quote cart'):uiText(t("action.requestPrice"))}
           </button>
         </div>
+        {isSurfaceProduct(product) && product.image && <TryMaterialLink productId={product.id} />}
       </div>
       <style>{`
         .idea-product-card:hover .idea-product-img { transform: scale(1.06); }
