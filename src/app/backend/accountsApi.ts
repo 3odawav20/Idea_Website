@@ -1,11 +1,21 @@
 export interface AccountSnapshot { user: any | null; company: any | null; membership: any | null; csrf: string; }
 const endpoint = `${import.meta.env.BASE_URL}api/accounts.php`;
 let csrf = '', latest: AccountSnapshot | null = null;
+let pendingSession: Promise<any> | null = null;
 export function currentAccount() { return latest; }
 export async function accountRequest(action: string, data?: Record<string, any> | FormData): Promise<any> {
-  if (data && !csrf) await accountRequest('session');
+  // Share the bootstrap request so a slow anonymous session cannot replace the
+  // cookie or account state returned by a completed sign-in.
+  if (action === 'session' && !data) {
+    if (!pendingSession) pendingSession = sendAccountRequest(action).finally(() => { pendingSession = null; });
+    return pendingSession;
+  }
+  if (data && (!csrf || pendingSession)) await accountRequest('session');
+  return sendAccountRequest(action, data);
+}
+async function sendAccountRequest(action: string, data?: Record<string, any> | FormData): Promise<any> {
   const multipart = data instanceof FormData;
-  const response = await fetch(`${endpoint}?action=${encodeURIComponent(action)}`, { method: data ? 'POST' : 'GET', credentials: 'same-origin',
+  const response = await fetch(`${endpoint}?action=${encodeURIComponent(action)}`, { method: data ? 'POST' : 'GET', credentials: 'same-origin', cache: 'no-store',
     headers: data ? { 'X-CSRF-Token': csrf, ...(multipart ? {} : { 'Content-Type': 'application/json' }) } : {},
     body: data ? multipart ? data : JSON.stringify(data) : undefined,
   });
