@@ -2,7 +2,7 @@ import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { Link, useParams, useNavigate } from "react-router";
 import { Heart, GitCompare, ChevronRight } from "lucide-react";
 import { TryMaterialLink, isSurfaceProduct } from '../components/TryMaterialLink';
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
@@ -18,6 +18,9 @@ export function ProductDetail() {
   const product = products.find((p) => p.slug === slug);
   const [activeImg, setActiveImg] = useState(0);
   const [failedImages, setFailedImages] = useState<number[]>([]);
+  // React Router reuses this component when moving between product slugs.
+  // Reset the gallery so a previous item cannot leave the new image blank.
+  useEffect(() => { setActiveImg(0); setFailedImages([]); }, [slug]);
 
   if (!product) {
     return (
@@ -27,8 +30,16 @@ export function ProductDetail() {
 
   const gallery = product.gallery?.length ? product.gallery : [product.image];
   const unit = product.collection === "ceramics" || product.collection === "porcelain" ? "sqm" : "pieces";
-  const related = products.filter((p) => p.family === product.family && p.id !== product.id).slice(0, 4);
+  // Products without a source-verified family must not be shown as family variants.
+  const related = products.filter((p) => p.id !== product.id && (
+    product.family
+      ? Boolean(p.family && p.family === product.family)
+      : p.brand === product.brand && p.collection === product.collection &&
+        p.finish === product.finish &&
+        p.sizes.some((size) => product.sizes.some((own) => own.label === size.label))
+  )).slice(0, 4);
   const fav = isFavorite(product.id);
+  const visibleImage = gallery[activeImg] || gallery[0];
   const activeImageFailed = failedImages.includes(activeImg);
 
   const spec = (label: string, value?: string) => value && (
@@ -57,14 +68,14 @@ export function ProductDetail() {
               {uiText(activeImageFailed ? (
                 <div className="idea-image-unavailable">{uiText("Image unavailable from the documented source.")}</div>
               ) : (
-                <img className="idea-vivid-image" src={gallery[activeImg]} alt={uiText(product.name[locale])} onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img className="idea-vivid-image" src={visibleImage} alt={uiText(product.name[locale])} onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "contain" }} />
               ))}
             </div>
             {uiText(gallery.length > 1 && (
               <div style={{ display: "flex", gap: 10, marginTop: 12, overflowX: "auto", maxWidth: "100%", paddingBottom: 8 }}>
                 {uiText(gallery.map((g, i) => (
                   <button key={i} onClick={() => setActiveImg(i)} aria-label={uiText(`Show image ${i + 1}`)} style={{ flexShrink: 0, width: 80, height: 60, borderRadius: "var(--idea-radius-sm)", overflow: "hidden", border: `1px solid ${i === activeImg ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`, padding: 0, cursor: "pointer" }}>
-                    {uiText(failedImages.includes(i) ? <span className="idea-image-unavailable idea-image-unavailable--thumb">{uiText("Unavailable")}</span> : <img className="idea-vivid-image" src={g} alt={uiText("")} onError={() => setFailedImages((current) => current.includes(i) ? current : [...current, i])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />)}
+                    {uiText(failedImages.includes(i) ? <span className="idea-image-unavailable idea-image-unavailable--thumb">{uiText("Unavailable")}</span> : <img className="idea-vivid-image" src={g} alt={uiText("")} onError={() => setFailedImages((current) => current.includes(i) ? current : [...current, i])} style={{ width: "100%", height: "100%", objectFit: "contain" }} />)}
                   </button>
                 )))}
               </div>
