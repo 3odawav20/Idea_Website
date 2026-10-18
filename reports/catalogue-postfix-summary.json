@@ -1,0 +1,21 @@
+{
+  "products_audited": 475,
+  "source_primary_check": {
+    "ok": 227,
+    "low_resolution": 226,
+    "network_TimeoutError": 19,
+    "network_URLError": 3
+  },
+  "photo_upgrade_states": {
+    "large_and_original": 472,
+    "large_only": 2,
+    "source_medium_only": 1
+  },
+  "code_model_translations_verifiable_from_current_export": false,
+  "source_gallery_images_all_http_checked": false,
+  "category_accuracy_verified_against_manufacturer": false,
+  "manual_aesthetic_review_complete": false,
+  "production_cpanel_release_verified": false,
+  "browser_emulation_report": "reports/mobile-viewport-per-product.json",
+  "mobile_layout_test_scope": "475 product routes each on Chrome mobile viewport emulations 390px, 360px, 320px, 768px. Direct route rechecks tracked separately."
+}

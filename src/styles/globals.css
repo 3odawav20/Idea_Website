@@ -234,9 +234,14 @@ textarea:disabled {
 }
 
 
-/* Rich photo treatment is controlled here so the catalog can be tuned globally. */
+/* Keep horizontal product thumbnails swipeable without a distracting coloured scrollbar. */
+.idea-product-thumbs::-webkit-scrollbar { display: none; }
+.idea-product-thumbs button { scroll-snap-align: start; }
+
+/* Product photography shows the source's real colours; no saturation, contrast or brightness filters. */
 .idea-vivid-image {
-  filter: saturate(1.16) contrast(1.06) brightness(1.04);
+  filter: none;
+  -webkit-filter: none;
 }
 
 .idea-image-unavailable {
