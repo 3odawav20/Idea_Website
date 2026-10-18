@@ -60,7 +60,19 @@ export function AiVisualizer() {
                 <div style={{ marginTop: 10 }}>{uiText("Upload your room photo")}</div>
               </div>
             ))}
-            <input type="file" accept="image/*" hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) setFile(URL.createObjectURL(f)); }} />
+            <input
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f && f.type.startsWith("image/")) {
+                  setFile(URL.createObjectURL(f));
+                } else {
+                  setFile(null);
+                }
+              }}
+            />
           </label>
           <div style={{ aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", position: "relative", border: "var(--idea-hairline)" }}>
             <img src={HERO_IMAGES.marbleWhite} alt={uiText("Preview surface")} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
