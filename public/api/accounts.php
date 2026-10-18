@@ -4,12 +4,14 @@ header('Content-Type: application/json; charset=utf-8');header('Cache-Control: n
 require_once __DIR__.'/accounts-db.php';
 require_once __DIR__.'/quotes-api.php';
 require_once __DIR__.'/admin-accounts.php';
+require_once __DIR__.'/workflow-extensions.php';
 function reply(mixed $data): never {echo json_encode($data,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);exit;}
 try {
  accountSession();$action=$_GET['action']??'session';$method=$_SERVER['REQUEST_METHOD']??'GET';
+ if($action==='health'&&$method==='GET'){accountQuery('SELECT id FROM idea_users LIMIT 1');reply(['ok'=>true,'backend'=>'php-mysql']);}
  if($action==='session'&&$method==='GET')reply(accountSnapshot(accountUser(false)));
  if($action==='supplier-product'&&$method==='GET'){$p=accountQuery("SELECT p.id,p.title,p.specifications,c.public_name AS company_name FROM idea_supplier_products p JOIN idea_companies c ON c.id=p.company_id WHERE p.id=? AND p.active=1 AND c.status='verified'",[$_GET['id']??''])->fetch();if(!$p)accountError(404,'PRODUCT_NOT_FOUND');$p['specifications']=json_decode($p['specifications'],true)?:[];reply($p);}
- if($action==='mailbox'&&$method==='GET')reply(ideaMailbox(accountUser()));
+ if($action==='mailbox'&&$method==='GET')reply(ideaQuoteDetails(ideaMailbox(accountUser())));
  if($action==='admin-overview'&&$method==='GET')reply(ideaAdminOverview(accountUser()));
  if($action==='favorites'&&$method==='GET'){$u=accountUser();reply(['favorites'=>array_column(accountQuery('SELECT product_id FROM idea_favorites WHERE user_id=?',[$u['id']])->fetchAll(),'product_id')]);}
  if($action==='showrooms'&&$method==='GET'){
@@ -65,6 +67,7 @@ try {
      accountQuery('UPDATE idea_users SET password_hash=? WHERE id=?',[password_hash($password,PASSWORD_DEFAULT),$row['user_id']]);accountQuery('DELETE FROM idea_password_resets WHERE user_id=?',[$row['user_id']]);$db->commit();}catch(Throwable $e){if($db->inTransaction())$db->rollBack();throw $e;}reply(['ok'=>true]);
  }
  $u=accountUser();
+ if(in_array($action,['accept-quote','reject-quote','admin-membership','admin-product','admin-invite'],true))ideaWorkflowAction($action,$data,$u);
  if(in_array($action,['admin-company','admin-reply'],true))ideaAdminAction($action,$data,$u);
  if($action==='favorite'){$id=accountString($data,'product_id',100,true);accountQuery('DELETE FROM idea_favorites WHERE user_id=? AND product_id=?',[$u['id'],$id]);if(!empty($data['active']))accountQuery('INSERT INTO idea_favorites(user_id,product_id) VALUES(?,?)',[$u['id'],$id]);reply(['ok'=>true]);}
  if(in_array($action,['request-quotes','price-quote','read-message'],true))ideaQuoteAction($action,$data,$u);

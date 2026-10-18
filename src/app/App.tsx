@@ -168,7 +168,7 @@ export default function App() {
                 <Route path="quality" element={<AdminQuality />} />
                 <Route path="operations" element={<AdminAccounts />} />
                 <Route path="settings" element={<AdminSettings />} />
-                <Route path="subscriptions" element={<AdminSubscriptions />} />
+                <Route path="subscriptions" element={<AdminAccounts initialTab="memberships" />} />
                 <Route path="settings/payments" element={<AdminPayments />} />
               </Route>
               </Route>

@@ -1,5 +1,5 @@
 export interface AccountSnapshot { user: any | null; company: any | null; membership: any | null; csrf: string; }
-const endpoint = `${import.meta.env.BASE_URL}api/accounts.php`;
+const endpoint = import.meta.env.VITE_IDEA_ACCOUNT_ENDPOINT || `${import.meta.env.BASE_URL}api/accounts.php`;
 let csrf = '', latest: AccountSnapshot | null = null;
 let pendingSession: Promise<any> | null = null;
 export function currentAccount() { return latest; }
