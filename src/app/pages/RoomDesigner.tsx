@@ -148,7 +148,8 @@ export function RoomDesignerEditor() {
   const selectPhoto = (file: File | undefined) => {
     setPhotoError(null);
     if (!file) return;
-    if (!file.type.startsWith("image/")) { setPhotoError("Choose a JPEG, PNG or WebP image file."); return; }
+    const allowedMimeTypes = new Set(["image/jpeg", "image/png", "image/webp"]);
+    if (!allowedMimeTypes.has(file.type)) { setPhotoError("Choose a JPEG, PNG or WebP image file."); return; }
     if (file.size > 10 * 1024 * 1024) { setPhotoError("Choose an image smaller than 10 MB."); return; }
     if (photo?.startsWith("blob:")) URL.revokeObjectURL(photo);
     setPhoto(URL.createObjectURL(file));
