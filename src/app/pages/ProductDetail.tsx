@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router";
 import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
@@ -13,6 +13,9 @@ export function ProductDetail() {
   const product = products.find((p) => p.slug === slug);
   const [activeImg, setActiveImg] = useState(0);
   const [failedImages, setFailedImages] = useState<number[]>([]);
+  // React Router reuses this component when moving between product slugs.
+  // Reset the gallery so a previous item cannot leave the new image blank.
+  useEffect(() => { setActiveImg(0); setFailedImages([]); }, [slug]);
 
   if (!product) {
     return (
@@ -22,14 +25,22 @@ export function ProductDetail() {
 
   const gallery = product.gallery?.length ? product.gallery : [product.image];
   const unit = product.collection === "ceramics" || product.collection === "porcelain" ? "sqm" : "pieces";
-  const related = products.filter((p) => p.family === product.family && p.id !== product.id).slice(0, 4);
+  // Products without a source-verified family must not be shown as family variants.
+  const related = products.filter((p) => p.id !== product.id && (
+    product.family
+      ? Boolean(p.family && p.family === product.family)
+      : p.brand === product.brand && p.collection === product.collection &&
+        p.finish === product.finish &&
+        p.sizes.some((size) => product.sizes.some((own) => own.label === size.label))
+  )).slice(0, 4);
   const fav = isFavorite(product.id);
+  const visibleImage = gallery[activeImg] || gallery[0];
   const activeImageFailed = failedImages.includes(activeImg);
 
   const spec = (label: string, value?: string) => value && (
     <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--idea-border-neutral)" }}>
       <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{label}</span>
-      <span style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-sm)" }}>{value}</span>
+      <span style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-sm)", textAlign: "end", minWidth: 0, overflowWrap: "anywhere" }}>{value}</span>
     </div>
   );
 
@@ -42,24 +53,24 @@ export function ProductDetail() {
           <ChevronRight size={12} />
           <Link to={`/collections/${product.collection}`} style={{ color: "inherit", textDecoration: "none", textTransform: "capitalize" }}>{product.collection.replace("-", " ")}</Link>
           <ChevronRight size={12} />
-          <span style={{ color: "var(--idea-gold)" }}>{product.name[locale]}</span>
+          <span style={{ color: "var(--idea-gold)", minWidth: 0, overflowWrap: "anywhere" }}>{product.name[locale]}</span>
         </div>
 
         <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "var(--idea-space-7)" }} className="idea-pd-grid">
           {/* Gallery */}
           <div style={{minWidth:0}}>
-            <div style={{ aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)" }}>
+            <div style={{ aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", background: "var(--idea-surface-2)" }}>
               {activeImageFailed ? (
                 <div className="idea-image-unavailable">Image unavailable from the documented source.</div>
               ) : (
-                <img className="idea-vivid-image" src={gallery[activeImg]} alt={product.name[locale]} onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <img className="idea-vivid-image" src={visibleImage} alt={product.name[locale]} decoding="async" onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center", background: "var(--idea-surface-2)" }} />
               )}
             </div>
             {gallery.length > 1 && (
-              <div style={{ display: "flex", gap: 10, marginTop: 12, overflowX: "auto", maxWidth: "100%", paddingBottom: 8 }}>
+              <div className="idea-product-thumbs" style={{ display: "flex", gap: 10, marginTop: 12, overflowX: "auto", maxWidth: "100%", paddingBottom: 8, scrollSnapType: "x mandatory", scrollbarWidth: "none" }}>
                 {gallery.map((g, i) => (
                   <button key={i} onClick={() => setActiveImg(i)} aria-label={`Show image ${i + 1}`} style={{ flexShrink: 0, width: 80, height: 60, borderRadius: "var(--idea-radius-sm)", overflow: "hidden", border: `1px solid ${i === activeImg ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`, padding: 0, cursor: "pointer" }}>
-                    {failedImages.includes(i) ? <span className="idea-image-unavailable idea-image-unavailable--thumb">Unavailable</span> : <img className="idea-vivid-image" src={g} alt="" onError={() => setFailedImages((current) => current.includes(i) ? current : [...current, i])} style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+                    {failedImages.includes(i) ? <span className="idea-image-unavailable idea-image-unavailable--thumb">Unavailable</span> : <img className="idea-vivid-image" src={g} alt="" loading="lazy" decoding="async" onError={() => setFailedImages((current) => current.includes(i) ? current : [...current, i])} style={{ width: "100%", height: "100%", objectFit: "contain", background: "var(--idea-surface-2)" }} />}
                   </button>
                 ))}
               </div>
@@ -69,11 +80,11 @@ export function ProductDetail() {
           {/* Info */}
           <div>
             <div className="idea-eyebrow">{product.brand}</div>
-            <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 var(--idea-space-3)" }}>{product.name[locale]}</h1>
+            <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 var(--idea-space-3)", overflowWrap: "anywhere" }}>{product.name[locale]}</h1>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-4)" }}>
               {product.variant && <Tag>{product.variant}</Tag>}
               {product.application && <Tag>{product.application}</Tag>}
-              {(product.usage ?? []).map((u) => <Tag key={u}>{u}</Tag>)}
+              {(product.usage ?? []).filter((u) => u.toLowerCase() !== product.application?.toLowerCase()).map((u) => <Tag key={u}>{u}</Tag>)}
             </div>
             <p style={{ color: "var(--idea-text-faint)", fontStyle: "italic", marginBottom: "var(--idea-space-5)" }}>{t("price.hidden")}</p>
 
