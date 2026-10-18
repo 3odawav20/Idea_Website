@@ -1,3 +1,4 @@
+import { AccountSecurity } from './pages/AccountSecurity';
 import { useUiText as useLocaleText } from "./i18n/useUiText";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router";
 import "../styles/index.css";
@@ -135,7 +136,7 @@ export default function App() {
                 <Route path="room-projects" element={<AccountRoomProjects />} />
                 <Route path="subscription" element={<AccountSubscription />} />
                 <Route path="notifications" element={<AccountNotifications />} />
-                <Route path="settings" element={<AccountSettings />} />
+                <Route path="settings" element={<AccountSecurity />} />
               </Route>
               </Route>
 
@@ -167,7 +168,7 @@ export default function App() {
                 <Route path="catalogue" element={<AdminAccounts initialTab="products" />} />
                 <Route path="quality" element={<AdminQuality />} />
                 <Route path="operations" element={<AdminAccounts />} />
-                <Route path="settings" element={<AdminSettings />} />
+                <Route path="settings" element={<AccountSecurity />} />
                 <Route path="subscriptions" element={<AdminAccounts initialTab="memberships" />} />
                 <Route path="settings/payments" element={<AdminPayments />} />
               </Route>

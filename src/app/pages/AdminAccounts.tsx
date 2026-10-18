@@ -6,7 +6,7 @@ import { Button } from '../components/ui';
 import { useMembershipText } from './Membership';
 import { useUiText } from '../i18n/useUiText';
 
-export function AdminControlLayout(){const t=useMembershipText();return <DashLayout title={t('Administration','لوحة الإدارة')} links={[{to:'/admin',label:t('Accounts & quotation oversight','الحسابات وطلبات الأسعار')},{to:'/admin/catalogue',label:t('Product catalogue','كتالوج المنتجات')},{to:'/admin/operations',label:t('Inbox & replies','الوارد والردود')},{to:'/admin/subscriptions',label:t('Memberships','الاشتراكات')}]}><Outlet/></DashLayout>;}
+export function AdminControlLayout(){const t=useMembershipText();return <DashLayout title={t('Administration','لوحة الإدارة')} links={[{to:'/admin',label:t('Accounts & quotation oversight','الحسابات وطلبات الأسعار')},{to:'/admin/catalogue',label:t('Product catalogue','كتالوج المنتجات')},{to:'/admin/operations',label:t('Inbox & replies','الوارد والردود')},{to:'/admin/subscriptions',label:t('Memberships','الاشتراكات')},{to:'/admin/settings',label:t('Change password','تغيير كلمة المرور')}]}><Outlet/></DashLayout>;}
 export function AdminAccounts({initialTab='companies'}:{initialTab?:string}){
  const t=useMembershipText(),ui=useUiText();const [data,setData]=useState<any>({companies:[],requests:[],quotes:[],users:[],products:[],memberships:[],audit:[]}),[status,setStatus]=useState('loading'),[tab,setTab]=useState(initialTab),[recipient,setRecipient]=useState(''),[body,setBody]=useState(''),[busy,setBusy]=useState(false);
  const load=async()=>{try{setData(await accountRequest('admin-overview'));setStatus('ready');}catch{setStatus('error');}};useEffect(()=>{void load();},[]);

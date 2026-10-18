@@ -33,6 +33,12 @@ await other.call('price-quote',quote,404);await buyer.call('price-quote',quote,4
 const qa=await a.call('price-quote',quote);assert.equal(qa.total,1190);await b.call('price-quote',{...quote,unit_price:90,shipping:100});
 const incoming=await buyer.call('mailbox');assert.equal(incoming.quotes.length,2);assert.equal((await a.call('mailbox')).quotes.length,1);assert.equal((await outsider.call('mailbox')).quotes.length,0);
 await admin.call('admin-reply',{id:buyerData.user.id,body:'Your quotation request is being reviewed.'});assert.equal((await buyer.call('mailbox')).messages.length,1);
+await buyer.call('change-password',{current_password:'incorrect',new_password:'Changed-Local-Password-123'},401);
+await buyer.call('change-password',{current_password:password,new_password:'Changed-Local-Password-123'});
+await buyer.call('login',{email:`buyer-${suffix}@example.test`,password},401);
+await buyer.call('login',{email:`buyer-${suffix}@example.test`,password:'Changed-Local-Password-123'});
+await buyer.call('change-password',{current_password:'Changed-Local-Password-123',new_password:password});
+console.log('PASS: password change rejects wrong current credentials; old password stops working; new password authenticates.');
 await buyer.call('favorite',{product_id:'494',active:true});assert.deepEqual((await buyer.call('favorites')).favorites,['494']);
 const bad=await fetch('http://127.0.0.1:5180/api/accounts.php?action=membership',{method:'POST',headers:{Cookie:buyer.cookie,'Content-Type':'application/json'},body:JSON.stringify({audience:'customer',interval:'monthly'})});assert.equal(bad.status,403);
 const overview=await admin.call('admin-overview');assert(overview.requests.some(r=>r.id===requestId));assert(overview.quotes.length>=2);

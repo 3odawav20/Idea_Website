@@ -67,6 +67,15 @@ try {
      accountQuery('UPDATE idea_users SET password_hash=? WHERE id=?',[password_hash($password,PASSWORD_DEFAULT),$row['user_id']]);accountQuery('DELETE FROM idea_password_resets WHERE user_id=?',[$row['user_id']]);$db->commit();}catch(Throwable $e){if($db->inTransaction())$db->rollBack();throw $e;}reply(['ok'=>true]);
  }
  $u=accountUser();
+ if($action==='change-password'){
+   accountRate('password-change',8,900);$current=$data['current_password']??null;$next=$data['new_password']??null;
+   if(!is_string($current)||strlen($current)>128||!is_string($next)||strlen($next)<8||strlen($next)>128)accountError(422,'INVALID_FIELDS');
+   $row=accountQuery('SELECT password_hash FROM idea_users WHERE id=?',[$u['id']])->fetch();
+   if(!$row||!password_verify($current,$row['password_hash']))accountError(401,'INVALID_CURRENT_PASSWORD');
+   if($current===$next)accountError(422,'NEW_PASSWORD_SAME');
+   accountQuery('UPDATE idea_users SET password_hash=? WHERE id=?',[password_hash($next,PASSWORD_DEFAULT),$u['id']]);
+   session_regenerate_id(true);$_SESSION['csrf']=bin2hex(random_bytes(32));reply(accountSnapshot($u));
+ }
  if(in_array($action,['accept-quote','reject-quote','admin-membership','admin-product','admin-invite'],true))ideaWorkflowAction($action,$data,$u);
  if(in_array($action,['admin-company','admin-reply'],true))ideaAdminAction($action,$data,$u);
  if($action==='favorite'){$id=accountString($data,'product_id',100,true);accountQuery('DELETE FROM idea_favorites WHERE user_id=? AND product_id=?',[$u['id'],$id]);if(!empty($data['active']))accountQuery('INSERT INTO idea_favorites(user_id,product_id) VALUES(?,?)',[$u['id'],$id]);reply(['ok'=>true]);}
