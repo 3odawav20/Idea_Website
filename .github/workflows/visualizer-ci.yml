@@ -17,6 +17,8 @@ jobs:
         run: npm install --no-audit --no-fund --no-package-lock
       - name: Verify visualizer tests
         run: node --test tests/visualizer.test.mjs
+      - name: Verify auth connection regression checks
+        run: node --test tests/auth-connection.test.mjs
       - name: Build application
         run: npm run build
       - name: Build cPanel bundle
