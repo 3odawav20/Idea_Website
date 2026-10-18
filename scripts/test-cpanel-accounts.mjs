@@ -22,6 +22,9 @@ const pa=await a.call('product',{title:catalogueProduct.name,catalog_product_id:
 await a.call('publish',{id:pa.id},403);await a.call('admin-overview',undefined,403);await buyer.call('products',undefined,403);await a.call('membership',{audience:'customer',interval:'monthly'},403);
 const pb=await b.call('product',{title:catalogueProduct.name,catalog_product_id:catalogueId,specifications:specs}),po=await other.call('product',{title:unrelatedProduct.name,catalog_product_id:otherId,specifications:specs});
 for(const record of suppliers)await admin.call('admin-company',{id:record.company.id,status:'verified'});
+await b.call('product',{id:pa.id,title:catalogueProduct.name,catalog_product_id:catalogueId,specifications:specs},404);
+await a.call('product',{id:pa.id,title:catalogueProduct.name,catalog_product_id:catalogueId,sku:'EDITED-TEST',specifications:specs});
+assert.equal((await a.call('products')).products.find(p=>p.id===pa.id).sku,'EDITED-TEST');
 await a.call('publish',{id:pa.id});await b.call('publish',{id:pb.id});await other.call('publish',{id:po.id});
 const request=await buyer.call('request-quotes',{items:[{product_id:catalogueId,quantity:10,unit:'sqm'}],governorate:'Cairo',destination:'Test address',notes:'10 square metres',hours:24});assert.equal(request.requests[0].recipient_count,2);const requestId=request.requests[0].id;
 assert.equal((await a.call('mailbox')).requests.length,1);assert.equal((await b.call('mailbox')).requests.length,1);assert.equal((await other.call('mailbox')).requests.length,0);assert.equal((await outsider.call('mailbox')).requests.length,0);

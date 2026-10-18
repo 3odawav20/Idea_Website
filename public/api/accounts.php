@@ -89,7 +89,14 @@ try {
    if($image!==''&&(!str_starts_with($image,$uploadBase)||!preg_match('#^[a-f0-9]{32}\.(?:png|jpg|webp)$#D',substr($image,strlen($uploadBase)))))accountError(422,'INVALID_FIELDS');
    $spec=['material'=>$material,'brand'=>accountString($spec,'brand',200,true),'dimensions'=>accountString($spec,'dimensions',200,true),'description'=>accountString($spec,'description',2000),'image'=>$image];
    $catalog=accountString($data,'catalog_product_id',100);if($catalog!==''){$catalogue=ideaCatalogueProduct($catalog);$title=$catalogue['name'];}
-   $id=bin2hex(random_bytes(16));accountQuery('INSERT INTO idea_supplier_products(id,company_id,title,sku,active,catalog_product_id,product_key,specifications,created_at) VALUES(?,?,?,?,0,?,?,?,?)',[$id,$c['id'],$title,accountString($data,'sku',100),$catalog,ideaProductKey($catalog,$title,$spec),json_encode($spec,JSON_UNESCAPED_UNICODE),(int)(microtime(true)*1000)]);reply(['id'=>$id]);
+   $id=accountString($data,'id',32);
+   if($id!==''){
+     if(!accountQuery('SELECT id FROM idea_supplier_products WHERE id=? AND company_id=?',[$id,$c['id']])->fetch())accountError(404,'NOT_FOUND');
+     accountQuery('UPDATE idea_supplier_products SET title=?,sku=?,active=0,catalog_product_id=?,product_key=?,specifications=? WHERE id=? AND company_id=?',[$title,accountString($data,'sku',100),$catalog,ideaProductKey($catalog,$title,$spec),json_encode($spec,JSON_UNESCAPED_UNICODE),$id,$c['id']]);
+   }else{
+     $id=bin2hex(random_bytes(16));accountQuery('INSERT INTO idea_supplier_products(id,company_id,title,sku,active,catalog_product_id,product_key,specifications,created_at) VALUES(?,?,?,?,0,?,?,?,?)',[$id,$c['id'],$title,accountString($data,'sku',100),$catalog,ideaProductKey($catalog,$title,$spec),json_encode($spec,JSON_UNESCAPED_UNICODE),(int)(microtime(true)*1000)]);
+   }
+   reply(['id'=>$id]);
  }
  if($action==='publish'){
    if($c['status']!=='verified')accountError(403,'COMPANY_UNVERIFIED');$id=accountString($data,'id',32,true);$p=accountQuery('SELECT id FROM idea_supplier_products WHERE id=? AND company_id=?',[$id,$c['id']])->fetch();if(!$p)accountError(404,'NOT_FOUND');

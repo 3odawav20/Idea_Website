@@ -221,7 +221,8 @@ export function BusinessReports() {
   const uiText = useLocaleText();
 
   const biz = useBiz();
-  const { db } = useBackend();
+  const { db, recordsError } = useBackend();
+  if(recordsError)return <Panel><p role="alert">{uiText('Could not load company records. Please refresh and try again.')}</p></Panel>;
   if (!biz) return <EmptyState title={uiText("Complete verification first")} />;
   const offers = db.offers.filter((o) => o.businessId === biz.id);
   const won = offers.filter((o) => o.status === "accepted").length;

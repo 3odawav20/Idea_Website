@@ -1,13 +1,13 @@
 import { useEffect,useState } from 'react';
 import { useNavigate,useParams } from 'react-router';
 import { useBackend } from '../backend/db';
-import { accountRequest } from '../backend/accountsApi';
+import { accountRequest, accountEndpoint } from '../backend/accountsApi';
 import { Container,Section,Button } from '../components/ui';
 import { Panel,Field,inputStyle } from '../components/dash';
 import { useMembershipText } from './Membership';
 export function SupplierQuoteRequest(){
  const t=useMembershipText(),{productId}=useParams(),{session}=useBackend(),nav=useNavigate();const [product,setProduct]=useState<any>(null),[qty,setQty]=useState('10'),[unit,setUnit]=useState('sqm'),[gov,setGov]=useState(''),[notes,setNotes]=useState(''),[busy,setBusy]=useState(false),[error,setError]=useState(false);
- useEffect(()=>{void fetch(import.meta.env.BASE_URL+'api/accounts.php?action=supplier-product&id='+encodeURIComponent(productId||'')).then(r=>{if(!r.ok)throw Error();return r.json();}).then(setProduct).catch(()=>setError(true));},[productId]);
+ useEffect(()=>{void fetch(accountEndpoint+'?action=supplier-product&id='+encodeURIComponent(productId||'')).then(r=>{if(!r.ok)throw Error();return r.json();}).then(setProduct).catch(()=>setError(true));},[productId]);
  return <Section><Container style={{maxWidth:720}}><Panel><h1 className="idea-display" style={{fontSize:'var(--idea-text-xl)'}}>{t('Request a quotation','طلب عرض سعر')}</h1>{error&&<p role="alert">{t('Could not complete your request. Please try again.','تعذّر إكمال طلبك. حاول مرة أخرى.')}</p>}{product&&<form onSubmit={async event=>{event.preventDefault();if(!session){nav('/login?next='+encodeURIComponent('/request-quote/supplier/'+productId));return;}setBusy(true);setError(false);try{await accountRequest('request-quotes',{items:[{supplier_product_id:productId,quantity:Number(qty),unit}],governorate:gov,destination:'',delivery_date:'',notes,hours:24});nav('/account/outbox');}catch{setError(true);}finally{setBusy(false);}}}>
  <h2 style={{fontSize:'var(--idea-text-lg)',margin:'20px 0'}}>{product.title}</h2><p>{t('Your request will reach all verified suppliers listing the same product.','طلبك هيوصل لكل الشركات المعتمدة اللي بتعرض نفس المنتج.')}</p>
  <div className="idea-signup-fields"><Field label={t('Quantity','الكمية')}><input aria-label={t('Quantity','الكمية')} style={inputStyle} type="number" min={0.001} step={0.001} max={1000000} required value={qty} onChange={e=>setQty(e.target.value)}/></Field><Field label={t('Unit','وحدة القياس')}><select aria-label={t('Unit','وحدة القياس')} style={inputStyle} value={unit} onChange={e=>setUnit(e.target.value)}><option value="sqm">{t('Square metres','متر مربع')}</option><option value="pieces">{t('Pieces','قطعة')}</option><option value="ton">{t('Tonnes','طن')}</option><option value="kg">{t('Kilograms','كيلوجرام')}</option></select></Field></div>
