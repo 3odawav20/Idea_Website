@@ -88,6 +88,16 @@ export function RoomDesignerEditor() {
   const existing = projectId ? db.roomProjects.find((p) => p.id === projectId) : null;
 
   const [photo, setPhoto] = useState<string | null>(existing?.photo || null);
+  const safePhotoSrc = useMemo(() => {
+    if (!photo) return null;
+    try {
+      if (photo.startsWith("blob:")) return photo;
+      const u = new URL(photo, window.location.origin);
+      return u.protocol === "http:" || u.protocol === "https:" ? photo : null;
+    } catch {
+      return null;
+    }
+  }, [photo]);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [dims, setDims] = useState(existing?.dims || { length: 4, width: 3, height: 2.8, unit: "m" as const });
@@ -209,7 +219,7 @@ export function RoomDesignerEditor() {
           {/* Perspective room box */}
           <div onMouseMove={onDrag} onMouseUp={() => (dragRef.current = null)} onMouseLeave={() => (dragRef.current = null)}
             style={{ position: "relative", aspectRatio: "16/10", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", background: "var(--idea-bg-2)", perspective: "900px" }}>
-            {uiText(photo && <img src={photo} alt={uiText("Room")} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: compareBefore ? 1 : 0.28 }} />)}
+            {uiText(safePhotoSrc && <img src={safePhotoSrc} alt={uiText("Room")} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: compareBefore ? 1 : 0.28 }} />)}
             {uiText(!compareBefore && <>
               {/* Wall B (left) */}
               <div onClick={() => setActive("wallB")} style={{ position: "absolute", top: 0, left: 0, width: "34%", height: "66%", transformOrigin: "left center", transform: "rotateY(28deg)", ...tileStyle("wallB"), cursor: "pointer", borderInlineEnd: active === "wallB" ? "2px solid var(--idea-gold)" : undefined }} />
