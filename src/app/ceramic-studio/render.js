@@ -6,7 +6,7 @@ export function loadImage(src) {
     i.onerror = () => {
       if (/^https?:/.test(src) && !i.dataset.retried) {
         i.dataset.retried = "true";
-        i.src = `${import.meta.env.BASE_URL}api/material.php?url=${encodeURIComponent(src)}`;
+        i.src = `${import.meta.env.VITE_MATERIAL_ENDPOINT || `${import.meta.env.BASE_URL}api/material.php`}?url=${encodeURIComponent(src)}`;
       } else
         reject(
           new Error(

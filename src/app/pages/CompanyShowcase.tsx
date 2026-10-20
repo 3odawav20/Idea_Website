@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import { Building2, Phone } from "lucide-react";
-import { accountRequest } from "../backend/accountsApi";
+import { accountRequest, accountEndpoint } from "../backend/accountsApi";
 import { Container, Section, Button } from "../components/ui";
 import { Panel } from "../components/dash";
 import { useMembershipText } from "./Membership";
@@ -16,7 +16,7 @@ export function CompanyShowcase() {
   useEffect(() => {
     let active = true; setState('loading');
     const load = async () => {
-      const response=await fetch(import.meta.env.BASE_URL+'api/accounts.php?action=showrooms'+(companyId?'&company='+encodeURIComponent(companyId):''));
+      const response=await fetch(accountEndpoint+'?action=showrooms'+(companyId?'&company='+encodeURIComponent(companyId):''));
       if(!response.ok)throw new Error('Unavailable');const {companies:data,products:listings}=await response.json();
       if(active){setCompanies(data||[]);setProducts(listings);setState('ready');}
     };

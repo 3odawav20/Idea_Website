@@ -47,9 +47,15 @@ function ideaQuoteAction(string $action,array $data,array $u): never {
     $price=round((float)$data['unit_price'],2);$quantity=(float)$data['quantity'];$shipping=round((float)$data['shipping'],2);$tax=(float)$data['tax_percent'];$days=(int)$data['delivery_days'];$valid=(int)$data['validity_days'];
     if($price<0||$price>10000000||$quantity<=0||$quantity>(float)$r['quantity']||$shipping<0||$shipping>10000000||$tax<0||$tax>100||$days<0||$days>365||$valid<1||$valid>90)accountError(422,'INVALID_FIELDS');
     $total=round($price*$quantity*(1+$tax/100)+$shipping,2);$notes=accountString($data,'notes',4000);
-    $db=accountDb();$db->beginTransaction();try{$old=accountQuery('SELECT id FROM idea_price_quotes WHERE request_id=? AND company_id=?',[$id,$c['id']])->fetch();
+    $signature=ideaSignature($data);$terms=accountString($data,'payment_terms',2000,true);
+    $db=accountDb();$db->beginTransaction();try{ideaAssertOpenRequest($id);$old=accountQuery('SELECT id FROM idea_price_quotes WHERE request_id=? AND company_id=?',[$id,$c['id']])->fetch();$quoteId=$old['id']??bin2hex(random_bytes(16));
       if($old)accountQuery('UPDATE idea_price_quotes SET unit_price=?,quantity=?,shipping=?,tax_percent=?,total=?,delivery_days=?,validity_days=?,notes=?,buyer_read_at=NULL,created_at=? WHERE id=?',[$price,$quantity,$shipping,$tax,$total,$days,$valid,$notes,$now,$old['id']]);
-      else accountQuery('INSERT INTO idea_price_quotes(id,request_id,company_id,unit_price,quantity,shipping,tax_percent,total,delivery_days,validity_days,notes,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',[bin2hex(random_bytes(16)),$id,$c['id'],$price,$quantity,$shipping,$tax,$total,$days,$valid,$notes,$now]);$db->commit();
+      else accountQuery('INSERT INTO idea_price_quotes(id,request_id,company_id,unit_price,quantity,shipping,tax_percent,total,delivery_days,validity_days,notes,created_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)',[$quoteId,$id,$c['id'],$price,$quantity,$shipping,$tax,$total,$days,$valid,$notes,$now]);
+      $previous=accountQuery('SELECT revision FROM idea_quote_signatures WHERE quote_id=?',[$quoteId])->fetch();
+      accountQuery('DELETE FROM idea_quote_signatures WHERE quote_id=?',[$quoteId]);
+      accountQuery('DELETE FROM idea_quote_rejections WHERE quote_id=?',[$quoteId]);
+      accountQuery('INSERT INTO idea_quote_signatures(quote_id,strokes,payment_terms,revision,signed_at) VALUES(?,?,?,?,?)',[$quoteId,json_encode($signature),$terms,(int)($previous['revision']??0)+1,$now]);
+      $db->commit();
     }catch(Throwable $e){if($db->inTransaction())$db->rollBack();throw $e;}reply(['ok'=>true,'total'=>$total]);
   }
   if($action==='read-message'){

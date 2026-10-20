@@ -44,8 +44,9 @@ export function AccountLayout() {
 export function AccountProfile() {
   const uiText = useLocaleText();
 
-  const { session, db } = useBackend();
+  const { session, db, recordsError } = useBackend();
   const { t } = useI18n();
+  if(recordsError)return <Panel><p role="alert">{uiText('Could not load account records. Please refresh and try again.')}</p></Panel>;
   const orders = db.orders.filter((o) => o.customerId === session?.id);
   const reqs = db.requests.filter((r) => r.customerId === session?.id);
   const stats = [

@@ -1,5 +1,6 @@
 export interface AccountSnapshot { user: any | null; company: any | null; membership: any | null; csrf: string; }
-const endpoint = `${import.meta.env.BASE_URL}api/accounts.php`;
+const endpoint = import.meta.env.VITE_IDEA_ACCOUNT_ENDPOINT || `${import.meta.env.BASE_URL}api/accounts.php`;
+export const accountEndpoint = endpoint;
 let csrf = '', latest: AccountSnapshot | null = null;
 let pendingSession: Promise<any> | null = null;
 export function currentAccount() { return latest; }
@@ -23,6 +24,7 @@ async function sendAccountRequest(action: string, data?: Record<string, any> | F
   if (!response.ok) throw new Error(payload.error || 'ACCOUNTS_UNAVAILABLE');
   if (payload.csrf) csrf = payload.csrf;
   if (Object.prototype.hasOwnProperty.call(payload, 'user')) { latest = payload; window.dispatchEvent(new Event('idea-account-change')); }
+  if (data) window.dispatchEvent(new Event('idea-records-change'));
   return payload;
 }
 export async function generationAccess(): Promise<string> {

@@ -10,6 +10,7 @@ export function SupplierCatalogue() {
   const text = useMembershipText(), { session, db } = useBackend();
   const { products } = useStore();
   const [catalogId,setCatalogId] = useState('');
+  const [editing,setEditing]=useState<any>(null);
   const company = db.businesses.find(item => item.ownerId === session?.id);
   const [items, setItems] = useState<any[]>([]), [busy, setBusy] = useState(false), [status, setStatus] = useState<"saved" | "error" | null>(null);
   const [values, setValues] = useState({ title: "", brand: "", material: "ceramic", dimensions: "", sku: "", description: "" });
@@ -30,15 +31,15 @@ export function SupplierCatalogue() {
     const form = event.currentTarget;
     setBusy(true); setStatus(null);
     try {
-      let image = '';
+      let image = editing?.specifications?.image || '';
       if (file) {
         if (!["image/jpeg", "image/png", "image/webp"].includes(file.type) || file.size > 10485760) throw new Error("Invalid image");
         const upload=new FormData();upload.append('image',file);image=(await accountRequest('upload',upload)).image;
       }
-      await accountRequest('product',{ catalog_product_id:catalogId, title: values.title.trim(), sku: values.sku.trim(),
+      await accountRequest('product',{ id:editing?.id, catalog_product_id:catalogId, title: values.title.trim(), sku: values.sku.trim(),
         specifications: { brand: values.brand.trim(), material: values.material, dimensions: values.dimensions.trim(), description: values.description.trim(), image } });
       setValues({ title: "", brand: "", material: "ceramic", dimensions: "", sku: "", description: "" }); setFile(null);
-      form.reset(); await load(); setStatus("saved");
+      form.reset();setEditing(null);setCatalogId(''); await load(); setStatus("saved");
     } catch {
       setStatus("error");
     } finally { setBusy(false); }
@@ -69,6 +70,7 @@ export function SupplierCatalogue() {
       {item.specifications?.image && <img src={item.specifications.image} alt="" style={{ width: "100%", aspectRatio: "1", objectFit: "cover", borderRadius: 8 }} />}
       <h2 style={{ fontSize: "var(--idea-text-lg)" }}>{item.title}</h2><p>{item.specifications?.brand} · {item.specifications?.dimensions}</p>
       <span>{item.active ? text("Published", "منشور") : text("Draft · awaiting review", "مسودة · في انتظار المراجعة")}</span>
+      <Button type="button" variant="outline" disabled={busy} onClick={()=>{setEditing(item);setCatalogId(item.catalog_product_id||'');setFile(null);setValues({title:item.title,sku:item.sku,...item.specifications});window.scrollTo({top:0,behavior:'smooth'});}}>{text('Edit product','تعديل المنتج')}</Button>
       {!item.active && company.status === "Verified" && <Button type="button" style={{ marginTop: 12 }} disabled={busy} onClick={() => void publish(item.id)}>{text("Publish product", "نشر المنتج")}</Button>}
     </Panel>)}</div>
   </>;

@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/store";
-import { generationAccess } from "../backend/accountsApi";
+import { generationAccess, accountEndpoint } from "../backend/accountsApi";
 import { useBackend } from "../backend/db";
 import CeramicStudio from "../ceramic-studio/CeramicStudio.jsx";
 import "../ceramic-studio/studio.css";
@@ -23,7 +23,7 @@ export function CeramicVisualizer() {
     setSupplier(null);setSupplierError(false);
     if (!supplierId) return;
     const controller = new AbortController();
-    void fetch(`${import.meta.env.BASE_URL}api/accounts.php?action=supplier-product&id=${encodeURIComponent(supplierId)}`, { signal: controller.signal, cache: 'no-store' })
+    void fetch(`${accountEndpoint}?action=supplier-product&id=${encodeURIComponent(supplierId)}`, { signal: controller.signal, cache: 'no-store' })
       .then(async response => { if (!response.ok) throw Error(); const item = await response.json();
         if (!['ceramic','porcelain','marble','granite'].includes(item.specifications?.material) || !item.specifications?.image) throw Error();
         if (!controller.signal.aborted) setSupplier(item);

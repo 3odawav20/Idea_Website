@@ -4,12 +4,14 @@ header('Content-Type: application/json; charset=utf-8');header('Cache-Control: n
 require_once __DIR__.'/accounts-db.php';
 require_once __DIR__.'/quotes-api.php';
 require_once __DIR__.'/admin-accounts.php';
+require_once __DIR__.'/workflow-extensions.php';
 function reply(mixed $data): never {echo json_encode($data,JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);exit;}
 try {
  accountSession();$action=$_GET['action']??'session';$method=$_SERVER['REQUEST_METHOD']??'GET';
+ if($action==='health'&&$method==='GET'){accountQuery('SELECT id FROM idea_users LIMIT 1');reply(['ok'=>true,'backend'=>'php-mysql']);}
  if($action==='session'&&$method==='GET')reply(accountSnapshot(accountUser(false)));
  if($action==='supplier-product'&&$method==='GET'){$p=accountQuery("SELECT p.id,p.title,p.specifications,c.public_name AS company_name FROM idea_supplier_products p JOIN idea_companies c ON c.id=p.company_id WHERE p.id=? AND p.active=1 AND c.status='verified'",[$_GET['id']??''])->fetch();if(!$p)accountError(404,'PRODUCT_NOT_FOUND');$p['specifications']=json_decode($p['specifications'],true)?:[];reply($p);}
- if($action==='mailbox'&&$method==='GET')reply(ideaMailbox(accountUser()));
+ if($action==='mailbox'&&$method==='GET')reply(ideaQuoteDetails(ideaMailbox(accountUser())));
  if($action==='admin-overview'&&$method==='GET')reply(ideaAdminOverview(accountUser()));
  if($action==='favorites'&&$method==='GET'){$u=accountUser();reply(['favorites'=>array_column(accountQuery('SELECT product_id FROM idea_favorites WHERE user_id=?',[$u['id']])->fetchAll(),'product_id')]);}
  if($action==='showrooms'&&$method==='GET'){
@@ -65,6 +67,16 @@ try {
      accountQuery('UPDATE idea_users SET password_hash=? WHERE id=?',[password_hash($password,PASSWORD_DEFAULT),$row['user_id']]);accountQuery('DELETE FROM idea_password_resets WHERE user_id=?',[$row['user_id']]);$db->commit();}catch(Throwable $e){if($db->inTransaction())$db->rollBack();throw $e;}reply(['ok'=>true]);
  }
  $u=accountUser();
+ if($action==='change-password'){
+   accountRate('password-change',8,900);$current=$data['current_password']??null;$next=$data['new_password']??null;
+   if(!is_string($current)||strlen($current)>128||!is_string($next)||strlen($next)<8||strlen($next)>128)accountError(422,'INVALID_FIELDS');
+   $row=accountQuery('SELECT password_hash FROM idea_users WHERE id=?',[$u['id']])->fetch();
+   if(!$row||!password_verify($current,$row['password_hash']))accountError(401,'INVALID_CURRENT_PASSWORD');
+   if($current===$next)accountError(422,'NEW_PASSWORD_SAME');
+   accountQuery('UPDATE idea_users SET password_hash=? WHERE id=?',[password_hash($next,PASSWORD_DEFAULT),$u['id']]);
+   session_regenerate_id(true);$_SESSION['csrf']=bin2hex(random_bytes(32));reply(accountSnapshot($u));
+ }
+ if(in_array($action,['accept-quote','reject-quote','admin-membership','admin-product','admin-invite'],true))ideaWorkflowAction($action,$data,$u);
  if(in_array($action,['admin-company','admin-reply'],true))ideaAdminAction($action,$data,$u);
  if($action==='favorite'){$id=accountString($data,'product_id',100,true);accountQuery('DELETE FROM idea_favorites WHERE user_id=? AND product_id=?',[$u['id'],$id]);if(!empty($data['active']))accountQuery('INSERT INTO idea_favorites(user_id,product_id) VALUES(?,?)',[$u['id'],$id]);reply(['ok'=>true]);}
  if(in_array($action,['request-quotes','price-quote','read-message'],true))ideaQuoteAction($action,$data,$u);
@@ -86,7 +98,14 @@ try {
    if($image!==''&&(!str_starts_with($image,$uploadBase)||!preg_match('#^[a-f0-9]{32}\.(?:png|jpg|webp)$#D',substr($image,strlen($uploadBase)))))accountError(422,'INVALID_FIELDS');
    $spec=['material'=>$material,'brand'=>accountString($spec,'brand',200,true),'dimensions'=>accountString($spec,'dimensions',200,true),'description'=>accountString($spec,'description',2000),'image'=>$image];
    $catalog=accountString($data,'catalog_product_id',100);if($catalog!==''){$catalogue=ideaCatalogueProduct($catalog);$title=$catalogue['name'];}
-   $id=bin2hex(random_bytes(16));accountQuery('INSERT INTO idea_supplier_products(id,company_id,title,sku,active,catalog_product_id,product_key,specifications,created_at) VALUES(?,?,?,?,0,?,?,?,?)',[$id,$c['id'],$title,accountString($data,'sku',100),$catalog,ideaProductKey($catalog,$title,$spec),json_encode($spec,JSON_UNESCAPED_UNICODE),(int)(microtime(true)*1000)]);reply(['id'=>$id]);
+   $id=accountString($data,'id',32);
+   if($id!==''){
+     if(!accountQuery('SELECT id FROM idea_supplier_products WHERE id=? AND company_id=?',[$id,$c['id']])->fetch())accountError(404,'NOT_FOUND');
+     accountQuery('UPDATE idea_supplier_products SET title=?,sku=?,active=0,catalog_product_id=?,product_key=?,specifications=? WHERE id=? AND company_id=?',[$title,accountString($data,'sku',100),$catalog,ideaProductKey($catalog,$title,$spec),json_encode($spec,JSON_UNESCAPED_UNICODE),$id,$c['id']]);
+   }else{
+     $id=bin2hex(random_bytes(16));accountQuery('INSERT INTO idea_supplier_products(id,company_id,title,sku,active,catalog_product_id,product_key,specifications,created_at) VALUES(?,?,?,?,0,?,?,?,?)',[$id,$c['id'],$title,accountString($data,'sku',100),$catalog,ideaProductKey($catalog,$title,$spec),json_encode($spec,JSON_UNESCAPED_UNICODE),(int)(microtime(true)*1000)]);
+   }
+   reply(['id'=>$id]);
  }
  if($action==='publish'){
    if($c['status']!=='verified')accountError(403,'COMPANY_UNVERIFIED');$id=accountString($data,'id',32,true);$p=accountQuery('SELECT id FROM idea_supplier_products WHERE id=? AND company_id=?',[$id,$c['id']])->fetch();if(!$p)accountError(404,'NOT_FOUND');

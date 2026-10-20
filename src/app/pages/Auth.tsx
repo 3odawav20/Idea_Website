@@ -13,6 +13,8 @@ function AuthShell({ mode, audience = "customer" }: { mode: "login" | "register"
   const [fields, setFields] = useState({ email: "", password: "", name: "", company: "", phone: "", legalName: "", tax: "", registration: "" });
   const [businessProfile,setBusinessProfile]=useState(emptyBusinessProfile);
   const [message, setMessage] = useState<"confirm" | "reset" | "error" | null>(null), [busy, setBusy] = useState(false);
+  const [failure,setFailure]=useState('');
+  const explain=(error:unknown)=>{const code=error instanceof Error?error.message:'';const labels:Record<string,string>={ACCOUNT_EXISTS:text('An account already uses this email. Sign in or reset your password.','هذا البريد مسجل بالفعل. سجّل الدخول أو استعد كلمة المرور.'),INVALID_LOGIN:text('Email or password is incorrect.','البريد الإلكتروني أو كلمة المرور غير صحيحة.'),ACCOUNTS_NOT_CONFIGURED:text('Accounts are not activated on this hosting account yet. Contact the site administrator.','الحسابات لم تُفعّل على الاستضافة بعد. تواصل مع إدارة الموقع.'),ACCOUNTS_UNAVAILABLE:text('The account server is unavailable. Your information has not been saved.','خدمة الحسابات غير متاحة. لم يتم حفظ بياناتك.'),TRY_LATER:text('Too many attempts. Please try again later.','محاولات كثيرة. حاول مرة أخرى لاحقًا.'),INVALID_FIELDS:text('Complete the required fields and company questionnaire.','أكمل الحقول المطلوبة واستبيان الشركة.'),MAIL_NOT_CONFIGURED:text('Password reset email is not configured. Contact support.','بريد استعادة كلمة المرور لم يُجهّز. تواصل مع الإدارة.')};setFailure(labels[code]||text('Could not connect to the account server. Please try again.','تعذر الاتصال بخدمة الحسابات. حاول مرة أخرى.'));setMessage('error');};
   const set = (key: keyof typeof fields, value: string) => setFields(old => ({ ...old, [key]: value }));
   const safeNext = (next: string | null) => next && next.startsWith("/") && !next.startsWith("//") && !next.includes("\\") ? next : null;
   const destination = business ? "/business" : safeNext(params.get("next")) || "/account";
@@ -27,13 +29,13 @@ function AuthShell({ mode, audience = "customer" }: { mode: "login" | "register"
         membership_interval:params.get('interval')==='annual'?'annual':'monthly',
       }:{email:fields.email.trim(),password:fields.password});
       nav(result.user?.role==='supplier'?'/business':result.user?.role==='admin'?'/admin':destination);
-    } catch { setMessage("error"); } finally { setBusy(false); }
+    } catch(error) { explain(error); } finally { setBusy(false); }
   };
   const reset = async () => {
     if (!fields.email.trim()) { setMessage("error"); return; }
     setBusy(true);
     try { await accountRequest('reset-request',{email:fields.email.trim()}); setMessage('reset'); }
-    catch { setMessage("error"); } finally { setBusy(false); }
+    catch(error) { explain(error); } finally { setBusy(false); }
   };
   const input = (key: keyof typeof fields, label: string, type = "text", required = true, autoComplete?: string) => <Field label={label}><input name={key} aria-label={label} style={inputStyle} value={fields[key]} onChange={event => set(key, event.target.value)} type={type} required={required} autoComplete={autoComplete} minLength={key === "password" && register ? 8 : undefined} maxLength={key === "password" ? 128 : 200} /></Field>;
   return <Section><Container style={{ maxWidth: business && register ? 760 : 480 }}><Panel>
@@ -51,7 +53,7 @@ function AuthShell({ mode, audience = "customer" }: { mode: "login" | "register"
       </div>
       {business && register && <BusinessQuestionnaire value={businessProfile} onChange={setBusinessProfile} />}
       {register && <p style={{ fontSize: "var(--idea-text-xs)", color: "var(--idea-text-muted)" }}>{text("Use at least 8 characters for your password.", "استخدم 8 أحرف على الأقل لكلمة المرور.")}</p>}
-      {message && <p role="status" style={{ color: message === "error" ? "var(--idea-danger)" : "var(--idea-text)", lineHeight: 1.8 }}>{message === "confirm" ? text("Check your email to confirm your account, then sign in.", "راجع بريدك الإلكتروني لتأكيد الحساب، وبعدها سجّل الدخول.") : message === "reset" ? text("Password reset instructions were sent to your email.", "أرسلنا خطوات استعادة كلمة المرور إلى بريدك الإلكتروني.") : text("We could not complete this request. Check your details and try again.", "تعذّر إكمال الطلب. راجع بياناتك وحاول مرة أخرى.")}</p>}
+      {message && <p role="status" style={{ color: message === "error" ? "var(--idea-danger)" : "var(--idea-text)", lineHeight: 1.8 }}>{message === "confirm" ? text("Check your email to confirm your account, then sign in.", "راجع بريدك الإلكتروني لتأكيد الحساب، وبعدها سجّل الدخول.") : message === "reset" ? text("If this email is registered, password reset instructions will be sent.", "إذا كان البريد مسجلًا، ستصلك تعليمات استعادة كلمة المرور.") : failure || text("We could not complete this request. Check your details and try again.", "تعذّر إكمال الطلب. راجع بياناتك وحاول مرة أخرى.")}</p>}
       <Button type="submit" disabled={busy} style={{ width: "100%", marginTop: 12 }}><Mail size={16} />{busy ? text("Please wait…", "لحظة من فضلك…") : register ? text("Create account", "إنشاء الحساب") : text("Sign in", "تسجيل الدخول")}</Button>
       {!register && <button type="button" onClick={() => void reset()} disabled={busy} style={{ border: 0, background: "transparent", color: "var(--idea-gold)", marginTop: 16, cursor: "pointer" }}>{text("Forgot your password?", "نسيت كلمة المرور؟")}</button>}
     </form>
