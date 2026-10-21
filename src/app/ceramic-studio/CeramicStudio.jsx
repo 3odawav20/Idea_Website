@@ -126,15 +126,15 @@ export default function CeramicStudio({
   materialOptions = [],
   initialMaterialId = null,
   authenticate = null,
-  generationDisabled = false,
   savedPreview = null,
   initialRoom = null,
   onRequestQuote = null,
 }) {
   const uiText = useLocaleText();
   const [generationPhase,setGenerationPhase]=useState("preparing");
-  const [serviceReady,setServiceReady]=useState(null);
-  useEffect(()=>{void platformRequest("features").then(r=>setServiceReady(Boolean(r.gemini))).catch(()=>setServiceReady(false));},[]);
+  const [serviceReady,setServiceReady]=useState(null),[aiQuota,setAiQuota]=useState(null);
+  const refreshQuota=()=>void platformRequest("ai-quota").then(setAiQuota).catch(()=>setAiQuota(null));
+  useEffect(()=>{void platformRequest("features").then(r=>setServiceReady(Boolean(r.gemini))).catch(()=>setServiceReady(false));refreshQuota();},[]);
   const phaseText={preparing:"بنجهز صورة المكان والخامة…",creating:"بنحفظ طلب التصميم…",processing:"Gemini بيعدّل التشطيب المختار…",downloading:"التصميم جاهز، بنستلم الصورة…"}[generationPhase];
 
   const [room, setRoom] = useState(initialRoom || `${base}room.png`),
@@ -253,7 +253,7 @@ export default function CeramicStudio({
     };
   }, [modal]);
   const stage = useRef();
-  const notify = (e) => {const code=e.message||e;const messages={GEMINI_API_KEY_REQUIRED:"مفتاح Gemini غير مضاف بعد. يضيفه المدير من إعدادات AI.",GEMINI_ACCESS_DENIED:"مفتاح Gemini لا يملك صلاحية نموذج الصور. راجع المشروع والفوترة.",GEMINI_COMPOSITION_CHANGED:"النتيجة غيّرت أبعاد الصورة، لذلك لم ننشرها. حاول مرة أخرى.",GEMINI_RATE_LIMIT:"وصلنا لحد طلبات Gemini. حاول بعد قليل.",GEMINI_NO_IMAGE:"لم يُرجع Gemini صورة مكتملة. لم يتم استبدال صورتك.",AI_DAILY_LIMIT:"وصلت للحد اليومي للتصميمات.",AUTH_REQUIRED:"سجّل دخولك بحساب العميل أولًا.",GENERATION_IN_PROGRESS:"التصميم قيد المعالجة. راجع سجل تصميماتك."};setNotice(messages[code]||code);};
+  const notify = (e) => {const code=e.message||e;const messages={GEMINI_API_KEY_REQUIRED:"مفتاح Gemini غير مضاف بعد. يضيفه المدير من إعدادات AI.",GEMINI_ACCESS_DENIED:"مفتاح Gemini لا يملك صلاحية نموذج الصور. راجع المشروع والفوترة.",GEMINI_COMPOSITION_CHANGED:"النتيجة غيّرت أبعاد الصورة، لذلك لم ننشرها. حاول مرة أخرى.",GEMINI_RATE_LIMIT:"وصلنا لحد طلبات Gemini. حاول بعد قليل.",GEMINI_NO_IMAGE:"لم يُرجع Gemini صورة مكتملة. لم يتم استبدال صورتك.",AI_DAILY_LIMIT:"وصل الحد اليومي العام للتصميمات. حاول بعد 24 ساعة.",AI_SUBSCRIPTION_REQUIRED:"انتهت الحصة المجانية اليومية. الاشتراك المدفوع للتصميمات غير متاح حاليًا لأن بوابة الدفع غير مهيأة.",AUTH_REQUIRED:"سجّل الدخول بحساب عميل أو شركة أو مدير لاستخدام الاستوديو.",AI_ACCOUNT_REQUIRED:"هذا النوع من الحسابات غير مصرح له بإنشاء تصميمات.",GENERATION_IN_PROGRESS:"التصميم قيد المعالجة. راجع سجل تصميماتك."};setNotice(messages[code]||code);};
   const invalidate = () => {
     setResult(null);
     setNotice("");
@@ -303,12 +303,6 @@ export default function CeramicStudio({
     setNewPoints([]);
   }
   async function generate(materialChoice = selected) {
-    if (mode === "ai" && generationDisabled) {
-      notify(
-        "توليد الصور مخصص للعملاء المشترين فقط، وغير متاح لحسابات الشركات أو الأدمين.",
-      );
-      return;
-    }
     if (mode === "preview" && points.length !== 4) {
       notify("حدّد زوايا السطح الأربع أولًا.");
       return;
@@ -331,6 +325,7 @@ export default function CeramicStudio({
         if(authenticate)await authenticate();
         const revision=new URLSearchParams(window.location.search).get('revision');
         image=await generateRoomDesign({room:await imageData(room),material:await imageData(materialChoice.src),product_id:materialChoice.product&&!String(materialChoice.id).startsWith('supplier:')?String(materialChoice.id):'',parent_id:revision||'',roomType,surface,size,angle:String(angle),grout,points:manualSelection?points:[]},setGenerationPhase);
+        refreshQuota();
         mask=null;
       }
       setResult({ image, mask, mode, material: materialChoice.name });
@@ -536,9 +531,10 @@ export default function CeramicStudio({
       </header>
       <div className="studio-main" id="studio">
         <div className="intro"><div className="studio-service" role="status"><span className={serviceReady?"service-dot ready":"service-dot"}/><b>IDEA / MATERIAL LAB</b><span>{uiText(busy?phaseText:serviceReady===null?"جارٍ التحقق من خدمة الصور":serviceReady?"Gemini · جاهز لاستقبال تصميمك":"أضف مفتاح Gemini لتفعيل التوليد")}</span></div>
+          {aiQuota&&<small className="studio-quota">رصيد آخر 24 ساعة: {aiQuota.remaining} من {aiQuota.limit} تصميمات مجانية · الاشتراك المدفوع: {aiQuota.paid_upgrade_available?"متاح":"غير مفعّل بعد"}</small>}
           <div>
             <div className="eyebrow">
-              <span />{uiText(" IDEA · توليد الصور لحسابات العملاء")}</div>
+              <span />{uiText(" IDEA · تصميم الصور للعملاء والشركات والإدارة")}</div>
             <h1>{uiText("شوف مساحتك ")}<span>{uiText("بشكل جديد.")}</span>
             </h1>
             <p>{uiText("ارفع المكان كما هو، واختر من متجر IDEA. غيّر التشطيب واحتفظ بتفاصيل المكان.")}</p>
@@ -935,7 +931,6 @@ export default function CeramicStudio({
             <button
               className="generate"
               disabled={
-                (mode === "ai" && generationDisabled) ||
                 busy ||
                 editing ||
                 (mode === "preview" && points.length !== 4)

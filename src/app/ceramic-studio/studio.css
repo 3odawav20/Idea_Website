@@ -1485,6 +1485,7 @@
 .idea-ceramic-studio .studio-service {position:absolute;inset-inline:0;top:22px;display:flex;align-items:center;gap:10px;font-size:11px;color:#a9bacd;flex-wrap:wrap}
 .idea-ceramic-studio .studio-service b {font:600 10px var(--idea-font-body),sans-serif;letter-spacing:2px;color:#d5e0ed}
 .idea-ceramic-studio .studio-service>span:last-child {margin-inline-start:auto}
+.idea-ceramic-studio .studio-quota {position:absolute;top:43px;inset-inline-start:0;color:#b5c3d2;font-size:11px;line-height:1.5}
 .idea-ceramic-studio .service-dot {width:7px;height:7px;border-radius:50%;background:#ffab55;box-shadow:0 0 0 4px #ffab5512}
 .idea-ceramic-studio .service-dot.ready {background:#89d8bd;box-shadow:0 0 0 4px #89d8bd12}
 .idea-ceramic-studio .workspace {gap:16px;border:0;overflow:visible;background:transparent;align-items:start}

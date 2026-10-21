@@ -3,7 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/store";
 import { generationAccess, accountEndpoint } from "../backend/accountsApi";
-import { useBackend } from "../backend/db";
 import CeramicStudio from "../ceramic-studio/CeramicStudio.jsx";
 import "../ceramic-studio/studio.css";
 import { isSurfaceProduct } from '../components/TryMaterialLink';
@@ -11,8 +10,6 @@ import { useI18n } from '../i18n/i18n';
 
 export function CeramicVisualizer() {
   const { products, addToQuote } = useStore();
-  const { session } = useBackend();
-  const restricted = Boolean(session && session.role !== "customer");
   const navigate = useNavigate();
   const [params] = useSearchParams();
   const { locale } = useI18n();
@@ -84,7 +81,6 @@ export function CeramicVisualizer() {
       materialOptions={materials}
       initialMaterialId={supplierMaterial?.id || requestedProduct}
       authenticate={authenticate}
-      generationDisabled={restricted}
       savedPreview={import.meta.env.DEV && params.get("preview") === "amazon-room" ? `${import.meta.env.BASE_URL}ceramic-studio/private-previews/amazon-room.json` : null}
       onRequestQuote={(id: string) => {
         if (supplier && id === `supplier:${supplier.id}`) {

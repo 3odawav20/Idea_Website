@@ -30,6 +30,6 @@ async function sendAccountRequest(action: string, data?: Record<string, any> | F
 export async function generationAccess(): Promise<string> {
   const data: AccountSnapshot = await accountRequest('session');
   if (!data.user) throw new Error('AUTH_REQUIRED');
-  if (data.user.role !== 'buyer' || data.company) throw new Error('CUSTOMER_ONLY');
+  if (!['buyer','supplier','admin'].includes(data.user.role)) throw new Error('AI_ACCOUNT_REQUIRED');
   return data.csrf;
 }
