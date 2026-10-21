@@ -18,7 +18,7 @@ export function DiscoveryNavigation({ onNavigate }: { onNavigate?: () => void })
     {id:"brand",label:text("IDEA", "عن IDEA", "IDEA"),to:"/about"},
     {id:"ceramics",label:text("Ceramic tiles", "السيراميك", "Céramique"),to:"/collections/ceramics"},
     {id:"porcelain",label:text("Porcelain tiles", "البورسلين", "Porcelaine"),to:"/collections/porcelain"},
-    {id:"tiles",label:text("Tiles & marble", "البلاط والرخام", "Carrelage & marbre"),to:"/products?material=tiles"},
+    {id:"tiles",label:text("Tiles", "البلاط", "Carrelage"),to:"/products?material=tiles"},
     {id:"large",label:text("Large formats", "المقاسات الكبيرة", "Grands formats"),to:"/products?format=large"},
     {id:"outdoor",label:text("20 mm outdoor", "خارجي 20 مم", "Extérieur 20 mm"),to:"/products?format=outdoor20"},
     {id:"bath",label:text("Bathrooms", "الحمامات", "Salles de bain"),to:"/collections/sanitary-ware"},

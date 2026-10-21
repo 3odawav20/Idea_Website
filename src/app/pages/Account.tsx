@@ -25,6 +25,8 @@ export function AccountLayout() {
   if (!session) return null;
   const unread = db.messages.filter((m) => m.to === session.id && m.scope === "customer" && !m.read).length;
   const links = [
+    {to:"/account/addresses",label:locale==="ar"?"العناوين":"Addresses"},
+    {to:"/cart",label:locale==="ar"?"سلة الشراء":"Shopping cart"},
     { to: "/account", label: t("acct.profile") },
     { to: "/account/inbox", label: t("acct.inbox"), badge: unread },
     { to: "/account/outbox", label: locale === "ar" ? "الصادر" : "Sent" },

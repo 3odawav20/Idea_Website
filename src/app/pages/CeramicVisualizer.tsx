@@ -1,3 +1,4 @@
+import {platformUrl} from '../backend/platformApi';
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { useStore } from "../store/store";
@@ -78,7 +79,8 @@ export function CeramicVisualizer() {
 
   return (
     <CeramicStudio
-      key={supplierId || requestedProduct || "studio"}
+      key={params.get("revision") || supplierId || requestedProduct || "studio"}
+      initialRoom={params.get("revision") ? platformUrl("ai-image",params.get("revision")!) : null}
       materialOptions={materials}
       initialMaterialId={supplierMaterial?.id || requestedProduct}
       authenticate={authenticate}

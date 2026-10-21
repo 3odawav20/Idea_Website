@@ -1,3 +1,4 @@
+import {platformRequest} from '../backend/platformApi';
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
@@ -95,7 +96,8 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     void accountRequest('favorites').then(data=>setFavorites(data.favorites||[])).catch(()=>setFavorites([]));
   }, [session?.id]);
   const [quote, setQuote] = usePersisted<QuoteItem[]>("idea.quote", []);
-  const [compare, setCompare] = usePersisted<string[]>("idea.compare", []);
+  const [compare, setCompare] = useState<string[]>([]);
+  useEffect(()=>{let active=true;setCompare([]);if(session)void platformRequest('comparisons').then(r=>{if(active)setCompare(r.products);}).catch(()=>{});return()=>{active=false;};},[session?.id]);
 
   const value = useMemo<StoreCtx>(
     () => ({
@@ -111,8 +113,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         setFavorites((current) => wasFavorite ? current.filter((value) => value !== id) : [...current, id]);
         void accountRequest('favorite',{product_id:id,active:!wasFavorite}).catch(()=>setFavorites(current=>wasFavorite?[...new Set([...current,id])]:current.filter(value=>value!==id)));
       },
-      toggleCompare: (id) =>
-        setCompare((c) => (c.includes(id) ? c.filter((x) => x !== id) : [...c, id].slice(-4))),
+      toggleCompare: (id) => {if(!session)return;const before=compare;const active=!compare.includes(id);if(active&&compare.length>=4)return;setCompare(active?[...compare,id]:compare.filter(x=>x!==id));void platformRequest('comparison-save',{product_id:id,active}).catch(()=>setCompare(before));},
       addToQuote: (id, unit) =>
         setQuote((q) =>
           q.some((i) => i.productId === id)

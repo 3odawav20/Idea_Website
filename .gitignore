@@ -12,3 +12,6 @@ public/ceramic-studio/private-previews/
 public/uploads/company-products/*/
 idea-accounts-config.php
 ceramic-studio-config.php
+
+idea-platform-config.php
+idea-platform-private/

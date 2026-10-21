@@ -6,3 +6,5 @@ $db=new PDO('sqlite:'.$path);$db->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EX
 if(($argv[2]??'')==='clear-rates')$db->exec('DELETE FROM idea_auth_attempts');
 elseif(($argv[2]??'')==='used-products')echo json_encode($db->query("SELECT DISTINCT catalog_product_id FROM idea_supplier_products WHERE catalog_product_id<>''")->fetchAll(PDO::FETCH_COLUMN));
 elseif(($argv[2]??'')==='admin'){$s=$db->prepare("UPDATE idea_users SET role='admin' WHERE email=?");$s->execute([$argv[3]??'']);}
+
+elseif(($argv[2]??'')==='verified-company'){$s=$db->prepare("UPDATE idea_companies SET status='verified' WHERE id=?");$s->execute([$argv[3]??'']);}

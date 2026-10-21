@@ -8,7 +8,9 @@
     "dev": "vite",
     "dev:studio": "vite --host 127.0.0.1 --port 5178 --strictPort",
     "test:studio": "playwright test",
-    "test:accounts": "node scripts/test-cpanel-accounts.mjs"
+    "test:accounts": "node scripts/test-cpanel-accounts.mjs",
+    "test:platform": "node scripts/test-platform.mjs",
+    "test:platform-ui": "node scripts/test-platform-ui.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

@@ -1,3 +1,4 @@
+import {ProductPurchase} from './Platform';
 import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { Link, useParams, useNavigate } from "react-router";
 import { Heart, GitCompare, ChevronRight } from "lucide-react";
@@ -116,6 +117,7 @@ export function ProductDetail() {
           </div>
         </div>
 
+        <ProductPurchase productId={product.id} />
         {uiText(related.length > 0 && (
           <div style={{ marginTop: "var(--idea-space-8)" }}>
             <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{uiText("Product Family")}</div>

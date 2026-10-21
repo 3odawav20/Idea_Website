@@ -2,6 +2,8 @@
 declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');header('Cache-Control: no-store');header('X-Content-Type-Options: nosniff');
 require_once __DIR__.'/accounts-db.php';
+require_once __DIR__.'/platform-core.php';
+require_once __DIR__.'/platform-mail.php';
 require_once __DIR__.'/quotes-api.php';
 require_once __DIR__.'/admin-accounts.php';
 require_once __DIR__.'/workflow-extensions.php';
@@ -45,6 +47,7 @@ try {
      if($business)accountQuery('INSERT INTO idea_companies(id,owner_id,public_name,legal_name,email,phone,description,status,business_details,created_at) VALUES(?,?,?,?,?,?,?,\'submitted\',?,?)',[bin2hex(random_bytes(16)),$id,$company,$legal,$email,$phone,'',json_encode($details,JSON_UNESCAPED_UNICODE),$now]);
      accountQuery('INSERT INTO idea_memberships(user_id,audience,billing_interval,status,updated_at) VALUES(?,?,?,?,?)',[$id,$business?'business':'customer',($data['membership_interval']??'')==='annual'?'annual':'monthly',$business?'requested':'active',$now]);$db->commit();
    }catch(PDOException $e){$db->rollBack();if(in_array($e->getCode(),['23000','23505'],true))accountError(409,'ACCOUNT_EXISTS');throw $e;}
+   if(platformMailReady())platformTransaction(fn()=>platformVerificationToken(['id'=>$id,'email'=>$email]));
    session_regenerate_id(true);$_SESSION['uid']=$id;$_SESSION['csrf']=bin2hex(random_bytes(32));reply(accountSnapshot(accountUser()));
  }
  if($action==='login'){
@@ -55,11 +58,8 @@ try {
    session_regenerate_id(true);$_SESSION['uid']=$u['id'];$_SESSION['csrf']=bin2hex(random_bytes(32));reply(accountSnapshot(accountUser()));
  }
  if($action==='reset-request'){
-   accountRate('reset',5,3600);$email=strtolower(accountString($data,'email',190,true));$u=accountQuery('SELECT id,email FROM idea_users WHERE email=?',[$email])->fetch();$cfg=accountConfig();
-   if(empty($cfg['site_url'])||empty($cfg['mail_from']))accountError(503,'MAIL_NOT_CONFIGURED');
-   if($u){$token=bin2hex(random_bytes(32));accountQuery('DELETE FROM idea_password_resets WHERE user_id=?',[$u['id']]);accountQuery('INSERT INTO idea_password_resets(token_hash,user_id,expires_at) VALUES(?,?,?)',[hash('sha256',$token),$u['id'],time()+1200]);
-     $url=rtrim($cfg['site_url'],'/').'/reset-password?token='.$token;mail($u['email'],'IDEA password reset',"Reset your IDEA password within 20 minutes:\n".$url,"From: ".$cfg['mail_from']);}
-   reply(['ok'=>true]);
+   accountRate('reset',5,3600);$email=strtolower(accountString($data,'email',190,true));if(!platformMailReady())accountError(503,'SMTP_NOT_CONFIGURED');$u=accountQuery('SELECT id,email FROM idea_users WHERE email=?',[$email])->fetch();
+   if($u)platformTransaction(function()use($u){$token=bin2hex(random_bytes(32));accountQuery('DELETE FROM idea_password_resets WHERE user_id=?',[$u['id']]);accountQuery('INSERT INTO idea_password_resets(token_hash,user_id,expires_at) VALUES(?,?,?)',[hash('sha256',$token),$u['id'],time()+1200]);$url=rtrim(accountConfig()['site_url'],'/').'/reset-password?token='.$token;platformQueueMail($u['id'],$u['email'],'reset:'.hash('sha256',$token),'IDEA password reset / إعادة تعيين كلمة المرور','Reset within 20 minutes: '.$url);});reply(['ok'=>true,'delivery'=>'queued']);
  }
  if($action==='reset-password'){
    accountRate('reset-confirm',15);$token=accountString($data,'token',64,true);$password=$data['password']??'';if(!preg_match('/^[a-f0-9]{64}$/D',$token)||!is_string($password)||strlen($password)<8||strlen($password)>128)accountError(422,'INVALID_FIELDS');
@@ -77,7 +77,8 @@ try {
    session_regenerate_id(true);$_SESSION['csrf']=bin2hex(random_bytes(32));reply(accountSnapshot($u));
  }
  if(in_array($action,['accept-quote','reject-quote','admin-membership','admin-product','admin-invite'],true))ideaWorkflowAction($action,$data,$u);
- if(in_array($action,['admin-company','admin-reply'],true))ideaAdminAction($action,$data,$u);
+ if($action==='admin-company')accountError(409,'USE_DOCUMENT_VERIFICATION_REVIEW');
+ if(in_array($action,['admin-reply'],true))ideaAdminAction($action,$data,$u);
  if($action==='favorite'){$id=accountString($data,'product_id',100,true);accountQuery('DELETE FROM idea_favorites WHERE user_id=? AND product_id=?',[$u['id'],$id]);if(!empty($data['active']))accountQuery('INSERT INTO idea_favorites(user_id,product_id) VALUES(?,?)',[$u['id'],$id]);reply(['ok'=>true]);}
  if(in_array($action,['request-quotes','price-quote','read-message'],true))ideaQuoteAction($action,$data,$u);
  if($action==='logout'){$_SESSION=[];session_regenerate_id(true);$_SESSION['csrf']=bin2hex(random_bytes(32));reply(accountSnapshot(null));}

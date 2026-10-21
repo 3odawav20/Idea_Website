@@ -1,3 +1,4 @@
+import {generateRoomDesign,platformRequest} from '../backend/platformApi';
 import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useState, useRef, useEffect, useMemo } from "react";
 import {
@@ -18,6 +19,8 @@ import {
   X,
   FolderHeart,
   Grid2X2,
+  SquareStack,
+  ArrowUpToLine,
   MousePointer2,
   LoaderCircle,
   Cloud,
@@ -125,11 +128,16 @@ export default function CeramicStudio({
   authenticate = null,
   generationDisabled = false,
   savedPreview = null,
+  initialRoom = null,
   onRequestQuote = null,
 }) {
   const uiText = useLocaleText();
+  const [generationPhase,setGenerationPhase]=useState("preparing");
+  const [serviceReady,setServiceReady]=useState(null);
+  useEffect(()=>{void platformRequest("features").then(r=>setServiceReady(Boolean(r.gemini))).catch(()=>setServiceReady(false));},[]);
+  const phaseText={preparing:"بنجهز صورة المكان والخامة…",creating:"بنحفظ طلب التصميم…",processing:"Gemini بيعدّل التشطيب المختار…",downloading:"التصميم جاهز، بنستلم الصورة…"}[generationPhase];
 
-  const [room, setRoom] = useState(`${base}room.png`),
+  const [room, setRoom] = useState(initialRoom || `${base}room.png`),
     [materials, setMaterials] = useState(catalog),
     [selected, setSelected] = useState(catalog[0]),
     [filter, setFilter] = useState("كتالوج IDEA"),
@@ -245,7 +253,7 @@ export default function CeramicStudio({
     };
   }, [modal]);
   const stage = useRef();
-  const notify = (e) => setNotice(e.message || e);
+  const notify = (e) => {const code=e.message||e;const messages={GEMINI_API_KEY_REQUIRED:"مفتاح Gemini غير مضاف بعد. يضيفه المدير من إعدادات AI.",GEMINI_ACCESS_DENIED:"مفتاح Gemini لا يملك صلاحية نموذج الصور. راجع المشروع والفوترة.",GEMINI_COMPOSITION_CHANGED:"النتيجة غيّرت أبعاد الصورة، لذلك لم ننشرها. حاول مرة أخرى.",GEMINI_RATE_LIMIT:"وصلنا لحد طلبات Gemini. حاول بعد قليل.",GEMINI_NO_IMAGE:"لم يُرجع Gemini صورة مكتملة. لم يتم استبدال صورتك.",AI_DAILY_LIMIT:"وصلت للحد اليومي للتصميمات.",AUTH_REQUIRED:"سجّل دخولك بحساب العميل أولًا.",GENERATION_IN_PROGRESS:"التصميم قيد المعالجة. راجع سجل تصميماتك."};setNotice(messages[code]||code);};
   const invalidate = () => {
     setResult(null);
     setNotice("");
@@ -320,42 +328,10 @@ export default function CeramicStudio({
           grout,
         );
       } else {
-        const token = authenticate
-          ? await authenticate()
-          : await (await getUser()).getIdToken();
-        const res = await fetch(
-          import.meta.env.VITE_GENERATION_ENDPOINT ||
-            `${import.meta.env.BASE_URL}api/generate.php`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              room: await imageData(room),
-              material: await imageData(materialChoice.src),
-              roomType,
-              surface,
-              size,
-              angle,
-              grout,
-              points: manualSelection ? points : [],
-              materialType: materialChoice.category || "سيراميك",
-            }),
-            signal: AbortSignal.timeout(240000),
-          },
-        );
-        const data = await res.json().catch(() => {
-          throw new Error(
-            "خدمة الصور غير متاحة. تأكد من تشغيل PHP وإعداد السيرفر.",
-          );
-        });
-        if (!res.ok) throw new Error(data.error || "تعذّر توليد الصورة.");
-        if (!/^data:image\/(png|jpeg|webp);base64,/.test(data.image || ""))
-          throw new Error("الخدمة لم تُرجع صورة صالحة.");
-        image = data.image;
-        mask = data.mask || null;
+        if(authenticate)await authenticate();
+        const revision=new URLSearchParams(window.location.search).get('revision');
+        image=await generateRoomDesign({room:await imageData(room),material:await imageData(materialChoice.src),product_id:materialChoice.product&&!String(materialChoice.id).startsWith('supplier:')?String(materialChoice.id):'',parent_id:revision||'',roomType,surface,size,angle:String(angle),grout,points:manualSelection?points:[]},setGenerationPhase);
+        mask=null;
       }
       setResult({ image, mask, mode, material: materialChoice.name });
       setShowMask(false);
@@ -502,7 +478,7 @@ export default function CeramicStudio({
       {uiText(busy && (
         <div className="rendering">
           <LoaderCircle className="spin" size={30} />
-          <b>{uiText("بنجهّز رؤيتك الجديدة…")}</b>
+          <div className="processing-orbit"><span/><span/><span/></div><b>{uiText(phaseText)}</b><small>{uiText("بنحافظ على تفاصيل المكان ونغيّر التشطيب المختار فقط.")}</small>
         </div>
       ))}
       <div className="stage-bottom">
@@ -559,7 +535,7 @@ export default function CeramicStudio({
         </div>
       </header>
       <div className="studio-main" id="studio">
-        <div className="intro">
+        <div className="intro"><div className="studio-service" role="status"><span className={serviceReady?"service-dot ready":"service-dot"}/><b>IDEA / MATERIAL LAB</b><span>{uiText(busy?phaseText:serviceReady===null?"جارٍ التحقق من خدمة الصور":serviceReady?"Gemini · جاهز لاستقبال تصميمك":"أضف مفتاح Gemini لتفعيل التوليد")}</span></div>
           <div>
             <div className="eyebrow">
               <span />{uiText(" IDEA · توليد الصور لحسابات العملاء")}</div>
@@ -633,13 +609,13 @@ export default function CeramicStudio({
               <h2>
                 <em>{uiText("02")}</em>{uiText(" سطح التطبيق")}</h2>
               <div className="segmented">
-                {uiText(["الأرضية", "الحوائط"].map((v) => (
+                {uiText(["الأرضية", "الحوائط", "السقف", "الأرضية والحوائط"].map((v) => (
                   <button
                     key={v}
                     className={v === surface ? "chosen" : ""}
                     onClick={() => changeSurface(v)}
                   >
-                    <Grid2X2 size={15} />
+                    {v === "السقف" ? <ArrowUpToLine size={17}/> : v === "الأرضية والحوائط" ? <SquareStack size={17}/> : <Grid2X2 size={17}/>}
                     {uiText(v)}
                   </button>
                 )))}
@@ -845,7 +821,7 @@ export default function CeramicStudio({
                     }}
                   >
                     <div className="material-image">
-                      <img src={m.src} alt={uiText(m.name)} />
+                      <img src={m.src} alt={uiText(m.name)} loading="lazy" decoding="async" />
                       {uiText(selected.id === m.id && (
                         <span className="material-check">
                           <Check size={13} />
@@ -954,7 +930,7 @@ export default function CeramicStudio({
             <p className="mode-note">
               {uiText(mode === "preview"
                 ? "تطبيق هندسي للخامة داخل الحدود التي تختارها. لا يحافظ تلقائيًا على الأثاث أو الظلال."
-                : "يحدد سطح التشطيب تلقائيًا، ويطبّق منتجك داخل قناع السطح فقط لحماية باقي الصورة. راجع النتيجة وحدود العزل قبل الاعتماد.")}
+                : "Gemini يعدّل السطح المختار باستخدام صورة المكان والخامة. التحديد اليدوي يحافظ على المنطقة خارج الحدود من الصورة الأصلية.")}
             </p>
             <button
               className="generate"
