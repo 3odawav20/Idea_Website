@@ -8,7 +8,10 @@ function platformConfig(): array {
 }
 function platformSecret(string $name): string {$value=getenv($name);return $value!==false&&$value!==''?$value:(string)(platformConfig()[$name]??'');}
 function platformSaveGeminiKey(array $d,array $u): array{
- platformAdmin($u);accountRate('gemini-key-save',8,3600);$key=accountString($d,'key',300,true);if(!preg_match('/^[A-Za-z0-9_-]{20,300}$/D',$key))accountError(422,'INVALID_GEMINI_KEY');
+ platformAdmin($u);accountRate('gemini-key-save',8,3600);$key=accountString($d,'key',300,true);
+ // Accept provider key formats with printable punctuation while rejecting
+ // whitespace/control characters that could alter an HTTP header.
+ if(!preg_match('/^[\x21-\x7E]{20,300}$/D',$key))accountError(422,'INVALID_GEMINI_KEY');
  $model=platformConfig()['gemini_model']??'gemini-3.1-flash-image';[$code,$response]=platformHttp('https://generativelanguage.googleapis.com/v1beta/models/'.rawurlencode($model),['x-goog-api-key: '.$key],[],'GET');if($code!==200||empty($response['name']))accountError(422,'GEMINI_KEY_OR_MODEL_ACCESS_FAILED');
  $path=getenv('IDEA_PLATFORM_CONFIG')?:dirname($_SERVER['DOCUMENT_ROOT']).'/idea-platform-config.php';$root=realpath(dirname($path));$web=realpath($_SERVER['DOCUMENT_ROOT']);if(!$root||!$web||$root===$web||str_starts_with($root.DIRECTORY_SEPARATOR,$web.DIRECTORY_SEPARATOR))accountError(503,'PRIVATE_CONFIGURATION_REQUIRED');
  $lock=fopen($path.'.lock','c');if(!$lock||!flock($lock,LOCK_EX))accountError(503,'CONFIGURATION_LOCK_FAILED');@chmod($path.'.lock',0600);
