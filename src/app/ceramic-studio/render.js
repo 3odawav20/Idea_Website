@@ -24,7 +24,7 @@ export async function imageData(src) {
   c.width = Math.round(i.width * s);
   c.height = Math.round(i.height * s);
   c.getContext("2d").drawImage(i, 0, 0, c.width, c.height);
-  return c.toDataURL("image/png");
+  return c.toDataURL("image/jpeg", 0.92);
 }
 export async function readUpload(file) {
   if (!file || !["image/jpeg", "image/png", "image/webp"].includes(file.type))

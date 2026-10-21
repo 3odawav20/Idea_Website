@@ -10,6 +10,7 @@
     "test:studio": "playwright test",
     "test:accounts": "node scripts/test-cpanel-accounts.mjs",
     "test:platform": "node scripts/test-platform.mjs",
+    "test:platform-ai": "node scripts/test-platform-ai-large-input.mjs",
     "test:platform-ui": "node scripts/test-platform-ui.mjs"
   },
   "dependencies": {

@@ -6,6 +6,9 @@ function platformAiImage(string $value): string{
  if(strlen($value)>11534336||!preg_match('#^data:image/(?:png|jpeg|webp);base64,([A-Za-z0-9+/=\r\n]+)$#D',$value,$m))accountError(422,'INVALID_IMAGE');$bytes=base64_decode($m[1],true);if(!$bytes||strlen($bytes)>8388608)accountError(413,'IMAGE_TOO_LARGE');$info=@getimagesizefromstring($bytes);if(!$info||!in_array($info[2],[IMAGETYPE_JPEG,IMAGETYPE_PNG,IMAGETYPE_WEBP],true)||$info[0]*$info[1]>10000000)accountError(422,'INVALID_IMAGE');
  if(!extension_loaded('gd'))accountError(503,'GD_REQUIRED');$im=@imagecreatefromstring($bytes);if(!$im)accountError(422,'INVALID_IMAGE');ob_start();imagejpeg($im,null,94);$result=ob_get_clean();imagedestroy($im);return $result;
 }
+function platformAiInputImage(array $data,string $key): string{
+ $value=$data[$key]??null;if(!is_string($value))accountError(422,'INVALID_IMAGE');return platformAiImage($value);
+}
 function platformAiLimit(array $u): int{
  $cfg=platformConfig();$role=$u['role']??'';
  if($role==='admin')$limit=$cfg['ai_daily_admin_limit']??20;
@@ -25,8 +28,8 @@ function platformAiAction(string $a,array $d,array $u): array{
  if($a==='ai-job')return platformAiJob($u,accountString($d,'id',32,true));
  if($a==='ai-create'){
   $limit=platformAiLimit($u);if(!platformSecret('GEMINI_API_KEY'))accountError(503,'GEMINI_API_KEY_REQUIRED');accountRate('ai-create',10,3600);
-  $parent=accountString($d,'parent_id',32);$room=$parent?file_get_contents(platformAiDir(platformAiJob($u,$parent)['id']).'/result.jpg'):platformAiImage(accountString($d,'room',3000000,true));if(!$room)accountError(422,'PARENT_IMAGE_UNAVAILABLE');
-  $material=platformAiImage(accountString($d,'material',3000000,true));$product=accountString($d,'product_id',100);if($product!=='')platformProduct($product);
+  $parent=accountString($d,'parent_id',32);$room=$parent?file_get_contents(platformAiDir(platformAiJob($u,$parent)['id']).'/result.jpg'):platformAiInputImage($d,'room');if(!$room)accountError(422,'PARENT_IMAGE_UNAVAILABLE');
+  $material=platformAiInputImage($d,'material');$product=accountString($d,'product_id',100);if($product!=='')platformProduct($product);
   $settings=[];foreach(['surface'=>50,'size'=>60,'grout'=>40,'angle'=>30,'roomType'=>80,'instructions'=>1200] as $key=>$len)$settings[$key]=accountString($d,$key,$len);if(!in_array($settings['surface'],['floor','walls','wall','both','الأرضية','الجدران','الحوائط','السقف','ceiling','الأرضية والحوائط','الأرضية والجدران'],true))accountError(422,'INVALID_SURFACE');
   $points=$d['points']??[];if(!is_array($points)||count($points)!==0&&count($points)!==4)accountError(422,'INVALID_SURFACE_POINTS');foreach($points as $point){if(!is_array($point)||count($point)!==2||!is_numeric($point[0])||!is_numeric($point[1])||$point[0]<0||$point[0]>1||$point[1]<0||$point[1]>1)accountError(422,'INVALID_SURFACE_POINTS');}$settings['points']=$points;
   $id=platformId();$dir=platformAiDir($id);mkdir($dir,0700,true);file_put_contents($dir.'/room.jpg',$room);file_put_contents($dir.'/material.jpg',$material);chmod($dir.'/room.jpg',0600);chmod($dir.'/material.jpg',0600);
