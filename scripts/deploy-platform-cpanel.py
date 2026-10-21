@@ -49,12 +49,23 @@ try:
     for rel,source in sorted(files,key=lambda pair:pair[0].name=='index.html'):
         target=ROOT/rel;target.parent.mkdir(parents=True,exist_ok=True)
         temp=target.with_name(target.name+'.idea-new');shutil.copyfile(source,temp);os.replace(temp,target)
-    health=json.loads(subprocess.check_output(['curl','--fail','--silent','--show-error','https://livefree.support/idea-accounts-api/accounts.php?action=health']))
-    features=json.loads(subprocess.check_output(['curl','--fail','--silent','--show-error','https://livefree.support/idea-accounts-api/platform.php?action=features']))
-    assert health.get('ok') and 'gemini' in features
+    # The host WAF rejects loopback HTTP requests (406). Verify DB/module health
+    # here; the release remains pending a separate authenticated browser check.
+    verify=STAGE/'verify-installed.php'
+    verify.write_text("""<?php
+$_SERVER['DOCUMENT_ROOT']='/home/lsenet5/public_html';
+require '/home/lsenet5/public_html/idea-accounts-api/platform-core.php';
+require '/home/lsenet5/public_html/idea-accounts-api/platform-mail.php';
+accountQuery('SELECT id FROM idea_users LIMIT 1');
+accountQuery('SELECT version FROM idea_schema_versions LIMIT 1');
+echo json_encode(platformFeatures());
+""")
+    features=json.loads(subprocess.check_output(['php',str(verify)],env=env))
+    assert 'gemini' in features
+
 except Exception:
     with zipfile.ZipFile(backup/'files.zip') as archive:archive.extractall(ROOT)
     raise
-receipt={'domain':'livefree.support','commit':manifest['commit'],'backup':str(backup),'files':len(files),'mysql_migration':True,'features':features}
+receipt={'domain':'livefree.support','commit':manifest['commit'],'backup':str(backup),'files':len(files),'mysql_migration':True,'features':features,'external_browser_verification':'pending'}
 (STAGE/'deployment-receipt.json').write_text(json.dumps(receipt,indent=2))
 print(json.dumps(receipt),flush=True)
