@@ -1,3 +1,8 @@
+AuthType Basic
+AuthName "IDEA Live Site"
+AuthUserFile /home/lsenet5/.htpasswd_idea
+Require valid-user
+
 Options -MultiViews
 DirectoryIndex index.html
 RewriteEngine On
