@@ -32,7 +32,7 @@ export function ProductCard({ product }: { product: Product }) {
         {uiText(imageFailed ? (
           <span className="idea-image-unavailable">{uiText("Image unavailable")}</span>
         ) : (
-          <img className="idea-product-img idea-vivid-image" src={product.image} alt={uiText(product.name[locale])} loading="lazy" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
+          <img className="idea-product-img idea-vivid-image" src={product.image} alt={uiText(product.name[locale])} loading="lazy" decoding="async" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "contain", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
         ))}
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
           {uiText(product.type && <span style={badgeStyle}>{uiText(product.type)}</span>)}
@@ -69,7 +69,7 @@ export function ProductCard({ product }: { product: Product }) {
         {isSurfaceProduct(product) && product.image && <TryMaterialLink productId={product.id} />}
       </div>
       <style>{`
-        .idea-product-card:hover .idea-product-img { transform: scale(1.06); }
+        @media (hover:hover) and (pointer:fine) { .idea-product-card:hover .idea-product-img { transform: scale(1.035); } }
         @media (prefers-reduced-motion: reduce) { .idea-product-img { transition: none !important; } }
       `}</style>
     </div>

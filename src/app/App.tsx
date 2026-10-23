@@ -1,3 +1,4 @@
+import {PlatformProfile,PlatformAddresses,VerifyEmail,PlatformNotifications,PlatformVerification,PlatformOrders,PlatformCart,PlatformDesigns,PlatformAdmin,GeminiSettings} from './pages/Platform';
 import { AccountSecurity } from './pages/AccountSecurity';
 import { useUiText as useLocaleText } from "./i18n/useUiText";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router";
@@ -109,7 +110,7 @@ export default function App() {
               <Route path="/subscriptions" element={<SubscriptionsHome />} />
               <Route path="/subscriptions/customers" element={<SubscriptionsCustomers />} />
               <Route path="/subscriptions/businesses" element={<SubscriptionsBusinesses />} />
-              <Route path="/checkout" element={<Checkout />} />
+              <Route path="/checkout" element={<PlatformCart />} /><Route path="/cart" element={<PlatformCart />} /><Route path="/verify-email" element={<VerifyEmail />} />
 
               {/* Room designer */}
               <Route path="/room-designer" element={<RoomDesignerHome />} />
@@ -120,22 +121,22 @@ export default function App() {
               {/* Customer account */}
               <Route element={<ProtectedRoute roles={["customer", "designer", "contractor"]} />}>
               <Route path="/account" element={<AccountLayout />}>
-                <Route index element={<AccountProfile />} />
-                <Route path="profile" element={<AccountProfile />} />
+                <Route index element={<PlatformProfile />} />
+                <Route path="profile" element={<PlatformProfile />} /><Route path="addresses" element={<PlatformAddresses />} />
                 <Route path="inbox" element={<QuoteMailbox />} />
                 <Route path="outbox" element={<QuoteMailbox sent />} />
                 <Route path="offers" element={<QuoteMailbox />} />
                 <Route path="requests" element={<QuoteMailbox sent />} />
                 <Route path="requests/:requestId" element={<QuoteMailbox sent />} />
                 <Route path="requests/:requestId/offers" element={<QuoteMailbox />} />
-                <Route path="orders" element={<AccountOrders />} />
-                <Route path="orders/:orderId" element={<AccountOrders />} />
-                <Route path="invoices" element={<AccountInvoices />} />
+                <Route path="orders" element={<PlatformOrders />} />
+                <Route path="orders/:orderId" element={<PlatformOrders />} />
+                <Route path="invoices" element={<PlatformOrders invoices />} />
                 <Route path="favorites" element={<AccountFavorites />} />
                 <Route path="compare" element={<AccountCompare />} />
-                <Route path="room-projects" element={<AccountRoomProjects />} />
+                <Route path="room-projects" element={<PlatformDesigns />} />
                 <Route path="subscription" element={<AccountSubscription />} />
-                <Route path="notifications" element={<AccountNotifications />} />
+                <Route path="notifications" element={<PlatformNotifications />} />
                 <Route path="settings" element={<AccountSecurity />} />
               </Route>
               </Route>
@@ -145,14 +146,14 @@ export default function App() {
               <Route path="/business/onboarding" element={<BusinessOnboarding />} />
               <Route path="/business" element={<BusinessLayout />}>
                 <Route index element={<BusinessOverview />} />
-                <Route path="verification" element={<BusinessVerification />} />
+                <Route path="verification" element={<PlatformVerification />} />
                 <Route path="inbox" element={<QuoteMailbox />} />
                 <Route path="outbox" element={<QuoteMailbox sent />} />
                 <Route path="requests" element={<QuoteMailbox />} />
                 <Route path="requests/:requestId" element={<QuoteMailbox />} />
                 <Route path="offers" element={<QuoteMailbox sent />} />
                 <Route path="offers/:offerId" element={<QuoteMailbox sent />} />
-                <Route path="orders" element={<BusinessOrders />} />
+                <Route path="orders" element={<PlatformOrders />} />
                 <Route path="products" element={<BusinessProducts />} />
                 <Route path="subscription" element={<BusinessSubscriptionPage />} />
                 <Route path="reports" element={<BusinessReports />} />
@@ -166,11 +167,11 @@ export default function App() {
               <Route path="/admin" element={<AdminControlLayout />}>
                 <Route index element={<AdminAccounts />} />
                 <Route path="catalogue" element={<AdminAccounts initialTab="products" />} />
-                <Route path="quality" element={<AdminQuality />} />
+                <Route path="quality" element={<PlatformAdmin />} /><Route path="platform" element={<PlatformAdmin />} /><Route path="ai" element={<GeminiSettings />} /><Route path="verifications" element={<PlatformAdmin />} />
                 <Route path="operations" element={<AdminAccounts />} />
                 <Route path="settings" element={<AccountSecurity />} />
                 <Route path="subscriptions" element={<AdminAccounts initialTab="memberships" />} />
-                <Route path="settings/payments" element={<AdminPayments />} />
+                <Route path="settings/payments" element={<PlatformAdmin />} />
               </Route>
               </Route>
 

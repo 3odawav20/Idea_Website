@@ -1,5 +1,6 @@
 import type { Product } from "./types";
 import artceramic from "./artceramic.json";
+import photoUpgrades from "./artceramicPhotoUpgrades.json";
 
 interface RawArtCeramicProduct {
   id: string;
@@ -76,7 +77,12 @@ function mapProduct(source: RawArtCeramicProduct): Product {
   const colors = [...new Set([source.color, source.colorCategory].filter(Boolean) as string[])]
     .map(titleCase);
   const usage = [...new Set(source.types.filter(Boolean).map(titleCase))];
-  const gallery = cleanGallery(source.image, source.tiles);
+  // Larger variants were HTTP-tested and dimension-checked per record.
+  // The source export is preserved unchanged for traceability.
+  const upgrades = (photoUpgrades as Record<string, { large: string; original?: string }>)[source.id];
+  const primaryImage = upgrades?.large || source.image;
+  // Avoid showing the same asset twice just because its resolution differs.
+  const gallery = cleanGallery(upgrades?.original || primaryImage, source.tiles.filter((url) => url !== source.image));
 
   return {
     id: source.id,
@@ -91,7 +97,7 @@ function mapProduct(source: RawArtCeramicProduct): Product {
     application: applicationFromSource(usage),
     colors,
     sizes: [sizeFromSource(source.id, source.size)],
-    image: source.image,
+    image: primaryImage,
     gallery,
     source: {
       sourceId: SOURCE_ID,

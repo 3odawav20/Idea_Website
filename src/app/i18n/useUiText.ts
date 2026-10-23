@@ -9,7 +9,7 @@ const protectedNames=new Set(['IDEA','Amazon','Art Ceramic','VISA','Fawry','meez
 export function translateUiText(value:string,locale:string):string {
   const errors: Record<string,[string,string]> = {
     AUTH_REQUIRED:['Sign in to your IDEA account to enable AI generation. Local preview is available without an account.','سجّل الدخول من حساب IDEA أولًا لتفعيل التوليد الذكي. المعاينة المحلية متاحة بدون حساب.'],
-    CUSTOMER_ONLY:['Image generation is available to customer accounts only.','توليد الصور مخصص لحسابات العملاء فقط.'],
+    CUSTOMER_ONLY:['Image generation is available to customer, company and administrator accounts.','توليد الصور متاح لحسابات العملاء والشركات والمديرين.'],
     ACCOUNTS_UNAVAILABLE:['Account service is currently unavailable. Please try again later.','خدمة الحسابات غير متاحة حاليًا. حاول لاحقًا.'],
     ACCOUNTS_NOT_CONFIGURED:['Account service is currently unavailable. Please try again later.','خدمة الحسابات غير متاحة حاليًا. حاول لاحقًا.'],
     under_100k:['Under EGP 100,000','أقل من ١٠٠ ألف جنيه'],

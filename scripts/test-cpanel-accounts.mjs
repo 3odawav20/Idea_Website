@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';import {execFileSync} from 'node:child_process';import fs from 'node:fs';
 const php=process.env.IDEA_TEST_PHP||'php';
-const root=process.cwd(),fixture=root+'/artifacts/php-accounts-test/accounts.sqlite';
+const root=process.cwd(),fixture=process.env.IDEA_TEST_FIXTURE||root+'/artifacts/php-accounts-test/accounts.sqlite';
 const maintenance=(...args)=>execFileSync(php,[...(process.platform==='win32'&&process.env.IDEA_TEST_PHP?['-d','extension_dir='+php.replaceAll('\\','/').slice(0,php.replaceAll('\\','/').lastIndexOf('/'))+'/ext','-d','extension=pdo_sqlite']:[]),'scripts/account-test-fixture.php',fixture,...args]);maintenance('clear-rates');
 const used=JSON.parse(maintenance('used-products').toString()),catalogue=JSON.parse(fs.readFileSync('src/app/data/artceramic.json'));
 const [catalogueProduct,unrelatedProduct]=catalogue.filter(item=>!used.includes(item.id)).slice(0,2);
@@ -21,7 +21,7 @@ const specs={brand:'Art Ceramic',material:'ceramic',dimensions:'30 × 90',descri
 const pa=await a.call('product',{title:catalogueProduct.name,catalog_product_id:catalogueId,sku:'TEST',specifications:specs});
 await a.call('publish',{id:pa.id},403);await a.call('admin-overview',undefined,403);await buyer.call('products',undefined,403);await a.call('membership',{audience:'customer',interval:'monthly'},403);
 const pb=await b.call('product',{title:catalogueProduct.name,catalog_product_id:catalogueId,specifications:specs}),po=await other.call('product',{title:unrelatedProduct.name,catalog_product_id:otherId,specifications:specs});
-for(const record of suppliers)await admin.call('admin-company',{id:record.company.id,status:'verified'});
+for(const record of suppliers)maintenance('verified-company',record.company.id);
 await b.call('product',{id:pa.id,title:catalogueProduct.name,catalog_product_id:catalogueId,specifications:specs},404);
 await a.call('product',{id:pa.id,title:catalogueProduct.name,catalog_product_id:catalogueId,sku:'EDITED-TEST',specifications:specs});
 assert.equal((await a.call('products')).products.find(p=>p.id===pa.id).sku,'EDITED-TEST');

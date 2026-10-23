@@ -1,5 +1,9 @@
 export interface AccountSnapshot { user: any | null; company: any | null; membership: any | null; csrf: string; }
-const endpoint = import.meta.env.VITE_IDEA_ACCOUNT_ENDPOINT || `${import.meta.env.BASE_URL}api/accounts.php`;
+// On livefree.support /api is owned by the legacy PHP application. Production
+// uses IDEA's isolated account API directory; local fixtures keep /api.
+const endpoint = import.meta.env.VITE_IDEA_ACCOUNT_ENDPOINT || (import.meta.env.PROD
+  ? `${import.meta.env.BASE_URL}idea-accounts-api/accounts.php`
+  : `${import.meta.env.BASE_URL}api/accounts.php`);
 export const accountEndpoint = endpoint;
 let csrf = '', latest: AccountSnapshot | null = null;
 let pendingSession: Promise<any> | null = null;
@@ -30,6 +34,7 @@ async function sendAccountRequest(action: string, data?: Record<string, any> | F
 export async function generationAccess(): Promise<string> {
   const data: AccountSnapshot = await accountRequest('session');
   if (!data.user) throw new Error('AUTH_REQUIRED');
-  if (data.user.role !== 'buyer' || data.company) throw new Error('CUSTOMER_ONLY');
+  if (!['buyer','supplier','admin'].includes(data.user.role)) throw new Error('AI_ACCOUNT_REQUIRED');
   return data.csrf;
 }
+

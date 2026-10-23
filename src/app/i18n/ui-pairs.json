@@ -3658,5 +3658,49 @@
   [
     "admin",
     "مدير"
+  ],
+  [
+    "Ceiling",
+    "السقف"
+  ],
+  [
+    "Floor & walls",
+    "الأرضية والحوائط"
+  ],
+  [
+    "Gemini edits your selected surface using the room and material references. Manual boundaries preserve the original outside the selection.",
+    "Gemini يعدّل السطح المختار باستخدام صورة المكان والخامة. التحديد اليدوي يحافظ على المنطقة خارج الحدود من الصورة الأصلية."
+  ],
+  [
+    "Preparing your room and material…",
+    "بنجهز صورة المكان والخامة…"
+  ],
+  [
+    "Saving your design request…",
+    "بنحفظ طلب التصميم…"
+  ],
+  [
+    "Gemini is editing your selected finish…",
+    "Gemini بيعدّل التشطيب المختار…"
+  ],
+  [
+    "Receiving your finished image…",
+    "التصميم جاهز، بنستلم الصورة…"
+  ],
+  [
+    "Checking the image service",
+    "جارٍ التحقق من خدمة الصور"
+  ],
+  [
+    "Gemini · ready for your design",
+    "Gemini · جاهز لاستقبال تصميمك"
+  ],
+  [
+    "Add your Gemini key to activate generation",
+    "أضف مفتاح Gemini لتفعيل التوليد"
+  ],
+  [
+    "Preserving the room details while changing the selected finish.",
+    "بنحافظ على تفاصيل المكان ونغيّر التشطيب المختار فقط."
   ]
 ]

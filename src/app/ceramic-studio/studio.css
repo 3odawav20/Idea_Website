@@ -1452,3 +1452,111 @@
 .idea-ceramic-studio .intro p {
   color: var(--idea-text-muted);
 }
+
+/* IDEA Material Lab: a focused instrument panel around the real photograph. */
+.studio.idea-ceramic-studio {
+  --idea-text: #edf3f8;
+  --idea-text-muted: #a7b5c4;
+  --idea-text-faint: #92a3b6;
+  --idea-surface: #141d29;
+  --idea-surface-2: #0e1621;
+  --idea-bg: #0a1019;
+  --idea-bg-2: #0a1019;
+  --idea-border: #2d3b4c;
+  --idea-border-neutral: #263545;
+  --idea-gold: #ff8a2b;
+  --idea-gold-deep: #f47816;
+  --idea-gold-soft: #ff8a2b18;
+  --idea-on-gold: #171008;
+  --ink: #edf3f8;
+  --accent: #ff8a2b;
+  --line: #29394b;
+  --paper: #0a1019;
+  background: radial-gradient(ellipse at 84% 0%, #ff8a2b0d, transparent 35%), #0a1019;
+  border-top: 1px solid #344354;
+  padding-bottom: 20px;
+}
+.idea-ceramic-studio .studio-main {max-width:1760px;padding-inline:clamp(16px,3vw,48px)}
+.idea-ceramic-studio .intro {position:relative;display:flex;flex-wrap:wrap;gap:20px;padding:72px 0 34px}
+.idea-ceramic-studio .intro h1 {font-size:clamp(29px,3.1vw,49px);font-weight:650;line-height:1.35;letter-spacing:-1.4px;margin:8px 0 12px}
+.idea-ceramic-studio[dir=rtl] .intro h1 {letter-spacing:0}
+.idea-ceramic-studio .intro p {font-size:14px;max-width:640px;line-height:1.9}
+.idea-ceramic-studio .eyebrow {color:#a7b9cc;font-size:10px;letter-spacing:2px}
+.idea-ceramic-studio .studio-service {position:absolute;inset-inline:0;top:22px;display:flex;align-items:center;gap:10px;font-size:11px;color:#a9bacd;flex-wrap:wrap}
+.idea-ceramic-studio .studio-service b {font:600 10px var(--idea-font-body),sans-serif;letter-spacing:2px;color:#d5e0ed}
+.idea-ceramic-studio .studio-service>span:last-child {margin-inline-start:auto}
+.idea-ceramic-studio .studio-quota {position:absolute;top:43px;inset-inline-start:0;color:#b5c3d2;font-size:11px;line-height:1.5}
+.idea-ceramic-studio .service-dot {width:7px;height:7px;border-radius:50%;background:#ffab55;box-shadow:0 0 0 4px #ffab5512}
+.idea-ceramic-studio .service-dot.ready {background:#89d8bd;box-shadow:0 0 0 4px #89d8bd12}
+.idea-ceramic-studio .workspace {gap:16px;border:0;overflow:visible;background:transparent;align-items:start}
+.idea-ceramic-studio .workspace .settings,
+.idea-ceramic-studio .workspace .design-summary,
+.idea-ceramic-studio .workspace .main-panel {border:1px solid #2b3a4b;border-radius:20px;background:linear-gradient(150deg,#182332,#121b27);box-shadow:0 10px 28px #0002,inset 0 1px 0 #ffffff06;min-width:0}
+.idea-ceramic-studio .workspace .settings {padding:22px 18px 0}
+.idea-ceramic-studio .workspace .main-panel {padding:0 18px 22px}
+.idea-ceramic-studio .workspace .design-summary {padding:24px 20px;background:linear-gradient(150deg,#1a2634,#121b27)}
+.idea-ceramic-studio .panel-title {font-size:15px;font-weight:650;letter-spacing:0;color:#f3f7fb}
+.idea-ceramic-studio .settings section {border-color:#29394b;padding-block:21px}
+.idea-ceramic-studio .settings h2 {font-size:13px;color:#d9e4ef;margin-bottom:14px}
+.idea-ceramic-studio .settings h2 em {color:#ffac67;background:#ff8a2b0c;border:1px solid #ff8a2b25;border-radius:7px;padding:2px 6px;font-style:normal}
+.idea-ceramic-studio .upload-box {min-height:145px;border:1px dashed #4d6075;border-radius:14px;background:linear-gradient(140deg,#ffffff04,transparent);color:#b9c8d7;transition:border-color .2s,background .2s}
+.idea-ceramic-studio .upload-box:hover {border-color:#ffab61;background:#ff8a2b08}
+.idea-ceramic-studio .upload-box>svg {color:#ffab61;filter:drop-shadow(0 4px 7px #0004)}
+.idea-ceramic-studio .upload-box b {font-size:13px;font-weight:600}
+.idea-ceramic-studio .upload-box small {color:#95a8bc;font-size:10px}
+.idea-ceramic-studio .sample-row img {border-radius:9px;border:1px solid #3c4d60}
+.idea-ceramic-studio .field-label,
+.idea-ceramic-studio .detail-row,
+.idea-ceramic-studio .mode-note {color:#a9bbce}
+.idea-ceramic-studio .select-wrap,
+.idea-ceramic-studio input:not([type=range]):not([type=checkbox]),
+.idea-ceramic-studio select {background:#0c1420;color:#d9e5f3;border-color:#32455b;border-radius:10px;min-height:44px}
+.idea-ceramic-studio .segmented {display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:0;background:none}
+.idea-ceramic-studio .segmented button {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:77px;font-size:12px;line-height:1.45;padding:9px 5px;border:1px solid #34465b;border-radius:12px;background:linear-gradient(#233144,#192436);box-shadow:0 3px 0 #080e17,inset 0 1px 0 #ffffff09;transition:transform .16s,box-shadow .16s,border-color .16s;color:#c4d2e3}
+.idea-ceramic-studio .segmented button:hover {transform:translateY(-1px);border-color:#61788e}
+.idea-ceramic-studio .segmented button:active {transform:translateY(2px);box-shadow:0 1px 0 #080e17}
+.idea-ceramic-studio .segmented .chosen {color:#ffc291;background:linear-gradient(#493326,#30251f);border-color:#d78243;box-shadow:0 3px 0 #100d0a,inset 0 1px 0 #ffbc7c30,0 0 22px #ff8a2b08}
+.idea-ceramic-studio .outline-button,.idea-ceramic-studio .quiet-button,.idea-ceramic-studio .icon-button,.idea-ceramic-studio .upload-material,.idea-ceramic-studio .show-more,.idea-ceramic-studio .quote-material {min-height:44px;border:1px solid #3c5067;border-radius:10px;color:#d2dfed;background:linear-gradient(#203044,#182435);box-shadow:0 2px 0 #080e18}
+.idea-ceramic-studio .quiet-button {padding:11px 16px;font-size:11px}
+.idea-ceramic-studio .preview-toolbar {height:65px;gap:10px;color:#d7e3f0}
+.idea-ceramic-studio .preview-toolbar small {color:#9eafc4}
+.idea-ceramic-studio .saved-button {color:#ffc08b;min-height:44px}
+.idea-ceramic-studio .live-dot {background:#91cdbb;box-shadow:0 0 0 4px #91cdbb0a}
+.idea-ceramic-studio .stage {border:1px solid #35475a;border-radius:13px;background:#070b12;box-shadow:0 12px 30px #0004;min-height:0}
+.idea-ceramic-studio .stage-bottom {padding:12px;background:linear-gradient(transparent,#05080ebf);color:#eff5fd}
+.idea-ceramic-studio .stage-bottom button {display:grid;place-items:center;min-width:40px;min-height:40px;border:1px solid #ffffff35;border-radius:9px;background:#0d152d70;backdrop-filter:blur(12px)}
+.idea-ceramic-studio .materials {padding-top:27px}
+.idea-ceramic-studio .materials h2 {color:#eff5fd;font-size:24px;line-height:1.4}
+.idea-ceramic-studio .material-search {margin-top:12px;border-radius:10px;padding:11px 13px;font-size:12px}
+.idea-ceramic-studio .filters button {min-height:36px;border-radius:8px;padding-inline:12px;color:#aebfd1}
+.idea-ceramic-studio .filters .selected-filter {color:#ffc795;background:#ff8a2b15;border-color:#ff8a2b66}
+.idea-ceramic-studio .material-image {border-radius:12px;padding:4px;transition:transform .2s,border-color .2s}
+.idea-ceramic-studio .material-image img {border-radius:8px;object-fit:contain;background:#1d2734}
+.idea-ceramic-studio .material-card:hover .material-image {transform:translateY(-3px);border-color:#667e95}
+.idea-ceramic-studio .selected-material .material-image {box-shadow:0 0 0 1px #ff8a2b,0 5px 20px #0004}
+.idea-ceramic-studio .material-card>b {font-size:11px;font-weight:600;color:#e3edf8}
+.idea-ceramic-studio .material-card>small {font-size:10px;color:#9aacbf}
+.idea-ceramic-studio .material-card small span {color:#92a5ba}
+.idea-ceramic-studio .material-check {background:#ff8a2b;color:#1b1006;box-shadow:0 2px 6px #0005}
+.idea-ceramic-studio .summary-head h2 {font-size:26px;font-weight:600;color:#f0f5fa;line-height:1.45}
+.idea-ceramic-studio .selected-texture {border:1px solid #3a4e64;border-radius:13px;overflow:hidden;background:#0a121e}
+.idea-ceramic-studio .selected-texture span {color:#ecf4ff;background:#101b2cbb;backdrop-filter:blur(12px)}
+.idea-ceramic-studio .design-summary h3 {font-size:18px;color:#f3f6fb}
+.idea-ceramic-studio .design-summary dl>div {border-color:#304156}
+.idea-ceramic-studio .design-summary dt {color:#a0b3c9}
+.idea-ceramic-studio .design-summary dd {color:#dfe9f5}
+.idea-ceramic-studio .generate {min-height:56px;border:1px solid #ffb06e;border-radius:12px;background:linear-gradient(165deg,#ffa154,#ff821f 55%,#ef6e10);color:#211307;font-size:14px;font-weight:750;box-shadow:0 5px 0 #8a3c0c,0 9px 26px #ff7c1c22,inset 0 1px 0 #ffd3aa;transition:transform .16s,box-shadow .16s}
+.idea-ceramic-studio .generate:hover:not(:disabled) {background:linear-gradient(165deg,#ffb471,#ff8a2b 65%,#ff7b1e);transform:translateY(-1px);box-shadow:0 6px 0 #8a3c0c,0 10px 32px #ff7c1c2a}
+.idea-ceramic-studio .generate:active:not(:disabled) {transform:translateY(4px);box-shadow:0 1px 0 #8a3c0c,0 3px 10px #ff7c1c20}
+.idea-ceramic-studio .result-actions button {min-height:44px;border-color:#3d536b;border-radius:10px;color:#dce7f4}
+.idea-ceramic-studio .rendering {background:#0a121ce0;backdrop-filter:blur(8px);color:#f6f8fc;gap:16px}
+.idea-ceramic-studio .rendering small {max-width:300px;padding-inline:16px;text-align:center;color:#b4c5d8;font-size:12px}
+.idea-ceramic-studio .processing-orbit {display:flex;gap:7px}
+.idea-ceramic-studio .processing-orbit span {height:5px;width:20px;border-radius:5px;background:#ff9d4c;animation:idea-processing 1.4s ease-in-out infinite}
+.idea-ceramic-studio .processing-orbit span:nth-child(2){animation-delay:.2s}
+.idea-ceramic-studio .processing-orbit span:nth-child(3){animation-delay:.4s}
+@keyframes idea-processing{0%,100%{opacity:.25;transform:scaleX(.7)}50%{opacity:1;transform:scaleX(1)}}
+.idea-ceramic-studio button:focus-visible,.idea-ceramic-studio input:focus-visible,.idea-ceramic-studio select:focus-visible {outline:2px solid #ffb37b;outline-offset:4px}
+@media(min-width:1600px){.idea-ceramic-studio .workspace{grid-template-columns:265px minmax(0,1fr) 275px}}
+@media(max-width:700px){.idea-ceramic-studio .intro{padding-top:97px;padding-bottom:24px;gap:15px}.idea-ceramic-studio .intro h1{font-size:31px;letter-spacing:-.8px}.idea-ceramic-studio .studio-service>span:last-child{margin-inline-start:0;width:100%;font-size:10px}.idea-ceramic-studio .quiet-button{width:100%;justify-content:space-between}.idea-ceramic-studio .workspace .settings{padding:18px;grid-template-columns:1fr}.idea-ceramic-studio .workspace .settings section{padding-block:15px}.idea-ceramic-studio .upload-box{min-height:125px}.idea-ceramic-studio .segmented{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.idea-ceramic-studio .segmented button{min-height:76px;font-size:11px}.idea-ceramic-studio .workspace .main-panel{padding-inline:12px}.idea-ceramic-studio .material-grid{gap:12px}.idea-ceramic-studio .workspace .design-summary{padding:22px}.idea-ceramic-studio .intro .eyebrow{font-size:9px}.idea-ceramic-studio .preview-toolbar{font-size:10px;gap:6px}.idea-ceramic-studio .preview-toolbar small{display:none}}
+@media(max-width:360px){.idea-ceramic-studio .segmented{grid-template-columns:1fr 1fr}.idea-ceramic-studio .intro h1{font-size:27px}}

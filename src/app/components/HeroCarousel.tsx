@@ -9,7 +9,6 @@ import { useCollectionDestinations } from "./useCollectionDestinations";
 const SLIDES = [
   { id: "porcelain", href: "/collections/porcelain", title: { en: "Beautiful surfaces. Extraordinary spaces.", ar: "أسطح جميلة. مساحات استثنائية.", fr: "De belles surfaces. Des espaces exceptionnels." }, cta: { en: "Discover porcelain", ar: "اكتشف البورسلين", fr: "Découvrir la porcelaine" } },
   { id: "ceramics", href: "/collections/ceramics", title: { en: "A little colour. A whole new feeling.", ar: "لمسة لون. إحساس جديد بالكامل.", fr: "Un peu de couleur. Une nouvelle émotion." }, cta: { en: "Discover ceramics", ar: "اكتشف السيراميك", fr: "Découvrir la céramique" } },
-  { id: "marble", href: "/products?material=marble", title: { en: "Let every detail inspire you.", ar: "خلي كل تفصيلة تلهمك.", fr: "Laissez chaque détail vous inspirer." }, cta: { en: "Explore marble surfaces", ar: "استكشف الأسطح الرخامية", fr: "Explorer les surfaces marbrées" } },
 ];
 export function HeroCarousel() {
   const uiText = useLocaleText();

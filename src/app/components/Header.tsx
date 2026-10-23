@@ -1,7 +1,7 @@
 import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router";
-import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User, Building2 } from "lucide-react";
+import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User, Building2, ShoppingCart } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import { useStore } from "../store/store";
@@ -107,6 +107,7 @@ export function Header() {
 
           <span className="idea-mobile-optional"><IconLink to="/favorites" label={uiText(t("fav.title"))} count={favorites.length}><Heart size={20} /></IconLink></span>
           <span className="idea-mobile-optional"><IconLink to="/request-quote/new" label={uiText(t("quote.title"))} count={quote.length}><FileText size={20} /></IconLink></span>
+          <IconLink to="/cart" label={locale === "ar" ? "سلة الشراء" : "Shopping cart"}><ShoppingCart size={20}/></IconLink>
           <IconLink to={session ? (session.role === "business" ? "/business" : session.role === "admin" ? "/admin" : "/account") : "/login"} label={uiText(session ? t("nav.account") : t("nav.signIn"))}><User size={20} /></IconLink>
 
           <button className="idea-menu-btn" onClick={() => setOpen((o) => !o)} aria-label={uiText("Menu")} aria-expanded={open}
