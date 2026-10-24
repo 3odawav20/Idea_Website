@@ -42,6 +42,7 @@ export function AiVisualizerStudio() {
   const [material, setMaterial] = useState<File | null>(null);
   const [materialUrl, setMaterialUrl] = useState<string | null>(null);
   const safeMaterialUrl = sanitizeImageUrl(materialUrl);
+  const safePhotoUrl = sanitizeImageUrl(photoUrl);
   const [surface, setSurface] = useState<Surface>("floor");
   const [roomKind, setRoomKind] = useState<RoomKind>("living");
   const [rotation, setRotation] = useState(0);
@@ -186,9 +187,9 @@ export function AiVisualizerStudio() {
         <section className="idea-studio-center" aria-label={tr("معاينة الغرفة", "Room preview")}>
           <div className="idea-studio-stage-top"><span><span className="idea-studio-dot"/> {result ? tr("التصور الناتج", "Generated visualization") : tr("مساحة المعاينة", "Live workspace")}</span><span>{tr("استوديو IDEA", "IDEA / STUDIO")}</span></div>
           <div className="idea-studio-stage">
-            {photoUrl ? (
+            {safePhotoUrl ? (
               <div className="idea-studio-comparison">
-                <img className="idea-studio-before" src={photoUrl} alt={tr("الغرفة الأصلية","Original room")}/>
+                <img className="idea-studio-before" src={safePhotoUrl || undefined} alt={tr("الغرفة الأصلية","Original room")}/>
                 {result && <div className="idea-studio-after" style={{clipPath:"inset(0 " + (100 - compare) + "% 0 0)"}}><img src={result} alt={tr("تصور بالذكاء الاصطناعي","AI visualization")}/></div>}
                 {result && <div className="idea-studio-split" style={{left: compare + "%"}}><span><ArrowLeftRight size={16}/></span></div>}
               </div>
