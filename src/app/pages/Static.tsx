@@ -1,5 +1,5 @@
 import { useUiText as useLocaleText } from "../i18n/useUiText";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { UploadCloud, MousePointerClick, Sparkles, Image as ImageIcon, ClipboardList, BadgeCheck, CreditCard, Truck } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
@@ -47,14 +47,30 @@ export function AiVisualizer() {
   const uiText = useLocaleText();
 
   const { t } = useI18n();
-  const [file, setFile] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!selectedFile) {
+      setPreviewUrl(null);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreviewUrl(objectUrl);
+
+    return () => {
+      URL.revokeObjectURL(objectUrl);
+    };
+  }, [selectedFile]);
+
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container style={{ maxWidth: 900 }}>
         <SectionHeader eyebrow={uiText(t("nav.visualizer"))} title={uiText("See It Inside Your Space")} sub={uiText("Upload a photo of your room, then select a real IDEA surface to preview the finished look. (Rendering engine connects in the back-end phase.)")} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--idea-space-5)" }} className="idea-ai-grid">
           <label style={{ aspectRatio: "4/3", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", display: "grid", placeItems: "center", cursor: "pointer", overflow: "hidden", background: "var(--idea-surface)" }}>
-            {uiText(file ? <img src={file} alt={uiText("Your room")} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (
+            {uiText(previewUrl ? <img src={previewUrl} alt={uiText("Your room")} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (
               <div style={{ textAlign: "center", color: "var(--idea-text-muted)" }}>
                 <UploadCloud size={34} color="var(--idea-gold)" />
                 <div style={{ marginTop: 10 }}>{uiText("Upload your room photo")}</div>
@@ -67,9 +83,9 @@ export function AiVisualizer() {
               onChange={(e) => {
                 const f = e.target.files?.[0];
                 if (f && f.type.startsWith("image/")) {
-                  setFile(URL.createObjectURL(f));
+                  setSelectedFile(f);
                 } else {
-                  setFile(null);
+                  setSelectedFile(null);
                 }
               }}
             />
