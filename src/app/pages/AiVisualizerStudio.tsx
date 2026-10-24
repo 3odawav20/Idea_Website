@@ -19,7 +19,7 @@ function sanitizeImageUrl(url: string | null): string | null {
   if (!url) return null;
   try {
     const parsed = new URL(url, window.location.origin);
-    if (parsed.protocol === "blob:" || parsed.protocol === "https:" || parsed.protocol === "http:") return url;
+    if (parsed.protocol === "blob:") return parsed.href;
   } catch {
     return null;
   }
