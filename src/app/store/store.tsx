@@ -63,7 +63,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     let active = true;
     const fetchOverrides = async () => {
       const { data, error } = await supabase.from("catalogue_admin_overrides")
-        .select("product_id,visible,name_en,brand,collection,image_url,source_proof_url,updated_at");
+        .select("product_id,visible,name_en,brand,manufacturer,model,code,collection,image_url,source_proof_url,updated_at");
       if (!active) return;
       if (error) {
         // The dashboard reports missing schema; the public site keeps its static,

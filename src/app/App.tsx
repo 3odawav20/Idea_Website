@@ -27,7 +27,7 @@ import {
 } from "./pages/Business";
 import { SubscriptionsHome, SubscriptionsCustomers, SubscriptionsBusinesses, AccountSubscription } from "./pages/Subscriptions";
 import { AdminLayout, AdminOverview, AdminSubscriptions, AdminPayments } from "./pages/Admin";
-import { AdminStudioLayout, AdminStudioHome, AdminProducts, AdminQuality, AdminOperations, AdminSettings } from "./pages/AdminStudio";
+import { AdminStudioLayout, AdminStudioHome, AdminProducts, AdminQuality, AdminOperations, AdminSettings, AdminVisualizer } from "./pages/AdminStudio";
 import { Checkout } from "./pages/Checkout";
 import { RoomDesignerHome, PhotoGuide, RoomDesignerEditor } from "./pages/RoomDesigner";
 import { TileShowroom } from "./pages/TileShowroom";
@@ -143,6 +143,7 @@ export default function App() {
                 <Route path="catalogue" element={<AdminProducts />} />
                 <Route path="quality" element={<AdminQuality />} />
                 <Route path="operations" element={<AdminOperations />} />
+                <Route path="visualizer" element={<AdminVisualizer />} />
                 <Route path="settings" element={<AdminSettings />} />
                 <Route path="subscriptions" element={<AdminSubscriptions />} />
                 <Route path="settings/payments" element={<AdminPayments />} />

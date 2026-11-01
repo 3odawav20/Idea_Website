@@ -43,6 +43,7 @@ export interface Product {
   name: LocalizedText;
   collection: CollectionSlug;
   brand: string;
+  manufacturer?: string; // exact manufacturer name when supplied or admin-verified
   model: string;
   code?: string; // exact source code only; never generated from an internal ID
   origin?: string; // country of origin

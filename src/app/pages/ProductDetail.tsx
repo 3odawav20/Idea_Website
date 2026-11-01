@@ -1,128 +1,372 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link, useParams } from "react-router";
-import { Heart, GitCompare, Sparkles, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  ChevronRight,
+  FileText,
+  GitCompare,
+  Heart,
+  Images,
+  Search,
+  Sparkles,
+} from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
-import { Button, Container, Section, Tag } from "../components/ui";
+import { useBackend } from "../backend/db";
+import { supabase } from "../backend/supabaseClient";
+import type { Product } from "../data/types";
+import { Button, Container } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
+import "./ProductDetail.css";
+
+type Copy = { en: string; ar: string; fr: string };
+
+const COLLECTION_LABELS: Record<string, Copy> = {
+  ceramics: { en: "Ceramic tiles", ar: "بلاط سيراميك", fr: "Carrelage céramique" },
+  porcelain: { en: "Porcelain tiles", ar: "بلاط بورسلين", fr: "Carrelage en porcelaine" },
+  "sanitary-ware": { en: "Sanitary ware", ar: "أدوات صحية", fr: "Sanitaires" },
+  faucets: { en: "Faucets", ar: "خلاطات", fr: "Robinetterie" },
+  "bathroom-sets": { en: "Bathroom sets", ar: "أطقم حمامات", fr: "Ensembles de salle de bain" },
+  "bathroom-units": { en: "Bathroom units", ar: "وحدات حمام", fr: "Meubles de salle de bain" },
+  bathtubs: { en: "Bathtubs", ar: "بانيوهات", fr: "Baignoires" },
+  "shower-units": { en: "Shower units", ar: "وحدات دش", fr: "Cabines de douche" },
+  "bathroom-accessories": { en: "Bathroom accessories", ar: "إكسسوارات حمام", fr: "Accessoires de salle de bain" },
+};
+
+function uniqueProducts(items: Product[]) {
+  return [...new Map(items.map((item) => [item.id, item])).values()];
+}
 
 export function ProductDetail() {
   const { slug } = useParams();
   const { t, locale } = useI18n();
+  const { session } = useBackend();
   const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote } = useStore();
-  const product = products.find((p) => p.slug === slug);
+  const product = products.find((item) => item.slug === slug);
   const [activeImg, setActiveImg] = useState(0);
   const [failedImages, setFailedImages] = useState<number[]>([]);
-  // React Router reuses this component when moving between product slugs.
-  // Reset the gallery so a previous item cannot leave the new image blank.
-  useEffect(() => { setActiveImg(0); setFailedImages([]); }, [slug]);
+  const [adminPrice, setAdminPrice] = useState<{ price: number; currency: string } | null>(null);
+
+  useEffect(() => {
+    setActiveImg(0);
+    setFailedImages([]);
+  }, [slug]);
+
+  useEffect(() => {
+    setAdminPrice(null);
+    if (!product || session?.role !== "admin" || !supabase) return;
+    let active = true;
+    void supabase
+      .from("catalogue_admin_prices")
+      .select("price,currency")
+      .eq("product_id", product.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (!active || error || !data) return;
+        setAdminPrice({ price: Number(data.price), currency: data.currency });
+      });
+    return () => { active = false; };
+  }, [product?.id, session?.role]);
+
+  const copy = (value: Copy) => value[locale];
+
+  const family = useMemo(() => {
+    if (!product) return [];
+    const candidates = products.filter((item) => {
+      if (item.id === product.id) return false;
+      if (product.family) return Boolean(item.family && item.family === product.family);
+      return item.brand === product.brand
+        && item.collection === product.collection
+        && item.finish === product.finish
+        && item.sizes.some((size) => product.sizes.some((own) => own.label === size.label));
+    });
+    return uniqueProducts([product, ...candidates]).slice(0, 10);
+  }, [product, products]);
 
   if (!product) {
     return (
-      <Section><Container><p style={{ color: "var(--idea-text-muted)" }}>Product not found. <Link to="/products" style={{ color: "var(--idea-gold)" }}>Back to gallery</Link></p></Container></Section>
+      <main className="idea-catalogue-detail">
+        <Container>
+          <div className="idea-product-not-found">
+            <p>{copy({ en: "Product not found.", ar: "المنتج غير موجود.", fr: "Produit introuvable." })}</p>
+            <Link to="/products">{copy({ en: "Back to catalogue", ar: "العودة للكتالوج", fr: "Retour au catalogue" })}</Link>
+          </div>
+        </Container>
+      </main>
     );
   }
 
-  const gallery = product.gallery?.length ? product.gallery : [product.image];
-  const unit = product.collection === "ceramics" || product.collection === "porcelain" ? "sqm" : "pieces";
-  // Products without a source-verified family must not be shown as family variants.
-  const related = products.filter((p) => p.id !== product.id && (
-    product.family
-      ? Boolean(p.family && p.family === product.family)
-      : p.brand === product.brand && p.collection === product.collection &&
-        p.finish === product.finish &&
-        p.sizes.some((size) => product.sizes.some((own) => own.label === size.label))
-  )).slice(0, 4);
-  const fav = isFavorite(product.id);
-  const visibleImage = gallery[activeImg] || gallery[0];
+  const gallery = [...new Set(product.gallery?.length ? product.gallery : [product.image])];
+  const heroImage = gallery[0] || product.image;
+  const visibleImage = gallery[activeImg] || heroImage;
   const activeImageFailed = failedImages.includes(activeImg);
+  const isTile = product.collection === "ceramics" || product.collection === "porcelain";
+  const unit = isTile ? "sqm" : "pieces";
+  const fav = isFavorite(product.id);
+  const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? product.collection.replaceAll("-", " ");
 
-  const spec = (label: string, value?: string) => value && (
-    <div style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid var(--idea-border-neutral)" }}>
-      <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{label}</span>
-      <span style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-sm)", textAlign: "end", minWidth: 0, overflowWrap: "anywhere" }}>{value}</span>
-    </div>
-  );
+  const applicationGroups = (() => {
+    if (!isTile) {
+      return [{
+        key: "models",
+        title: copy({ en: "Available models", ar: "الموديلات المتاحة", fr: "Modèles disponibles" }),
+        items: family,
+      }];
+    }
+    const floor = family.filter((item) => (item.application ?? "").toLowerCase().includes("floor"));
+    const wall = family.filter((item) => (item.application ?? "").toLowerCase().includes("wall"));
+    const groups = [
+      floor.length && {
+        key: "floor",
+        title: copy({ en: "Floor tiles", ar: "بلاط الأرضيات", fr: "Carrelage de sol" }),
+        items: floor,
+      },
+      wall.length && {
+        key: "wall",
+        title: copy({ en: "Wall tiles", ar: "بلاط الحوائط", fr: "Carrelage mural" }),
+        items: wall,
+      },
+    ].filter(Boolean) as { key: string; title: string; items: Product[] }[];
+    return groups.length ? groups : [{
+      key: "surfaces",
+      title: copy({ en: "Available surfaces", ar: "الأسطح المتاحة", fr: "Surfaces disponibles" }),
+      items: family,
+    }];
+  })();
+
+  const sourceFallback = t("value.notProvided");
+  const identitySpecs: [string, string][] = [
+    [t("label.model"), product.model || sourceFallback],
+    [t("label.code"), product.code || sourceFallback],
+    [t("label.brand"), product.brand || sourceFallback],
+    [t("label.manufacturer"), product.manufacturer || sourceFallback],
+  ];
+  const specs = [
+    ...identitySpecs,
+    [t("label.type"), product.type],
+    [t("label.finish"), product.finish],
+    [t("label.texture"), product.texture],
+    [t("label.origin"), product.origin],
+    [copy({ en: "Application", ar: "الاستخدام", fr: "Application" }), product.application],
+    [t("label.sizes"), product.sizes.map((size) => size.label).join(" · ")],
+    [copy({ en: "Thickness", ar: "السُمك", fr: "Épaisseur" }), product.sizes.find((size) => size.thicknessMm)?.thicknessMm ? `${product.sizes.find((size) => size.thicknessMm)?.thicknessMm} mm` : undefined],
+    [copy({ en: "Colours", ar: "الألوان", fr: "Couleurs" }), product.colors?.join(" · ")],
+  ].filter((entry): entry is [string, string] => Boolean(entry[1]));
+
+  const related = products.filter((item) => (
+    item.id !== product.id
+    && item.collection === product.collection
+    && !family.some((member) => member.id === item.id)
+  )).slice(0, 4);
 
   return (
-    <Section style={{ paddingTop: "var(--idea-space-6)" }}>
-      <Container>
-        {/* Breadcrumb */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginBottom: "var(--idea-space-5)" }}>
-          <Link to="/collections" style={{ color: "inherit", textDecoration: "none" }}>{t("nav.collections")}</Link>
-          <ChevronRight size={12} />
-          <Link to={`/collections/${product.collection}`} style={{ color: "inherit", textDecoration: "none", textTransform: "capitalize" }}>{product.collection.replace("-", " ")}</Link>
-          <ChevronRight size={12} />
-          <span style={{ color: "var(--idea-gold)", minWidth: 0, overflowWrap: "anywhere" }}>{product.name[locale]}</span>
+    <main className="idea-catalogue-detail">
+      <section className="idea-product-hero" aria-labelledby="product-title">
+        <img
+          src={heroImage}
+          alt=""
+          onError={() => setFailedImages((current) => current.includes(0) ? current : [...current, 0])}
+        />
+        <div className="idea-product-hero-shade" />
+        <Container className="idea-product-hero-copy">
+          <div className="idea-eyebrow">{product.manufacturer || sourceFallback} · {collectionLabel}</div>
+          <h1 id="product-title" className="idea-display">{product.name[locale]}</h1>
+          <p>{product.description || [product.texture, product.finish, product.application].filter(Boolean).join(" · ")}</p>
+          <dl className="idea-product-identity">
+            {identitySpecs.map(([label, value]) => (
+              <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
+            ))}
+          </dl>
+          {session?.role === "admin" && adminPrice && (
+            <div className="idea-admin-price">
+              <span>{t("price.admin")}</span>
+              <strong>{new Intl.NumberFormat(locale === "ar" ? "ar-EG" : locale === "fr" ? "fr-FR" : "en-EG", {
+                style: "currency",
+                currency: adminPrice.currency,
+              }).format(adminPrice.price)}</strong>
+            </div>
+          )}
+        </Container>
+      </section>
+
+      <nav className="idea-product-section-nav" aria-label={copy({ en: "Product sections", ar: "أقسام المنتج", fr: "Sections du produit" })}>
+        <Container>
+          <Link to={`/collections/${product.collection}`}>{collectionLabel}</Link>
+          <a href="#formats">{copy({ en: "Models & sizes", ar: "الموديلات والمقاسات", fr: "Modèles et formats" })}</a>
+          <a href="#specifications">{copy({ en: "Technical details", ar: "المواصفات الفنية", fr: "Détails techniques" })}</a>
+          <a href="#gallery">{copy({ en: "Photo gallery", ar: "معرض الصور", fr: "Galerie photos" })}</a>
+          <Link className="idea-product-nav-visualizer" to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}>
+            <Sparkles size={15} />
+            {copy({ en: "Visualize in your room", ar: "شاهده في غرفتك", fr: "Visualiser dans votre pièce" })}
+          </Link>
+        </Container>
+      </nav>
+
+      <Container className="idea-product-catalogue-sheet">
+        <div className="idea-product-breadcrumb">
+          <Link to="/collections">{t("nav.collections")}</Link>
+          <ChevronRight size={13} />
+          <Link to={`/collections/${product.collection}`}>{collectionLabel}</Link>
+          <ChevronRight size={13} />
+          <span>{product.name[locale]}</span>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1.1fr 1fr", gap: "var(--idea-space-7)" }} className="idea-pd-grid">
-          {/* Gallery */}
-          <div style={{minWidth:0}}>
-            <div style={{ aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", background: "var(--idea-surface-2)" }}>
-              {activeImageFailed ? (
-                <div className="idea-image-unavailable">Image unavailable from the documented source.</div>
-              ) : (
-                <img className="idea-vivid-image" src={visibleImage} alt={product.name[locale]} decoding="async" onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])} style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center", background: "var(--idea-surface-2)" }} />
-              )}
+        <section id="specifications" className="idea-technical-panel">
+          <div className="idea-catalogue-section-heading">
+            <div>
+              <span>{copy({ en: "Verified product data", ar: "بيانات المنتج الموثقة", fr: "Données produit vérifiées" })}</span>
+              <h2 className="idea-display">{copy({ en: "Technical features", ar: "المواصفات الفنية", fr: "Caractéristiques techniques" })}</h2>
             </div>
-            {gallery.length > 1 && (
-              <div className="idea-product-thumbs" style={{ display: "flex", gap: 10, marginTop: 12, overflowX: "auto", maxWidth: "100%", paddingBottom: 8, scrollSnapType: "x mandatory", scrollbarWidth: "none" }}>
-                {gallery.map((g, i) => (
-                  <button key={i} onClick={() => setActiveImg(i)} aria-label={`Show image ${i + 1}`} style={{ flexShrink: 0, width: 80, height: 60, borderRadius: "var(--idea-radius-sm)", overflow: "hidden", border: `1px solid ${i === activeImg ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`, padding: 0, cursor: "pointer" }}>
-                    {failedImages.includes(i) ? <span className="idea-image-unavailable idea-image-unavailable--thumb">Unavailable</span> : <img className="idea-vivid-image" src={g} alt="" loading="lazy" decoding="async" onError={() => setFailedImages((current) => current.includes(i) ? current : [...current, i])} style={{ width: "100%", height: "100%", objectFit: "contain", background: "var(--idea-surface-2)" }} />}
-                  </button>
-                ))}
+          </div>
+          <dl className="idea-technical-grid">
+            {specs.map(([label, value]) => (
+              <div key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
               </div>
+            ))}
+          </dl>
+          <p className="idea-source-note">
+            {copy({
+              en: "Specifications shown are limited to the verified catalogue data supplied by the manufacturer.",
+              ar: "المواصفات المعروضة تقتصر على بيانات الكتالوج الموثقة من الشركة المصنّعة.",
+              fr: "Les caractéristiques affichées sont limitées aux données vérifiées du catalogue fabricant.",
+            })}
+          </p>
+        </section>
+
+        <div className="idea-product-actions">
+          <Button size="lg" onClick={() => addToQuote(product.id, unit)}>
+            <FileText size={17} /> {t("action.requestPrice")}
+          </Button>
+          <Button variant="ghost" onClick={() => toggleFavorite(product.id)}>
+            <Heart size={17} fill={fav ? "var(--idea-gold-bright)" : "none"} /> {t("action.favorite")}
+          </Button>
+          <Button variant="ghost" onClick={() => toggleCompare(product.id)}>
+            <GitCompare size={17} /> {t("action.compare")}
+          </Button>
+        </div>
+      </Container>
+
+      <section id="gallery" className="idea-product-photo-gallery">
+        <Container>
+          <div className="idea-catalogue-section-heading">
+            <div>
+              <span>{product.manufacturer || sourceFallback}</span>
+              <h2 className="idea-display"><Images size={22} /> {copy({ en: "Photo gallery", ar: "معرض الصور", fr: "Galerie photos" })}</h2>
+            </div>
+          </div>
+          <div className="idea-product-gallery-stage">
+            {activeImageFailed ? (
+              <div className="idea-image-unavailable">{copy({ en: "Image unavailable from the documented source.", ar: "الصورة غير متاحة من المصدر الموثق.", fr: "Image indisponible depuis la source documentée." })}</div>
+            ) : (
+              <img
+                className="idea-vivid-image"
+                src={visibleImage}
+                alt={`${product.name[locale]} ${activeImg + 1}`}
+                decoding="async"
+                onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])}
+              />
             )}
           </div>
+          {gallery.length > 1 && (
+            <div className="idea-product-gallery-thumbs">
+              {gallery.map((image, index) => (
+                <Button
+                  variant="ghost"
+                  className={index === activeImg ? "is-active" : ""}
+                  key={`${image}-${index}`}
+                  onClick={() => setActiveImg(index)}
+                  aria-label={`${copy({ en: "Show image", ar: "عرض الصورة", fr: "Afficher l’image" })} ${index + 1}`}
+                >
+                  <img src={image} alt="" loading="lazy" />
+                </Button>
+              ))}
+            </div>
+          )}
+        </Container>
+      </section>
 
-          {/* Info */}
+      <section id="formats" className="idea-product-formats-section">
+        <Container className="idea-product-formats">
+          {applicationGroups.map((group) => {
+            const sizes = [...new Set(group.items.flatMap((item) => item.sizes.map((size) => size.label)))];
+            return (
+              <div className="idea-format-group" key={group.key}>
+                <header className="idea-catalogue-section-heading">
+                  <div>
+                    <span>{copy({ en: "Other options from this collection", ar: "خيارات أخرى من نفس المجموعة", fr: "Autres options de cette collection" })}</span>
+                    <h2 className="idea-display">{group.title}</h2>
+                  </div>
+                  <p>{sizes.join(" · ")}</p>
+                </header>
+                <div className="idea-product-swatches">
+                  {group.items.map((item) => (
+                    <Link
+                      className={`idea-product-swatch${item.id === product.id ? " is-current" : ""}`}
+                      to={`/product/${item.slug}`}
+                      key={`${group.key}-${item.id}`}
+                      aria-current={item.id === product.id ? "page" : undefined}
+                    >
+                      <div className="idea-product-swatch-image">
+                        <img src={item.image} alt={item.name[locale]} loading="lazy" />
+                      </div>
+                      <strong>{item.name[locale]}</strong>
+                      <span>{item.variant || item.finish || item.model}</span>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
+        </Container>
+      </section>
+
+      <section className="idea-product-discovery">
+        <Container>
+          <div className="idea-product-discovery-copy">
+            <span className="idea-eyebrow">{copy({ en: "Find the right surface", ar: "اعثر على السطح المناسب", fr: "Trouvez la surface idéale" })}</span>
+            <h2 className="idea-display">{copy({ en: "Explore more products", ar: "استكشف المزيد من المنتجات", fr: "Explorer plus de produits" })}</h2>
+          </div>
+          <Link to={`/products?category=${product.collection}`} className="idea-product-search-link">
+            <Search size={18} />
+            {copy({ en: `Search ${collectionLabel}`, ar: `ابحث في ${collectionLabel}`, fr: `Rechercher dans ${collectionLabel}` })}
+          </Link>
+        </Container>
+      </section>
+
+      {related.length > 0 && (
+        <section className="idea-related-products">
+          <Container>
+            <div className="idea-catalogue-section-heading">
+              <div>
+                <span>{collectionLabel}</span>
+                <h2 className="idea-display">{copy({ en: "Related products", ar: "منتجات مرتبطة", fr: "Produits associés" })}</h2>
+              </div>
+            </div>
+            <div className="idea-related-products-grid">
+              {related.map((item) => <ProductCard key={item.id} product={item} />)}
+            </div>
+          </Container>
+        </section>
+      )}
+
+      <section className="idea-visualizer-banner">
+        <Container>
           <div>
-            <div className="idea-eyebrow">{product.brand}</div>
-            <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 var(--idea-space-3)", overflowWrap: "anywhere" }}>{product.name[locale]}</h1>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-4)" }}>
-              {product.variant && <Tag>{product.variant}</Tag>}
-              {product.application && <Tag>{product.application}</Tag>}
-              {(product.usage ?? []).filter((u) => u.toLowerCase() !== product.application?.toLowerCase()).map((u) => <Tag key={u}>{u}</Tag>)}
-            </div>
-            <p style={{ color: "var(--idea-text-faint)", fontStyle: "italic", marginBottom: "var(--idea-space-5)" }}>{t("price.hidden")}</p>
-
-            <div style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-4) var(--idea-space-5)", marginBottom: "var(--idea-space-5)" }}>
-              {spec(t("label.model"), product.model)}
-              {spec(t("label.code"), product.code)}
-              {spec(t("label.origin"), product.origin)}
-              {spec(t("label.type"), product.type)}
-              {spec(t("label.finish"), product.finish)}
-              {spec(t("label.texture"), product.texture)}
-            </div>
-
-            <div className="idea-eyebrow" style={{ marginBottom: 10 }}>{t("label.sizes")}</div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-5)" }}>
-              {product.sizes.map((s) => <Tag key={s.id}>{s.label}</Tag>)}
-            </div>
-
-            <div style={{ display: "flex", gap: "var(--idea-space-3)", flexWrap: "wrap" }}>
-              <Button size="lg" onClick={() => addToQuote(product.id, unit)}>{t("action.requestPrice")}</Button>
-              <Button variant="ghost" onClick={() => toggleFavorite(product.id)}><Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} /> {t("action.favorite")}</Button>
-              <Button variant="ghost" onClick={() => toggleCompare(product.id)}><GitCompare size={16} /> {t("action.compare")}</Button>
-            </div>
-            <Link to={"/ai-room-visualizer?product=" + encodeURIComponent(product.id)} style={{ display: "inline-flex", alignItems: "center", gap: 8, color: "var(--idea-gold)", marginTop: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)", minHeight: 44, fontWeight: 700 }}>
-              <Sparkles size={17} /> {locale === "ar" ? "جرّبه في شقتك" : locale === "fr" ? "Essayez-le chez vous" : "Try it in your home"}
-            </Link>
+            <span className="idea-eyebrow">IDEA Visualizer</span>
+            <h2 className="idea-display">{copy({ en: "Visualize this product in your own space", ar: "شاهد المنتج داخل مساحتك", fr: "Visualisez ce produit dans votre espace" })}</h2>
+            <p>{copy({
+              en: "Upload a room photo and preview the selected surface before requesting a quote.",
+              ar: "ارفع صورة غرفتك وعاين الخامة المختارة قبل طلب عرض السعر.",
+              fr: "Importez une photo de votre pièce et prévisualisez la surface avant de demander un devis.",
+            })}</p>
           </div>
-        </div>
-
-        {related.length > 0 && (
-          <div style={{ marginTop: "var(--idea-space-8)" }}>
-            <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>Product Family</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-5)" }}>
-              {related.map((p) => <ProductCard key={p.id} product={p} />)}
-            </div>
-          </div>
-        )}
-      </Container>
-      <style>{`@media (max-width: 860px){ .idea-pd-grid{ grid-template-columns: 1fr !important; } }`}</style>
-    </Section>
+          <Link to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}>
+            <Sparkles size={18} />
+            {copy({ en: "Open room visualizer", ar: "افتح مصمم الغرفة", fr: "Ouvrir le visualiseur" })}
+          </Link>
+        </Container>
+      </section>
+    </main>
   );
 }

@@ -1,0 +1,170 @@
+{
+    "zlib": {
+        "source_type": "archive",
+        "filename": "zlib-1.3.2.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "0097186c2635358f2239c95d559796238c6640d4"
+    },
+    "micro": {
+        "source_type": "git",
+        "dirname": "micro",
+        "move_path": "php-src/sapi/micro",
+        "lock_as": 1,
+        "hash": "fb6d497b6f4cf138ee3851a30c905d64b7b19aed"
+    },
+    "frankenphp": {
+        "source_type": "archive",
+        "filename": "php-frankenphp-caddy-v1.13.4-0-g7f50be9.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "8409983299814f916f99f36edc3228fcf84e77a2"
+    },
+    "attr": {
+        "source_type": "archive",
+        "filename": "attr-2.5.2.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "3240f840239bdac86eb4a35856c86e06ca76e6ef"
+    },
+    "libacl": {
+        "source_type": "archive",
+        "filename": "acl-2.3.2.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "5de165db26d8f03cebf26fd70cff294e0af925df"
+    },
+    "brotli": {
+        "source_type": "archive",
+        "filename": "google-brotli-go-brotli-v1.2.1-0-gdb24a98.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "59725b2fe394af2e8b5d654ef1d432d9714f6689"
+    },
+    "watcher": {
+        "source_type": "archive",
+        "filename": "e-dant-watcher-release-0.14.5-0-g06f84a1.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "89ba560e26de9b107de9aede4ab60592ec46618d"
+    },
+    "php-src": {
+        "source_type": "archive",
+        "filename": "php-8.3.36.tar.xz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "dd7f1b7169cd0ec27dccfbf7e58aa219e2abbaea"
+    },
+    "libpng": {
+        "source_type": "archive",
+        "filename": "pnggroup-libpng-v1.6.59-0-gcd952f4.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "b9717eb8e4743719ed2d8e5360345da91f1273a8"
+    },
+    "libaom": {
+        "source_type": "archive",
+        "filename": "libaom-spc-mirror.txz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "1a7774257d3325613f1691565ddcae997e660c05"
+    },
+    "libwebp": {
+        "source_type": "archive",
+        "filename": "webmproject-libwebp-v1.6.0-0-g4fa2191.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "d095c922bb7a99acc2b0a7da9607e654d9b55a70"
+    },
+    "libjpeg": {
+        "source_type": "archive",
+        "filename": "libjpeg-turbo-libjpeg-turbo-3.2.1-0-g7b49937.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "0de9bda1fb7229d5c01d423527538b0b710ab0ad"
+    },
+    "libiconv": {
+        "source_type": "archive",
+        "filename": "libiconv-1.19.1.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "3f350c71067c4854cf03fac81ccd749b0be988b0"
+    },
+    "xz": {
+        "source_type": "archive",
+        "filename": "xz-5.8.4.tar.xz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "b1345221051ef5ac65297926418b56d2b941fe64"
+    },
+    "libxml2": {
+        "source_type": "archive",
+        "filename": "GNOME-libxml2-v2.15.4-0-g9649899.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "2bdd4831130636714412b93b78fecb30f0e00f6f"
+    },
+    "libavif": {
+        "source_type": "archive",
+        "filename": "AOMediaCodec-libavif-v1.4.2-0-gc5240fc.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "8a376a6a66b58c8b95085a3ee70af4794d517d4e"
+    },
+    "freetype": {
+        "source_type": "archive",
+        "filename": "freetype-freetype-VER-2-15-0-0-g37515cf.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "283cc555b95af726fe4f9730fd03227a469f8626"
+    },
+    "sqlite": {
+        "source_type": "archive",
+        "filename": "sqlite-autoconf-3450200.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "ad56cfe252ea0a86c22812c79f207d265ae4533d"
+    },
+    "openssl": {
+        "source_type": "archive",
+        "filename": "openssl-3.6.5.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "89256e2bf2e5c761c9b4c49925d816f0e3b25fe4"
+    },
+    "libssh2": {
+        "source_type": "archive",
+        "filename": "libssh2-1.11.1.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "61c721696f08bf91d23dd59b766bac65e9a78b04"
+    },
+    "nghttp3": {
+        "source_type": "archive",
+        "filename": "nghttp3-1.18.0.tar.xz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "bd755cf7d9782039b7228d57beacc5e3d66b040e"
+    },
+    "ngtcp2": {
+        "source_type": "archive",
+        "filename": "ngtcp2-1.25.0.tar.xz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "ce6a4d0d417d6d46ee89597f5dcac09a0834651c"
+    },
+    "nghttp2": {
+        "source_type": "archive",
+        "filename": "nghttp2-spc-mirror.tar.xz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "63043d18cbb9256694f4eb34b2ec14e860564341"
+    },
+    "zstd": {
+        "source_type": "archive",
+        "filename": "zstd-spc-mirror.tar.gz",
+        "move_path": null,
+        "lock_as": 1,
+        "hash": "6c7dd9c829561ac5475b72592a079a01ab7f3eab"
+    }
+}

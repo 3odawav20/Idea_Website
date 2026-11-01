@@ -42,7 +42,9 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{product.brand}</div>
+        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>
+          {product.manufacturer || t("value.notProvided")}
+        </div>
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {product.name[locale]}
         </Link>

@@ -11,6 +11,8 @@ import "../components/Discovery.css";
 import { isLargeFormat, isOutdoor20mm, matchesApplication, isColourLabel, isUsageLabel } from "../data/discovery";
 import { SlidersHorizontal, X } from "lucide-react";
 
+const PAGE_SIZE = 16;
+
 function uniq<T>(arr: (T | undefined)[]): T[] {
   return [...new Set(arr.filter(Boolean) as T[])];
 }
@@ -41,7 +43,13 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const usage = params.get("usage");
   const color = params.get("color");
   const application = params.get("application");
-  const setFilter = (key: string, value: string | null) => setParams(old => { const next = new URLSearchParams(old); if(value) next.set(key,value); else next.delete(key); return next; });
+  const setFilter = (key: string, value: string | null) => setParams(old => {
+    const next = new URLSearchParams(old);
+    if (value) next.set(key, value);
+    else next.delete(key);
+    if (key !== "page") next.delete("page");
+    return next;
+  });
   const setFinish = (v:string|null) => setFilter("finish",v);
   const setSize = (v:string|null) => setFilter("size",v);
   const setUsage = (v:string|null) => setFilter("usage",v);
@@ -73,9 +81,19 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const sort = params.get("sort") ?? "source";
   const results = scope.filter(matches);
   if (sort !== "source") results.sort((a,b) => sort === "za" ? b.name[locale].localeCompare(a.name[locale]) : a.name[locale].localeCompare(b.name[locale]));
+  const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
+  const requestedPage = Number.parseInt(params.get("page") ?? "1", 10);
+  const page = Math.min(Math.max(Number.isFinite(requestedPage) ? requestedPage : 1, 1), totalPages);
+  const pageResults = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const firstResult = results.length ? (page - 1) * PAGE_SIZE + 1 : 0;
+  const lastResult = Math.min(page * PAGE_SIZE, results.length);
   const activeCount = [application, finish, size, usage, color].filter(Boolean).length;
   const [mobileOpen, setMobileOpen] = useState(false);
-  const clear = () => setParams(old => {const next = new URLSearchParams(old); ["finish","size","usage","color","application","q"].forEach(k=>next.delete(k)); return next;});
+  const clear = () => setParams(old => {const next = new URLSearchParams(old); ["finish","size","usage","color","application","q","page"].forEach(k=>next.delete(k)); return next;});
+  const goToPage = (nextPage: number) => {
+    setFilter("page", String(nextPage));
+    window.requestAnimationFrame(() => document.getElementById("product-results")?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
 
   const meta = category ? COLLECTIONS.find((c) => c.slug === category) : null;
   const formatTitle = format === "large" ? { en:"Large-format tiles", ar:"بلاط بمقاسات كبيرة", fr:"Carrelage grand format" }[locale] : format === "outdoor20" ? {en:"20 mm outdoor tiles",ar:"بلاط خارجي 20 مم",fr:"Carrelage extérieur 20 mm"}[locale] : null;
@@ -135,7 +153,19 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
         <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: "var(--idea-space-6)", alignItems: "start" }} className="idea-gallery-grid">
           {/* Filters */}
           {mobileOpen && <div onClick={() => setMobileOpen(false)} className="idea-filter-scrim" style={{ display: "none", position: "fixed", inset: 0, zIndex: 60, background: "var(--idea-scrim)" }} />}
-          <aside className={`idea-filters-panel${mobileOpen ? " is-open" : ""}`} style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)", padding: "var(--idea-space-5)", position: "sticky", top: 90 }}>
+          <aside className={`idea-filters-panel${mobileOpen ? " is-open" : ""}`} style={{
+            background: "var(--idea-surface)",
+            border: "var(--idea-hairline)",
+            borderRadius: "var(--idea-radius-lg)",
+            padding: "var(--idea-space-5)",
+            position: "sticky",
+            top: 90,
+            maxHeight: "calc(100dvh - 114px)",
+            overflowY: "auto",
+            overscrollBehavior: "contain",
+            scrollbarGutter: "stable",
+            scrollbarWidth: "thin",
+          }}>
             <button className="idea-filter-close" onClick={() => setMobileOpen(false)}
               style={{ display: "none", position: "absolute", insetInlineEnd: "var(--idea-space-4)", top: "var(--idea-space-4)", background: "none", border: "none", color: "var(--idea-text-muted)", cursor: "pointer" }}>
               <X size={20} />
@@ -161,14 +191,14 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           </aside>
 
           {/* Results */}
-          <div style={{minWidth:0}}>
+          <div id="product-results" style={{minWidth:0, scrollMarginTop: 100}}>
             <form onSubmit={e=>{e.preventDefault(); const data = new FormData(e.currentTarget); setFilter("q", String(data.get("q")??"").trim());}} style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>
               <input key={q} name="q" defaultValue={q} aria-label={locale === "ar" ? "البحث بالاسم" : locale === "fr" ? "Recherche par nom" : "Search by name"} placeholder={locale === "ar" ? "اسم المنتج أو الكود" : locale === "fr" ? "Nom ou référence" : "Product name or code"} style={{flex:"1 1 180px",minWidth:0,padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}/>
               <button type="submit" className="idea-discovery-submit">{locale === "ar" ? "ابحث" : locale === "fr" ? "Rechercher" : "Search"}</button>
               <select aria-label={locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort products"} value={sort} onChange={e=>setFilter("sort",e.target.value)} style={{padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}><option value="source">{locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order"}</option><option value="az">A → Z</option><option value="za">Z → A</option></select>
             </form>
             <div style={{ color: "var(--idea-text-muted)", marginBottom: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)" }}>
-              {results.length} {t("label.results")}
+              {firstResult}–{lastResult} {locale === "ar" ? `من ${results.length}` : locale === "fr" ? `sur ${results.length}` : `of ${results.length}`} {t("label.results")}
             </div>
             {results.length === 0 ? (
               <div style={{ padding: "var(--idea-space-8)", textAlign: "center", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", color: "var(--idea-text-muted)", lineHeight: 1.7 }}>
@@ -177,15 +207,43 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                 <button onClick={clear} style={{color:"var(--idea-gold-bright)",background:"none",border:0,cursor:"pointer",marginTop:16}}>{t("filters.clear")}</button>
               </div>
             ) : (
-              <div className="idea-product-results" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-5)" }}>
-                {results.map((p) => <ProductCard key={p.id} product={p} />)}
-              </div>
+              <>
+                <div className="idea-product-results" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-5)" }}>
+                  {pageResults.map((p) => <ProductCard key={p.id} product={p} />)}
+                </div>
+                {totalPages > 1 && (
+                  <nav className="idea-catalogue-pagination" aria-label={locale === "ar" ? "صفحات المنتجات" : locale === "fr" ? "Pages produits" : "Product pages"}>
+                    <button disabled={page === 1} onClick={() => goToPage(page - 1)}>
+                      {locale === "ar" ? "السابق" : locale === "fr" ? "Précédent" : "Previous"}
+                    </button>
+                    <span>
+                      {locale === "ar" ? `صفحة ${page} من ${totalPages}` : locale === "fr" ? `Page ${page} sur ${totalPages}` : `Page ${page} of ${totalPages}`}
+                    </span>
+                    <button disabled={page === totalPages} onClick={() => goToPage(page + 1)}>
+                      {locale === "ar" ? "التالي" : locale === "fr" ? "Suivant" : "Next"}
+                    </button>
+                  </nav>
+                )}
+              </>
             )}
           </div>
         </div>
       </Container>
       <style>{`
         @media (max-width: 1200px){ .idea-product-results {grid-template-columns:repeat(2,minmax(0,1fr)) !important;} }
+        .idea-catalogue-pagination{
+          display:flex;align-items:center;justify-content:center;gap:var(--idea-space-4);
+          margin-top:var(--idea-space-7);padding-top:var(--idea-space-5);border-top:var(--idea-hairline);
+          color:var(--idea-text-muted);font-size:var(--idea-text-sm);
+        }
+        .idea-catalogue-pagination button{
+          min-height:var(--idea-control-height);padding:var(--idea-space-2) var(--idea-space-5);
+          border:var(--idea-hairline);border-radius:var(--idea-radius-full);
+          background:var(--idea-surface);color:var(--idea-text);font:inherit;cursor:pointer;
+        }
+        .idea-catalogue-pagination button:not(:disabled):hover{
+          border-color:var(--idea-gold);color:var(--idea-gold);
+        }
         @media (max-width: 860px){
           .idea-gallery-grid{ grid-template-columns: 1fr !important; }
           .idea-filter-toolbar{ display: flex !important; }
@@ -193,7 +251,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           .idea-filters-panel{
             position: fixed !important; inset-block: 0; inset-inline-start: 0; z-index: 61;
             width: min(88vw, 360px); max-width: 360px; border-radius: 0 !important;
-            overflow-y: auto; top: 0 !important; transform: translateX(-100%);
+            overflow-y: auto; top: 0 !important; max-height:none !important; transform: translateX(-100%);
             transition: transform .28s ease; box-shadow: var(--idea-shadow-drawer);
           }
           [dir="rtl"] .idea-filters-panel{ inset-inline-start: auto; inset-inline-end: 0; transform: translateX(100%); }
@@ -205,6 +263,10 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           [dir="rtl"] .idea-filters-panel:not(.is-open){ transform: translate3d(calc(100% + 2px), 0, 0) !important; }
           .idea-filters-panel.is-open{ visibility: visible; }
           .idea-filter-close, .idea-filter-show{ display: block !important; }
+        }
+        @media (max-width: 520px){
+          .idea-catalogue-pagination{gap:var(--idea-space-2);justify-content:space-between;}
+          .idea-catalogue-pagination button{padding-inline:var(--idea-space-4);}
         }
       `}</style>
     </Section>

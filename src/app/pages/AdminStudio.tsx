@@ -35,6 +35,7 @@ function qualityFlags(p:Product){
   if(!p.name.en.trim())a.push("Missing title");
   if(!p.approved)a.push("Not approved for storefront");
   if(!p.brand.trim())a.push("Missing brand");
+  if(!p.manufacturer?.trim())a.push("Manufacturer not verified");
   if(!p.sizes.some(s=>s.widthMm && s.heightMm))a.push("Dimensions unverified");
   if(!isValidProductImage(p.image))a.push("Missing / invalid image");
   if(!p.source?.productPageUrl)a.push("Supplier product link missing");
@@ -67,6 +68,7 @@ export function AdminStudioLayout(){
   {to:"/admin/catalogue",label:"Products",icon:Package,end:false},
   {to:"/admin/quality",label:"Quality control",icon:ShieldCheck,end:false},
   {to:"/admin/operations",label:"Operations",icon:Truck,end:false},
+  {to:"/admin/visualizer",label:"AI visualizer",icon:Sparkles,end:false},
   {to:"/admin/settings",label:"Workspace settings",icon:Settings2,end:false}
  ];
  return <div className="ids-root">
@@ -146,10 +148,10 @@ export function AdminProducts(){
   if(quality==="issues"&&!qualityFlags(p).length)return false;
   if(quality==="clear"&&qualityFlags(p).length)return false;
   const needle=q.trim().toLowerCase();
-  return !needle||[p.name.en,p.name.ar,p.brand,p.model,p.code,p.slug].some(x=>String(x||"").toLowerCase().includes(needle));
+  return !needle||[p.name.en,p.name.ar,p.brand,p.manufacturer,p.model,p.code,p.slug].some(x=>String(x||"").toLowerCase().includes(needle));
  }),[products,q,category,quality]);
  const items=list.slice((page-1)*12,page*12);
- const exportData=()=>downloadCSV([["ID","Title","Category","Brand","Size","URL","Source URL","Issues"],...list.map(p=>[p.id,p.name.en,p.collection,p.brand,p.sizes.map(s=>s.label).join(" | "),location.origin+"/product/"+p.slug,sourceLink(p),qualityFlags(p).join("; ")])],"idea-products-audit.csv");
+ const exportData=()=>downloadCSV([["ID","Title","Category","Brand","Manufacturer","Model","Code","Size","URL","Source URL","Issues"],...list.map(p=>[p.id,p.name.en,p.collection,p.brand,p.manufacturer||"",p.model||"",p.code||"",p.sizes.map(s=>s.label).join(" | "),location.origin+"/product/"+p.slug,sourceLink(p),qualityFlags(p).join("; ")])],"idea-products-audit.csv");
  return <>
    <Heading kicker="CATALOGUE MANAGEMENT" title="Product intelligence" sub="Search, inspect, audit and edit sourced products. Changes require a configured and protected database."
      action={<button className="ids-action-outline" onClick={exportData}><Download size={16}/> Export CSV</button>}/>
@@ -157,8 +159,8 @@ export function AdminProducts(){
    {dbState==="ready"&&<div className="ids-oknotice"><ShieldCheck size={17}/> Protected catalogue overrides connected. A saved change updates the storefront after data refresh.</div>}
    <div className="ids-stats ids-stats-three"><Stat title="Products loaded" value={products.length} sub="Storefront inventory" icon={Boxes} accent/><Stat title="Filtered results" value={list.length} sub="Matching current filters" icon={Filter}/><Stat title="Quality issues" value={products.filter(p=>qualityFlags(p).length).length} sub="Fields needing review" icon={ClipboardCheck}/></div>
    <div className="ids-panel ids-table-panel"><div className="ids-filterbar"><label className="ids-search"><Search size={18}/><input value={q} onChange={e=>{setQ(e.target.value);setPage(1)}} placeholder="Search name, brand, SKU, slug..." aria-label="Search products"/></label><select aria-label="Filter material" value={category} onChange={e=>{setCategory(e.target.value);setPage(1)}}><option value="all">All materials</option>{MATERIALS.map(m=><option value={m} key={m}>{materialName(m)}</option>)}</select><select aria-label="Quality filter" value={quality} onChange={e=>{setQuality(e.target.value);setPage(1)}}><option value="all">All quality states</option><option value="issues">Needs review</option><option value="clear">No static flags</option></select></div>
-   <div className="ids-table-scroll"><table className="ids-table"><thead><tr><th>PRODUCT</th><th>MATERIAL</th><th>BRAND</th><th>QUALITY</th><th>ACTIONS</th></tr></thead><tbody>
-    {items.map(p=><tr key={p.id}><td><AdminDataHeader product={p}/></td><td><span className="ids-table-tag">{materialName(p.collection)}</span></td><td>{p.brand||"Unspecified"}</td><td><Pill ok={!qualityFlags(p).length}>{qualityFlags(p).length?qualityFlags(p).length+" flag(s)":"Fields present"}</Pill></td><td><div className="ids-row-actions"><a href={"/product/"+p.slug} target="_blank" rel="noopener noreferrer" title="Open product page" aria-label={"Open "+p.name.en}><ExternalLink size={16}/></a><button onClick={()=>setEdit(p)} title="Review and edit" aria-label={"Edit "+p.name.en}><SlidersHorizontal size={16}/></button></div></td></tr>)}
+   <div className="ids-table-scroll"><table className="ids-table"><thead><tr><th>PRODUCT</th><th>MATERIAL</th><th>MANUFACTURER</th><th>QUALITY</th><th>ACTIONS</th></tr></thead><tbody>
+    {items.map(p=><tr key={p.id}><td><AdminDataHeader product={p}/></td><td><span className="ids-table-tag">{materialName(p.collection)}</span></td><td>{p.manufacturer||"Not verified"}</td><td><Pill ok={!qualityFlags(p).length}>{qualityFlags(p).length?qualityFlags(p).length+" flag(s)":"Fields present"}</Pill></td><td><div className="ids-row-actions"><a href={"/product/"+p.slug} target="_blank" rel="noopener noreferrer" title="Open product page" aria-label={"Open "+p.name.en}><ExternalLink size={16}/></a><button onClick={()=>setEdit(p)} title="Review and edit" aria-label={"Edit "+p.name.en}><SlidersHorizontal size={16}/></button></div></td></tr>)}
    </tbody></table>{!list.length&&<div className="ids-empty">No products match your filters.</div>}</div>
    <div className="ids-pagination"><span>Showing {list.length?(page-1)*12+1:0}–{Math.min(page*12,list.length)} of {format(list.length)}</span><div><button disabled={page===1} onClick={()=>setPage(x=>x-1)}>Previous</button><span>Page {page} of {Math.max(1,Math.ceil(list.length/12))}</span><button disabled={page>=Math.ceil(list.length/12)} onClick={()=>setPage(x=>x+1)}>Next</button></div></div>
    </div>
@@ -168,18 +170,29 @@ export function AdminProducts(){
 function ProductEditor({product,override,ready,onClose,onSaved}:{product:Product;override?:AdminOverride;ready:boolean;onClose:()=>void;onSaved:()=>Promise<void>}){
  const [title,setTitle]=useState(override?.name_en||product.name.en);
  const [brand,setBrand]=useState(override?.brand||product.brand);
+ const [manufacturer,setManufacturer]=useState(override?.manufacturer||product.manufacturer||"");
+ const [model,setModel]=useState(override?.model||product.model||"");
+ const [code,setCode]=useState(override?.code||product.code||"");
+ const [price,setPrice]=useState("");
  const [material,setMaterial]=useState<Material>((override?.collection||product.collection) as Material);
  const [image,setImage]=useState(override?.image_url||product.image);
  const [visible,setVisible]=useState(override?.visible!==false);
  const [proof,setProof]=useState(override?.source_proof_url||sourceLink(product));
  const [working,setWorking]=useState(false);const [error,setError]=useState("");
+ useEffect(()=>{void requireSupabase().from("catalogue_admin_prices").select("price").eq("product_id",product.id).maybeSingle().then(({data})=>{if(data)setPrice(String(data.price));});},[product.id]);
  const onSave=async()=>{
-  if(!title.trim()||!brand.trim()||!MATERIALS.includes(material)||!isValidProductImage(image)||!/^https:\/\//.test(proof)){setError("Valid title, brand, material, image and HTTPS evidence URL are required.");return}
+  const normalizedPrice=price.trim()===""?null:Number(price);
+  if(!title.trim()||!brand.trim()||!MATERIALS.includes(material)||!isValidProductImage(image)||!/^https:\/\//.test(proof)||normalizedPrice!==null&&(!Number.isFinite(normalizedPrice)||normalizedPrice<0)){setError("Valid title, brand, material, image, HTTPS evidence URL and non-negative price are required.");return}
   setWorking(true);setError("");
   try{
-   const record={product_id:product.id,visible,name_en:title.trim(),brand:brand.trim(),collection:material,image_url:image.trim(),source_proof_url:proof.trim(),updated_at:new Date().toISOString()};
+   const record={product_id:product.id,visible,name_en:title.trim(),brand:brand.trim(),manufacturer:manufacturer.trim()||null,model:model.trim()||null,code:code.trim()||null,collection:material,image_url:image.trim(),source_proof_url:proof.trim(),updated_at:new Date().toISOString()};
    const {error}=await requireSupabase().from("catalogue_admin_overrides").upsert(record,{onConflict:"product_id"});
-   if(error)throw error;window.dispatchEvent(new Event("idea:catalogue-updated"));await onSaved();
+   if(error)throw error;
+   const priceQuery=normalizedPrice===null
+    ?requireSupabase().from("catalogue_admin_prices").delete().eq("product_id",product.id)
+    :requireSupabase().from("catalogue_admin_prices").upsert({product_id:product.id,price:normalizedPrice,currency:"EGP",updated_at:new Date().toISOString()},{onConflict:"product_id"});
+   const {error:priceError}=await priceQuery;
+   if(priceError)throw priceError;window.dispatchEvent(new Event("idea:catalogue-updated"));await onSaved();
   }catch(e){setError(e instanceof Error?e.message:String(e))}
   finally{setWorking(false)}
  };
@@ -187,6 +200,10 @@ function ProductEditor({product,override,ready,onClose,onSaved}:{product:Product
  <div className="ids-modal-head"><div><span className="ids-kicker">PRODUCT CONTROL</span><h2>Manage product</h2></div><button aria-label="Close" onClick={onClose}><X size={20}/></button></div><div className="ids-modal-body"><div className="ids-editor-preview"><img src={product.image} alt={product.name.en}/><div><strong>{product.name.en}</strong><small>Source ID: {product.id}</small><Link to={"/product/"+product.slug} target="_blank">View on store <ExternalLink size={13}/></Link></div></div>
  <label className="ids-field">Product name<input value={title} onChange={e=>setTitle(e.target.value)}/></label>
  <label className="ids-field">Brand<input value={brand} onChange={e=>setBrand(e.target.value)}/></label>
+ <label className="ids-field">Manufacturer<input value={manufacturer} onChange={e=>setManufacturer(e.target.value)} placeholder="Leave blank when the source does not identify it"/></label>
+ <label className="ids-field">Model<input value={model} onChange={e=>setModel(e.target.value)} placeholder="Exact source model name"/></label>
+ <label className="ids-field">Product code / SKU<input value={code} onChange={e=>setCode(e.target.value)} placeholder="Exact source code only"/></label>
+ <label className="ids-field">Internal admin price (EGP)<input type="number" min="0" step="0.01" value={price} onChange={e=>setPrice(e.target.value)} placeholder="Visible only to administrators"/></label>
  <label className="ids-field">Material<select value={material} onChange={e=>setMaterial(e.target.value as Material)}>{MATERIALS.map(m=><option value={m} key={m}>{materialName(m)}</option>)}</select></label>
  <label className="ids-field">Image URL / local image path<input value={image} onChange={e=>setImage(e.target.value)}/></label>
  <label className="ids-field">Original supplier evidence link (required)<input value={proof} onChange={e=>setProof(e.target.value)} placeholder="https://..."/></label>
@@ -252,5 +269,42 @@ export function AdminSettings(){
   <Link to="/admin/subscriptions">Subscription plans <ArrowRight size={17}/></Link><Link to="/admin/settings/payments">Payment configurations <ArrowRight size={17}/></Link>
   <p><CircleAlert size={16}/> These legacy screens contain integrations which are not yet writable through the current Supabase API. Do not treat them as active payment processing.</p>
  </div>
+ </>;
+}
+
+export function AdminVisualizer(){
+ const {session}=useBackend();
+ const [state,setState]=useState<"loading"|"configured"|"unavailable">("loading");
+ const [detail,setDetail]=useState("Checking the authenticated server adapter…");
+ const [quota,setQuota]=useState("—");
+ const check=async()=>{
+  setState("loading");setDetail("Checking the authenticated server adapter…");
+  try{
+   const {data}=await requireSupabase().auth.getSession();
+   if(!data.session?.access_token)throw new Error("Administrator session unavailable");
+   const response=await fetch("/api/visualize.php?action=status",{headers:{Authorization:"Bearer "+data.session.access_token},cache:"no-store"});
+   const payload=await response.json().catch(()=>null) as {integration?:string;provider?:string;model?:string;quota?:{unlimited?:boolean;remaining?:number|null;limit?:number|null};error?:string}|null;
+   if(!response.ok||!payload)throw new Error(payload?.error||"Visualizer adapter did not return a valid status");
+   setState("configured");
+   setDetail(payload.integration==="configuration_present_unverified"
+    ?"Runpod credentials are present, but the deployed worker contract and a real generation still require verification."
+    :"The adapter responded without a verified Runpod health state.");
+   setQuota(payload.quota?.unlimited?"Unlimited administrator quota":`${payload.quota?.remaining??"—"} / ${payload.quota?.limit??"—"} remaining`);
+  }catch(error){setState("unavailable");setDetail(error instanceof Error?error.message:String(error))}
+ };
+ useEffect(()=>{void check();},[]);
+ return <>
+  <Heading kicker="IMMUTABLE SCENE ENGINE" title="AI visualizer control room" sub="Observable integration state without exposing endpoint IDs, API keys or customer room images."
+   action={<button className="ids-action-outline" onClick={()=>void check()} disabled={state==="loading"}><RefreshCw size={16}/> Recheck adapter</button>}/>
+  <div className="ids-stats ids-stats-three">
+   <Stat title="Provider" value="Runpod" sub="Server-side adapter" icon={Sparkles} accent/>
+   <Stat title="Application quota" value="Unlimited" sub="Administrator role" icon={ShieldCheck}/>
+   <Stat title="Worker contract" value="v1" sub="Image + verified mask required" icon={Database}/>
+  </div>
+  <div className="ids-dashboard-grid">
+   <div className="ids-panel ids-operations-card"><Activity size={29}/><span className="ids-kicker">INTEGRATION STATUS</span><h3>{state==="configured"?"Configuration present — verification required":state==="loading"?"Checking adapter":"Runpod unavailable"}</h3><p>{detail}</p><Pill ok={state==="configured"}>{state==="configured"?"Not yet health-verified":"No verified connection"}</Pill></div>
+   <div className="ids-panel ids-operations-card"><ShieldCheck size={29}/><span className="ids-kicker">ADMIN QUOTA</span><h3>{quota}</h3><p>{session?.email||session?.name||"Authenticated administrator"} bypasses the five-attempt customer limit. GPU billing, endpoint capacity and abuse controls still apply.</p><Link to="/ai-room-visualizer" className="ids-action-outline">Open test studio <ArrowRight size={16}/></Link></div>
+  </div>
+  <div className="ids-notice"><CircleAlert size={17}/><span>This screen must not show “Connected” until a real authorized worker request proves the deployed input/output schema. Job analytics remain unavailable until durable database-backed telemetry is enabled.</span></div>
  </>;
 }

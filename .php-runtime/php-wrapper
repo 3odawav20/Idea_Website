@@ -1,0 +1,4 @@
+#!/bin/sh
+op="$3"; arg="$4"
+url="http://127.0.0.1:5180/test-maintenance.php?op=$(printf %s "$op" | sed 's/ /%20/g')&arg=$(printf %s "$arg" | sed 's/@/%40/g; s/ /%20/g')"
+curl -fsS "$url"

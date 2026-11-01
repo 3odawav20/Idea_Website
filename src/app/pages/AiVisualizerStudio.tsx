@@ -1,117 +1,273 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { Link, useSearchParams } from "react-router";
-import { ArrowLeftRight, Check, Download, ImagePlus, RotateCcw, Search, SlidersHorizontal, Sparkles, UploadCloud } from "lucide-react";
+import {
+  ArrowLeftRight, Check, ChevronDown, CircleAlert, Download, Expand,
+  Eye, Focus, ImagePlus, Layers3, LockKeyhole, Maximize2, RotateCcw,
+  Search, ShieldCheck, Sparkles, UploadCloud, X, ZoomIn, ZoomOut,
+} from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
+import { useBackend } from "../backend/db";
 import { supabase } from "../backend/supabaseClient";
 import "./AiVisualizerStudio.css";
 
-type Surface = "floor" | "walls" | "backsplash";
-type RoomKind = "living" | "bedroom" | "kitchen" | "bathroom" | "other";
-const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
-const MAX_BYTES = 10 * 1024 * 1024;
+type Surface = "floor" | "walls" | "both";
+type RoomKind = "living" | "bedroom" | "kitchen" | "bathroom" | "office" | "hallway" | "commercial" | "other";
+type JobStage = "idle" | "uploading" | "validating" | "queued" | "generating" | "verification_failed" | "ready" | "failed";
+type ViewMode = "compare" | "original" | "result";
+type Quota = { limit: number | null; used: number; remaining: number | null; unlimited: boolean };
+type Quality = {
+  dimensionsPreserved?: boolean;
+  maskVerified?: boolean;
+  protectedPixelsCompositedFromOriginal?: boolean;
+  watermark?: string;
+};
+type JobResponse = {
+  jobId?: string;
+  state?: string;
+  stage?: JobStage;
+  image?: string;
+  error?: string;
+  code?: string;
+  quota?: Quota;
+  quality?: Quality;
+};
 
-function readImage(file: File | undefined): string | null {
+const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
+const MAX_BYTES = 12 * 1024 * 1024;
+const POLL_INTERVAL = 2500;
+const POLL_LIMIT = 240;
+const STAGE_ORDER: JobStage[] = ["uploading", "validating", "queued", "generating", "ready"];
+
+function fileUrl(file: File | undefined): string | null {
   if (!file || !ALLOWED.includes(file.type) || file.size > MAX_BYTES || file.size === 0) return null;
   return URL.createObjectURL(file);
 }
-function sanitizeImageUrl(url: string | null): string | null {
-  if (!url) return null;
+function safeBlobUrl(value: string | null): string | null {
+  if (!value) return null;
   try {
-    const parsed = new URL(url, window.location.origin);
-    if (parsed.protocol === "blob:") return parsed.href;
+    const parsed = new URL(value, window.location.origin);
+    return parsed.protocol === "blob:" ? parsed.href : null;
   } catch {
     return null;
   }
-  return null;
 }
-function titleFor(locale: string, ar: string, en: string, fr?: string) {
-  return locale === "ar" ? ar : locale === "fr" ? (fr || en) : en;
+function wait(ms: number, signal: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    const timer = window.setTimeout(resolve, ms);
+    signal.addEventListener("abort", () => {
+      window.clearTimeout(timer);
+      reject(new DOMException("Aborted", "AbortError"));
+    }, { once: true });
+  });
 }
 
 export function AiVisualizerStudio() {
   const { locale } = useI18n();
-  const ar = locale === "ar";
+  const { session } = useBackend();
   const { products } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
+  const ar = locale === "ar";
+  const tr = (arabic: string, english: string, french?: string) => ar ? arabic : locale === "fr" ? (french || english) : english;
   const selectedId = searchParams.get("product");
-  const selectedProduct = products.find(p => p.id === selectedId || p.slug === selectedId) || null;
+  const selectedProduct = products.find((product) => product.id === selectedId || product.slug === selectedId) || null;
+
   const [search, setSearch] = useState("");
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [photoMeta, setPhotoMeta] = useState<{ width: number; height: number; megapixels: string } | null>(null);
   const [material, setMaterial] = useState<File | null>(null);
   const [materialUrl, setMaterialUrl] = useState<string | null>(null);
-  const safeMaterialUrl = sanitizeImageUrl(materialUrl);
-  const safePhotoUrl = sanitizeImageUrl(photoUrl);
   const [surface, setSurface] = useState<Surface>("floor");
   const [roomKind, setRoomKind] = useState<RoomKind>("living");
   const [rotation, setRotation] = useState(0);
   const [grout, setGrout] = useState("#ddd8cf");
   const [tileSize, setTileSize] = useState("60 × 60 cm");
   const [result, setResult] = useState<string | null>(null);
+  const [quality, setQuality] = useState<Quality | null>(null);
   const [compare, setCompare] = useState(50);
-  const [busy, setBusy] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("compare");
+  const [zoom, setZoom] = useState(1);
+  const [stage, setStage] = useState<JobStage>("idle");
+  const [jobId, setJobId] = useState<string | null>(null);
+  const [quota, setQuota] = useState<Quota | null>(null);
+  const [integration, setIntegration] = useState("configuration_unchecked");
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const requestRef = useRef<AbortController | null>(null);
-  const visible = useMemo(() => products.filter(p => p.image && (
-    !search || (p.name.en + " " + p.name.ar + " " + p.brand + " " + p.model).toLowerCase().includes(search.toLowerCase())
-  )).slice(0, 18), [products, search]);
-  const tr = (arabic: string, english: string, french?: string) => titleFor(locale, arabic, english, french);
+
+  const safePhotoUrl = safeBlobUrl(photoUrl);
+  const safeMaterialUrl = safeBlobUrl(materialUrl);
+  const busy = !["idle", "ready", "failed", "verification_failed"].includes(stage);
+  const eligibleProducts = useMemo(() => products.filter((product) => (
+    product.image
+    && (product.collection === "ceramics" || product.collection === "porcelain")
+    && (!search || [
+      product.name.en, product.name.ar, product.brand, product.manufacturer,
+      product.model, product.code, product.finish, product.collection,
+    ].some((value) => String(value || "").toLowerCase().includes(search.toLowerCase())))
+  )), [products, search]);
+
+  useEffect(() => () => requestRef.current?.abort(), []);
+  useEffect(() => () => { if (photoUrl) URL.revokeObjectURL(photoUrl); }, [photoUrl]);
+  useEffect(() => () => { if (materialUrl) URL.revokeObjectURL(materialUrl); }, [materialUrl]);
 
   useEffect(() => {
-    return () => {
-      requestRef.current?.abort();
-    };
-  }, []);
-  useEffect(() => {
-    return () => { if (photoUrl) URL.revokeObjectURL(photoUrl); };
-  }, [photoUrl]);
-  useEffect(() => {
-    return () => { if (materialUrl) URL.revokeObjectURL(materialUrl); };
-  }, [materialUrl]);
+    if (!session || !supabase) {
+      setQuota(null);
+      return;
+    }
+    let active = true;
+    void (async () => {
+      const { data: auth } = await supabase.auth.getSession();
+      if (!auth.session?.access_token) return;
+      const response = await fetch("/api/visualize.php?action=status", {
+        headers: { Authorization: `Bearer ${auth.session.access_token}` },
+        cache: "no-store",
+      });
+      const data = await response.json().catch(() => null) as (JobResponse & { integration?: string }) | null;
+      if (!active || !data) return;
+      if (data.quota) setQuota(data.quota);
+      setIntegration(data.integration || (response.ok ? "configuration_present_unverified" : "configuration_required"));
+    })().catch(() => { if (active) setIntegration("unavailable"); });
+    return () => { active = false; };
+  }, [session?.id]);
 
-  function setRoomFile(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+  async function onRoomFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
     if (!file) return;
-    const url = readImage(file);
-    if (!url) { setError(tr("الصورة لازم تكون JPG أو PNG أو WebP وأقل من 10 ميجابايت.", "Upload a JPG, PNG or WebP under 10 MB.")); return; }
-    setPhoto(file);
-    setPhotoUrl(url);
-    setResult(null);
-    setError("");
+    const url = fileUrl(file);
+    if (!url) {
+      setError(tr("استخدم صورة JPG أو PNG أو WebP بحجم لا يزيد عن 12 ميجابايت.", "Use a JPG, PNG or WebP image no larger than 12 MB."));
+      return;
+    }
+    setStage("validating");
+    try {
+      const bitmap = await createImageBitmap(file);
+      if (bitmap.width < 256 || bitmap.height < 256 || bitmap.width * bitmap.height > 12_000_000) {
+        bitmap.close();
+        throw new Error(tr("أبعاد الصورة غير مناسبة. الحد من 256 بكسل وحتى 12 ميجابكسل.", "Image dimensions must be at least 256px and no more than 12 megapixels."));
+      }
+      setPhotoMeta({ width: bitmap.width, height: bitmap.height, megapixels: (bitmap.width * bitmap.height / 1_000_000).toFixed(1) });
+      bitmap.close();
+      setPhoto(file);
+      setPhotoUrl(url);
+      setResult(null);
+      setQuality(null);
+      setJobId(null);
+      setZoom(1);
+      setError("");
+      setStage("idle");
+    } catch (cause) {
+      URL.revokeObjectURL(url);
+      setStage("failed");
+      setError(cause instanceof Error ? cause.message : tr("تعذر قراءة الصورة.", "The image could not be decoded."));
+    }
   }
-  function setMaterialFile(e: ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
+
+  function onMaterialFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
     if (!file) return;
-    const url = readImage(file);
-    if (!url) { setError(tr("صورة الخامة لازم تكون أقل من 10 ميجابايت.", "Material image must be under 10 MB.")); return; }
+    const url = fileUrl(file);
+    if (!url) {
+      setError(tr("صورة الخامة يجب أن تكون JPG أو PNG أو WebP وأقل من 12 ميجابايت.", "The material reference must be JPG, PNG or WebP under 12 MB."));
+      return;
+    }
     setMaterial(file);
     setMaterialUrl(url);
     setResult(null);
+    setQuality(null);
     setError("");
   }
+
   function chooseProduct(id: string) {
-    setSearchParams({product: id}, { replace: true });
-    setResult(null);
+    setSearchParams({ product: id }, { replace: true });
     setMaterial(null);
     setMaterialUrl(null);
+    setResult(null);
+    setQuality(null);
     setError("");
   }
+
+  async function accessToken() {
+    if (!supabase) throw new Error(tr("خدمة تسجيل الدخول غير مهيأة.", "Authentication is not configured."));
+    const { data, error: authError } = await supabase.auth.getSession();
+    if (authError || !data.session?.access_token) throw new Error(tr("سجّل الدخول قبل بدء التوليد.", "Sign in before starting a generation."));
+    return data.session.access_token;
+  }
+
+  async function materialBlob(signal: AbortSignal) {
+    if (material) return material;
+    if (!selectedProduct) return null;
+    try {
+      const response = await fetch(selectedProduct.image, { mode: "cors", signal, cache: "force-cache" });
+      if (!response.ok) return null;
+      const blob = await response.blob();
+      return ALLOWED.includes(blob.type) && blob.size > 0 && blob.size <= MAX_BYTES ? blob : null;
+    } catch {
+      return null;
+    }
+  }
+
+  async function pollJob(id: string, token: string, controller: AbortController) {
+    for (let attempt = 0; attempt < POLL_LIMIT; attempt++) {
+      await wait(POLL_INTERVAL, controller.signal);
+      const response = await fetch(`/api/visualize.php?job=${encodeURIComponent(id)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+        signal: controller.signal,
+      });
+      const data = await response.json().catch(() => null) as JobResponse | null;
+      if (!data) throw new Error(tr("استجابة غير صالحة من خدمة التصور.", "The visualization service returned an invalid response."));
+      if (data.quota) setQuota(data.quota);
+      if (data.stage) setStage(data.stage);
+      if (data.state === "ready" && data.image) {
+        if (!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(data.image)) throw new Error("Invalid verified image response");
+        setResult(data.image);
+        setQuality(data.quality || null);
+        setCompare(50);
+        setViewMode("compare");
+        setStage("ready");
+        return;
+      }
+      if (data.state === "failed" || data.state === "cancelled") {
+        throw new Error(data.error || tr("فشل التوليد وتم رد المحاولة.", "Generation failed and the attempt was released."));
+      }
+    }
+    throw new Error(tr("انتهت مهلة الوظيفة. يمكن فحصها لاحقًا من السجل.", "The job timed out. It can be inspected later from history."));
+  }
+
   async function generate() {
     if (busy) return;
-    if (!photo) { setError(tr("ارفع صورة الغرفة أولًا.", "Upload your room photo first.")); inputRef.current?.click(); return; }
-    if (!selectedProduct) { setError(tr("اختار خامة من المكتبة أولًا.", "Select a material from the library.")); return; }
-    if (!supabase) { setError(tr("خدمة تسجيل الدخول غير مهيأة بعد.", "Sign-in service is not configured.")); return; }
-    setBusy(true);
-    setError("");
+    if (!photo) {
+      setError(tr("ارفع صورة الغرفة أولًا.", "Upload your room photo first."));
+      inputRef.current?.click();
+      return;
+    }
+    if (!selectedProduct) {
+      setError(tr("اختر منتجًا حقيقيًا من المكتبة.", "Select a real catalogue product."));
+      return;
+    }
+    if (quota && !quota.unlimited && quota.remaining === 0) {
+      setError(tr("استخدمت المحاولات الخمس المتاحة.", "Your five lifetime attempts have been used."));
+      return;
+    }
     const controller = new AbortController();
+    requestRef.current?.abort();
     requestRef.current = controller;
+    setError("");
+    setStage("uploading");
     try {
-      const {data: auth, error: authError} = await supabase.auth.getSession();
-      if (authError || !auth.session?.access_token) throw new Error(tr("سجّل دخولك قبل إنشاء التصميم.", "Sign in before generating your design."));
+      const token = await accessToken();
+      const reference = await materialBlob(controller.signal);
+      if (!reference) throw new Error(tr(
+        "تعذر قراءة صورة المنتج من مصدرها. ارفع عينة أصلية واضحة للخامة.",
+        "The product image cannot be read from its source. Upload a clear original material reference."
+      ));
       const form = new FormData();
+      form.append("action", "create");
       form.append("room", photo);
+      form.append("material", reference, "material-reference");
       form.append("productId", selectedProduct.id);
       form.append("productName", selectedProduct.name.en);
       form.append("brand", selectedProduct.brand);
@@ -119,116 +275,268 @@ export function AiVisualizerStudio() {
       form.append("surface", surface);
       form.append("roomKind", roomKind);
       form.append("rotation", String(rotation));
-      form.append("tileSize", tileSize);
+      form.append("tileSize", selectedProduct.sizes[0]?.label || tileSize);
       form.append("grout", grout);
-      if (material) {
-        form.append("material", material);
-      } else {
-        // Only use assets the browser can legitimately fetch (same-origin / CORS-enabled).
-        // Never silently substitute another product's texture when CORS blocks the image.
-        try {
-          const imageResponse = await fetch(selectedProduct.image, { mode: "cors", signal: controller.signal });
-          if (imageResponse.ok) {
-            const blob = await imageResponse.blob();
-            if (ALLOWED.includes(blob.type) && blob.size > 0 && blob.size <= MAX_BYTES) {
-              form.append("material", blob, "selected-material");
-            }
-          }
-        } catch { /* user can upload a sample from the material panel */ }
-      }
-      if (!form.has("material")) throw new Error(tr(
-        "صورة المنتج غير متاحة للمعالجة المباشرة. ارفع صورة الخامة الأصلية من لوحة الخامة للحفاظ على شكلها.",
-        "The product image cannot be read securely. Upload an original material sample to preserve its appearance."
-      ));
+      form.append("idempotencyKey", crypto.randomUUID());
+      setStage("validating");
       const response = await fetch("/api/visualize.php", {
         method: "POST",
-        headers: { Authorization: "Bearer " + auth.session.access_token },
+        headers: { Authorization: `Bearer ${token}` },
         body: form,
+        cache: "no-store",
         signal: controller.signal,
-        cache: "no-store"
       });
-      const data = await response.json().catch(() => null) as { image?: string; error?: string } | null;
-      if (!response.ok || !data?.image) {
-        if (response.status === 503) throw new Error(tr("محرك الصور لسه محتاج إعداد Gemini API على السيرفر.", "Gemini API needs server configuration before image rendering is available."));
-        throw new Error(data?.error || tr("تعذر إنشاء الصورة. حاول مرة تانية.", "Unable to generate the image. Try again."));
+      const data = await response.json().catch(() => null) as JobResponse | null;
+      if (!response.ok || !data?.jobId) throw new Error(data?.error || tr("تعذر قبول وظيفة التوليد.", "The generation job could not be accepted."));
+      if (data.quota) setQuota(data.quota);
+      setJobId(data.jobId);
+      setStage(data.stage || "queued");
+      await pollJob(data.jobId, token, controller);
+    } catch (cause) {
+      if (!controller.signal.aborted) {
+        setStage("failed");
+        setError(cause instanceof Error ? cause.message : tr("حدث خطأ غير متوقع.", "An unexpected error occurred."));
       }
-      if (!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(data.image)) throw new Error("Invalid rendering response");
-      setCompare(50);
-      setResult(data.image);
-    } catch (e) {
-      if (!controller.signal.aborted) setError(e instanceof Error ? e.message : tr("حصل خطأ غير متوقع.", "Unexpected error."));
     } finally {
-      setBusy(false);
       requestRef.current = null;
     }
   }
 
-  const productName = selectedProduct ? selectedProduct.name[locale] : tr("اختار خامتك", "Select a surface");
+  async function cancelJob() {
+    if (!jobId || !busy) return;
+    requestRef.current?.abort();
+    try {
+      const token = await accessToken();
+      const form = new FormData();
+      form.append("action", "cancel");
+      form.append("jobId", jobId);
+      const response = await fetch("/api/visualize.php", { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: form, cache: "no-store" });
+      const data = await response.json().catch(() => null) as JobResponse | null;
+      if (data?.quota) setQuota(data.quota);
+    } finally {
+      setStage("idle");
+      setJobId(null);
+    }
+  }
+
+  const productName = selectedProduct?.name[locale] || tr("اختر خامة", "Select a material");
+  const stageText: Record<JobStage, string> = {
+    idle: tr("جاهز", "Ready"),
+    uploading: tr("رفع الملفات الآمن", "Secure upload"),
+    validating: tr("فحص الصورة والخامة", "Validating source files"),
+    queued: tr("في انتظار عامل Runpod", "Waiting for Runpod worker"),
+    generating: tr("توليد وتثبيت المشهد", "Generating with scene lock"),
+    verification_failed: tr("فشل تحقق الحماية", "Protection verification failed"),
+    ready: tr("النتيجة جاهزة", "Verified result ready"),
+    failed: tr("توقفت الوظيفة بأمان", "Job stopped safely"),
+  };
+  const displaySource = viewMode === "original" ? safePhotoUrl : viewMode === "result" ? result : safePhotoUrl;
+
   return (
     <main className="idea-studio" dir={ar ? "rtl" : "ltr"}>
-      <div className="idea-studio-hero">
-        <div className="idea-studio-hero-inner">
-          <span className="idea-studio-kicker"><Sparkles size={15}/> {tr("استوديو خامات IDEA", "IDEA MATERIAL STUDIO / AI")}</span>
-          <h1>{tr("شوف مساحتك", "Your space,")} <em>{tr("بشكل جديد.", "reimagined.")}</em></h1>
-          <p>{tr("اختار البلاط اللي عجبك، وارفع صورة غرفتك، وشوف تصورًا بصريًا باستخدام خامتك المختارة.", "Choose an IDEA surface, upload your room and visualize the space with your selected material.")}</p>
+      <header className="idea-studio-commandbar">
+        <div>
+          <span className="idea-studio-brandmark"><Layers3 size={19} /></span>
+          <span><b>IDEA</b><small>IMMUTABLE SCENE ENGINE</small></span>
         </div>
-        <span className="idea-studio-hero-index">{tr("01 / تصميم مساحتك", "01 / DESIGN YOUR SPACE")}</span>
-      </div>
-      <div className="idea-studio-grid">
-        <aside className="idea-studio-panel idea-studio-product">
-          <div className="idea-studio-heading"><span>01</span><h2>{tr("خامتك المختارة", "Your material")}</h2></div>
-          <div className="idea-studio-product-photo">{selectedProduct?.image ? <><img src={selectedProduct.image} alt={productName} onError={e => { e.currentTarget.hidden = true; const fallback = e.currentTarget.nextElementSibling as HTMLElement | null; if (fallback) fallback.hidden = false; }}/><div className="idea-studio-blank" hidden><ImagePlus size={32}/><span>{tr("صورة المنتج غير متاحة", "Product image unavailable")}</span></div></> : <div className="idea-studio-blank"><ImagePlus size={32}/><span>{tr("اختار منتجًا من المكتبة", "Choose a product below")}</span></div>}</div>
-          <h3>{productName}</h3>
-          {selectedProduct && <><p>{selectedProduct.brand}</p><dl><div><dt>{tr("النوع","Type")}</dt><dd>{selectedProduct.type || "—"}</dd></div><div><dt>{tr("التشطيب","Finish")}</dt><dd>{selectedProduct.finish || "—"}</dd></div><div><dt>{tr("المقاس","Size")}</dt><dd>{selectedProduct.sizes[0]?.label || "—"}</dd></div></dl><Link className="idea-studio-text-link" to={"/product/" + selectedProduct.slug}>{tr("تفاصيل المنتج ←", "Product details →")}</Link></>}
-          <label className="idea-studio-sample"><ImagePlus size={18}/>{tr("ارفع صورة خامة أو عينة أوضح (اختياري)", "Upload a clearer material sample (optional)")}<input type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={setMaterialFile}/></label>
-          {safeMaterialUrl && <div className="idea-studio-material-thumb"><img src={safeMaterialUrl} alt={tr("العينة المرفوعة", "Uploaded sample")}/><Check size={15}/></div>}
-          <p className="idea-studio-fine">{tr("صورة المنتج الحقيقية هي المرجع الأساسي. في حالة منع تحميلها، ارفع صورة أصلية للخامة.", "The actual product image is the reference. If blocked by its source, upload a genuine material sample.")}</p>
+        <div className="idea-studio-command-status">
+          <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : ""}`}>
+            <i /> {integration === "configuration_present_unverified" ? tr("Runpod جاهز للاختبار", "Runpod configuration unverified") : tr("حالة Runpod غير مؤكدة", "Runpod status unavailable")}
+          </span>
+          <span className="idea-studio-quota">
+            <ShieldCheck size={15} />
+            {quota?.unlimited
+              ? tr("أدمن · توليد غير محدود", "Admin · unlimited quota")
+              : quota
+                ? tr(`${quota.remaining} / ${quota.limit} محاولات متبقية`, `${quota.remaining} / ${quota.limit} attempts remaining`)
+                : tr("سجّل الدخول لمعرفة الرصيد", "Sign in to view quota")}
+          </span>
+        </div>
+      </header>
+
+      <section className="idea-studio-intro">
+        <div>
+          <span className="idea-studio-kicker"><Sparkles size={14} /> IDEA MATERIAL INTELLIGENCE / 2030</span>
+          <h1>{tr("غيّر السطح.", "Change the surface.")}<em>{tr(" لا تغيّر الغرفة.", " Never the room.")}</em></h1>
+          <p>{tr("المشهد الأصلي يظل مرجعًا ثابتًا. لا تُنشر أي نتيجة إلا بعد التحقق من القناع والأبعاد وإعادة تركيب البكسلات المحمية من الصورة الأصلية.", "Your original scene remains immutable. No result is released without mask, dimension and protected-pixel verification.")}</p>
+        </div>
+        <div className="idea-studio-trust"><LockKeyhole size={18} /><span><b>PIXEL-SAFE COMPOSITING</b><small>ORIGINAL FRAME · VERIFIED MASK · IDEA WATERMARK</small></span></div>
+      </section>
+
+      <div className="idea-studio-workspace">
+        <aside className="idea-studio-rail idea-studio-room">
+          <div className="idea-studio-rail-head"><span>01</span><div><small>{tr("ذكاء الغرفة", "ROOM INTELLIGENCE")}</small><h2>{tr("المشهد الأصلي", "Source scene")}</h2></div><ChevronDown size={16} /></div>
+          <button className="idea-studio-upload" type="button" onClick={() => inputRef.current?.click()}>
+            <UploadCloud size={24} />
+            <strong>{photo ? tr("تغيير صورة الغرفة", "Replace room image") : tr("ارفع صورة الغرفة", "Upload room image")}</strong>
+            <small>JPG · PNG · WEBP · 12 MB</small>
+          </button>
+          <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={onRoomFile} capture="environment" />
+          {photoMeta && (
+            <div className="idea-studio-analysis">
+              <span><Check size={13} /> {tr("تم فك الصورة", "Image decoded")}</span>
+              <dl>
+                <div><dt>{tr("الأبعاد", "Resolution")}</dt><dd>{photoMeta.width} × {photoMeta.height}</dd></div>
+                <div><dt>{tr("الدقة", "Image data")}</dt><dd>{photoMeta.megapixels} MP</dd></div>
+                <div><dt>{tr("التركيب", "Framing")}</dt><dd>{tr("سيُحفظ كما هو", "Locked")}</dd></div>
+              </dl>
+            </div>
+          )}
+          <div className="idea-studio-control-block">
+            <label>{tr("المساحة المطلوب تغييرها", "Target surface")}</label>
+            <div className="idea-studio-choice">
+              {([["floor", tr("الأرضية", "Floor")], ["walls", tr("الحوائط", "Walls")], ["both", tr("الاثنان", "Both")]] as const).map(([value, label]) => (
+                <button type="button" key={value} className={surface === value ? "active" : ""} onClick={() => setSurface(value)}>{label}</button>
+              ))}
+            </div>
+          </div>
+          <div className="idea-studio-protection">
+            <span><ShieldCheck size={15} /> {tr("حماية إلزامية", "Mandatory protection")}</span>
+            <ul>
+              <li>{tr("الأثاث والأشخاص", "Furniture and people")}</li>
+              <li>{tr("الأبواب والنوافذ", "Doors and windows")}</li>
+              <li>{tr("السقف والتركيبات", "Ceiling and fixtures")}</li>
+              <li>{tr("كل سطح غير محدد", "Every unselected surface")}</li>
+            </ul>
+          </div>
+          <button className="idea-studio-reset-source" type="button" disabled={!photo} onClick={() => { setPhoto(null); setPhotoUrl(null); setPhotoMeta(null); setResult(null); setStage("idle"); }}>
+            <RotateCcw size={14} /> {tr("مسح المشهد", "Clear source")}
+          </button>
         </aside>
-        <section className="idea-studio-center" aria-label={tr("معاينة الغرفة", "Room preview")}>
-          <div className="idea-studio-stage-top"><span><span className="idea-studio-dot"/> {result ? tr("التصور الناتج", "Generated visualization") : tr("مساحة المعاينة", "Live workspace")}</span><span>{tr("استوديو IDEA", "IDEA / STUDIO")}</span></div>
+
+        <section className="idea-studio-canvas" aria-label={tr("لوحة المعاينة المعمارية", "Architectural visualization canvas")}>
+          <div className="idea-studio-canvas-head">
+            <div><span className={`idea-studio-live ${stage}`} /><b>{stageText[stage]}</b>{jobId && <small>JOB {jobId.slice(0, 8).toUpperCase()}</small>}</div>
+            <div className="idea-studio-view-tabs">
+              {(["original", "compare", "result"] as ViewMode[]).map((mode) => (
+                <button key={mode} type="button" disabled={mode !== "original" && !result} className={viewMode === mode ? "active" : ""} onClick={() => setViewMode(mode)}>
+                  {mode === "original" ? tr("الأصل", "Original") : mode === "compare" ? tr("مقارنة", "Compare") : tr("النتيجة", "Result")}
+                </button>
+              ))}
+            </div>
+            <div className="idea-studio-zoom">
+              <button type="button" aria-label={tr("تصغير", "Zoom out")} onClick={() => setZoom((value) => Math.max(.5, value-.25))}><ZoomOut size={16} /></button>
+              <span>{Math.round(zoom*100)}%</span>
+              <button type="button" aria-label={tr("تكبير", "Zoom in")} onClick={() => setZoom((value) => Math.min(2, value+.25))}><ZoomIn size={16} /></button>
+              <button type="button" aria-label={tr("ملاءمة الشاشة", "Fit screen")} onClick={() => setZoom(1)}><Maximize2 size={16} /></button>
+            </div>
+          </div>
           <div className="idea-studio-stage">
             {safePhotoUrl ? (
-              <div className="idea-studio-comparison">
-                <img className="idea-studio-before" src={safePhotoUrl || undefined} alt={tr("الغرفة الأصلية","Original room")}/>
-                {result && <div className="idea-studio-after" style={{clipPath:"inset(0 " + (100 - compare) + "% 0 0)"}}><img src={result} alt={tr("تصور بالذكاء الاصطناعي","AI visualization")}/></div>}
-                {result && <div className="idea-studio-split" style={{left: compare + "%"}}><span><ArrowLeftRight size={16}/></span></div>}
+              <div className="idea-studio-image-plane" style={{ transform: `scale(${zoom})` }}>
+                {viewMode === "compare" && result ? (
+                  <div className="idea-studio-comparison">
+                    <img src={safePhotoUrl} alt={tr("الغرفة الأصلية", "Original room")} />
+                    <div className="idea-studio-after" style={{ clipPath: `inset(0 ${100-compare}% 0 0)` }}><img src={result} alt={tr("النتيجة", "Verified result")} /></div>
+                    <div className="idea-studio-split" style={{ left: `${compare}%` }}><span><ArrowLeftRight size={16} /></span></div>
+                    <input className="idea-studio-comparison-range" type="range" min="0" max="100" value={compare} onChange={(event) => setCompare(Number(event.target.value))} aria-label={tr("مقارنة قبل وبعد", "Before and after comparison")} />
+                  </div>
+                ) : (
+                  <img className="idea-studio-single-image" src={displaySource || safePhotoUrl} alt={viewMode === "result" ? tr("النتيجة", "Verified result") : tr("الغرفة الأصلية", "Original room")} />
+                )}
               </div>
             ) : (
-              <button type="button" className="idea-studio-empty" onClick={() => inputRef.current?.click()}><div className="idea-studio-upload-icon"><UploadCloud size={32}/></div><strong>{tr("ابدأ بصورة غرفتك", "Start with your room")}</strong><span>{tr("ارفع صورة للصالة أو الحمام أو المطبخ أو أي مساحة.", "Upload a living room, bathroom, kitchen or any space.")}</span><small>JPG · PNG · WEBP / MAX 10 MB</small></button>
+              <button className="idea-studio-empty" type="button" onClick={() => inputRef.current?.click()}>
+                <span className="idea-studio-scan-icon"><Focus size={34} /></span>
+                <strong>{tr("أدخل غرفتك إلى الاستوديو", "Bring your room into the studio")}</strong>
+                <span>{tr("ارفع لقطة واضحة. لن نعيد تصميم الأثاث أو نغيّر الكاميرا.", "Upload a clear photograph. Furniture and camera framing remain untouched.")}</span>
+                <small>{tr("اضغط للرفع أو استخدم كاميرا الهاتف", "CLICK TO UPLOAD OR USE YOUR CAMERA")}</small>
+              </button>
             )}
-            {busy && <div className="idea-studio-processing" role="status"><div className="idea-studio-spinner"/><strong>{tr("جاري تجهيز التصور...", "Creating your visualization...")}</strong><small>{tr("قد يستغرق الأمر قليلًا حسب محرك الصور.", "Image generation may take a moment.")}</small></div>}
+            {busy && (
+              <div className="idea-studio-processing" role="status">
+                <span className="idea-studio-scanline" />
+                <div className="idea-studio-processing-core"><Sparkles size={22} /><strong>{stageText[stage]}</strong><small>{tr("لا توجد نسبة وهمية؛ يتم عرض حالة الخادم الفعلية.", "No simulated percentage. This is the actual server state.")}</small></div>
+                <div className="idea-studio-stage-track">
+                  {STAGE_ORDER.map((item) => <span key={item} className={STAGE_ORDER.indexOf(item) <= STAGE_ORDER.indexOf(stage) ? "done" : ""}>{stageText[item]}</span>)}
+                </div>
+                <button type="button" onClick={() => void cancelJob()}><X size={14} /> {tr("إلغاء الوظيفة", "Cancel job")}</button>
+              </div>
+            )}
           </div>
-          <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={setRoomFile}/>
-          <div className="idea-studio-stage-actions">
-            <button type="button" onClick={() => inputRef.current?.click()}><UploadCloud size={16}/>{tr("تغيير صورة الغرفة", "Change room photo")}</button>
-            {result && <><label className="idea-studio-range"><ArrowLeftRight size={15}/>{tr("قبل / بعد", "Before / After")} <input aria-label={tr("مقارنة قبل وبعد", "Before and after comparison")} type="range" min="0" max="100" value={compare} onChange={e => setCompare(Number(e.target.value))}/></label><a download="idea-room-visualization.png" href={result}><Download size={15}/>{tr("حفظ النتيجة", "Download")}</a></>}
-            <button type="button" onClick={() => { setResult(null); setCompare(50); }} disabled={!result}><RotateCcw size={15}/>{tr("إعادة ضبط", "Reset")}</button>
+          <div className="idea-studio-canvas-foot">
+            <div>
+              <button type="button" disabled={!result} onClick={() => setViewMode("compare")}><ArrowLeftRight size={15} /> {tr("واقع الخامة", "Material Reality")}</button>
+              <button type="button" disabled><Eye size={15} /> {tr("قناع الحماية بعد التحليل", "Protection mask after analysis")}</button>
+              <button type="button" disabled><Expand size={15} /> {tr("مراجعة المعماري", "Architect review")}</button>
+            </div>
+            {result && <a download={`idea-${selectedProduct?.slug || "visualization"}.png`} href={result}><Download size={16} /> {tr("تنزيل PNG", "Download PNG")}</a>}
           </div>
-          <p className="idea-studio-disclaimer">{tr("التصور الناتج للتخيل البصري فقط؛ الألوان والمقاسات والقصّ والتركيب الفعلي قد تختلف.", "Visual concept only. Real-world color, scale, cuts and installation may differ.")}</p>
-          {error && <div role="alert" className="idea-studio-error">{error} <Link to="/login">{tr("تسجيل الدخول", "Sign in")}</Link></div>}
+          {quality && (
+            <div className="idea-studio-quality">
+              <span><ShieldCheck size={15} /> {tr("تقرير الجودة", "Quality report")}</span>
+              <i>{quality.dimensionsPreserved ? tr("الأبعاد محفوظة", "Dimensions preserved") : "—"}</i>
+              <i>{quality.maskVerified ? tr("القناع موثّق", "Mask verified") : "—"}</i>
+              <i>{quality.protectedPixelsCompositedFromOriginal ? tr("المناطق المحمية من الأصل", "Protected pixels from original") : "—"}</i>
+            </div>
+          )}
+          {error && <div className="idea-studio-error" role="alert"><CircleAlert size={17} /><span>{error}</span>{!session && <Link to="/login">{tr("تسجيل الدخول", "Sign in")}</Link>}</div>}
         </section>
-        <aside className="idea-studio-panel idea-studio-controls">
-          <div className="idea-studio-heading"><span>02</span><h2>{tr("إعداد التصميم", "Design settings")}</h2></div>
-          <label className="idea-studio-label">{tr("نوع الغرفة", "Room type")}</label>
-          <select value={roomKind} onChange={e => setRoomKind(e.target.value as RoomKind)}><option value="living">{tr("غرفة معيشة","Living room")}</option><option value="bedroom">{tr("غرفة نوم","Bedroom")}</option><option value="kitchen">{tr("مطبخ","Kitchen")}</option><option value="bathroom">{tr("حمام","Bathroom")}</option><option value="other">{tr("مساحة أخرى","Other space")}</option></select>
-          <label className="idea-studio-label">{tr("منطقة التركيب", "Application area")}</label>
-          <div className="idea-studio-segments">{([["floor",tr("الأرضية", "Floor")],["walls",tr("الحوائط","Walls")],["backsplash",tr("خلفية المطبخ","Backsplash")]] as const).map(([key,label])=><button key={key} type="button" className={surface === key ? "active" : ""} onClick={()=>setSurface(key)}>{label}</button>)}</div>
-          <label className="idea-studio-label" htmlFor="idea-studio-tile-size">{tr("مقاس البلاطة", "Tile size")}</label>
-          <select id="idea-studio-tile-size" value={tileSize} onChange={e=>setTileSize(e.target.value)}><option>30 × 30 cm</option><option>60 × 60 cm</option><option>60 × 120 cm</option><option>80 × 80 cm</option><option>120 × 120 cm</option></select>
-          <label className="idea-studio-label">{tr("اتجاه التركيب", "Laying angle")}</label>
-          <div className="idea-studio-segments">{[0,45,90].map(value=><button key={value} type="button" className={rotation === value ? "active" : ""} onClick={()=>setRotation(value)}>{value}°</button>)}</div>
-          <label className="idea-studio-label">{tr("لون الفواصل", "Grout color")}</label>
-          <div className="idea-studio-color">{["#3b3b3b","#ffffff","#ddd8cf","#9b998f"].map(color=><button key={color} type="button" style={{background:color}} className={color === grout ? "active" : ""} aria-label={color} onClick={()=>setGrout(color)}/>)}</div>
-          <button type="button" className="idea-studio-generate" onClick={generate} disabled={busy}><Sparkles size={18}/>{busy ? tr("جاري التوليد...", "Generating...") : tr("شوفها في شقتك", "Visualize in your room")}</button>
-          <p className="idea-studio-fine"><SlidersHorizontal size={14}/>{tr("النتيجة بالذكاء الاصطناعي تتطلب حسابًا نشطًا ومفتاح Gemini على السيرفر. صور الغرفة والخامة تُرسل إلى Google Gemini عند التوليد.", "Generation requires sign-in and a server-side Gemini API key. Your room and material images are sent to Google Gemini when generating.")}</p>
+
+        <aside className="idea-studio-rail idea-studio-material">
+          <div className="idea-studio-rail-head"><span>02</span><div><small>{tr("ذكاء الخامة", "MATERIAL INTELLIGENCE")}</small><h2>{tr("المنتج المحدد", "Selected product")}</h2></div><ChevronDown size={16} /></div>
+          <div className="idea-studio-product-image">
+            {selectedProduct ? <img src={selectedProduct.image} alt={productName} /> : <span><ImagePlus size={28} />{tr("اختر منتجًا", "Select a product")}</span>}
+          </div>
+          <h3>{productName}</h3>
+          {selectedProduct && (
+            <>
+              <p>{selectedProduct.manufacturer || selectedProduct.brand}</p>
+              <dl className="idea-studio-product-specs">
+                <div><dt>{tr("الكود", "Code")}</dt><dd>{selectedProduct.code || "—"}</dd></div>
+                <div><dt>{tr("التشطيب", "Finish")}</dt><dd>{selectedProduct.finish || "—"}</dd></div>
+                <div><dt>{tr("المقاس", "Dimensions")}</dt><dd>{selectedProduct.sizes[0]?.label || "—"}</dd></div>
+              </dl>
+              <Link className="idea-studio-product-link" to={`/product/${selectedProduct.slug}`}>{tr("فتح صفحة المنتج", "Open product page")}</Link>
+            </>
+          )}
+          <label className="idea-studio-sample"><ImagePlus size={16} /><span>{tr("عينة خامة أوضح", "Clearer material reference")}<small>{tr("اختياري عند تعذر قراءة صورة المصدر", "Optional when source media is blocked")}</small></span><input type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={onMaterialFile} /></label>
+          {safeMaterialUrl && <div className="idea-studio-material-thumb"><img src={safeMaterialUrl} alt="" /><Check size={14} /> {tr("مرجع مخصص", "Custom reference")}</div>}
+          <div className="idea-studio-control-block">
+            <label>{tr("نوع الغرفة", "Room type")}</label>
+            <select value={roomKind} onChange={(event) => setRoomKind(event.target.value as RoomKind)}>
+              <option value="living">{tr("غرفة معيشة", "Living room")}</option><option value="bedroom">{tr("غرفة نوم", "Bedroom")}</option>
+              <option value="kitchen">{tr("مطبخ", "Kitchen")}</option><option value="bathroom">{tr("حمام", "Bathroom")}</option>
+              <option value="office">{tr("مكتب", "Office")}</option><option value="hallway">{tr("ممر", "Hallway")}</option>
+              <option value="commercial">{tr("مساحة تجارية", "Commercial")}</option><option value="other">{tr("أخرى", "Other")}</option>
+            </select>
+          </div>
+          <div className="idea-studio-control-block">
+            <label>{tr("اتجاه البلاطة", "Tile orientation")}</label>
+            <div className="idea-studio-choice">{[0,45,90].map((value) => <button type="button" key={value} className={rotation === value ? "active" : ""} onClick={() => setRotation(value)}>{value}°</button>)}</div>
+          </div>
+          <div className="idea-studio-control-block">
+            <label>{tr("المقاس المرجعي", "Reference scale")}</label>
+            <select value={selectedProduct?.sizes[0]?.label || tileSize} onChange={(event) => setTileSize(event.target.value)} disabled={Boolean(selectedProduct?.sizes[0]?.label)}>
+              <option>30 × 30 cm</option><option>60 × 60 cm</option><option>60 × 120 cm</option><option>80 × 80 cm</option><option>120 × 120 cm</option>
+            </select>
+          </div>
+          <div className="idea-studio-control-block">
+            <label>{tr("لون الفواصل", "Grout tone")}</label>
+            <div className="idea-studio-colors">{["#3b3b3b","#ffffff","#ddd8cf","#9b998f"].map((color) => <button type="button" key={color} style={{ background: color }} className={grout === color ? "active" : ""} onClick={() => setGrout(color)} aria-label={color} />)}</div>
+          </div>
+          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={busy || !photo || !selectedProduct || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
+            <Sparkles size={17} /> {tr("ابدأ التوليد المحمي", "Generate with scene lock")}
+          </button>
+          <small className="idea-studio-consent">{tr("ببدء التوليد تُرسل الصورتان إلى Runpod للمعالجة المؤقتة وفق سياسة الخصوصية.", "Generation sends the room and material references to Runpod for temporary processing.")}</small>
         </aside>
-        <section className="idea-studio-library">
-          <div className="idea-studio-library-top"><div><span className="idea-studio-kicker">{tr("مكتبة خامات IDEA", "IDEA MATERIAL LIBRARY")}</span><h2>{tr("كل مساحة وليها خامتها.", "Find your next surface.")}</h2></div><div className="idea-studio-search"><Search size={17}/><input type="search" value={search} onChange={e=>setSearch(e.target.value)} placeholder={tr("ابحث عن خامة أو موديل", "Search materials and models")} aria-label={tr("بحث الخامات", "Search materials")}/></div></div>
-          <div className="idea-studio-swatches">{visible.map(p=><button type="button" key={p.id} onClick={()=>chooseProduct(p.id)} className={selectedProduct?.id===p.id?"selected":""}><span className="idea-studio-swatch-image"><img src={p.image} alt="" loading="lazy" onError={e=>{ e.currentTarget.hidden = true; const fallback = e.currentTarget.nextElementSibling as HTMLElement | null; if (fallback) fallback.hidden = false; }} /><span className="idea-studio-image-fallback" hidden><ImagePlus size={18}/>{tr("الصورة غير متاحة", "Image unavailable")}</span>{selectedProduct?.id===p.id && <span className="idea-studio-selected"><Check size={15}/></span>}</span><strong>{p.name[locale]}</strong><small>{p.brand}</small></button>)}</div>
-          {visible.length===0 && <p className="idea-studio-fine">{tr("مفيش منتجات تطابق بحثك.", "No matching materials.")}</p>}
-          <Link to="/products" className="idea-studio-all">{tr("تصفح كل المنتجات", "Browse all products")}</Link>
-        </section>
       </div>
+
+      <section className="idea-studio-library">
+        <div className="idea-studio-library-head">
+          <div><span className="idea-studio-kicker">IDEA / VERIFIED CATALOGUE</span><h2>{tr("مكتبة الخامات الحقيقية", "Real material library")}</h2><p>{tr("لا توجد منتجات مولّدة أو مواصفات مخترعة.", "No generated products or fabricated specifications.")}</p></div>
+          <label className="idea-studio-search"><Search size={17} /><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={tr("ابحث بالاسم أو المصنع أو الموديل", "Search name, manufacturer or model")} /></label>
+        </div>
+        <div className="idea-studio-swatches">
+          {eligibleProducts.map((product) => (
+            <button type="button" key={product.id} onClick={() => chooseProduct(product.id)} className={selectedProduct?.id === product.id ? "selected" : ""}>
+              <span className="idea-studio-swatch-image"><img src={product.image} alt="" loading="lazy" />{selectedProduct?.id === product.id && <i><Check size={13} /></i>}</span>
+              <strong>{product.name[locale]}</strong><small>{product.manufacturer || product.brand}</small>
+            </button>
+          ))}
+        </div>
+        {!eligibleProducts.length && <div className="idea-studio-no-products">{tr("لا توجد خامات مطابقة.", "No matching materials.")}</div>}
+      </section>
     </main>
   );
 }

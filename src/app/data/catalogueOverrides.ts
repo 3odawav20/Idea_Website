@@ -5,6 +5,9 @@ export interface AdminOverride {
   visible: boolean;
   name_en: string;
   brand: string;
+  manufacturer: string;
+  model: string;
+  code: string;
   collection: "ceramics" | "porcelain" | "tiles" | "marble";
   image_url: string;
   source_proof_url: string;
@@ -23,6 +26,9 @@ export function normalizeAdminOverride(input: Record<string, unknown>): AdminOve
     visible: input.visible !== false,
     name_en: String(input.name_en || "").trim(),
     brand: String(input.brand || "").trim(),
+    manufacturer: String(input.manufacturer || "").trim(),
+    model: String(input.model || "").trim(),
+    code: String(input.code || "").trim(),
     collection: (["ceramics", "porcelain", "tiles", "marble"].includes(material)
       ? material : "ceramics") as AdminOverride["collection"],
     image_url: String(input.image_url || "").trim(),
@@ -37,6 +43,9 @@ export function applyAdminOverride(source: Product, data: AdminOverride): Produc
     ...source,
     name: { ...source.name, en: data.name_en || source.name.en },
     brand: data.brand || source.brand,
+    manufacturer: data.manufacturer || source.manufacturer,
+    model: data.model || source.model,
+    code: data.code || source.code,
     collection: data.collection,
     image: isValidProductImage(data.image_url) ? data.image_url : source.image,
     gallery: isValidProductImage(data.image_url)

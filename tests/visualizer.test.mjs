@@ -8,28 +8,40 @@ const cards = readFileSync("src/app/components/ProductCard.tsx", "utf8");
 const detail = readFileSync("src/app/pages/ProductDetail.tsx", "utf8");
 const server = readFileSync("server/cpanel/api/visualize.php", "utf8");
 
-test("one published studio route replaces the old placeholder", () => {
+test("one published studio route receives stable catalogue product IDs", () => {
   assert.match(app, /path="\/ai-room-visualizer" element=\{<AiVisualizerStudio/);
-  assert.doesNotMatch(app, /element=\{<AiVisualizer\s*\/>/);
-});
-test("catalogue product selection survives navigation by stable product ID", () => {
   assert.match(page, /searchParams\.get\("product"\)/);
   assert.match(cards, /encodeURIComponent\(product\.id\)/);
   assert.match(detail, /encodeURIComponent\(product\.id\)/);
 });
-test("generation never creates a fake preview and requires actual image response", () => {
-  assert.match(page, /if \(!response\.ok \|\| !data\?\.image\)/);
-  assert.match(page, /setResult\(data\.image\)/);
+test("frontend uses real asynchronous jobs and never manufactures a preview", () => {
+  assert.match(page, /jobId/);
+  assert.match(page, /setResult\(/);
   assert.match(page, /"\/api\/visualize\.php"/);
+  assert.doesNotMatch(page, /GEMINI|generativelanguage|fake preview/i);
 });
-test("Gemini credentials remain server-only and authentication is validated", () => {
-  assert.doesNotMatch(page, /GEMINI_API_KEY|x-goog-api-key|generativelanguage\.googleapis/);
-  assert.match(server, /getenv\('GEMINI_API_KEY'\)/);
+test("Runpod credentials remain server-only", () => {
+  assert.doesNotMatch(page, /RUNPOD_API_KEY|api\.runpod\.ai/);
+  assert.match(server, /getenv\(\$name\)/);
+  assert.match(server, /RUNPOD_API_KEY/);
   assert.match(server, /\/auth\/v1\/user/);
-  assert.match(server, /is_uploaded_file/);
   assert.match(server, /CURLOPT_SSL_VERIFYPEER=>true/);
 });
-test("server PHP is not in static Vite public directory", () => {
+test("server enforces five lifetime attempts with idempotent reservations", () => {
+  assert.match(server, /REGULAR_LIFETIME_LIMIT = 5/);
+  assert.match(server, /reserveAttempt/);
+  assert.match(server, /idempotencyKey/);
+  assert.match(server, /flock\(\$fp, LOCK_EX\)/);
+  assert.match(server, /quota_exhausted/);
+});
+test("unsafe provider output is blocked and original pixels are composited through a mask", () => {
+  assert.match(server, /return_edit_mask/);
+  assert.match(server, /compositeVerified/);
+  assert.match(server, /geometry_mismatch/);
+  assert.match(server, /imagesetpixel\(\$original.*imagecolorat\(\$generated/s);
+  assert.match(server, /watermark\(\$original\)/);
+});
+test("server PHP stays outside the static Vite public directory", () => {
   assert.equal(existsSync("public/api/visualize.php"), false);
   assert.equal(existsSync("server/cpanel/api/visualize.php"), true);
 });

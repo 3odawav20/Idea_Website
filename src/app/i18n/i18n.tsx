@@ -41,6 +41,7 @@ const T: Dict = {
   "filters.texture": { en: "Texture", ar: "الملمس", fr: "Texture" },
   "filters.size": { en: "Size", ar: "المقاس", fr: "Taille" },
   "label.brand": { en: "Brand", ar: "الماركة", fr: "Marque" },
+  "label.manufacturer": { en: "Manufacturer", ar: "المصنع", fr: "Fabricant" },
   "label.model": { en: "Model", ar: "الموديل", fr: "Modèle" },
   "label.code": { en: "Code", ar: "الكود", fr: "Code" },
   "label.origin": { en: "Origin", ar: "المنشأ", fr: "Origine" },
@@ -61,6 +62,8 @@ const T: Dict = {
   "fav.title": { en: "Favorites", ar: "المفضلة", fr: "Favoris" },
   "fav.empty": { en: "You have no favorites yet.", ar: "لا توجد مفضلة بعد.", fr: "Aucun favori pour le moment." },
   "price.hidden": { en: "Price on request", ar: "السعر عند الطلب", fr: "Prix sur demande" },
+  "price.admin": { en: "Internal admin price", ar: "السعر الداخلي للأدمن", fr: "Prix interne administrateur" },
+  "value.notProvided": { en: "Not provided by source", ar: "غير مذكور بالمصدر", fr: "Non indiqué par la source" },
   "empty.products": { en: "No products match the current criteria.", ar: "لا توجد منتجات مطابقة للمعايير الحالية.", fr: "Aucun produit ne correspond aux critères." },
 
   /* nav additions */

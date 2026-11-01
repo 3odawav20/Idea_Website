@@ -35,10 +35,19 @@ export function HeroCarousel() {
     onFocusCapture={() => setInteracting(true)} onBlurCapture={(e) => { if (!e.currentTarget.contains(e.relatedTarget)) setInteracting(false); }}
     onTouchStart={(e) => { setPlaying(false); touch.current = e.touches[0]?.clientX ?? null; }}
     onTouchEnd={(e) => { if (touch.current !== null) { const delta = e.changedTouches[0].clientX - touch.current; if (Math.abs(delta) > 45) go(delta < 0 ? 1 : -1); touch.current = null; } }}>
-    {SLIDES.map((slide, i) => <div key={slide.id} className={`idea-editorial-hero-slide${i === index ? " is-active" : ""}`} aria-hidden={i !== index}>
-      <img src={`/images/featured/${slide.id}.webp`} alt="" width={1600} height={900} loading={i === 0 ? "eager" : "lazy"} fetchPriority={i === 0 ? "high" : "auto"} />
-      {i === index && <div className="idea-editorial-hero-copy"><p>IDEA</p><h1>{slide.title[locale]}</h1><Link to={destinations[slide.id as keyof typeof destinations]}>{slide.cta[locale]}</Link></div>}
-    </div>)}
+    {SLIDES.map((slide, i) => (
+      <div key={slide.id} className={`idea-editorial-hero-slide${i === index ? " is-active" : ""}`} aria-hidden={i !== index}>
+        <img
+          src={`/images/featured/${slide.id}.webp`}
+          alt=""
+          width={1600}
+          height={900}
+          loading={i === 0 ? "eager" : "lazy"}
+          decoding="async"
+        />
+        {i === index && <div className="idea-editorial-hero-copy"><p>IDEA</p><h1>{slide.title[locale]}</h1><Link to={destinations[slide.id as keyof typeof destinations]}>{slide.cta[locale]}</Link></div>}
+      </div>
+    ))}
     <button className="idea-editorial-hero-arrow is-left" aria-label={label("Previous slide", "الصورة السابقة", "Image précédente")} onClick={() => { setPlaying(false); go(-1); }}><ChevronLeft /></button>
     <button className="idea-editorial-hero-arrow is-right" aria-label={label("Next slide", "الصورة التالية", "Image suivante")} onClick={() => { setPlaying(false); go(1); }}><ChevronRight /></button>
     <div className="idea-editorial-hero-controls">{SLIDES.map((slide, i) => <button key={slide.id} className={i === index ? "is-active" : ""} aria-label={slide.cta[locale]} aria-pressed={i === index} onClick={() => { setPlaying(false); setIndex(i); }} />)}

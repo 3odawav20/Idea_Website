@@ -1,0 +1,11 @@
+{
+  "title": "IDEA",
+  "description": "Transforms imported markdown files into fully formatted, easy-to-navigate websites, enabling users to quickly publish and share content online.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}
