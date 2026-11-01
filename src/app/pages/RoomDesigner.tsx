@@ -87,16 +87,10 @@ export function RoomDesignerEditor() {
   const nav = useNavigate();
   const existing = projectId ? db.roomProjects.find((p) => p.id === projectId) : null;
 
-  const [photo, setPhoto] = useState<string | null>(existing?.photo || null);
+  const [photo, setPhoto] = useState<string | null>(null);
   const safePhotoSrc = useMemo(() => {
     if (!photo) return null;
-    try {
-      if (photo.startsWith("blob:")) return photo;
-      const u = new URL(photo, window.location.origin);
-      return u.protocol === "http:" || u.protocol === "https:" ? photo : null;
-    } catch {
-      return null;
-    }
+    return photo.startsWith("blob:") ? photo : null;
   }, [photo]);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
