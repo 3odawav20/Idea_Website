@@ -65,54 +65,7 @@ function imagePart(string $name): array {
   if ($bytes===false) fail(422,'Image cannot be read');
   return ['inlineData'=>['mimeType'=>$mime,'data'=>base64_encode($bytes)]];
 }
-/**
- * CORS-safe fallback for approved Art Ceramic catalogue images only.
- * No arbitrary URLs, credentials, redirects or private network targets are accepted.
- */
-function selectedMaterialPart(): array {
-  if (isset($_FILES['material'])) return imagePart('material');
-  $url = trim((string)($_POST['materialUrl'] ?? ''));
-  $parts = $url !== '' && strlen($url) <= 2048 ? parse_url($url) : false;
-  $path = is_array($parts) ? ($parts['path'] ?? '') : '';
-  if (!is_array($parts) || ($parts['scheme'] ?? '') !== 'https'
-      || strtolower((string)($parts['host'] ?? '')) !== 'dashboard.artceramic-egypt.com'
-      || isset($parts['user']) || isset($parts['pass']) || isset($parts['port'])
-      || isset($parts['query']) || isset($parts['fragment'])
-      || !preg_match('~^/uploads/[a-zA-Z0-9_./-]+\.(?:jpg|jpeg|png|webp)$~i', $path)
-      || str_contains($path, '..')) {
-    fail(422, 'Upload the selected material sample');
-  }
-  $bytes = '';
-  $curl = curl_init($url);
-  if ($curl === false) fail(502, 'Material image is not available');
-  curl_setopt_array($curl, [
-    CURLOPT_FOLLOWLOCATION => false,
-    CURLOPT_CONNECTTIMEOUT => 6,
-    CURLOPT_TIMEOUT => 18,
-    CURLOPT_SSL_VERIFYPEER => true,
-    CURLOPT_SSL_VERIFYHOST => 2,
-    CURLOPT_PROTOCOLS => CURLPROTO_HTTPS,
-    CURLOPT_WRITEFUNCTION => static function ($ch, string $chunk) use (&$bytes): int {
-      if (strlen($bytes) + strlen($chunk) > 10 * 1024 * 1024) return 0;
-      $bytes .= $chunk;
-      return strlen($chunk);
-    },
-  ]);
-  $ok = curl_exec($curl);
-  $status = (int)curl_getinfo($curl, CURLINFO_HTTP_CODE);
-  curl_close($curl);
-  if ($ok === false || $status !== 200 || $bytes === '') fail(422, 'Material image could not be loaded: upload a sample');
-  $mime = (new finfo(FILEINFO_MIME_TYPE))->buffer($bytes);
-  $dims = @getimagesizefromstring($bytes);
-  if (!in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)
-      || !$dims || $dims[0] < 64 || $dims[1] < 64 || $dims[0] > 8000
-      || $dims[1] > 8000 || $dims[0] * $dims[1] > 24000000) {
-    fail(422, 'Material image is invalid: upload a sample');
-  }
-  return ['inlineData' => ['mimeType' => $mime, 'data' => base64_encode($bytes)]];
-}
-
-$room=imagePart('room');$sample=selectedMaterialPart();
+$room=imagePart('room');$sample=imagePart('material');
 $surface=$_POST['surface']??null;$roomKind=$_POST['roomKind']??null;
 $rotation=(int)($_POST['rotation']??-1);
 $tileSize=$_POST['tileSize']??null;
