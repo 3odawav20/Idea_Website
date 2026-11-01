@@ -33,3 +33,18 @@ test("server PHP is not in static Vite public directory", () => {
   assert.equal(existsSync("public/api/visualize.php"), false);
   assert.equal(existsSync("server/cpanel/api/visualize.php"), true);
 });
+
+test("photo upload enters the real image-editing studio, including legacy URLs", () => {
+  const roomEditor = readFileSync("src/app/pages/RoomDesigner.tsx", "utf8");
+  assert.match(roomEditor, /to="\/ai-room-visualizer"/);
+  assert.match(roomEditor, /routeParams\.get\("mode"\) === "photo"/);
+  assert.doesNotMatch(roomEditor, /to="\/room-designer\/new\?mode=photo"/);
+});
+test("CORS-blocked Art Ceramic swatches have a restricted server-side fallback", () => {
+  assert.match(page, /form\.append\("room", photo\)/);
+  assert.match(page, /form\.append\("materialUrl"/);
+  assert.match(server, /function selectedMaterialPart\(\): array/);
+  assert.match(server, /dashboard\.artceramic-egypt\.com/);
+  assert.match(server, /CURLOPT_FOLLOWLOCATION => false/);
+  assert.match(server, /is_uploaded_file/);
+});
