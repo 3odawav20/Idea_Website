@@ -59,10 +59,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       .catch(() => { /* Imports stay staged; no public approval is implied. */ });
   }, []);
   useEffect(() => {
-    if (!supabase) return;
+    // Catalogue overrides require an applied migration. Opt in explicitly after
+    // installing it; otherwise avoid 404 noise on every storefront page.
+    const client = supabase;
+    if (!client || import.meta.env.VITE_ENABLE_CATALOGUE_OVERRIDES !== "true") return;
     let active = true;
     const fetchOverrides = async () => {
-      const { data, error } = await supabase.from("catalogue_admin_overrides")
+      const { data, error } = await client.from("catalogue_admin_overrides")
         .select("product_id,visible,name_en,brand,collection,image_url,source_proof_url,updated_at");
       if (!active) return;
       if (error) {

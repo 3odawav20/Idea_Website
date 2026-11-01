@@ -378,7 +378,7 @@ export function MaterialLookStrip() {
   const dragging  = useRef(false);
   const lastX     = useRef(0);
   const velRef    = useRef(0);
-  const rafRef    = useRef<number>();
+  const rafRef    = useRef<number | undefined>(undefined);
   const didMove   = useRef(false);    // distinguish click vs drag
   const [cursor, setCursor] = useState<"grab" | "grabbing">("grab");
 

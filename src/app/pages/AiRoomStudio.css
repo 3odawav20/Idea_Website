@@ -1,0 +1,74 @@
+/* IDEA Material Studio — distinct from fake local image overlays; Gemini renders on server only. */
+.idea-studio{--si:#fbfaf8;--st:#383b3c;--sm:#858889;--so:#f66b09;--sb:#e6e4df;color:var(--st);background:#f7f6f4;padding:clamp(18px,3.1vw,42px) clamp(12px,4vw,55px) 54px;font-family:var(--idea-font-body,Inter,Arial,sans-serif);min-height:calc(100dvh - 80px);overflow-x:clip}
+.idea-studio *{box-sizing:border-box}.idea-studio a{text-decoration:none;color:inherit}.idea-studio button,.idea-studio input,.idea-studio select{font:inherit}.idea-studio button{cursor:pointer}.idea-studio button:disabled{cursor:not-allowed;opacity:.4}
+.idea-studio :is(button,a,input,select):focus-visible{outline:2px solid #e76616;outline-offset:3px}
+.idea-studio-top{max-width:1580px;margin:auto;display:flex;align-items:end;justify-content:space-between;gap:20px;padding:0 3px 26px}
+.idea-studio-breadcrumb{display:flex;align-items:center;gap:9px;color:#a3a2a0;font-size:11px;margin-bottom:26px}.idea-studio-breadcrumb a{display:inline-flex;align-items:center;gap:6px}
+.idea-studio-eyebrow,.idea-studio-kicker{font-size:10px;font-weight:700;letter-spacing:.18em;color:#968b7e;text-transform:uppercase}
+.idea-studio-top h1{font-size:clamp(32px,3.4vw,56px);letter-spacing:-.045em;line-height:1.05;font-weight:400;margin:9px 0}
+.idea-studio-top h1 span{color:var(--so);font-weight:500}
+.idea-studio-intro>p:last-child{font-size:12px;color:#7e8282;margin:11px 0 0}
+.idea-studio-home{border:1px solid #dedbd5;border-radius:12px;background:#fff;display:inline-flex;align-items:center;gap:9px;font-size:12px;padding:10px 14px;white-space:nowrap;margin-bottom:2px}
+.idea-studio-home:hover{border-color:var(--so);color:var(--so)}
+.idea-studio-workspace{max-width:1580px;margin:0 auto;display:grid;grid-template-columns:minmax(200px,225px) minmax(0,1fr) minmax(225px,250px);gap:0;border:1px solid #e5e2dd;background:white;border-radius:20px;overflow:hidden;box-shadow:0 16px 50px rgba(48,43,37,.045)}
+.idea-studio-chosen{padding:22px 18px;border-inline-end:1px solid #e9e7e4;background:#faf9f7;min-width:0}
+.idea-studio-controls{padding:22px 17px;border-inline-start:1px solid #e9e7e4;background:#fdfcfb;min-width:0}
+.idea-studio-panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding-bottom:18px;margin-bottom:18px;border-bottom:1px solid #e6e4e0}.idea-studio-panel-head svg{color:#8f8a81}
+.idea-studio-material-large{border-radius:12px;aspect-ratio:1/1.05;overflow:hidden;background:#e1ddd7}.idea-studio-material-large img{width:100%;height:100%;object-fit:cover;display:block}
+.idea-studio-chosen h2{font-size:19px;line-height:1.3;font-weight:500;margin:16px 0 4px}.idea-studio-brand{font-size:11px;color:#8d8a85;margin-bottom:23px}
+.idea-studio-spec{display:grid;grid-template-columns:1fr 1.2fr;gap:12px;font-size:11px;margin-bottom:12px}.idea-studio-spec span{color:#96938d}.idea-studio-spec b{font-weight:550;text-align:end;overflow-wrap:anywhere}
+.idea-studio-chosen-empty{aspect-ratio:1;display:flex;justify-content:center;align-items:center;flex-direction:column;gap:12px;color:#938d86;font-size:12px;background:linear-gradient(135deg,#eeeae4,#ded8cd);border:1px dashed #c4bdb4;border-radius:12px;text-align:center;padding:24px}.idea-studio-helper{color:#84837f;font-size:11px;line-height:1.6}
+.idea-studio-quote{margin-top:18px;border:1px solid #e96710;border-radius:10px;background:#f86e0b;color:white;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:12px;font-size:11px;font-weight:600}
+.idea-studio-view-product{display:flex;align-items:center;justify-content:center;gap:7px;margin-top:10px;font-size:11px;color:#a55d2a!important}
+.idea-studio-privacy{display:flex;gap:9px;align-items:flex-start;border-top:1px solid #dedbd7;margin-top:25px;padding-top:17px;color:#938d84;font-size:10px;line-height:1.6}
+.idea-studio-privacy svg{color:#7c9e8f;flex-shrink:0}
+.idea-studio-stage{min-width:0;background:#fff}.idea-studio-stage-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:17px 18px}.idea-studio-stage-head>div{display:flex;align-items:center;gap:12px}
+.idea-studio-stage-chip{color:#7c8582;font-size:10px;display:flex;align-items:center;gap:6px}.idea-studio-stage-chip>span{width:6px;height:6px;background:#dfad6c;border-radius:50%}
+.idea-studio-stage-actions{display:flex;gap:5px}.idea-studio-stage-actions button{display:grid;place-items:center;background:#f8f7f5;border:1px solid #e3e1dc;width:28px;height:28px;border-radius:7px;color:#6e7272}
+.idea-studio-canvas{position:relative;margin:0 18px;aspect-ratio:16/10;background:linear-gradient(127deg,#ebe7de,#c7c9c4 56%,#ebe9e3);overflow:hidden;border-radius:13px;min-height:280px;display:grid;place-items:center}
+.idea-studio-canvas.has-photo{background:#24282c}.idea-studio-canvas>img{width:100%;height:100%;object-fit:contain;display:block;position:absolute;inset:0}
+.idea-studio-upload-empty{text-align:center;padding:24px;max-width:380px;position:relative}.idea-studio-empty-glow{margin:0 auto 20px;display:grid;place-items:center;width:90px;height:90px;border:1px solid #ffffffa9;box-shadow:0 0 0 12px #fffbf65c,inset 0 0 25px #fff8;border-radius:23px;background:#f9f8f3a4;color:#ae8d70}
+.idea-studio-upload-empty h2{font-size:clamp(16px,2vw,25px);font-weight:520;line-height:1.3;color:#454846;margin:0 0 10px}
+.idea-studio-upload-empty p{color:#838782;font-size:12px;line-height:1.7}
+.idea-studio-upload-empty button{background:#343b3b;color:white;border:0;border-radius:10px;padding:11px 16px;display:inline-flex;align-items:center;gap:9px;margin-top:10px;font-size:12px}
+.idea-studio-photo-badge{position:absolute;bottom:12px;inset-inline-end:12px;display:flex;gap:7px;align-items:center;color:#fff;background:#2229;padding:7px 11px;border-radius:7px;font-size:11px}
+.idea-studio-stage-footer{display:flex;justify-content:space-between;gap:13px;align-items:center;margin:13px 18px 17px;color:#98948d;font-size:10px;line-height:1.5;border-bottom:1px solid #edeae6;padding-bottom:16px}
+.idea-studio-stage-footer span:first-child{display:flex;align-items:center;gap:8px}.idea-studio-stage-footer svg{color:#9b9a89}
+.idea-studio-library{padding:14px 18px 19px}.idea-studio-library-head{display:flex;align-items:end;justify-content:space-between;gap:13px}
+.idea-studio-library-head h2{font-size:clamp(17px,2.1vw,24px);font-weight:420;margin:6px 0 17px}.idea-studio-library-head small{font-size:10px;color:#aaa39b;white-space:nowrap;margin-bottom:20px}
+.idea-studio-search{display:flex;align-items:center;gap:10px;border:1px solid #e2dfda;border-radius:10px;padding-inline:12px;margin-bottom:17px;color:#a9a19b}
+.idea-studio-search input{width:100%;min-width:0;flex:1;border:0;outline:0;color:#3c3d3e;padding:12px 0;font-size:11px;background:transparent}.idea-studio-search input::placeholder{color:#b2a9a3}
+.idea-studio-search select{border:0;border-inline-start:1px solid #e6e4e0;background:transparent;font-size:11px;padding:6px;color:#7d7b75;min-width:85px}
+.idea-studio-products{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:15px 11px;max-height:360px;overflow:auto;overscroll-behavior:contain;padding:2px 5px 8px}
+.idea-studio-product{border:0;background:transparent;padding:0;text-align:start;min-width:0;color:#323635}
+.idea-studio-product-image{aspect-ratio:1;display:block;position:relative;border-radius:7px;overflow:hidden;background:#edeae4;border:2px solid transparent;transition:border-color .17s}
+.idea-studio-product-image img{width:100%;height:100%;object-fit:cover;display:block}
+.idea-studio-product.is-selected .idea-studio-product-image{border-color:#f36b11}
+.idea-studio-product-image i{position:absolute;inset-inline-start:5px;bottom:5px;display:grid;place-items:center;background:#f46a08;color:#fff;border-radius:50%;width:20px;height:20px}
+.idea-studio-product-title{display:block;font-size:10px;margin-top:7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.4}
+.idea-studio-product small{font-size:9px;color:#a5a09c;display:block;margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.idea-studio-empty-results{color:#a6a29d;font-size:12px}
+.idea-studio-setting{padding-bottom:17px;margin-bottom:20px;border-bottom:1px solid #e9e5e1}.idea-studio-setting h3{display:flex;align-items:center;gap:10px;color:#605e59;font-size:12px;font-weight:650;margin:0 0 15px}
+.idea-studio-setting h3 span{display:grid;place-items:center;min-width:21px;height:21px;border:1px solid #e9e5e0;border-radius:50%;font-size:9px;color:#b0aca6}
+.idea-studio-upload{display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;width:100%;min-height:120px;padding:13px 9px;border:1px dashed #c8c6c1;border-radius:9px;background:#f7f7f6;color:#8d8b84}
+.idea-studio-upload svg{color:#b5b1aa}.idea-studio-upload strong{font-size:11px;font-weight:600;color:#595b59}.idea-studio-upload small{font-size:9px;color:#999691;text-align:center;line-height:1.5}
+.idea-studio-choice{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.idea-studio-choice button{display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid #e4e0db;border-radius:8px;padding:12px 3px;background:white;color:#7b7d7d;font-size:10px}
+.idea-studio-choice button[aria-pressed=true]{background:#fff3e8;color:#d96210;border-color:#eabf9f}
+.idea-studio-field{display:flex;flex-direction:column;gap:9px;font-size:11px;color:#676b68;margin-bottom:16px}
+.idea-studio-field select{width:100%;min-height:36px;border:1px solid #e5e1db;color:#626360;border-radius:7px;padding:7px;background:#fff;font-size:11px}
+.idea-studio-range-title{display:flex;align-items:center;gap:6px}.idea-studio-range-title input{flex:1;min-width:0;accent-color:#d66617;height:20px}.idea-studio-range-title b{white-space:nowrap;font-size:10px;font-weight:550}
+.idea-studio-colors{display:flex;gap:8px;align-items:center}.idea-studio-colors button{border:1px solid #bab6b0;width:21px;height:21px;border-radius:50%}.idea-studio-colors button.active{outline:2px solid #d97019;outline-offset:2px}
+.idea-studio-render{padding:14px;border-radius:11px;background:#292e30;color:white}
+.idea-studio-render>div{display:flex;gap:8px;align-items:center;color:#ffd3a9;font-size:11px;font-weight:600}
+.idea-studio-render p{font-size:10px;color:#cacacc;line-height:1.7;margin:11px 0 14px}
+.idea-studio-render>button{border:0;background:#f46b08;color:#fff;border-radius:9px;padding:12px 9px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;font-size:11px;font-weight:700}
+.idea-studio-render>a{display:inline-flex;align-items:center;gap:7px;font-size:10px;color:#f5c18b;margin-top:12px}
+.idea-studio-error{font-size:11px;color:#b93b23;background:#fff1ed;padding:11px;border-radius:8px}
+.idea-studio-notice{position:relative;display:flex;gap:10px;font-size:11px;color:#a95a21;background:#fff5e9;padding:13px;border-radius:8px;margin-top:12px;line-height:1.6}
+.idea-studio-notice>svg{flex-shrink:0}.idea-studio-notice>button{border:0;background:transparent;margin-inline-start:auto;color:#a95a21;align-self:flex-start}
+.idea-studio-spin{animation:idea-spin 1s linear infinite}@keyframes idea-spin{to{transform:rotate(360deg)}}
+@media(max-width:1150px){.idea-studio-workspace{grid-template-columns:190px minmax(0,1fr) 210px}.idea-studio-products{grid-template-columns:repeat(4,minmax(0,1fr))}.idea-studio-controls{padding:16px 12px}.idea-studio-chosen{padding:16px 12px}}
+@media(max-width:890px){.idea-studio-workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,36%)}.idea-studio-stage{grid-column:1;grid-row:1/3}.idea-studio-controls{grid-column:2;grid-row:1}.idea-studio-chosen{grid-column:2;grid-row:2;border-top:1px solid #e5e2dd;border-inline-end:0}.idea-studio-products{grid-template-columns:repeat(4,minmax(0,1fr))}.idea-studio-stage-footer{flex-direction:column;align-items:flex-start}.idea-studio-chosen .idea-studio-material-large{max-width:160px}}
+@media(max-width:650px){.idea-studio{padding:18px 10px 35px}.idea-studio-top{padding:0 3px 18px}.idea-studio-top h1{font-size:31px}.idea-studio-breadcrumb{margin-bottom:16px}.idea-studio-home{padding:9px;font-size:10px;align-self:start}.idea-studio-top h1 span{display:block}.idea-studio-workspace{display:flex;flex-direction:column;border-radius:14px}.idea-studio-stage{order:1}.idea-studio-controls{order:2;border-inline-start:0;border-top:1px solid #e5e2dd}.idea-studio-chosen{order:3;border-top:1px solid #e5e2dd}.idea-studio-canvas{min-height:250px;margin:0 11px;aspect-ratio:4/3}.idea-studio-stage-head{padding:15px 11px}.idea-studio-stage-chip{display:none}.idea-studio-products{grid-template-columns:repeat(3,minmax(0,1fr));max-height:300px}.idea-studio-library{padding:14px 11px}.idea-studio-stage-footer{margin:11px;padding-bottom:12px}.idea-studio-controls{padding:17px 15px}.idea-studio-setting{padding-bottom:13px;margin-bottom:13px}.idea-studio-chosen{padding:19px 15px}.idea-studio-material-large{max-width:180px}.idea-studio-library-head h2{font-size:20px}.idea-studio-search select{min-width:66px}.idea-studio-home{position:relative;top:0}}
+@media(max-width:360px){.idea-studio-top h1{font-size:27px}.idea-studio-home{font-size:0;gap:0}.idea-studio-home svg{width:20px;height:20px}.idea-studio-products{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 6px}.idea-studio-canvas{min-height:230px}.idea-studio-upload-empty{padding:14px}}

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { useSearchParams } from "react-router";
 import type { CollectionSlug, Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
+import { localizedFacet } from "../data/localizedFacets";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
 import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
@@ -29,8 +30,8 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
       if (category && p.collection !== category) return false;
       if (format === "large" && !isLargeFormat(p)) return false;
       if (format === "outdoor20" && !isOutdoor20mm(p)) return false;
-      if (material === "marble") return p.texture?.toLowerCase() === "marble" || p.type?.toLowerCase() === "marble";
-      if (material === "tiles") return p.collection === "ceramics" || p.collection === "porcelain";
+      if (material === "marble") return p.collection === "marble";
+      if (material === "tiles") return p.collection === "tiles";
       return true;
     }),
     [products, category, material, format]
@@ -93,7 +94,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
       <div style={{ marginBottom: "var(--idea-space-4)" }}>
         <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)", marginBottom: 10 }}>{label}</div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-          {values.map((v) => <Chip key={v} active={val === v} onClick={() => set(val === v ? null : v)}>{v}</Chip>)}
+          {values.map((v) => <Chip key={v} active={val === v} onClick={() => set(val === v ? null : v)}>{localizedFacet(v,locale)}</Chip>)}
         </div>
       </div>
     );
