@@ -54,12 +54,12 @@ export function AiVisualizer() {
         <SectionHeader eyebrow={uiText(t("nav.visualizer"))} title={uiText("See It Inside Your Space")} sub={uiText("Upload a photo of your room, then select a real IDEA surface to preview the finished look. (Rendering engine connects in the back-end phase.)")} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--idea-space-5)" }} className="idea-ai-grid">
           <label style={{ aspectRatio: "4/3", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", display: "grid", placeItems: "center", cursor: "pointer", overflow: "hidden", background: "var(--idea-surface)" }}>
-            {uiText(file ? <img src={file} alt={uiText("Your room")} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (
+            {file ? <img src={file} alt={uiText("Your room")} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (
               <div style={{ textAlign: "center", color: "var(--idea-text-muted)" }}>
                 <UploadCloud size={34} color="var(--idea-gold)" />
                 <div style={{ marginTop: 10 }}>{uiText("Upload your room photo")}</div>
               </div>
-            ))}
+            )}
             <input
               type="file"
               accept="image/*"
