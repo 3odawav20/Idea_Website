@@ -66,7 +66,8 @@ export function AiVisualizer() {
               hidden
               onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f && f.type.startsWith("image/")) {
+                const allowedImageTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+                if (f && allowedImageTypes.has(f.type)) {
                   setFile(URL.createObjectURL(f));
                 } else {
                   setFile(null);
