@@ -33,7 +33,7 @@ $furniture=imagecolorallocate($room,112,73,39);
 imagefill($room,0,0,$base);
 imagefilledrectangle($room,40,58,84,90,$furniture);
 $roomData=pngBytes($room);
-$render=imagecreatetruecolor(80,48);
+$render=imagecreatetruecolor(120,72);
 $tile=imagecolorallocate($render,195,184,175);
 imagefill($render,0,0,$tile);
 $renderData=pngBytes($render);
@@ -87,7 +87,7 @@ expectError(static fn()=>ideaSurfaceOnlyComposite($roomData,pngBytes($bad),$mask
 $empty=imagecreatetruecolor($width,$height);
 imagefill($empty,0,0,imagecolorallocate($empty,0,0,0));
 expectError(static fn()=>ideaSurfaceOnlyComposite($roomData,$renderData,pngBytes($empty)),'SURFACE_MASK_EMPTY_OR_UNSAFE');
-$wrong=imagecreatetruecolor(80,48);
+$wrong=imagecreatetruecolor(120,72);
 imagefill($wrong,0,0,imagecolorallocate($wrong,255,255,255));
 expectError(static fn()=>ideaSurfaceOnlyComposite($roomData,$renderData,pngBytes($wrong)),'MASK_DIMENSIONS_MUST_MATCH_ORIGINAL');
 $prompt=ideaSurfaceOnlyPrompt('walls_and_floor',$width,$height);
