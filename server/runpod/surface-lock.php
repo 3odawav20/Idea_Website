@@ -59,6 +59,9 @@ function ideaSurfaceOnlyComposite(string $roomBytes, string $renderBytes, string
         if ($info === false || !in_array($info[2], [IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP], true)) {
             throw new InvalidArgumentException($label . '_IMAGE_FORMAT_INVALID');
         }
+        if ($label === 'MASK' && $info[2] !== IMAGETYPE_PNG) {
+            throw new InvalidArgumentException('MASK_MUST_BE_PNG');
+        }
         [$w, $h] = $info;
         if ($w < 64 || $h < 64 || $w > 4096 || $h > 4096 || $w * $h > 6000000) {
             throw new InvalidArgumentException($label . '_IMAGE_DIMENSIONS_INVALID');
@@ -66,6 +69,10 @@ function ideaSurfaceOnlyComposite(string $roomBytes, string $renderBytes, string
         $image = @imagecreatefromstring($bytes);
         if (!$image) {
             throw new InvalidArgumentException($label . '_IMAGE_DECODE_FAILED');
+        }
+        // Image palettes return an index from imagecolorat(), not an RGB value.
+        if (!imageistruecolor($image) && !imagepalettetotruecolor($image)) {
+            throw new InvalidArgumentException($label . '_PALETTE_CONVERSION_FAILED');
         }
         return [$image, $w, $h];
     };
@@ -89,15 +96,28 @@ function ideaSurfaceOnlyComposite(string $roomBytes, string $renderBytes, string
         throw new RuntimeException('RENDER_ALIGNMENT_FAILED');
     }
     $out = imagecreatetruecolor($width, $height);
-    if (!$out || !imagecopy($out, $room, 0, 0, 0, 0, $width, $height)) {
+    if (!$out) {
+        throw new RuntimeException('ORIGINAL_COPY_FAILED');
+    }
+    imagealphablending($out, false);
+    imagesavealpha($out, true);
+    if (!imagecopy($out, $room, 0, 0, 0, 0, $width, $height)) {
         throw new RuntimeException('ORIGINAL_COPY_FAILED');
     }
     $editedPixels = 0;
     for ($y = 0; $y < $height; ++$y) {
         for ($x = 0; $x < $width; ++$x) {
             $m = imagecolorat($mask, $x, $y);
-            $maskStrength = (int) round((($m >> 16 & 0xff) + ($m >> 8 & 0xff) + ($m & 0xff)) / 3);
-            // Black and near-black mask pixels remain EXACTLY the original.
+            $rMask = ($m >> 16) & 0xff;
+            $gMask = ($m >> 8) & 0xff;
+            $bMask = $m & 0xff;
+            if (max($rMask, $gMask, $bMask) - min($rMask, $gMask, $bMask) > 6) {
+                throw new InvalidArgumentException('SURFACE_MASK_MUST_BE_GRAYSCALE');
+            }
+            // The PNG transparency channel must never turn protected pixels editable.
+            $opacity = (127 - (($m >> 24) & 0x7f)) / 127;
+            $maskStrength = (int) round((($rMask + $gMask + $bMask) / 3) * $opacity);
+            // Black, transparent and near-black mask pixels stay EXACTLY original.
             if ($maskStrength < 12) {
                 continue;
             }
