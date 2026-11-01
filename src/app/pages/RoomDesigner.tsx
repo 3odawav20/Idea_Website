@@ -1,5 +1,5 @@
 import { useMemo, useRef, useState } from "react";
-import { Link, Navigate, useNavigate, useParams, useSearchParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { Upload, Ruler, Camera, Save, Layers, Grid3x3, RotateCw, Info, ArrowLeftRight } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
@@ -19,7 +19,7 @@ export function RoomDesignerHome() {
             <Upload size={26} color="var(--idea-gold-bright)" />
             <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)", margin: "10px 0 6px" }}>{t("room.upload")}</div>
             <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>Bathroom, kitchen, living room, bedroom, office or façade photo. Apply floor & wall surfaces.</p>
-            <Link to="/ai-room-visualizer"><Button style={{ marginTop: 12 }}>Upload a photo</Button></Link>
+            <Link to="/room-designer/new?mode=photo"><Button style={{ marginTop: 12 }}>Upload a photo</Button></Link>
           </Panel>
           <Panel>
             <Ruler size={26} color="var(--idea-gold-bright)" />
@@ -61,7 +61,7 @@ export function PhotoGuide() {
           ))}
         </div>
         <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: "var(--idea-space-5)" }}>We do not claim engineering-level measurement accuracy from a single photograph.</p>
-        <div style={{ marginTop: 16 }}><Link to="/ai-room-visualizer"><Button>Start designing</Button></Link></div>
+        <div style={{ marginTop: 16 }}><Link to="/room-designer/new?mode=photo"><Button>Start designing</Button></Link></div>
       </Container>
       <style>{`@media (max-width: 720px){ .idea-room-grid{ grid-template-columns: 1fr !important; } }`}</style>
     </Section>
@@ -77,7 +77,6 @@ export function RoomDesignerEditor() {
   const { products, addToQuote } = useStore();
   const { api, session, db } = useBackend();
   const { projectId } = useParams();
-  const [routeParams] = useSearchParams();
   const nav = useNavigate();
   const existing = projectId ? db.roomProjects.find((p) => p.id === projectId) : null;
 
@@ -160,9 +159,6 @@ export function RoomDesignerEditor() {
     const y = ((e.clientY - box.top) / box.height) * 100;
     setFixtures((fs) => fs.map((f) => f.id === dragRef.current!.id ? { ...f, x: Math.max(0, Math.min(90, x)), y: Math.max(0, Math.min(90, y)) } : f));
   };
-
-  // Old photo-mode URLs should open the real image-editing studio instead of the CSS-only 2D mockup.
-  if (!projectId && routeParams.get("mode") === "photo") return <Navigate to="/ai-room-visualizer" replace />;
 
   return (
     <Container style={{ padding: "var(--idea-space-6) var(--idea-space-5)" }}>
