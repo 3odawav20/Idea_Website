@@ -27,3 +27,18 @@ jobs:
         run: php -l server/cpanel/api/visualize.php
       - name: Check cPanel routing assets
         run: test -s dist/api/visualize.php && test -s dist/.htaccess
+
+  runpod-surface-lock:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd
+      - name: PHP surface compositor syntax
+        run: php -l server/runpod/surface-lock.php && php -l tests/runpod-surface-lock.php
+      - name: Verify furniture and room geometry pixel locks
+        run: php tests/runpod-surface-lock.php
