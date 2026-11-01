@@ -136,7 +136,20 @@ export function AiVisualizerStudio() {
           }
         } catch { /* user can upload a sample from the material panel */ }
       }
-      if (!form.has("material")) throw new Error(tr(
+      if (!form.has("material")) {
+        // The published Art Ceramic catalogue is on a different origin. Browsers
+        // may block its pixels with CORS even while <img> displays correctly.
+        // The PHP adapter can retrieve this one trusted source under strict limits.
+        try {
+          const source = new URL(selectedProduct.image);
+          if (source.protocol === "https:" && source.hostname === "dashboard.artceramic-egypt.com"
+              && /^\/uploads\/[a-zA-Z0-9_./-]+\.(?:jpe?g|png|webp)$/i.test(source.pathname)
+              && !source.pathname.includes("..") && !source.search && !source.hash) {
+            form.append("materialUrl", source.href);
+          }
+        } catch { /* require an uploaded material sample */ }
+      }
+      if (!form.has("material") && !form.has("materialUrl")) throw new Error(tr(
         "صورة المنتج غير متاحة للمعالجة المباشرة. ارفع صورة الخامة الأصلية من لوحة الخامة للحفاظ على شكلها.",
         "The product image cannot be read securely. Upload an original material sample to preserve its appearance."
       ));
@@ -149,8 +162,16 @@ export function AiVisualizerStudio() {
       });
       const data = await response.json().catch(() => null) as { image?: string; error?: string } | null;
       if (!response.ok || !data?.image) {
-        if (response.status === 503) throw new Error(tr("محرك الصور لسه محتاج إعداد Gemini API على السيرفر.", "Gemini API needs server configuration before image rendering is available."));
-        throw new Error(data?.error || tr("تعذر إنشاء الصورة. حاول مرة تانية.", "Unable to generate the image. Try again."));
+        if (data?.error) throw new Error(data.error);
+        if (response.status === 404 || response.headers.get("content-type")?.includes("text/html")) throw new Error(tr(
+          "ملف معالجة الصور مش منشور على السيرفر: /api/visualize.php",
+          "Image API is not deployed at /api/visualize.php."
+        ));
+        if (response.status === 503) throw new Error(tr(
+          "محرك معالجة الصور غير مهيأ على السيرفر. راجع إعدادات API.",
+          "Image backend is not configured on the server."
+        ));
+        throw new Error(tr("تعذر إنشاء الصورة. حاول مرة تانية.", "Unable to generate the image. Try again."));
       }
       if (!/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$/.test(data.image)) throw new Error("Invalid rendering response");
       setCompare(50);
