@@ -1,0 +1,32 @@
+{
+  "date_utc": "2026-10-18T22:29:54.438445+00:00",
+  "source_file": "src\\app\\data\\artceramic.json",
+  "catalogue_total": 475,
+  "unique_ids": 475,
+  "unique_slugs": 475,
+  "repeated_product_names": 36,
+  "unique_primary_urls": 475,
+  "all_unique_gallery_and_primary_urls": 3434,
+  "image_checks": {
+    "ok": 227,
+    "low_resolution": 226,
+    "network_TimeoutError": 19,
+    "network_URLError": 3
+  },
+  "flags": {
+    "repeated_name_check_variant": 73,
+    "product_code_not_in_source": 475,
+    "model_not_in_source": 475,
+    "localized_names_not_in_source": 475,
+    "individual_product_url_not_in_source": 475,
+    "primary_low_resolution": 226,
+    "primary_network_TimeoutError": 19,
+    "primary_network_URLError": 3,
+    "primary_repeated_in_gallery": 1
+  },
+  "network_image_checks_enabled": true,
+  "all_gallery_images_checked": false,
+  "quality_threshold": "700x500 px; inspect artistic/technical suitability manually; no automatic image filters or source substitution",
+  "known_provenance_limits": "Art Ceramic export lacks per-product model/SKU, verified category, source product URL and localized names; must not fabricate them.",
+  "note": "Only 475 products from committed artceramic.json; pending/staged external supplier API is excluded. This audit does not certify correctness against manufacturer documentation or appearance on every physical phone."
+}

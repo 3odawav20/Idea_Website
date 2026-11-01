@@ -1,24 +1,30 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import { projectId, publicAnonKey } from "../../../utils/supabase/info";
 
 /**
- * The browser uses only the public anon key. Service-role credentials must
- * remain in server-side Supabase functions and are intentionally never read
- * by Vite.
+ * Production authentication MUST be configured with a live Supabase project.
+ * Never use a generated/deleted project ID or silently fall back to a stale
+ * endpoint. Vite's VITE_* values are PUBLIC and may contain only the
+ * publishable/anon key — never a service-role or secret key.
  */
-// Vercel values take precedence. The connected Make project supplies a safe
-// public fallback so the deployed preview does not fail closed merely because
-// the two optional Vite variables have not been copied into Vercel yet.
-const url = import.meta.env.VITE_SUPABASE_URL || `https://${projectId}.supabase.co`;
-const anonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || publicAnonKey;
+const url = String(import.meta.env.VITE_SUPABASE_URL || "").trim().replace(/\/+$/, "");
+const anonKey = String(import.meta.env.VITE_SUPABASE_ANON_KEY || "").trim();
+
+function isValidAuthEndpoint(value: string): boolean {
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" && Boolean(parsed.hostname) &&
+      !parsed.username && !parsed.password && !parsed.search && !parsed.hash;
+  } catch {
+    return false;
+  }
+}
 
 export const backendConfigurationError =
-  "The production backend is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY before enabling account features.";
+  "Authentication is temporarily unavailable: this site has no working Supabase project configured. The site administrator must configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for an active project and redeploy.";
 
-export const isSupabaseConfigured = Boolean(url && anonKey);
-
+export const isSupabaseConfigured = isValidAuthEndpoint(url) && Boolean(anonKey);
 export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(url!, anonKey!, {
+  ? createClient(url, anonKey, {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
