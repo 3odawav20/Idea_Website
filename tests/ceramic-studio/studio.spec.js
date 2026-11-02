@@ -36,7 +36,7 @@ test("room upload, custom material, surface selection, compare, download and sav
     });
   expect(changed).toBe(true);
   await studio.getByLabel("مقارنة قبل وبعد").fill("75");
-  await expect(studio.locator(".result-image")).toHaveAttribute("style", /25%/);
+  await expect(studio.locator(".result-image")).toHaveAttribute("style", /inset\(0px 0px 0px 75%\)/);
   const download = page.waitForEvent("download");
   await studio.getByRole("button", { name: "تنزيل", exact: true }).click();
   expect((await download).suggestedFilename()).toMatch(/idea-preview.*png/);
