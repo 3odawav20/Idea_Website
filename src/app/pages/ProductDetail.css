@@ -555,3 +555,39 @@
     transition: none;
   }
 }
+
+
+/* Verified surface-material presentation: no room photography in tile galleries. */
+.idea-product-hero--material{min-height:0;display:block;overflow:visible;background:#f9f8f5;color:#242424;border-bottom:1px solid #e4e0d8}
+.idea-product-hero--material .idea-product-hero-copy{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);align-items:center;gap:clamp(32px,5vw,84px);padding-block:clamp(36px,5vw,76px)!important;color:#242424}
+.idea-product-hero--material .idea-product-hero-details{min-width:0}
+.idea-product-hero--material .idea-product-hero-copy h1{color:#222;font-size:clamp(32px,4vw,63px);line-height:1.08;letter-spacing:-.025em}
+.idea-product-hero--material .idea-product-hero-copy p{color:#65615a}
+.idea-product-hero--material .idea-product-hero-copy .idea-eyebrow{color:#91713e}
+.idea-product-hero--material .idea-product-identity{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:27px;gap:19px}
+.idea-product-hero--material .idea-product-identity dt{color:#777166}
+.idea-product-hero--material .idea-product-identity dd{color:#2d2a26}
+.idea-product-hero--material .idea-product-identity>div{border-color:#c4a879}
+.idea-product-hero-media{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:420px;padding:clamp(18px,3vw,35px);background:white;border:1px solid #e8e5df;box-shadow:0 22px 50px rgba(30,27,24,.06)}
+.idea-product-hero-media>button{display:grid;place-items:center;min-height:340px;width:100%;border:0;background:transparent;cursor:zoom-in}
+.idea-product-hero-media>button img{max-width:100%;max-height:clamp(300px,32vw,470px);width:auto;height:auto;object-fit:contain;filter:drop-shadow(0 9px 12px rgba(0,0,0,.095))}
+.idea-product-hero-media small{color:#7a766f;font-size:11px;letter-spacing:.05em;text-align:center;margin-top:14px}
+.idea-product-missing-face{display:grid;place-content:center;min-height:300px;max-width:400px;padding:35px;color:#6d675e;text-align:center;border:1px dashed #c7c1b5;line-height:1.65}
+.idea-product-hero--material .idea-admin-price{background:#fff;color:#27221b;border-color:#d9aa6c}
+.idea-product-hero--material .idea-admin-price span{color:#776d5e}
+.idea-product-gallery-stage{background:#fff}
+.idea-product-enlarge{display:grid;place-items:center;width:100%;height:100%;padding:clamp(12px,3vw,30px);border:0;background:transparent;cursor:zoom-in}
+.idea-product-enlarge>img{width:100%;height:100%;object-fit:contain}
+.idea-product-photo-gallery .idea-product-gallery-thumbs img{object-fit:contain;background:#f8f7f4}
+.idea-product-formats-section .idea-product-swatch-image img{object-fit:contain;background:#f8f7f4;padding:15px}
+.idea-material-lightbox{position:fixed;inset:0;max-width:min(96vw,1180px);max-height:95vh;width:100%;height:94vh;box-sizing:border-box;padding:0;border:1px solid #d8d1c6;background:#fff;color:#212121;box-shadow:0 30px 90px rgba(0,0,0,.4);overflow:hidden}
+.idea-material-lightbox::backdrop{background:rgba(10,11,12,.88);backdrop-filter:blur(7px)}
+.idea-material-lightbox[open]{display:flex;flex-direction:column}
+.idea-material-lightbox-controls{display:flex;align-items:center;gap:8px;padding:13px 20px;border-bottom:1px solid #eae7e0;background:#faf9f7}
+.idea-material-lightbox-controls span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px;font-weight:650}
+.idea-material-lightbox-controls button{min-width:40px;min-height:40px;padding:7px 12px;border:1px solid #d9d5ce;background:#fff;color:#242424;cursor:pointer}
+.idea-material-lightbox-image{flex:1;min-height:0;display:grid;place-items:center;overflow:auto;padding:25px}
+.idea-material-lightbox-image img{max-width:100%;max-height:100%;object-fit:contain;transform-origin:center;transition:transform .18s ease}
+@media(max-width:850px){.idea-product-hero--material .idea-product-hero-copy{grid-template-columns:1fr;gap:22px}.idea-product-hero-media{min-height:300px}.idea-product-hero-media>button{min-height:240px}.idea-product-hero-media>button img{max-height:300px}}
+@media(max-width:520px){.idea-product-hero--material .idea-product-identity{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.idea-product-hero-media{padding:14px}.idea-product-hero--material .idea-product-hero-copy{padding-block:20px!important}.idea-material-lightbox-controls{padding:9px}.idea-material-lightbox-image{padding:12px}}
+@media(prefers-reduced-motion:reduce){.idea-material-lightbox-image img{transition:none}}
