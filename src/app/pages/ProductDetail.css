@@ -555,3 +555,36 @@
     transition: none;
   }
 }
+
+
+/* IDEA PRODUCT PRESENTATION — sourced tile/slab only, clean editorial sheet. */
+.idea-product-material-hero{min-height:0;display:block;padding-block:clamp(30px,4vw,70px);background:#fff;color:#201f1c;border-bottom:1px solid #e7e3dc;overflow:visible}
+.idea-material-hero-layout{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(340px,.92fr);gap:clamp(30px,5vw,90px);align-items:center}
+.idea-material-hero-visual{position:relative;display:flex;justify-content:center;align-items:center;min-height:420px;aspect-ratio:1.06;background:linear-gradient(135deg,#f7f7f5,#efeeeb);border:1px solid #efede9;overflow:hidden;padding:clamp(18px,3vw,42px)}
+.idea-material-hero-visual>img{position:static;inset:auto;width:100%;height:100%;max-height:620px;object-fit:contain;filter:none;display:block}
+.idea-material-photo-label{position:absolute;inset-inline-start:18px;bottom:17px;max-width:calc(100% - 36px);font-size:10px;letter-spacing:.09em;font-weight:700;color:#54524e;background:rgba(255,255,255,.92);border:1px solid #e0ddd8;padding:8px 12px}
+.idea-material-hero-missing{padding:26px;max-width:360px;text-align:center;color:#5e5852;font-size:14px;line-height:1.8}
+.idea-material-hero-summary{min-width:0;color:#25231e}
+.idea-material-eyebrow{font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:#a16e37;margin-bottom:20px}
+.idea-material-hero-summary h1{margin:0;font-size:clamp(32px,4.5vw,70px);line-height:1.07;font-weight:650;letter-spacing:-.04em;color:#201c18;overflow-wrap:anywhere}
+.idea-material-subtitle{font-size:14px;line-height:1.8;color:#716c65;margin:17px 0 25px}
+.idea-material-hero-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 25px;margin:0}
+.idea-material-hero-facts>div{padding:17px 0;border-top:1px solid #e6e2dc;min-width:0}
+.idea-material-hero-facts dt{font-size:11px;letter-spacing:.03em;color:#7b7369;font-weight:500;margin:0}
+.idea-material-hero-facts dd{font-size:15px;line-height:1.5;margin:7px 0 0;font-weight:650;color:#29251f;overflow-wrap:anywhere}
+.idea-product-material-hero .idea-admin-price{background:#f4f0e8;border-color:#d6c09f;color:#31251b;margin:19px 0}
+.idea-product-material-hero .idea-admin-price span{color:#625b51}
+.idea-product-material-hero .idea-admin-price strong{color:#7b5028}
+.idea-material-try-link{min-height:54px;display:inline-flex;align-items:center;justify-content:center;gap:12px;text-decoration:none;background:#201f1d;color:#fff;padding:14px 22px;margin-top:24px;font-size:13px;font-weight:700;transition:background .2s,transform .2s}
+.idea-material-try-link:hover{background:#86613c;transform:translateY(-1px)}
+.idea-material-try-link:focus-visible{outline:3px solid #b68b5a;outline-offset:3px}
+.idea-material-authenticity-note{color:#7b7369;font-size:11px;line-height:1.7;margin:17px 0 0}
+.idea-material-catalogue-detail .idea-product-swatch-image{background:#f6f5f2;border:1px solid #e5e3dd;display:flex;align-items:center;justify-content:center}
+.idea-material-catalogue-detail .idea-product-swatch img{object-fit:contain;padding:8px}
+.idea-material-catalogue-detail .idea-technical-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.idea-material-catalogue-detail .idea-product-gallery-stage{background:#f7f6f4}
+.idea-material-catalogue-detail .idea-product-gallery-stage img{object-fit:contain}
+.idea-material-swatch-unavailable{padding:12px;color:#7b7369;font-size:11px;text-align:center}
+@media(max-width:900px){.idea-material-hero-layout{grid-template-columns:minmax(0,1fr)}.idea-material-hero-visual{min-height:300px;max-height:580px}.idea-material-hero-summary h1{font-size:clamp(30px,7vw,58px)}}
+@media(max-width:580px){.idea-product-material-hero{padding-block:24px}.idea-material-hero-visual{min-height:260px;aspect-ratio:1.12;padding:15px}.idea-material-photo-label{inset-inline-start:10px;bottom:10px;font-size:9px;padding:6px}.idea-material-hero-facts{gap:0 14px}.idea-material-hero-facts dd{font-size:13px}.idea-material-catalogue-detail .idea-technical-grid{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){.idea-material-try-link{transition:none}.idea-material-try-link:hover{transform:none}}
