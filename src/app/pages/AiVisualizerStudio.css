@@ -125,3 +125,11 @@
 .idea-studio .idea-studio-library .idea-atlas-card-bottom span:last-child{color:#f0c993}
 .idea-studio .idea-studio-library .idea-studio-no-products strong{color:#f2ece4}
 .idea-studio .idea-studio-library .idea-atlas-loadmore button{color:#f0c993}
+
+
+/* Keep the empty AI canvas readable even when the parent storefront uses a light palette. */
+.idea-studio .idea-studio-stage{background:radial-gradient(circle at 50% 45%,#253034 0%,#101719 50%,#070a0b 100%)}
+.idea-studio .idea-studio-empty{background:rgba(14,19,21,.91);border-color:rgba(217,170,108,.34);color:#f2ece4}
+.idea-studio .idea-studio-empty strong{color:#f2ece4}
+.idea-studio .idea-studio-empty>span:not(.idea-studio-scan-icon){color:#d0c9be}
+.idea-studio .idea-studio-empty small{color:#f0c993}
