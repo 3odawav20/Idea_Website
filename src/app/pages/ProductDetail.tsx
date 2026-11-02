@@ -1,4 +1,6 @@
 import {ProductPurchase} from './Platform';
+import { numericIdeaCode, documentedManufacturer } from '../data/productIdentity';
+import { useBackend } from '../backend/db';
 import { useUiText as useLocaleText } from "../i18n/useUiText";
 import { Link, useParams, useNavigate } from "react-router";
 import { Heart, GitCompare, ChevronRight } from "lucide-react";
@@ -8,14 +10,16 @@ import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Button, Container, Section, Tag } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
+import { TileAreaCalculator } from "../components/TileAreaCalculator";
 
 export function ProductDetail() {
   const uiText = useLocaleText();
+  const {session}=useBackend();
   const navigate=useNavigate();
 
   const { slug } = useParams();
   const { t, locale } = useI18n();
-  const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote } = useStore();
+  const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote, updateQuoteQty } = useStore();
   const product = products.find((p) => p.slug === slug);
   const [activeImg, setActiveImg] = useState(0);
   const [failedImages, setFailedImages] = useState<number[]>([]);
@@ -35,7 +39,7 @@ export function ProductDetail() {
   const related = products.filter((p) => p.id !== product.id && (
     product.family
       ? Boolean(p.family && p.family === product.family)
-      : p.brand === product.brand && p.collection === product.collection &&
+        : Boolean(documentedManufacturer(product) && documentedManufacturer(p) === documentedManufacturer(product)) && p.collection === product.collection &&
         p.finish === product.finish &&
         p.sizes.some((size) => product.sizes.some((own) => own.label === size.label))
   )).slice(0, 4);
@@ -85,7 +89,8 @@ export function ProductDetail() {
 
           {/* Info */}
           <div>
-            <div className="idea-eyebrow">{uiText(product.brand)}</div>
+            <div className="idea-eyebrow">{uiText(documentedManufacturer(product) || "Manufacturer pending verification / المصنع قيد التوثيق")}</div>
+            {numericIdeaCode(product) && <p dir="ltr" style={{fontWeight:750,color:"var(--idea-gold)",marginBottom:10}}>IDEA #{numericIdeaCode(product)}</p>}
             <h1 className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-text)", margin: "var(--idea-space-2) 0 var(--idea-space-3)" }}>{uiText(product.name[locale])}</h1>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-4)" }}>
               {uiText(product.variant && <Tag>{uiText(product.variant)}</Tag>)}
@@ -105,11 +110,15 @@ export function ProductDetail() {
 
             <div className="idea-eyebrow" style={{ marginBottom: 10 }}>{uiText(t("label.sizes"))}</div>
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "var(--idea-space-5)" }}>
-              {uiText(product.sizes.map((s) => <Tag key={s.id}>{uiText(s.label)}</Tag>))}
+              {uiText(session ? product.sizes.map((s) => <Tag key={s.id}>{uiText(s.originalSourceValue || s.label)}</Tag>) : <Link to="/login">Sign in to view source dimensions / سجل الدخول لعرض المقاسات</Link>)}
             </div>
 
+            {session && unit === "sqm" && <TileAreaCalculator product={product} onAdd={(sqm)=>{
+              try { addToQuote(product.id, "sqm"); updateQuoteQty(product.id, sqm); }
+              catch { navigate("/login"); }
+            }} />}
             <div style={{ display: "flex", gap: "var(--idea-space-3)", flexWrap: "wrap" }}>
-              <Button size="lg" onClick={() => addToQuote(product.id, unit)}>{uiText(t("action.requestPrice"))}</Button>
+              <Button size="lg" onClick={() => { try { addToQuote(product.id, unit); } catch { navigate("/login"); } }}>{uiText(t("action.requestPrice"))}</Button>
                 <Button variant="ghost" onClick={() => {try{toggleFavorite(product.id);}catch{navigate('/login');}}}><Heart size={16} fill={fav ? "var(--idea-gold-bright)" : "none"} /> {uiText(t("action.favorite"))}</Button>
               <Button variant="ghost" onClick={() => toggleCompare(product.id)}><GitCompare size={16} /> {uiText(t("action.compare"))}</Button>
             </div>

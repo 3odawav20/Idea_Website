@@ -160,8 +160,8 @@ export function RoomDesignerEditor() {
   };
 
   const addAllToQuote = () => {
-    (["floor", "wallA", "wallB"] as SurfaceId[]).forEach((s) => { const p = surfProduct(s); if (p) addToQuote(p.id, "sqm"); });
-    nav("/request-quote/new");
+    try { (["floor", "wallA", "wallB"] as SurfaceId[]).forEach((s) => { const p = surfProduct(s); if (p) addToQuote(p.id, "sqm"); });
+      nav("/request-quote/new"); } catch { nav("/login"); }
   };
 
   const onDrag = (e: React.MouseEvent) => {

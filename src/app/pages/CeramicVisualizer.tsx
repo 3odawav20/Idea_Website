@@ -6,6 +6,7 @@ import { generationAccess, accountEndpoint } from "../backend/accountsApi";
 import CeramicStudio from "../ceramic-studio/CeramicStudio.jsx";
 import "../ceramic-studio/studio.css";
 import { isSurfaceProduct } from '../components/TryMaterialLink';
+import { tileFaceReference, numericIdeaCode, documentedManufacturer } from '../data/productIdentity';
 import { useI18n } from '../i18n/i18n';
 
 export function CeramicVisualizer() {
@@ -34,7 +35,8 @@ export function CeramicVisualizer() {
         .filter(
           (p) =>
             isSurfaceProduct(p) &&
-            p.image,
+            Boolean(tileFaceReference(p)) &&
+            Boolean(numericIdeaCode(p)),
         )
         .map((p) => ({
           id: p.id,
@@ -56,12 +58,13 @@ export function CeramicVisualizer() {
             p.sizes?.[0]?.widthMm && p.sizes?.[0]?.heightMm
               ? `${p.sizes[0].widthMm / 10} × ${p.sizes[0].heightMm / 10}`
               : undefined,
-          tone: p.brand,
+          tone: documentedManufacturer(p) || (locale === 'ar' ? 'المصنع قيد التوثيق' : 'Manufacturer pending verification'),
+          ideaCode: numericIdeaCode(p),
           // Prefer the actual tile swatch over a staged room photograph.
-          src: p.source?.original?.tiles?.[0] || p.image,
+          src: tileFaceReference(p),
           product: true,
         })),
-    [products],
+    [products, locale],
   );
   const supplierMaterial = supplier ? { id: `supplier:${supplier.id}`, name: supplier.title, kind: 'كتالوج IDEA',
     category: ({ceramic:'سيراميك',porcelain:'بورسلين',marble:'رخام',granite:'حجر طبيعي'} as Record<string,string>)[supplier.specifications.material],
@@ -87,8 +90,8 @@ export function CeramicVisualizer() {
           let cache:Record<string,any>={};try{cache=JSON.parse(localStorage.getItem('idea.supplierProducts')||'{}');}catch{}
           cache[supplier.id]=supplier;localStorage.setItem('idea.supplierProducts',JSON.stringify(cache));
         }
-        addToQuote(id, "sqm");
-        navigate("/request-quote/new");
+        try { addToQuote(id, "sqm"); navigate("/request-quote/new"); }
+        catch { navigate("/login"); }
       }}
     />
   );

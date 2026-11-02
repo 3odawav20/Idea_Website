@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router";
 import { Heart, GitCompare, ShoppingCart, Check } from "lucide-react";
 import { useState } from "react";
 import type { Product } from "../data/types";
+import { numericIdeaCode, documentedManufacturer } from "../data/productIdentity";
+import { useBackend } from "../backend/db";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
@@ -10,6 +12,9 @@ import { TryMaterialLink, isSurfaceProduct } from './TryMaterialLink';
 
 export function ProductCard({ product }: { product: Product }) {
   const uiText = useLocaleText();
+  const { session } = useBackend();
+  const manufacturer = documentedManufacturer(product);
+  const numericCode = numericIdeaCode(product);
   const navigate=useNavigate();
 
   const { t, locale } = useI18n();
@@ -48,18 +53,19 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{uiText(product.brand)}</div>
+        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>{uiText(manufacturer || "Manufacturer pending verification")}</div>
+        {numericCode && <small dir="ltr" style={{fontWeight:700,letterSpacing:".07em",color:"var(--idea-gold)"}}>IDEA #{numericCode}</small>}
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {uiText(product.name[locale])}
         </Link>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
-          {uiText(product.sizes[0] && <Tag>{uiText(product.sizes[0].label)}</Tag>)}
+          {uiText(session && product.sizes[0] && <Tag>{uiText(product.sizes[0].originalSourceValue || product.sizes[0].label)}</Tag>)}
           {uiText(product.finish && <Tag>{uiText(product.finish)}</Tag>)}
           {uiText(product.variant && <Tag>{uiText(product.variant)}</Tag>)}
         </div>
         <div style={{ marginTop: "auto", paddingTop: "var(--idea-space-3)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
           <span style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", fontStyle: "italic" }}>{uiText(t("price.hidden"))}</span>
-          <button onClick={() => addToQuote(product.id, unit)} style={{
+          <button onClick={() => { try { addToQuote(product.id, unit); } catch { navigate("/login"); } }} style={{
             display: "inline-flex", alignItems: "center", gap: 6, background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)",
             color: "var(--idea-gold-bright)", borderRadius: "var(--idea-radius-full)", padding: "6px 14px", cursor: "pointer", fontSize: "var(--idea-text-xs)", textTransform: "uppercase", letterSpacing: "0.05em",
           }}>

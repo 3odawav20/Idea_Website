@@ -140,5 +140,6 @@ test("AI upload uses automatic surface selection and selecting a store product r
   await expect(studio.getByRole("status")).toContainText("صورتك جاهزة");
   await expect(studio.locator(".edit-hint")).toHaveCount(0);
   await studio.locator(".material-card").first().click();
+  await studio.locator("button.generate").click();
   await expect(studio.getByRole("status")).toContainText("سجّل الدخول");
 });

@@ -45,6 +45,11 @@ export interface Product {
   brand: string;
   model: string;
   code?: string; // exact source code only; never generated from an internal ID
+  ideaCode?: string; // separate IDEA internal numeric catalogue code
+  manufacturerName?: string | null; // actual factory, not reseller or source site
+  manufacturerVerified?: boolean; // only verified manufacturer evidence
+  sellerName?: string | null; // seller/distributor, not manufacturer
+  catalogueSourceName?: string; // provenance; never presented as the manufacturer
   origin?: string; // country of origin
   texture?: string; // Marble / Wood / Stone …
   finish?: string; // Matte / Glossy / Semi-Matte …

@@ -153,7 +153,7 @@ export default function CeramicStudio({
     [showMask, setShowMask] = useState(false),
     [split, setSplit] = useState(50),
     [busy, setBusy] = useState(false),
-    [autoApply, setAutoApply] = useState(true),
+    [autoApply, setAutoApply] = useState(false),
     [notice, setNotice] = useState(""),
     [points, setPoints] = useState(floor),
     [manualSelection, setManualSelection] = useState(false),
@@ -207,6 +207,7 @@ export default function CeramicStudio({
     () =>
       materials.filter(
         (m) =>
+          (mode !== "ai" || Boolean(m.product && m.ideaCode)) &&
           (filter === "الكل" ||
             (filter === "كتالوج IDEA"
               ? m.product
@@ -214,11 +215,11 @@ export default function CeramicStudio({
                 ? !m.product && m.kind !== "خامتي الخاصة"
                 : m.category === filter || m.kind === filter)) &&
           (!search ||
-            (m.name + " " + m.tone)
+            (m.name + " " + m.tone + " " + (m.ideaCode || ""))
               .toLowerCase()
               .includes(search.toLowerCase())),
       ),
-    [materials, filter, search],
+    [materials, filter, search, mode],
   );
   useEffect(() => {
     if (selected.tileSize) setSize(selected.tileSize);
@@ -305,6 +306,11 @@ export default function CeramicStudio({
   async function generate(materialChoice = selected) {
     if (mode === "preview" && points.length !== 4) {
       notify("حدّد زوايا السطح الأربع أولًا.");
+      return;
+    }
+    if (mode === "ai" && authenticate) { try { await authenticate(); } catch (e) { notify(e); return; } }
+    if (mode === "ai" && (!materialChoice?.product || !materialChoice?.ideaCode)) {
+      notify("Please choose a verified IDEA catalogue tile with a numeric code before generation.");
       return;
     }
     setBusy(true);
@@ -728,7 +734,7 @@ export default function CeramicStudio({
                   setManualSelection(false);
                   setEditing(false);
                   setNewPoints([]);
-                  setSelected(catalog[0]);
+                  setSelected(materialOptions[0] || catalog[0]);
                   setSize("60 × 60");
                   setAngle(0);
                   setGrout("#d8d1c5");
@@ -825,6 +831,7 @@ export default function CeramicStudio({
                       ))}
                     </div>
                     <b>{uiText(m.name)}</b>
+                    {m.ideaCode && <small dir="ltr" className="idea-material-code">IDEA #{m.ideaCode}</small>}
                     <small>
                       {uiText(m.product
                         ? m.kind

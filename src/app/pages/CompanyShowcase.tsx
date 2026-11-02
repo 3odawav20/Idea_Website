@@ -34,7 +34,8 @@ export function CompanyShowcase() {
         <h3 style={{fontSize:'var(--idea-text-lg)',margin:'16px 0 8px'}}>{item.title}</h3><p>{item.specifications?.brand}</p><p>{item.specifications?.dimensions}</p>{item.specifications?.description&&<p style={{color:'var(--idea-text-muted)',lineHeight:1.8}}>{item.specifications.description}</p>}
         <Button onClick={()=>{
           let cache:any={};try{cache=JSON.parse(localStorage.getItem('idea.supplierProducts')||'{}');}catch{}
-          cache[item.id]=item;localStorage.setItem('idea.supplierProducts',JSON.stringify(cache));addToQuote('supplier:'+item.id,'sqm');
+          try { addToQuote('supplier:'+item.id,'sqm'); cache[item.id]=item; localStorage.setItem('idea.supplierProducts',JSON.stringify(cache)); }
+          catch { window.location.assign('/login'); }
         }}><ShoppingCart size={16}/>{quote.some(row=>row.productId==='supplier:'+item.id)?text('Added to quote cart','أُضيف لسلة الأسعار'):text('Add to quote cart','أضف لسلة الأسعار')}</Button>
         <Link to="/request-quote/new" style={{display:'inline-block',marginTop:12}}>{text('Open quotation cart','فتح سلة طلبات الأسعار')}</Link>
         {['ceramic','porcelain','marble','granite'].includes(item.specifications?.material) && item.specifications?.image && <TryMaterialLink supplierId={item.id} />}

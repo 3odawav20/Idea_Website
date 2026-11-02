@@ -114,12 +114,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
         void accountRequest('favorite',{product_id:id,active:!wasFavorite}).catch(()=>setFavorites(current=>wasFavorite?[...new Set([...current,id])]:current.filter(value=>value!==id)));
       },
       toggleCompare: (id) => {if(!session)return;const before=compare;const active=!compare.includes(id);if(active&&compare.length>=4)return;setCompare(active?[...compare,id]:compare.filter(x=>x!==id));void platformRequest('comparison-save',{product_id:id,active}).catch(()=>setCompare(before));},
-      addToQuote: (id, unit) =>
+      addToQuote: (id, unit) => {
+        if (!session) throw new Error("AUTH_REQUIRED");
         setQuote((q) =>
           q.some((i) => i.productId === id)
             ? q
             : [...q, { productId: id, quantity: unit === "sqm" ? 10 : 1, unit }]
-        ),
+        );
+      },
       updateQuoteQty: (id, qty) =>
         setQuote((q) => q.map((i) => (i.productId === id ? { ...i, quantity: Number.isFinite(qty)?Math.min(1000000,Math.max(0.001,qty)):1 } : i))),
       removeFromQuote: (id) => setQuote((q) => q.filter((i) => i.productId !== id)),
