@@ -73,6 +73,13 @@ export function AiVisualizerStudio() {
   const selectedProduct = products.find((product) => product.id === selectedId || product.slug === selectedId) || null;
 
   const [search, setSearch] = useState("");
+  const [atlasGroup, setAtlasGroup] = useState<"all" | "ceramics" | "porcelain" | "marble" | "marble-look">("all");
+  const [atlasBrand, setAtlasBrand] = useState("");
+  const [atlasFinish, setAtlasFinish] = useState("");
+  const [atlasSize, setAtlasSize] = useState("");
+  const [atlasColor, setAtlasColor] = useState("");
+  const [atlasTexture, setAtlasTexture] = useState("");
+  const [atlasVisibleCount, setAtlasVisibleCount] = useState(24);
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoMeta, setPhotoMeta] = useState<{ width: number; height: number; megapixels: string } | null>(null);
@@ -99,14 +106,59 @@ export function AiVisualizerStudio() {
   const safePhotoUrl = safeBlobUrl(photoUrl);
   const safeMaterialUrl = safeBlobUrl(materialUrl);
   const busy = !["idle", "ready", "failed", "verification_failed"].includes(stage);
-  const eligibleProducts = useMemo(() => products.filter((product) => (
-    product.image
-    && (product.collection === "ceramics" || product.collection === "porcelain")
-    && (!search || [
-      product.name.en, product.name.ar, product.brand, product.manufacturer,
-      product.model, product.code, product.finish, product.collection,
-    ].some((value) => String(value || "").toLowerCase().includes(search.toLowerCase())))
-  )), [products, search]);
+  // Keep product provenance intact: a marble pattern is NOT proof of natural marble.
+  const isMarbleLook = (product: (typeof products)[number]) =>
+    product.collection !== "marble" && /marble|calacatta|carrara|statuario|onyx|رخام|كالاكاتا|كرارا|أونيكس/i.test([
+      product.texture, product.source?.originalSurface, product.name.en, product.name.ar,
+    ].filter(Boolean).join(" "));
+  const materialLibrary = useMemo(() => products.filter((product) =>
+    Boolean(product.image) && product.status !== "sample" &&
+    (product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble")
+  ), [products]);
+  const atlasFacets = useMemo(() => {
+    const unique = (values: string[]) => [...new Set(values.map((value) => value.trim()).filter(Boolean))]
+      .sort((a, b) => a.localeCompare(b));
+    return {
+      brands: unique(materialLibrary.map((product) => product.manufacturer || product.brand)),
+      finishes: unique(materialLibrary.map((product) => product.finish || "")),
+      sizes: unique(materialLibrary.flatMap((product) => product.sizes.map((size) => size.label))),
+      colors: unique(materialLibrary.flatMap((product) => product.colors || [])),
+      textures: unique(materialLibrary.map((product) => product.texture || product.source?.originalSurface || "")),
+    };
+  }, [materialLibrary]);
+  const atlasCounts = useMemo(() => ({
+    all: materialLibrary.length,
+    ceramics: materialLibrary.filter((product) => product.collection === "ceramics").length,
+    porcelain: materialLibrary.filter((product) => product.collection === "porcelain").length,
+    marble: materialLibrary.filter((product) => product.collection === "marble").length,
+    "marble-look": materialLibrary.filter(isMarbleLook).length,
+  }), [materialLibrary]);
+  const eligibleProducts = useMemo(() => {
+    const query = search.trim().toLocaleLowerCase();
+    return materialLibrary.filter((product) => {
+      if (atlasGroup === "marble-look" && !isMarbleLook(product)) return false;
+      if (atlasGroup === "ceramics" && product.collection !== "ceramics") return false;
+      if (atlasGroup === "porcelain" && product.collection !== "porcelain") return false;
+      if (atlasGroup === "marble" && product.collection !== "marble") return false;
+      if (atlasBrand && (product.manufacturer || product.brand) !== atlasBrand) return false;
+      if (atlasFinish && product.finish !== atlasFinish) return false;
+      if (atlasSize && !product.sizes.some((size) => size.label === atlasSize)) return false;
+      if (atlasColor && !product.colors?.includes(atlasColor)) return false;
+      if (atlasTexture && (product.texture || product.source?.originalSurface || "") !== atlasTexture) return false;
+      return !query || [
+        product.name.en, product.name.ar, product.name.fr, product.brand, product.manufacturer,
+        product.model, product.code, product.finish, product.collection, product.texture,
+        product.type, product.variant, product.source?.originalSurface,
+        ...(product.colors || []), ...product.sizes.map((size) => size.label),
+      ].some((value) => String(value || "").toLocaleLowerCase().includes(query));
+    });
+  }, [materialLibrary, search, atlasGroup, atlasBrand, atlasFinish, atlasSize, atlasColor, atlasTexture]);
+  useEffect(() => setAtlasVisibleCount(24), [search, atlasGroup, atlasBrand, atlasFinish, atlasSize, atlasColor, atlasTexture]);
+  const visibleAtlasProducts = eligibleProducts.slice(0, atlasVisibleCount);
+  const resetAtlas = () => {
+    setSearch(""); setAtlasGroup("all"); setAtlasBrand(""); setAtlasFinish("");
+    setAtlasSize(""); setAtlasColor(""); setAtlasTexture("");
+  };
 
   useEffect(() => () => requestRef.current?.abort(), []);
   useEffect(() => () => { if (photoUrl) URL.revokeObjectURL(photoUrl); }, [photoUrl]);
@@ -187,6 +239,12 @@ export function AiVisualizerStudio() {
     setResult(null);
     setQuality(null);
     setError("");
+    window.requestAnimationFrame(() => {
+      document.querySelector(".idea-studio-workspace")?.scrollIntoView({
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+        block: "start",
+      });
+    });
   }
 
   async function accessToken() {
@@ -522,20 +580,80 @@ export function AiVisualizerStudio() {
         </aside>
       </div>
 
-      <section className="idea-studio-library">
+      <section className="idea-studio-library" id="idea-material-atlas" aria-labelledby="idea-atlas-heading">
+        <div className="idea-atlas-overline"><span className="idea-studio-kicker">IDEA / MATERIAL ATLAS 2030</span><span>{tr("كتالوج مستورد • يتوسع مع كل مورد جديد", "Source-linked catalogue · expanding with supplier imports")}</span></div>
         <div className="idea-studio-library-head">
-          <div><span className="idea-studio-kicker">IDEA / VERIFIED CATALOGUE</span><h2>{tr("مكتبة الخامات الحقيقية", "Real material library")}</h2><p>{tr("لا توجد منتجات مولّدة أو مواصفات مخترعة.", "No generated products or fabricated specifications.")}</p></div>
-          <label className="idea-studio-search"><Search size={17} /><input type="search" value={search} onChange={(event) => setSearch(event.target.value)} placeholder={tr("ابحث بالاسم أو المصنع أو الموديل", "Search name, manufacturer or model")} /></label>
+          <div>
+            <h2 id="idea-atlas-heading">{tr("عالم كامل من", "A universe of")} <em>{tr("الخامات المعمارية.", "architectural surfaces.")}</em></h2>
+            <p>{tr("سيراميك، بورسلين، وتصميمات بتأثير الرخام. اختر بلاطتك الحقيقية وشوفها في غرفتك.", "Ceramic, porcelain and marble-effect designs. Choose an actual catalogue product and visualize it in your own room.")}</p>
+          </div>
+          <div className="idea-atlas-total" aria-live="polite"><strong>{materialLibrary.length.toLocaleString()}</strong><span>{tr("خامة متاحة حاليًا", "catalogue materials")}</span></div>
         </div>
-        <div className="idea-studio-swatches">
-          {eligibleProducts.map((product) => (
-            <button type="button" key={product.id} onClick={() => chooseProduct(product.id)} className={selectedProduct?.id === product.id ? "selected" : ""}>
-              <span className="idea-studio-swatch-image"><img src={product.image} alt="" loading="lazy" />{selectedProduct?.id === product.id && <i><Check size={13} /></i>}</span>
-              <strong>{product.name[locale]}</strong><small>{product.manufacturer || product.brand}</small>
+        <div className="idea-atlas-categories" aria-label={tr("نوع الخامة", "Material categories")}>
+          {([
+            ["all", tr("كل الخامات", "All materials")],
+            ["ceramics", tr("السيراميك", "Ceramic")],
+            ["porcelain", tr("البورسلين", "Porcelain")],
+            ["marble", tr("الرخام الطبيعي", "Natural marble")],
+            ["marble-look", tr("تصميمات رخامية", "Marble effects")],
+          ] as const).map(([group, label]) => (
+            <button type="button" key={group} aria-pressed={atlasGroup === group}
+              className={atlasGroup === group ? "active" : ""} onClick={() => setAtlasGroup(group)}>
+              <span>{label}</span><small>{atlasCounts[group].toLocaleString()}</small>
             </button>
           ))}
         </div>
-        {!eligibleProducts.length && <div className="idea-studio-no-products">{tr("لا توجد خامات مطابقة.", "No matching materials.")}</div>}
+        <div className="idea-atlas-filterbar">
+          <label className="idea-studio-search"><Search size={18} /><input type="search" value={search} onChange={(event) => setSearch(event.target.value)}
+            placeholder={tr("دوّر بالاسم، الكود، الماركة، اللون أو المقاس...", "Search names, SKUs, brands, finishes, colours or sizes...")} /></label>
+          <div className="idea-atlas-facets">
+            {([
+              { key: "brand", label: tr("الشركة", "Brand"), value: atlasBrand, set: setAtlasBrand, options: atlasFacets.brands },
+              { key: "texture", label: tr("النقشة / الخامة", "Pattern"), value: atlasTexture, set: setAtlasTexture, options: atlasFacets.textures },
+              { key: "finish", label: tr("التشطيب", "Finish"), value: atlasFinish, set: setAtlasFinish, options: atlasFacets.finishes },
+              { key: "size", label: tr("المقاس", "Size"), value: atlasSize, set: setAtlasSize, options: atlasFacets.sizes },
+              { key: "color", label: tr("اللون", "Colour"), value: atlasColor, set: setAtlasColor, options: atlasFacets.colors },
+            ]).map((item) => (
+              <label className="idea-atlas-facet" key={item.key}><span>{item.label}</span>
+                <select value={item.value} onChange={(event) => item.set(event.target.value)}>
+                  <option value="">{tr("الكل", "All")}</option>
+                  {item.options.map((value) => <option value={value} key={value}>{value}</option>)}
+                </select>
+              </label>
+            ))}
+          </div>
+          <div className="idea-atlas-results"><span aria-live="polite">{tr("نتائج مطابقة", "Matching materials")}: <strong>{eligibleProducts.length.toLocaleString()}</strong></span>
+            <button type="button" onClick={resetAtlas}>{tr("مسح الفلاتر", "Reset filters")} <RotateCcw size={13} /></button>
+          </div>
+        </div>
+        <div className="idea-studio-swatches">
+          {visibleAtlasProducts.map((product) => (
+            <button type="button" key={product.id} onClick={() => chooseProduct(product.id)}
+              aria-pressed={selectedProduct?.id === product.id} className={selectedProduct?.id === product.id ? "selected" : ""}>
+              <span className="idea-studio-swatch-image">
+                <img src={product.image} alt="" loading="lazy" decoding="async" />
+                <span className="idea-atlas-card-kind">{product.collection === "marble" ? tr("رخام طبيعي", "Natural marble") : isMarbleLook(product) ? tr("تأثير رخامي", "Marble effect") : product.collection === "porcelain" ? tr("بورسلين", "Porcelain") : tr("سيراميك", "Ceramic")}</span>
+                {selectedProduct?.id === product.id && <i><Check size={13} /></i>}
+              </span>
+              <span className="idea-atlas-card-body">
+                <strong>{product.name[locale] || product.name.en}</strong>
+                <small>{product.manufacturer || product.brand}</small>
+                <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + product.finish : ""}</span>
+                <span className="idea-atlas-card-bottom"><span>{product.code || tr("بدون كود موثّق", "No verified SKU")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
+              </span>
+            </button>
+          ))}
+        </div>
+        {!eligibleProducts.length && <div className="idea-studio-no-products"><Search size={26} /><strong>{tr("مفيش خامات مطابقة للفلاتر دي", "No matching materials")}</strong><p>{tr("جرّب بحث تاني أو امسح الفلاتر.", "Try another search or clear your filters.")}</p><button type="button" onClick={resetAtlas}>{tr("عرض كل الخامات", "Browse all materials")}</button></div>}
+        {atlasVisibleCount < eligibleProducts.length && (
+          <div className="idea-atlas-loadmore">
+            <p>{tr("معروض", "Showing")} {visibleAtlasProducts.length.toLocaleString()} / {eligibleProducts.length.toLocaleString()}</p>
+            <button type="button" onClick={() => setAtlasVisibleCount((count) => count + 24)}>
+              {tr("استكشف خامات أكتر", "Explore more materials")} <ChevronDown size={17} />
+            </button>
+          </div>
+        )}
+        <p className="idea-atlas-disclaimer">{tr("الرخام الطبيعي مختلف عن السيراميك بتأثير الرخام. البيانات معروضة حسب مصدر كل كتالوج، وبعض السجلات المستوردة تحتاج مراجعة بشرية قبل الاعتماد التجاري.", "Natural marble differs from marble-effect tile. Specifications are shown as supplied by their source catalogues; some imported records still require human verification before commercial approval.")}</p>
       </section>
     </main>
   );

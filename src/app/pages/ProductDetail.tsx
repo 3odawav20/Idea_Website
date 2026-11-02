@@ -23,6 +23,7 @@ type Copy = { en: string; ar: string; fr: string };
 const COLLECTION_LABELS: Record<string, Copy> = {
   ceramics: { en: "Ceramic tiles", ar: "بلاط سيراميك", fr: "Carrelage céramique" },
   porcelain: { en: "Porcelain tiles", ar: "بلاط بورسلين", fr: "Carrelage en porcelaine" },
+  marble: { en: "Natural marble", ar: "رخام طبيعي", fr: "Marbre naturel" },
   "sanitary-ware": { en: "Sanitary ware", ar: "أدوات صحية", fr: "Sanitaires" },
   faucets: { en: "Faucets", ar: "خلاطات", fr: "Robinetterie" },
   "bathroom-sets": { en: "Bathroom sets", ar: "أطقم حمامات", fr: "Ensembles de salle de bain" },
@@ -99,7 +100,7 @@ export function ProductDetail() {
   const heroImage = gallery[0] || product.image;
   const visibleImage = gallery[activeImg] || heroImage;
   const activeImageFailed = failedImages.includes(activeImg);
-  const isTile = product.collection === "ceramics" || product.collection === "porcelain";
+  const isTile = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble";
   const unit = isTile ? "sqm" : "pieces";
   const fav = isFavorite(product.id);
   const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? product.collection.replaceAll("-", " ");
