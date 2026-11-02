@@ -164,7 +164,7 @@ export function ProductDetail() {
   )).slice(0, 4);
 
   return (
-    <main className="idea-catalogue-detail">
+    <main className={isTile ? "idea-catalogue-detail idea-material-catalogue-detail" : "idea-catalogue-detail"}>
       {isTile ? (
         <section className="idea-product-hero idea-product-material-hero" aria-labelledby="product-title">
           <Container className="idea-material-hero-layout">
