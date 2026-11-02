@@ -417,7 +417,7 @@ export default function CeramicStudio({
             className="result-image"
             src={result.image}
             alt={uiText("المكان بعد تجربة الخامة")}
-            style={{ clipPath: `inset(0 ${100 - split}% 0 0)` }}
+            style={{ clipPath: `inset(0 0 0 ${split}%)` }}
           />
           <div className="split-line" style={{ left: `${split}%` }}>
             <span>
@@ -471,9 +471,9 @@ export default function CeramicStudio({
         />
       ))}
       {uiText(busy && (
-        <div className="rendering">
-          <LoaderCircle className="spin" size={30} />
-          <div className="processing-orbit"><span/><span/><span/></div><b>{uiText(phaseText)}</b><small>{uiText("بنحافظ على تفاصيل المكان ونغيّر التشطيب المختار فقط.")}</small>
+        <div className="rendering idea-reveal-loader" role="status" aria-live="polite">
+          <div className="idea-reveal-scan" aria-hidden="true"><span className="idea-reveal-beam"/><span className="idea-reveal-horizon"/></div><div className="idea-reveal-brand"><Sparkles size={18}/><span>IDEA / MATERIAL REVEAL</span></div><LoaderCircle className="spin" size={30} />
+          <div className="processing-orbit" aria-hidden="true"><span/><span/><span/></div><b>{uiText(phaseText)}</b><small>{uiText("بنحافظ على تفاصيل المكان ونغيّر التشطيب المختار فقط.")}</small>
         </div>
       ))}
       <div className="stage-bottom">
@@ -530,7 +530,7 @@ export default function CeramicStudio({
         </div>
       </header>
       <div className="studio-main" id="studio">
-        <div className="intro"><div className="studio-service" role="status"><span className={serviceReady?"service-dot ready":"service-dot"}/><b>IDEA / MATERIAL LAB</b><span>{uiText(busy?phaseText:serviceReady===null?"جارٍ التحقق من خدمة الصور":serviceReady?"Gemini · جاهز لاستقبال تصميمك":"أضف مفتاح Gemini لتفعيل التوليد")}</span></div>
+        <div className="intro"><div className="studio-service" aria-live="polite"><span className={serviceReady?"service-dot ready":"service-dot"}/><b>IDEA / MATERIAL LAB</b><span>{uiText(busy?phaseText:serviceReady===null?"جارٍ التحقق من خدمة الصور":serviceReady?"Gemini · جاهز لاستقبال تصميمك":"أضف مفتاح Gemini لتفعيل التوليد")}</span></div>
           {aiQuota&&<small className="studio-quota">رصيد آخر 24 ساعة: {aiQuota.remaining} من {aiQuota.limit} تصميمات مجانية · الاشتراك المدفوع: {aiQuota.paid_upgrade_available?"متاح":"غير مفعّل بعد"}</small>}
           <div>
             <div className="eyebrow">
