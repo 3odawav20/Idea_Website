@@ -94,7 +94,7 @@
   --idea-tracking: 0.02em;
 }
 
-/* ═══ Light mode — white canvas with dark-blue accent ═══════════════════ */
+/* ═══ Dark mode — neutral charcoal/graphite, never navy ═══════════════ */
 [data-theme='dark'] {
   --idea-bg: #101010;
   --idea-bg-2: #191919;
@@ -111,12 +111,12 @@
   --idea-hero-control: rgba(255, 255, 255, 0.35);
   --idea-hero-control-bg: rgba(26, 26, 26, 0.68);
 
-  /* the "gold" accent role is replaced by a deep royal blue */
+  /* IDEA orange stays the brand accent in both themes. */
   --idea-gold: #ff7200;
   --idea-gold-bright: #ff8a32;
   --idea-gold-deep: #cf5b00;
   --idea-gold-soft: rgba(255, 114, 0, 0.16);
-  --idea-gold-sheen: #d9e2ff;
+  --idea-gold-sheen: #f3e7db;
 
   --idea-text: #f5f5f5;
   --idea-text-muted: #b1b1b1;
