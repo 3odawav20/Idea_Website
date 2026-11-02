@@ -6,6 +6,11 @@ import { useI18n } from "../i18n/i18n";
 import { Button, Container, Section, SectionHeader } from "../components/ui";
 import { HERO_IMAGES } from "../data/catalog";
 
+function getSafePreviewImageSrc(src: string | null): string | null {
+  if (!src) return null;
+  return src.startsWith("blob:") ? src : null;
+}
+
 export function HowItWorks() {
   const uiText = useLocaleText();
 
@@ -48,13 +53,14 @@ export function AiVisualizer() {
 
   const { t } = useI18n();
   const [file, setFile] = useState<string | null>(null);
+  const safePreviewSrc = getSafePreviewImageSrc(file);
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container style={{ maxWidth: 900 }}>
         <SectionHeader eyebrow={uiText(t("nav.visualizer"))} title={uiText("See It Inside Your Space")} sub={uiText("Upload a photo of your room, then select a real IDEA surface to preview the finished look. (Rendering engine connects in the back-end phase.)")} />
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--idea-space-5)" }} className="idea-ai-grid">
           <label style={{ aspectRatio: "4/3", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", display: "grid", placeItems: "center", cursor: "pointer", overflow: "hidden", background: "var(--idea-surface)" }}>
-            {file ? <img src={file} alt={uiText("Your room")} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (
+            {safePreviewSrc ? <img src={safePreviewSrc} alt={uiText("Your room")} style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : (
               <div style={{ textAlign: "center", color: "var(--idea-text-muted)" }}>
                 <UploadCloud size={34} color="var(--idea-gold)" />
                 <div style={{ marginTop: 10 }}>{uiText("Upload your room photo")}</div>
