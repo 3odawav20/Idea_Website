@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import {
   ChevronRight,
@@ -44,6 +44,8 @@ export function ProductDetail() {
   const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote } = useStore();
   const product = products.find((item) => item.slug === slug);
   const [activeImg, setActiveImg] = useState(0);
+  const [lightboxZoom, setLightboxZoom] = useState(1);
+  const lightboxRef = useRef<HTMLDialogElement>(null);
   const [failedImages, setFailedImages] = useState<number[]>([]);
   const [adminPrice, setAdminPrice] = useState<{ price: number; currency: string } | null>(null);
 
@@ -96,11 +98,14 @@ export function ProductDetail() {
     );
   }
 
-  const gallery = [...new Set(product.gallery?.length ? product.gallery : [product.image])];
-  const heroImage = gallery[0] || product.image;
-  const visibleImage = gallery[activeImg] || heroImage;
-  const activeImageFailed = failedImages.includes(activeImg);
   const isTile = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble";
+  const sourceFaces = product.source?.original?.tiles?.filter((url) =>
+    /^https:\/\/[^\s]+\.(?:png|jpe?g|webp)(?:\?[^\s]*)?$/i.test(url)
+  ) || [];
+  const gallery = [...new Set(isTile ? sourceFaces : product.gallery?.length ? product.gallery : [product.image])];
+  const heroImage = gallery[0] || (isTile ? "" : product.image);
+  const visibleImage = gallery[activeImg] || heroImage;
+  const activeImageFailed = failedImages.includes(activeImg) || !visibleImage;
   const unit = isTile ? "sqm" : "pieces";
   const fav = isFavorite(product.id);
   const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? product.collection.replaceAll("-", " ");
@@ -161,15 +166,21 @@ export function ProductDetail() {
 
   return (
     <main className="idea-catalogue-detail">
-      <section className="idea-product-hero" aria-labelledby="product-title">
-        <img
-          src={heroImage}
-          alt=""
-          onError={() => setFailedImages((current) => current.includes(0) ? current : [...current, 0])}
-        />
-        <div className="idea-product-hero-shade" />
+      <section className={`idea-product-hero${isTile ? " idea-product-hero--material" : ""}`} aria-labelledby="product-title">
+        {!isTile && <img src={heroImage} alt="" />}
+        {!isTile && <div className="idea-product-hero-shade" />}
         <Container className="idea-product-hero-copy">
-          <div className="idea-eyebrow">{product.manufacturer || sourceFallback} · {collectionLabel}</div>
+          {isTile && <div className="idea-product-hero-media">
+            {heroImage ? (
+              <button type="button" onClick={() => { setActiveImg(0); setLightboxZoom(1); lightboxRef.current?.showModal(); }}
+                aria-label={copy({ en: "Enlarge original tile face", ar: "تكبير صورة البلاطة الأصلية", fr: "Agrandir l'image du carreau" })}>
+                <img src={heroImage} alt={`${product.name[locale]} — ${product.sizes[0]?.label || ""}`} />
+              </button>
+            ) : <div className="idea-product-missing-face">{copy({ en: "Original tile-face image pending source verification", ar: "صورة البلاطة الأصلية تحت مراجعة المصدر", fr: "Image du carreau en attente de vérification" })}</div>}
+            <small>{copy({ en: "Original material face • No room mockup", ar: "صورة الخامة الأصلية • بدون صور غرف", fr: "Carreau d’origine • Sans mise en scène" })}</small>
+          </div>}
+          <div className="idea-product-hero-details">
+          <div className="idea-eyebrow">{product.manufacturer || product.brand || sourceFallback} · {collectionLabel}</div>
           <h1 id="product-title" className="idea-display">{product.name[locale]}</h1>
           <p>{product.description || [product.texture, product.finish, product.application].filter(Boolean).join(" · ")}</p>
           <dl className="idea-product-identity">
@@ -186,6 +197,7 @@ export function ProductDetail() {
               }).format(adminPrice.price)}</strong>
             </div>
           )}
+          </div>
         </Container>
       </section>
 
@@ -256,10 +268,12 @@ export function ProductDetail() {
               <h2 className="idea-display"><Images size={22} /> {copy({ en: "Photo gallery", ar: "معرض الصور", fr: "Galerie photos" })}</h2>
             </div>
           </div>
-          <div className="idea-product-gallery-stage">
+          <div className="idea-product-gallery-stage" role="group" aria-label={copy({ en: "Material face preview", ar: "معاينة وجه البلاطة", fr: "Aperçu du carreau" })}>
             {activeImageFailed ? (
               <div className="idea-image-unavailable">{copy({ en: "Image unavailable from the documented source.", ar: "الصورة غير متاحة من المصدر الموثق.", fr: "Image indisponible depuis la source documentée." })}</div>
             ) : (
+              <button type="button" className="idea-product-enlarge" onClick={() => { setLightboxZoom(1); lightboxRef.current?.showModal(); }}
+                aria-label={copy({ en: "Enlarge product image", ar: "تكبير صورة المنتج", fr: "Agrandir l'image du produit" })}>
               <img
                 className="idea-vivid-image"
                 src={visibleImage}
@@ -267,6 +281,7 @@ export function ProductDetail() {
                 decoding="async"
                 onError={() => setFailedImages((current) => current.includes(activeImg) ? current : [...current, activeImg])}
               />
+              </button>
             )}
           </div>
           {gallery.length > 1 && (
@@ -286,6 +301,20 @@ export function ProductDetail() {
           )}
         </Container>
       </section>
+
+      <dialog ref={lightboxRef} className="idea-material-lightbox"
+        aria-label={copy({ en: "Full-size original product image", ar: "صورة المنتج الأصلية مكبرة", fr: "Image produit en grand format" })}
+        onClick={(event) => { if (event.target === event.currentTarget) lightboxRef.current?.close(); }}>
+        <div className="idea-material-lightbox-controls">
+          <span>{product.name[locale]} · {product.sizes[0]?.label || ""}</span>
+          <button type="button" onClick={() => setLightboxZoom((value) => Math.max(1, value - .5))}>−</button>
+          <button type="button" onClick={() => setLightboxZoom((value) => Math.min(3, value + .5))}>+</button>
+          <button type="button" onClick={() => lightboxRef.current?.close()}>{copy({ en: "Close", ar: "إغلاق", fr: "Fermer" })} ×</button>
+        </div>
+        <div className="idea-material-lightbox-image">
+          {visibleImage && <img src={visibleImage} alt={product.name[locale]} style={{ transform: `scale(${lightboxZoom})` }} />}
+        </div>
+      </dialog>
 
       <section id="formats" className="idea-product-formats-section">
         <Container className="idea-product-formats">
@@ -309,7 +338,9 @@ export function ProductDetail() {
                       aria-current={item.id === product.id ? "page" : undefined}
                     >
                       <div className="idea-product-swatch-image">
-                        <img src={item.image} alt={item.name[locale]} loading="lazy" />
+                        <img src={["ceramics", "porcelain", "marble"].includes(item.collection)
+                          ? item.source?.original?.tiles?.[0] || ""
+                          : item.image} alt={item.name[locale]} loading="lazy" />
                       </div>
                       <strong>{item.name[locale]}</strong>
                       <span>{item.variant || item.finish || item.model}</span>
