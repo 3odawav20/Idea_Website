@@ -62,8 +62,11 @@ export function ProductDetail() {
     setPan({x:0,y:0});
   }, [slug]);
   useEffect(() => {
-    if (lightboxOpen) dialogRef.current?.focus();
-    else if (lightboxButton.current && document.activeElement === document.body) lightboxButton.current.focus();
+    if (!lightboxOpen) return;
+    const oldOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    dialogRef.current?.focus();
+    return () => { document.body.style.overflow = oldOverflow; };
   }, [lightboxOpen]);
 
   useEffect(() => {
