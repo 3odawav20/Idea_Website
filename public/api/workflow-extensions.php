@@ -43,6 +43,8 @@ function ideaWorkflowAction(string $action,array $data,array $u): never {
       if($action==='accept-quote'){
         if((int)$q['created_at']+(int)$q['validity_days']*86400000<$now)accountError(422,'QUOTE_EXPIRED');
         if(!accountQuery('SELECT id FROM idea_companies WHERE id=? AND status=?',[$q['company_id'],'verified'])->fetch())accountError(403,'COMPANY_UNVERIFIED');
+        $keyRow=accountQuery('SELECT product_key FROM idea_quote_requests WHERE id=?',[$q['request_id']])->fetch();
+        if(!$keyRow||!in_array($q['company_id'],ideaEligibleSupplierIds($keyRow['product_key']),true))accountError(403,'QUOTE_SUPPLIER_INELIGIBLE');
         if(accountQuery('SELECT quote_id FROM idea_quote_rejections WHERE quote_id=?',[$id])->fetch())accountError(409,'QUOTE_REJECTED');
         if(!accountQuery('SELECT quote_id FROM idea_quote_signatures WHERE quote_id=?',[$id])->fetch())accountError(422,'SIGNATURE_REQUIRED');
         accountQuery('INSERT INTO idea_quote_awards(request_id,quote_id,buyer_id,created_at) VALUES(?,?,?,?)',[$q['request_id'],$id,$u['id'],$now]);
@@ -62,16 +64,14 @@ function ideaWorkflowAction(string $action,array $data,array $u): never {
     }catch(Throwable $e){if($db->inTransaction())$db->rollBack();throw $e;}reply(['ok'=>true]);
   }
   if($action==='admin-product'){
-    $p=accountQuery('SELECT p.id,c.status FROM idea_supplier_products p JOIN idea_companies c ON c.id=p.company_id WHERE p.id=?',[$id])->fetch();
-    if(!$p)accountError(404,'NOT_FOUND');$active=!empty($data['active'])?1:0;
-    if($active&&$p['status']!=='verified')accountError(403,'COMPANY_UNVERIFIED');
-    accountQuery('UPDATE idea_supplier_products SET active=? WHERE id=?',[$active,$id]);reply(['ok'=>true]);
+    ideaAdminSetProductPublication($u,$data,$id,$now);
+    reply(['ok'=>true]);
   }
   if($action==='admin-invite'){
     $db=accountDb();$db->beginTransaction();try{
       ideaAssertOpenRequest($id);$r=accountQuery('SELECT * FROM idea_quote_requests WHERE id=?',[$id])->fetch();if($r['deadline_at']<$now)accountError(422,'REQUEST_EXPIRED');
-      $matches=accountQuery("SELECT DISTINCT c.id FROM idea_companies c JOIN idea_supplier_products p ON p.company_id=c.id WHERE c.status='verified' AND p.active=1 AND p.product_key=?",[$r['product_key']])->fetchAll();$count=0;
-      foreach($matches as $c){if(!accountQuery('SELECT request_id FROM idea_request_recipients WHERE request_id=? AND company_id=?',[$id,$c['id']])->fetch()){accountQuery('INSERT INTO idea_request_recipients(request_id,company_id) VALUES(?,?)',[$id,$c['id']]);$count++;}}
+      $matches=ideaEligibleSupplierIds($r['product_key']);$count=0;
+      foreach($matches as $companyId){if(!accountQuery('SELECT request_id FROM idea_request_recipients WHERE request_id=? AND company_id=?',[$id,$companyId])->fetch()){accountQuery('INSERT INTO idea_request_recipients(request_id,company_id) VALUES(?,?)',[$id,$companyId]);$count++;}}
       $db->commit();reply(['ok'=>true,'invited'=>$count]);
     }catch(Throwable $e){if($db->inTransaction())$db->rollBack();throw $e;}
   }

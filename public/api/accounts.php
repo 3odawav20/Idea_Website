@@ -4,6 +4,7 @@ header('Content-Type: application/json; charset=utf-8');header('Cache-Control: n
 require_once __DIR__.'/accounts-db.php';
 require_once __DIR__.'/platform-core.php';
 require_once __DIR__.'/platform-mail.php';
+require_once __DIR__.'/catalogue-policy.php';
 require_once __DIR__.'/quotes-api.php';
 require_once __DIR__.'/admin-accounts.php';
 require_once __DIR__.'/workflow-extensions.php';
@@ -12,13 +13,13 @@ try {
  accountSession();$action=$_GET['action']??'session';$method=$_SERVER['REQUEST_METHOD']??'GET';
  if($action==='health'&&$method==='GET'){accountQuery('SELECT id FROM idea_users LIMIT 1');reply(['ok'=>true,'backend'=>'php-mysql']);}
  if($action==='session'&&$method==='GET')reply(accountSnapshot(accountUser(false)));
- if($action==='supplier-product'&&$method==='GET'){$p=accountQuery("SELECT p.id,p.title,p.specifications,c.public_name AS company_name FROM idea_supplier_products p JOIN idea_companies c ON c.id=p.company_id WHERE p.id=? AND p.active=1 AND c.status='verified'",[$_GET['id']??''])->fetch();if(!$p)accountError(404,'PRODUCT_NOT_FOUND');$p['specifications']=json_decode($p['specifications'],true)?:[];reply($p);}
+ if($action==='supplier-product'&&$method==='GET'){$p=accountQuery("SELECT p.*,c.public_name AS company_name FROM idea_supplier_products p JOIN idea_companies c ON c.id=p.company_id JOIN idea_memberships m ON m.user_id=c.owner_id WHERE p.id=? AND p.active=1 AND c.status='verified' AND m.audience='business' AND m.status='active'",[$_GET['id']??''])->fetch();if(!$p||!ideaReviewedProduct($p))accountError(404,'PRODUCT_NOT_FOUND');reply(['id'=>$p['id'],'title'=>$p['title'],'company_name'=>$p['company_name'],'catalog_product_id'=>$p['catalog_product_id'],'specifications'=>ideaPublicProductSpecs($p)]);}
  if($action==='mailbox'&&$method==='GET')reply(ideaQuoteDetails(ideaMailbox(accountUser())));
  if($action==='admin-overview'&&$method==='GET')reply(ideaAdminOverview(accountUser()));
  if($action==='favorites'&&$method==='GET'){$u=accountUser();reply(['favorites'=>array_column(accountQuery('SELECT product_id FROM idea_favorites WHERE user_id=?',[$u['id']])->fetchAll(),'product_id')]);}
  if($action==='showrooms'&&$method==='GET'){
    $id=$_GET['company']??'';$companies=accountQuery("SELECT id,public_name,description,phone FROM idea_companies WHERE status='verified'".($id?' AND id=?':'').' ORDER BY public_name',$id?[$id]:[])->fetchAll();
-   $products=accountQuery("SELECT p.id,p.company_id,p.title,p.sku,p.specifications FROM idea_supplier_products p JOIN idea_companies c ON c.id=p.company_id WHERE p.active=1 AND c.status='verified'".($id?' AND c.id=?':'').' ORDER BY p.created_at DESC LIMIT 100',$id?[$id]:[])->fetchAll();foreach($products as &$p)$p['specifications']=json_decode($p['specifications'],true)?:[];
+   $rows=accountQuery("SELECT p.* FROM idea_supplier_products p JOIN idea_companies c ON c.id=p.company_id JOIN idea_memberships m ON m.user_id=c.owner_id WHERE p.active=1 AND c.status='verified' AND m.audience='business' AND m.status='active'".($id?' AND c.id=?':'').' ORDER BY p.created_at DESC LIMIT 500',$id?[$id]:[])->fetchAll();$products=[];foreach($rows as $p)if(ideaReviewedProduct($p))$products[]=['id'=>$p['id'],'company_id'=>$p['company_id'],'title'=>$p['title'],'sku'=>$p['sku'],'catalog_product_id'=>$p['catalog_product_id'],'specifications'=>ideaPublicProductSpecs($p)];$products=array_slice($products,0,100);
    reply(['companies'=>$companies,'products'=>$products]);
  }
  if($action==='products'&&$method==='GET'){$c=accountCompany(accountUser());$items=accountQuery('SELECT * FROM idea_supplier_products WHERE company_id=? ORDER BY created_at DESC',[$c['id']])->fetchAll();foreach($items as &$item){$item['specifications']=json_decode($item['specifications'],true)?:[];$item['active']=(bool)$item['active'];}reply(['products'=>$items]);}
@@ -110,9 +111,9 @@ try {
  }
  if($action==='publish'){
    if($c['status']!=='verified')accountError(403,'COMPANY_UNVERIFIED');$id=accountString($data,'id',32,true);$p=accountQuery('SELECT id FROM idea_supplier_products WHERE id=? AND company_id=?',[$id,$c['id']])->fetch();if(!$p)accountError(404,'NOT_FOUND');
-   accountQuery('UPDATE idea_supplier_products SET active=1 WHERE id=? AND company_id=?',[$id,$c['id']]);
-   $product=accountQuery('SELECT product_key FROM idea_supplier_products WHERE id=?',[$id])->fetch();$open=accountQuery('SELECT id FROM idea_quote_requests WHERE product_key=? AND deadline_at>?',[$product['product_key'],(int)(microtime(true)*1000)])->fetchAll();
-   foreach($open as $request){if(!accountQuery('SELECT request_id FROM idea_request_recipients WHERE request_id=? AND company_id=?',[$request['id'],$c['id']])->fetch())accountQuery('INSERT INTO idea_request_recipients(request_id,company_id) VALUES(?,?)',[$request['id'],$c['id']]);}reply(['ok'=>true]);
+   // Supplier requests approval; only the administrator can publish the listing.
+   accountQuery('UPDATE idea_supplier_products SET active=0 WHERE id=? AND company_id=?',[$id,$c['id']]);
+   reply(['ok'=>true,'status'=>'pending_admin_review']);
  }
  if($action==='upload'){
    $f=$_FILES['image']??null;if(!$f||$f['error']!==UPLOAD_ERR_OK)accountError(422,'INVALID_IMAGE');if($f['size']>10485760)accountError(413,'IMAGE_TOO_LARGE');

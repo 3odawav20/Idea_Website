@@ -1,0 +1,23 @@
+name: IDEA PHP supplier quotation checks
+on:
+  push:
+    branches:
+      - feat/idea-backend-rfq-20261102
+  pull_request:
+    paths:
+      - 'public/api/**'
+      - 'tests/php/**'
+      - '.github/workflows/idea-rfq-php.yml'
+jobs:
+  php-lint-and-catalogue-policy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Confirm PHP
+        run: php -v
+      - name: Lint PHP sources
+        run: find public/api tests/php -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Run manufacturer and RFQ policy fixture tests
+        run: php tests/php/catalogue-policy-test.php
