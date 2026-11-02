@@ -134,3 +134,11 @@
 .idea-studio-face-grid button{aspect-ratio:1;min-width:0;padding:2px;border:2px solid transparent;background:#1c1e1f;cursor:pointer}
 .idea-studio-face-grid button.active,.idea-studio-face-grid button[aria-pressed="true"]{border-color:var(--studio-gold-bright)}
 .idea-studio-face-grid img{width:100%;height:100%;object-fit:contain;display:block}
+
+
+/* Tile-facing commerce photography: full supplied tile, never a cropped texture/room. */
+.idea-studio .idea-studio-library .idea-studio-swatch-image{background:#f6f5f3;border-color:#e7e2d9}
+.idea-studio .idea-studio-library .idea-studio-swatch-image img{object-fit:contain;padding:8px;background:#f6f5f3}
+.idea-studio .idea-studio-library .idea-studio-swatches>button:hover img{transform:none}
+.idea-studio .idea-studio-face-grid button{background:#f8f7f5}
+.idea-studio .idea-studio-face-grid img{object-fit:contain}
