@@ -12,7 +12,10 @@ export function ProductCard({ product }: { product: Product }) {
   const fav = isFavorite(product.id);
   const inCompare = compare.includes(product.id);
   const [imageFailed, setImageFailed] = useState(false);
-  const unit = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble" ? "sqm" : "pieces";
+  const isSurface = ["ceramics", "porcelain", "marble"].includes(product.collection);
+  const faces = product.source?.original?.tiles?.filter((url) => /^https:\/\/[^\s]+\.(?:png|jpe?g|webp)(?:\?[^\s]*)?$/i.test(url)) || [];
+  const productImage = isSurface ? faces[0] : product.image;
+  const unit = isSurface ? "sqm" : "pieces";
 
   return (
     <div className="idea-product-card" style={{
@@ -23,12 +26,13 @@ export function ProductCard({ product }: { product: Product }) {
       onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
     >
       <Link to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
-        {imageFailed ? (
+        {imageFailed || !productImage ? (
           <span className="idea-image-unavailable">Image unavailable</span>
         ) : (
-          <img className="idea-product-img idea-vivid-image" src={product.image} alt={product.name[locale]} loading="lazy" decoding="async" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center", background: "var(--idea-surface-2)", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
+          <img className="idea-product-img idea-vivid-image" src={productImage} alt={`${product.name[locale]} — ${product.sizes[0]?.label || ""}`} loading="lazy" decoding="async" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center", padding: isSurface ? "20px" : "0", background: isSurface ? "#f5f3ef" : "var(--idea-surface-2)", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
         )}
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
+          {isSurface && <span style={badgeStyle}>{locale === "ar" ? "صورة البلاطة" : "Tile face"}</span>}
           {product.type && <span style={badgeStyle}>{product.type}</span>}
         </div>
         <div style={{ position: "absolute", top: 12, insetInlineEnd: 12, display: "flex", gap: 6 }}>
@@ -43,13 +47,14 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>
-          {product.manufacturer || t("value.notProvided")}
+          {product.manufacturer || product.brand || t("value.notProvided")}
         </div>
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {product.name[locale]}
         </Link>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
           {product.sizes[0] && <Tag>{product.sizes[0].label}</Tag>}
+          {product.application && <Tag>{product.application}</Tag>}
           {product.finish && <Tag>{product.finish}</Tag>}
           {product.variant && <Tag>{product.variant}</Tag>}
         </div>
