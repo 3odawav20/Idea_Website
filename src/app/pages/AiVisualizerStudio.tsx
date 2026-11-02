@@ -9,6 +9,7 @@ import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
 import { supabase } from "../backend/supabaseClient";
+import type { Product } from "../data/types";
 import "./AiVisualizerStudio.css";
 
 type Surface = "floor" | "walls" | "both";
@@ -62,6 +63,14 @@ function wait(ms: number, signal: AbortSignal) {
   });
 }
 
+/** Source-labelled product faces are the only allowed images in the material gallery. */
+function materialFaces(product: Product): string[] {
+  const sourceFaces = product.source?.original?.tiles || [];
+  return [...new Set(sourceFaces.filter((url) =>
+    /^https:\/\/[^\s]+\.(?:png|jpe?g|webp)(?:\?[^\s]*)?$/i.test(url)
+  ))];
+}
+
 export function AiVisualizerStudio() {
   const { locale } = useI18n();
   const { session } = useBackend();
@@ -80,6 +89,7 @@ export function AiVisualizerStudio() {
   const [atlasColor, setAtlasColor] = useState("");
   const [atlasTexture, setAtlasTexture] = useState("");
   const [atlasVisibleCount, setAtlasVisibleCount] = useState(24);
+  const [faceIndex, setFaceIndex] = useState(0);
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoMeta, setPhotoMeta] = useState<{ width: number; height: number; megapixels: string } | null>(null);
@@ -103,6 +113,8 @@ export function AiVisualizerStudio() {
   const inputRef = useRef<HTMLInputElement>(null);
   const requestRef = useRef<AbortController | null>(null);
 
+  const selectedFaces = useMemo(() => selectedProduct ? materialFaces(selectedProduct) : [], [selectedProduct]);
+  const selectedFaceImage = selectedFaces[faceIndex] || selectedFaces[0] || null;
   const safePhotoUrl = safeBlobUrl(photoUrl);
   const safeMaterialUrl = safeBlobUrl(materialUrl);
   const busy = !["idle", "ready", "failed", "verification_failed"].includes(stage);
@@ -112,7 +124,7 @@ export function AiVisualizerStudio() {
       product.texture, product.source?.originalSurface, product.name.en, product.name.ar,
     ].filter(Boolean).join(" "));
   const materialLibrary = useMemo(() => products.filter((product) =>
-    Boolean(product.image) && product.status !== "sample" &&
+    materialFaces(product).length > 0 && product.status !== "sample" &&
     (product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble")
   ), [products]);
   const atlasFacets = useMemo(() => {
@@ -160,6 +172,7 @@ export function AiVisualizerStudio() {
     setAtlasSize(""); setAtlasColor(""); setAtlasTexture("");
   };
 
+  useEffect(() => setFaceIndex(0), [selectedProduct?.id]);
   useEffect(() => () => requestRef.current?.abort(), []);
   useEffect(() => () => { if (photoUrl) URL.revokeObjectURL(photoUrl); }, [photoUrl]);
   useEffect(() => () => { if (materialUrl) URL.revokeObjectURL(materialUrl); }, [materialUrl]);
@@ -236,6 +249,7 @@ export function AiVisualizerStudio() {
     setSearchParams({ product: id }, { replace: true });
     setMaterial(null);
     setMaterialUrl(null);
+    setFaceIndex(0);
     setResult(null);
     setQuality(null);
     setError("");
@@ -256,9 +270,9 @@ export function AiVisualizerStudio() {
 
   async function materialBlob(signal: AbortSignal) {
     if (material) return material;
-    if (!selectedProduct) return null;
+    if (!selectedFaceImage) return null;
     try {
-      const response = await fetch(selectedProduct.image, { mode: "cors", signal, cache: "force-cache" });
+      const response = await fetch(selectedFaceImage, { mode: "cors", signal, cache: "force-cache" });
       if (!response.ok) return null;
       const blob = await response.blob();
       return ALLOWED.includes(blob.type) && blob.size > 0 && blob.size <= MAX_BYTES ? blob : null;
@@ -534,8 +548,23 @@ export function AiVisualizerStudio() {
         <aside className="idea-studio-rail idea-studio-material">
           <div className="idea-studio-rail-head"><span>02</span><div><small>{tr("ذكاء الخامة", "MATERIAL INTELLIGENCE")}</small><h2>{tr("المنتج المحدد", "Selected product")}</h2></div><ChevronDown size={16} /></div>
           <div className="idea-studio-product-image">
-            {selectedProduct ? <img src={selectedProduct.image} alt={productName} /> : <span><ImagePlus size={28} />{tr("اختر منتجًا", "Select a product")}</span>}
+            {selectedFaceImage ? <img src={selectedFaceImage} alt={productName} /> : <span><ImagePlus size={28} />{tr("اختر وجه بلاطة أصلي", "Select an original tile face")}</span>}
           </div>
+          {selectedFaces.length > 1 && (
+            <div className="idea-studio-face-picker" aria-label={tr("وجوه البلاطة الأصلية", "Original tile faces")}>
+              <span>{tr("اختار وجه البلاطة", "Choose tile face")} · {selectedFaces.length} {tr("أشكال أصلية", "source faces")}</span>
+              <div className="idea-studio-face-grid">
+                {selectedFaces.map((face, index) => (
+                  <button type="button" key={face}
+                    aria-label={tr(`الوجه ${index + 1}`, `Face ${index + 1}`)}
+                    aria-pressed={index === faceIndex} className={index === faceIndex ? "active" : ""}
+                    onClick={() => { setFaceIndex(index); setMaterial(null); setMaterialUrl(null); setResult(null); setQuality(null); }}>
+                    <img src={face} alt="" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           <h3>{productName}</h3>
           {selectedProduct && (
             <>
@@ -573,7 +602,7 @@ export function AiVisualizerStudio() {
             <label>{tr("لون الفواصل", "Grout tone")}</label>
             <div className="idea-studio-colors">{["#3b3b3b","#ffffff","#ddd8cf","#9b998f"].map((color) => <button type="button" key={color} style={{ background: color }} className={grout === color ? "active" : ""} onClick={() => setGrout(color)} aria-label={color} />)}</div>
           </div>
-          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={busy || !photo || !selectedProduct || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
+          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={busy || !photo || !selectedProduct || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
             <Sparkles size={17} /> {tr("ابدأ التوليد المحمي", "Generate with scene lock")}
           </button>
           <small className="idea-studio-consent">{tr("ببدء التوليد تُرسل الصورتان إلى Runpod للمعالجة المؤقتة وفق سياسة الخصوصية.", "Generation sends the room and material references to Runpod for temporary processing.")}</small>
@@ -631,7 +660,7 @@ export function AiVisualizerStudio() {
             <button type="button" key={product.id} onClick={() => chooseProduct(product.id)}
               aria-pressed={selectedProduct?.id === product.id} className={selectedProduct?.id === product.id ? "selected" : ""}>
               <span className="idea-studio-swatch-image">
-                <img src={product.image} alt="" loading="lazy" decoding="async" />
+                <img src={materialFaces(product)[0]} alt="" loading="lazy" decoding="async" />
                 <span className="idea-atlas-card-kind">{product.collection === "marble" ? tr("رخام طبيعي", "Natural marble") : isMarbleLook(product) ? tr("تأثير رخامي", "Marble effect") : product.collection === "porcelain" ? tr("بورسلين", "Porcelain") : tr("سيراميك", "Ceramic")}</span>
                 {selectedProduct?.id === product.id && <i><Check size={13} /></i>}
               </span>
