@@ -97,3 +97,31 @@
 @media(max-width:750px){.idea-studio-library{width:calc(100% - 16px);padding:18px}.idea-atlas-overline>span:last-child{display:none}.idea-studio-library .idea-studio-library-head{align-items:flex-start;flex-direction:column;margin:22px 0}.idea-atlas-total{flex-direction:row;gap:10px;min-width:0;min-height:54px;padding:9px 17px}.idea-atlas-total strong{font-size:25px}.idea-atlas-total span{margin:0}.idea-atlas-categories{grid-template-columns:repeat(2,minmax(0,1fr))}.idea-atlas-categories button{min-height:53px;padding:10px;font-size:12px}.idea-atlas-facets{grid-template-columns:repeat(2,minmax(0,1fr))}.idea-studio-library .idea-studio-swatches{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.idea-atlas-card-body{padding:12px}.idea-studio-library .idea-atlas-card-body strong{font-size:12px;min-height:35px}.idea-atlas-card-details{font-size:10px}.idea-atlas-card-bottom{flex-direction:column;align-items:flex-start}.idea-atlas-card-bottom span:first-child{max-width:100%}}
 @media(max-width:390px){.idea-atlas-facets{grid-template-columns:1fr 1fr}.idea-atlas-categories button{font-size:11px}.idea-atlas-categories button small{font-size:10px;padding:4px}}
 @media(prefers-reduced-motion:reduce){.idea-atlas-categories button,.idea-studio-library .idea-studio-swatches>button,.idea-studio-library .idea-studio-swatch-image img{transition:none}.idea-atlas-categories button:hover,.idea-studio-library .idea-studio-swatches>button:hover{transform:none}}
+
+
+/* Visual QA: enforce dark-on-dark contrast independently of the storefront's light theme. */
+.idea-studio .idea-studio-library{color:#f2ece4;color-scheme:dark}
+.idea-studio .idea-studio-library .idea-studio-library-head h2{color:#f2ece4}
+.idea-studio .idea-studio-library .idea-studio-library-head h2 em{color:#f0c993}
+.idea-studio .idea-studio-library .idea-studio-library-head p,
+.idea-studio .idea-studio-library .idea-atlas-disclaimer,
+.idea-studio .idea-studio-library .idea-atlas-overline>span:last-child{color:#bdb5a9}
+.idea-studio .idea-studio-library .idea-atlas-categories button{color:#f2ece4}
+.idea-studio .idea-studio-library .idea-atlas-categories button small{color:#c9c0b5}
+.idea-studio .idea-studio-library .idea-atlas-categories button.active{color:#f0c993}
+.idea-studio .idea-studio-library .idea-atlas-categories button.active small{color:#f0c993}
+.idea-studio .idea-studio-library .idea-atlas-facet,
+.idea-studio .idea-studio-library .idea-atlas-results,
+.idea-studio .idea-studio-library .idea-atlas-total span{color:#c4bdb3}
+.idea-studio .idea-studio-library .idea-atlas-facet select{appearance:auto;background-color:#202526;color:#f2ece4;border:1px solid rgba(217,170,108,.32)}
+.idea-studio .idea-studio-library .idea-atlas-facet select option{background-color:#202526;color:#f2ece4}
+.idea-studio .idea-studio-library .idea-studio-search{background-color:#151a1b;color:#d2c0a8}
+.idea-studio .idea-studio-library .idea-studio-search input{color:#f2ece4}
+.idea-studio .idea-studio-library .idea-studio-search input::placeholder{color:#a5a096;opacity:1}
+.idea-studio .idea-studio-library .idea-atlas-card-body strong{color:#f1e8df}
+.idea-studio .idea-studio-library .idea-atlas-card-body small{color:#d9aa6c}
+.idea-studio .idea-studio-library .idea-atlas-card-details,
+.idea-studio .idea-studio-library .idea-atlas-card-bottom{color:#aaa398}
+.idea-studio .idea-studio-library .idea-atlas-card-bottom span:last-child{color:#f0c993}
+.idea-studio .idea-studio-library .idea-studio-no-products strong{color:#f2ece4}
+.idea-studio .idea-studio-library .idea-atlas-loadmore button{color:#f0c993}
