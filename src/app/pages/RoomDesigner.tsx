@@ -7,6 +7,7 @@ import { useStore } from "../store/store";
 import { useBackend, type RoomProject } from "../backend/db";
 import { Container, Section, SectionHeader, Button } from "../components/ui";
 import { Panel, Field, inputStyle, EmptyState } from "../components/dash";
+import { SafeBitmapCanvas } from "../components/SafeBitmapCanvas";
 
 /* ── Landing ─────────────────────────────────────────────────────────────── */
 export function RoomDesignerHome() {
@@ -88,10 +89,7 @@ export function RoomDesignerEditor() {
   const existing = projectId ? db.roomProjects.find((p) => p.id === projectId) : null;
 
   const [photo, setPhoto] = useState<string | null>(null);
-  const safePhotoSrc = useMemo(() => {
-    if (!photo) return null;
-    return photo.startsWith("blob:") ? photo : null;
-  }, [photo]);
+  const [previewFile, setPreviewFile] = useState<File | null>(null);
   const [photoError, setPhotoError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [dims, setDims] = useState(existing?.dims || { length: 4, width: 3, height: 2.8, unit: "m" as const });
@@ -156,6 +154,7 @@ export function RoomDesignerEditor() {
     if (!allowedMimeTypes.has(file.type)) { setPhotoError("Choose a JPEG, PNG or WebP image file."); return; }
     if (file.size > 10 * 1024 * 1024) { setPhotoError("Choose an image smaller than 10 MB."); return; }
     if (photo?.startsWith("blob:")) URL.revokeObjectURL(photo);
+    setPreviewFile(file);
     setPhoto(URL.createObjectURL(file));
   };
 
@@ -213,7 +212,7 @@ export function RoomDesignerEditor() {
           {/* Perspective room box */}
           <div onMouseMove={onDrag} onMouseUp={() => (dragRef.current = null)} onMouseLeave={() => (dragRef.current = null)}
             style={{ position: "relative", aspectRatio: "16/10", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", background: "var(--idea-bg-2)", perspective: "900px" }}>
-            {uiText(safePhotoSrc && <img src={safePhotoSrc} alt={uiText("Room")} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: compareBefore ? 1 : 0.28 }} />)}
+            {previewFile && <SafeBitmapCanvas file={previewFile} alt={uiText("Room")} style={{ position: "absolute", inset: 0, opacity: compareBefore ? 1 : 0.28 }} />}
             {uiText(!compareBefore && <>
               {/* Wall B (left) */}
               <div onClick={() => setActive("wallB")} style={{ position: "absolute", top: 0, left: 0, width: "34%", height: "66%", transformOrigin: "left center", transform: "rotateY(28deg)", ...tileStyle("wallB"), cursor: "pointer", borderInlineEnd: active === "wallB" ? "2px solid var(--idea-gold)" : undefined }} />
