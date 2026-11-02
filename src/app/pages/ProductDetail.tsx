@@ -96,11 +96,15 @@ export function ProductDetail() {
     );
   }
 
-  const gallery = [...new Set(product.gallery?.length ? product.gallery : [product.image])];
-  const heroImage = gallery[0] || product.image;
-  const visibleImage = gallery[activeImg] || heroImage;
-  const activeImageFailed = failedImages.includes(activeImg);
   const isTile = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble";
+  // Supplier-authored tile faces are the only valid material product photographs.
+  // Room renders remain elsewhere in source records, never substituted as a swatch.
+  const sourceTileFaces = [...new Set((product.source?.original?.tiles || [])
+    .filter((url) => /^https:\/\/[^\s]+\.(?:jpe?g|png|webp)(?:\?[^\s]*)?$/i.test(url)))];
+  const gallery = isTile ? sourceTileFaces : [...new Set(product.gallery?.length ? product.gallery : [product.image])];
+  const heroImage = gallery[0] || null;
+  const visibleImage = gallery[activeImg] || heroImage || "";
+  const activeImageFailed = failedImages.includes(activeImg);
   const unit = isTile ? "sqm" : "pieces";
   const fav = isFavorite(product.id);
   const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? product.collection.replaceAll("-", " ");
@@ -161,6 +165,53 @@ export function ProductDetail() {
 
   return (
     <main className="idea-catalogue-detail">
+      {isTile ? (
+        <section className="idea-product-hero idea-product-material-hero" aria-labelledby="product-title">
+          <Container className="idea-material-hero-layout">
+            <div className="idea-material-hero-visual">
+              {heroImage ? (
+                <img src={heroImage} alt={`${product.name[locale]} — ${copy({ en: "original tile face", ar: "وجه البلاطة الأصلي", fr: "face de carreau originale" })}`} decoding="async" />
+              ) : (
+                <div className="idea-material-hero-missing">{copy({
+                  en: "An isolated tile-face photograph is not yet available for this product.",
+                  ar: "صورة البلاطة المنفصلة غير متاحة لهذا المنتج حتى الآن.",
+                  fr: "La photo du carreau isolé n'est pas encore disponible.",
+                })}</div>
+              )}
+              <span className="idea-material-photo-label">{copy({ en: "PRODUCT SURFACE · NO ROOM RENDER", ar: "الخامة الأصلية · بدون صورة غرفة", fr: "SURFACE DU PRODUIT · SANS MISE EN SCÈNE" })}</span>
+            </div>
+            <div className="idea-material-hero-summary">
+              <div className="idea-material-eyebrow">{collectionLabel}</div>
+              <h1 id="product-title" className="idea-display">{product.name[locale]}</h1>
+              <p className="idea-material-subtitle">{[product.texture, product.finish, product.application].filter(Boolean).join(" · ")}</p>
+              <dl className="idea-material-hero-facts">
+                <div><dt>{t("label.manufacturer")}</dt><dd>{product.manufacturer || sourceFallback}</dd></div>
+                <div><dt>{t("label.brand")}</dt><dd>{product.brand || sourceFallback}</dd></div>
+                <div><dt>{t("label.sizes")}</dt><dd>{product.sizes.map((size) => size.label).join(" · ") || sourceFallback}</dd></div>
+                <div><dt>{t("label.finish")}</dt><dd>{product.finish || sourceFallback}</dd></div>
+                <div><dt>{t("label.code")}</dt><dd>{product.code || sourceFallback}</dd></div>
+              </dl>
+              {session?.role === "admin" && adminPrice && (
+                <div className="idea-admin-price">
+                  <span>{t("price.admin")}</span>
+                  <strong>{new Intl.NumberFormat(locale === "ar" ? "ar-EG" : locale === "fr" ? "fr-FR" : "en-EG", {
+                    style: "currency",
+                    currency: adminPrice.currency,
+                  }).format(adminPrice.price)}</strong>
+                </div>
+              )}
+              <Link className="idea-material-try-link" to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}>
+                <Sparkles size={18} /> {copy({ en: "Try this tile in my room", ar: "جرّب البلاطة دي في غرفتك", fr: "Essayer ce carreau dans ma pièce" })}
+              </Link>
+              <p className="idea-material-authenticity-note">{copy({
+                en: "Individual material photography only. Missing specifications are not estimated.",
+                ar: "صورة الخامة فقط، والمواصفات غير المتاحة لا يتم تخمينها.",
+                fr: "Photographie du matériau uniquement. Les caractéristiques manquantes ne sont pas estimées.",
+              })}</p>
+            </div>
+          </Container>
+        </section>
+      ) : (
       <section className="idea-product-hero" aria-labelledby="product-title">
         <img
           src={heroImage}
@@ -188,7 +239,7 @@ export function ProductDetail() {
           )}
         </Container>
       </section>
-
+      )}
       <nav className="idea-product-section-nav" aria-label={copy({ en: "Product sections", ar: "أقسام المنتج", fr: "Sections du produit" })}>
         <Container>
           <Link to={`/collections/${product.collection}`}>{collectionLabel}</Link>
@@ -228,7 +279,7 @@ export function ProductDetail() {
           </dl>
           <p className="idea-source-note">
             {copy({
-              en: "Specifications shown are limited to the verified catalogue data supplied by the manufacturer.",
+              en: "Specifications shown are limited to supplied catalogue records. Unverified manufacturer fields remain unspecified.",
               ar: "المواصفات المعروضة تقتصر على بيانات الكتالوج الموثقة من الشركة المصنّعة.",
               fr: "Les caractéristiques affichées sont limitées aux données vérifiées du catalogue fabricant.",
             })}
@@ -257,7 +308,7 @@ export function ProductDetail() {
             </div>
           </div>
           <div className="idea-product-gallery-stage">
-            {activeImageFailed ? (
+            {(!gallery.length || activeImageFailed) ? (
               <div className="idea-image-unavailable">{copy({ en: "Image unavailable from the documented source.", ar: "الصورة غير متاحة من المصدر الموثق.", fr: "Image indisponible depuis la source documentée." })}</div>
             ) : (
               <img
@@ -309,7 +360,13 @@ export function ProductDetail() {
                       aria-current={item.id === product.id ? "page" : undefined}
                     >
                       <div className="idea-product-swatch-image">
-                        <img src={item.image} alt={item.name[locale]} loading="lazy" />
+                        {(!isTile || item.source?.original?.tiles?.[0]) ? (
+                          <img src={isTile ? item.source!.original!.tiles[0] : item.image} alt={item.name[locale]} loading="lazy" />
+                        ) : (
+                          <span className="idea-material-swatch-unavailable">{copy({
+                            en: "Tile photograph pending", ar: "صورة البلاطة غير متاحة", fr: "Photo du carreau indisponible",
+                          })}</span>
+                        )}
                       </div>
                       <strong>{item.name[locale]}</strong>
                       <span>{item.variant || item.finish || item.model}</span>
