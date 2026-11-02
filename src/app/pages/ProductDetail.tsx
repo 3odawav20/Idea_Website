@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router";
 import {
   ChevronRight,
@@ -8,6 +8,7 @@ import {
   Images,
   Search,
   Sparkles,
+  Maximize2, X, ZoomIn, ZoomOut,
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
@@ -44,13 +45,26 @@ export function ProductDetail() {
   const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote } = useStore();
   const product = products.find((item) => item.slug === slug);
   const [activeImg, setActiveImg] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState({x:0,y:0});
+  const pointer = useRef<{x:number;y:number;px:number;py:number}|null>(null);
+  const lightboxButton = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const [failedImages, setFailedImages] = useState<number[]>([]);
   const [adminPrice, setAdminPrice] = useState<{ price: number; currency: string } | null>(null);
 
   useEffect(() => {
     setActiveImg(0);
     setFailedImages([]);
+    setLightboxOpen(false);
+    setZoom(1);
+    setPan({x:0,y:0});
   }, [slug]);
+  useEffect(() => {
+    if (lightboxOpen) dialogRef.current?.focus();
+    else if (lightboxButton.current && document.activeElement === document.body) lightboxButton.current.focus();
+  }, [lightboxOpen]);
 
   useEffect(() => {
     setAdminPrice(null);
@@ -96,8 +110,12 @@ export function ProductDetail() {
     );
   }
 
-  const gallery = [...new Set(product.gallery?.length ? product.gallery : [product.image])];
-  const heroImage = gallery[0] || product.image;
+  // Product material imagery always comes from supplier-labelled bare tile faces.
+  const tileFaces = (product.source?.original?.tiles || []).filter((url) =>
+    /^https:\/\/[^\s]+\.(?:png|jpe?g|webp)(?:\?[^\s]*)?$/i.test(url)
+  );
+  const gallery = [...new Set(tileFaces.length ? tileFaces : (product.gallery?.length ? product.gallery : [product.image]))];
+  const heroImage = gallery[activeImg] || gallery[0] || product.image;
   const visibleImage = gallery[activeImg] || heroImage;
   const activeImageFailed = failedImages.includes(activeImg);
   const isTile = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble";
@@ -161,31 +179,44 @@ export function ProductDetail() {
 
   return (
     <main className="idea-catalogue-detail">
-      <section className="idea-product-hero" aria-labelledby="product-title">
-        <img
-          src={heroImage}
-          alt=""
-          onError={() => setFailedImages((current) => current.includes(0) ? current : [...current, 0])}
-        />
-        <div className="idea-product-hero-shade" />
-        <Container className="idea-product-hero-copy">
-          <div className="idea-eyebrow">{product.manufacturer || sourceFallback} · {collectionLabel}</div>
-          <h1 id="product-title" className="idea-display">{product.name[locale]}</h1>
-          <p>{product.description || [product.texture, product.finish, product.application].filter(Boolean).join(" · ")}</p>
-          <dl className="idea-product-identity">
-            {identitySpecs.map(([label, value]) => (
-              <div key={label}><dt>{label}</dt><dd>{value}</dd></div>
-            ))}
-          </dl>
-          {session?.role === "admin" && adminPrice && (
-            <div className="idea-admin-price">
-              <span>{t("price.admin")}</span>
-              <strong>{new Intl.NumberFormat(locale === "ar" ? "ar-EG" : locale === "fr" ? "fr-FR" : "en-EG", {
-                style: "currency",
-                currency: adminPrice.currency,
-              }).format(adminPrice.price)}</strong>
+      <section className="idea-material-hero" aria-labelledby="product-title">
+        <Container className="idea-material-hero-layout">
+          <div className="idea-material-hero-media">
+            <button type="button" className="idea-material-hero-photo" ref={lightboxButton}
+              aria-label={copy({ en: "Enlarge material image", ar: "تكبير صورة الخامة", fr: "Agrandir le matériau" })}
+              onClick={() => { setZoom(1); setPan({x:0,y:0}); setLightboxOpen(true); }}>
+              {failedImages.includes(activeImg)
+                ? <span className="idea-image-unavailable">{copy({ en: "Source photograph unavailable", ar: "صورة المصدر غير متاحة", fr: "Photo indisponible" })}</span>
+                : <img src={heroImage} alt={product.name[locale]} onError={() => setFailedImages(a=>a.includes(activeImg)?a:[...a,activeImg])} />}
+              <span className="idea-material-zoom-hint"><Maximize2 size={16}/>{copy({ en: "View full size", ar: "تكبير الصورة", fr: "Agrandir" })}</span>
+            </button>
+            <div className="idea-material-face-selector" aria-label={copy({en:"Tile faces",ar:"أوجه البلاطة",fr:"Faces du carreau"})}>
+              {gallery.slice(0,8).map((face,index)=><button type="button" key={face} aria-pressed={activeImg===index}
+                className={activeImg===index?"active":""} aria-label={`Face ${index+1}`} onClick={()=>setActiveImg(index)}>
+                <img src={face} alt="" loading="lazy"/>
+              </button>)}
             </div>
-          )}
+            <p className="idea-material-image-note">{tileFaces.length
+              ? copy({en:"Source tile faces — no architectural scenes",ar:"وجوه البلاطات الأصلية — بدون صور غرف",fr:"Faces du carrelage du catalogue"})
+              : copy({en:"Dedicated material-face image not verified",ar:"صورة الخامة المنفصلة غير موثقة",fr:"Image autonome non vérifiée"})}</p>
+          </div>
+          <div className="idea-material-hero-content">
+            <span className="idea-material-overline">IDEA / MATERIAL COLLECTION</span>
+            <span className="idea-material-brand">{product.manufacturer || sourceFallback} · {collectionLabel}</span>
+            <h1 id="product-title" className="idea-display">{product.name[locale]}</h1>
+            <p>{product.description || [product.texture,product.finish,product.application].filter(Boolean).join(" · ") || collectionLabel}</p>
+            <dl className="idea-material-summary">
+              {identitySpecs.map(([label,value])=><div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}
+              {product.sizes.length>0&&<div><dt>{t("label.sizes")}</dt><dd>{product.sizes.map(x=>x.label).join(" · ")}</dd></div>}
+              {product.finish&&<div><dt>{t("label.finish")}</dt><dd>{product.finish}</dd></div>}
+            </dl>
+            <div className="idea-material-hero-actions">
+              <Link to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}><Sparkles size={18}/>{copy({en:"Try in my room",ar:"جرّبها في غرفتي",fr:"Voir dans ma pièce"})}</Link>
+              <button type="button" onClick={()=>addToQuote(product.id,unit)}><FileText size={17}/>{copy({en:"Request private quote",ar:"طلب عرض سعر خاص",fr:"Demander un devis privé"})}</button>
+            </div>
+            <small>{copy({en:"Prices stay private. Unverified technical fields are not invented.",ar:"الأسعار خاصة. لا تُضاف مواصفات غير موثقة.",fr:"Les prix sont privés; aucune spécification inventée."})}</small>
+            {session?.role==="admin"&&adminPrice&&<div className="idea-admin-price"><span>{t("price.admin")}</span><strong>{new Intl.NumberFormat("en-EG",{style:"currency",currency:adminPrice.currency}).format(adminPrice.price)}</strong></div>}
+          </div>
         </Container>
       </section>
 
@@ -286,6 +317,28 @@ export function ProductDetail() {
           )}
         </Container>
       </section>
+
+      {lightboxOpen&&(
+        <div className="idea-material-lightbox" role="dialog" aria-modal="true"
+          aria-label={copy({en:"Material image viewer",ar:"عارض صورة الخامة",fr:"Visionneuse du matériau"})}
+          ref={dialogRef} tabIndex={-1} onKeyDown={e=>{
+            if(e.key==="Escape"){e.preventDefault();setLightboxOpen(false);lightboxButton.current?.focus()}
+            if(e.key==="Tab"){const controls=Array.from(e.currentTarget.querySelectorAll<HTMLButtonElement>("button"));const i=controls.indexOf(document.activeElement as HTMLButtonElement);if(e.shiftKey&&i<=0){e.preventDefault();controls.at(-1)?.focus()}else if(!e.shiftKey&&i===controls.length-1){e.preventDefault();controls[0]?.focus()}}
+          }}>
+          <div className="idea-material-lightbox-controls">
+            <button type="button" onClick={()=>{setZoom(z=>Math.max(1,z-.25));setPan({x:0,y:0})}} aria-label="Zoom out"><ZoomOut/></button>
+            <span>{Math.round(zoom*100)}%</span>
+            <button type="button" onClick={()=>setZoom(z=>Math.min(4,z+.25))} aria-label="Zoom in"><ZoomIn/></button>
+            <button type="button" onClick={()=>{setLightboxOpen(false);lightboxButton.current?.focus()}} aria-label={copy({en:"Close viewer",ar:"إغلاق",fr:"Fermer"})}><X/></button>
+          </div>
+          <div className="idea-material-lightbox-stage" onPointerDown={e=>{if(zoom>1){e.currentTarget.setPointerCapture(e.pointerId);pointer.current={x:e.clientX,y:e.clientY,px:pan.x,py:pan.y}}}}
+            onPointerMove={e=>{if(pointer.current&&zoom>1)setPan({x:pointer.current.px+e.clientX-pointer.current.x,y:pointer.current.py+e.clientY-pointer.current.y})}}
+            onPointerUp={()=>{pointer.current=null}} onPointerCancel={()=>{pointer.current=null}}>
+            <img src={heroImage} alt={product.name[locale]} draggable={false}
+              style={{transform:`translate(${pan.x}px, ${pan.y}px) scale(${zoom})`}} />
+          </div>
+        </div>
+      )}
 
       <section id="formats" className="idea-product-formats-section">
         <Container className="idea-product-formats">
