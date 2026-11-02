@@ -125,3 +125,12 @@
 .idea-studio .idea-studio-library .idea-atlas-card-bottom span:last-child{color:#f0c993}
 .idea-studio .idea-studio-library .idea-studio-no-products strong{color:#f2ece4}
 .idea-studio .idea-studio-library .idea-atlas-loadmore button{color:#f0c993}
+
+
+/* IDEA source-only material faces: supplier product swatches, never room renders. */
+.idea-studio-face-picker{margin-top:16px;padding:12px 0;border-top:1px solid var(--studio-line);border-bottom:1px solid var(--studio-line)}
+.idea-studio-face-picker>span{display:block;color:var(--studio-gold-bright);font-size:11px;font-weight:600;margin-bottom:10px}
+.idea-studio-face-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;max-height:204px;overflow-y:auto}
+.idea-studio-face-grid button{aspect-ratio:1;min-width:0;padding:2px;border:2px solid transparent;background:#1c1e1f;cursor:pointer}
+.idea-studio-face-grid button.active,.idea-studio-face-grid button[aria-pressed="true"]{border-color:var(--studio-gold-bright)}
+.idea-studio-face-grid img{width:100%;height:100%;object-fit:contain;display:block}
