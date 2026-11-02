@@ -8,6 +8,7 @@ export type Locale = "en" | "ar" | "fr";
 export type CollectionSlug =
   | "ceramics"
   | "porcelain"
+  | "marble"
   | "sanitary-ware"
   | "faucets"
   | "bathroom-sets"

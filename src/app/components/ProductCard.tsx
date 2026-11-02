@@ -12,7 +12,7 @@ export function ProductCard({ product }: { product: Product }) {
   const fav = isFavorite(product.id);
   const inCompare = compare.includes(product.id);
   const [imageFailed, setImageFailed] = useState(false);
-  const unit = product.collection === "ceramics" || product.collection === "porcelain" ? "sqm" : "pieces";
+  const unit = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble" ? "sqm" : "pieces";
 
   return (
     <div className="idea-product-card" style={{
