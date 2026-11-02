@@ -134,8 +134,8 @@ export default function CeramicStudio({
   const [generationPhase,setGenerationPhase]=useState("preparing");
   const [serviceReady,setServiceReady]=useState(null),[aiQuota,setAiQuota]=useState(null);
   const refreshQuota=()=>void platformRequest("ai-quota").then(setAiQuota).catch(()=>setAiQuota(null));
-  useEffect(()=>{void platformRequest("features").then(r=>setServiceReady(Boolean(r.gemini))).catch(()=>setServiceReady(false));refreshQuota();},[]);
-  const phaseText={preparing:"بنجهز صورة المكان والخامة…",creating:"بنحفظ طلب التصميم…",processing:"Gemini بيعدّل التشطيب المختار…",downloading:"التصميم جاهز، بنستلم الصورة…"}[generationPhase];
+  useEffect(()=>{void platformRequest("features").then(r=>setServiceReady(Boolean(r.runpod))).catch(()=>setServiceReady(false));refreshQuota();},[]);
+  const phaseText={preparing:"بنجهز صورة المكان والخامة…",creating:"بنحفظ طلب التصميم…",processing:"Runpod / Qwen بيعدّل التشطيب المختار…",downloading:"التصميم جاهز، بنستلم الصورة…"}[generationPhase];
 
   const [room, setRoom] = useState(initialRoom || `${base}room.png`),
     [materials, setMaterials] = useState(catalog),
@@ -254,7 +254,7 @@ export default function CeramicStudio({
     };
   }, [modal]);
   const stage = useRef();
-  const notify = (e) => {const code=e.message||e;const messages={GEMINI_API_KEY_REQUIRED:"مفتاح Gemini غير مضاف بعد. يضيفه المدير من إعدادات AI.",GEMINI_ACCESS_DENIED:"مفتاح Gemini لا يملك صلاحية نموذج الصور. راجع المشروع والفوترة.",GEMINI_COMPOSITION_CHANGED:"النتيجة غيّرت أبعاد الصورة، لذلك لم ننشرها. حاول مرة أخرى.",GEMINI_RATE_LIMIT:"وصلنا لحد طلبات Gemini. حاول بعد قليل.",GEMINI_NO_IMAGE:"لم يُرجع Gemini صورة مكتملة. لم يتم استبدال صورتك.",AI_DAILY_LIMIT:"وصل الحد اليومي العام للتصميمات. حاول بعد 24 ساعة.",AI_SUBSCRIPTION_REQUIRED:"انتهت الحصة المجانية اليومية. الاشتراك المدفوع للتصميمات غير متاح حاليًا لأن بوابة الدفع غير مهيأة.",AUTH_REQUIRED:"سجّل الدخول بحساب عميل أو شركة أو مدير لاستخدام الاستوديو.",AI_ACCOUNT_REQUIRED:"هذا النوع من الحسابات غير مصرح له بإنشاء تصميمات.",GENERATION_IN_PROGRESS:"التصميم قيد المعالجة. راجع سجل تصميماتك."};setNotice(messages[code]||code);};
+  const notify = (e) => {const code=e.message||e;const messages={RUNPOD_API_KEY_REQUIRED:"مفتاح Runpod غير مضاف في إعدادات السيرفر.",RUNPOD_ACCESS_DENIED:"Runpod رفض الوصول. راجع مفتاح API وصلاحيات الحساب.",RUNPOD_COMPOSITION_CHANGED:"Runpod غيّر أبعاد الصورة؛ النتيجة اترفضت لحماية التصميم.",RUNPOD_RATE_LIMIT:"وصلنا لحد طلبات Runpod.",RUNPOD_NO_IMAGE:"Runpod لم يرجع صورة.",RUNPOD_INVALID_REQUEST:"صيغة طلب Runpod غير مقبولة؛ راجع إعداد الـEndpoint.",AI_QUOTA_EXHAUSTED:"استهلكت الخمس محاولات المتاحة لحسابك.",AI_DAILY_LIMIT:"وصل الحد اليومي العام للتصميمات. حاول بعد 24 ساعة.",AI_SUBSCRIPTION_REQUIRED:"انتهت الحصة المجانية اليومية. الاشتراك المدفوع للتصميمات غير متاح حاليًا لأن بوابة الدفع غير مهيأة.",AUTH_REQUIRED:"سجّل الدخول بحساب عميل أو شركة أو مدير لاستخدام الاستوديو.",AI_ACCOUNT_REQUIRED:"هذا النوع من الحسابات غير مصرح له بإنشاء تصميمات.",GENERATION_IN_PROGRESS:"التصميم قيد المعالجة. راجع سجل تصميماتك."};setNotice(messages[code]||code);};
   const invalidate = () => {
     setResult(null);
     setNotice("");
@@ -536,8 +536,8 @@ export default function CeramicStudio({
         </div>
       </header>
       <div className="studio-main" id="studio">
-        <div className="intro"><div className="studio-service" aria-live="polite"><span className={serviceReady?"service-dot ready":"service-dot"}/><b>IDEA / MATERIAL LAB</b><span>{uiText(busy?phaseText:serviceReady===null?"جارٍ التحقق من خدمة الصور":serviceReady?"Gemini · جاهز لاستقبال تصميمك":"أضف مفتاح Gemini لتفعيل التوليد")}</span></div>
-          {aiQuota&&<small className="studio-quota">رصيد آخر 24 ساعة: {aiQuota.remaining} من {aiQuota.limit} تصميمات مجانية · الاشتراك المدفوع: {aiQuota.paid_upgrade_available?"متاح":"غير مفعّل بعد"}</small>}
+        <div className="intro"><div className="studio-service" aria-live="polite"><span className={serviceReady?"service-dot ready":"service-dot"}/><b>IDEA / MATERIAL LAB</b><span>{uiText(busy?phaseText:serviceReady===null?"جارٍ التحقق من خدمة الصور":serviceReady?"Runpod / Qwen · جاهز لاستقبال تصميمك":"أضف مفتاح Runpod لتفعيل التوليد")}</span></div>
+          {aiQuota&&<small className="studio-quota">رصيد الحساب: {aiQuota.unlimited?"غير محدود للأدمن":(aiQuota.remaining+" من "+aiQuota.limit+" محاولات مدى الحياة")} · المصدر: Runpod</small>}
           <div>
             <div className="eyebrow">
               <span />{uiText(" IDEA · تصميم الصور للعملاء والشركات والإدارة")}</div>
@@ -933,7 +933,7 @@ export default function CeramicStudio({
             <p className="mode-note">
               {uiText(mode === "preview"
                 ? "تطبيق هندسي للخامة داخل الحدود التي تختارها. لا يحافظ تلقائيًا على الأثاث أو الظلال."
-                : "Gemini يعدّل السطح المختار باستخدام صورة المكان والخامة. التحديد اليدوي يحافظ على المنطقة خارج الحدود من الصورة الأصلية.")}
+                : "Runpod / Qwen يعدّل السطح المختار باستخدام صورة المكان والخامة. التحديد اليدوي يحافظ على المنطقة خارج الحدود من الصورة الأصلية.")}
             </p>
             <button
               className="generate"

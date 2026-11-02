@@ -1,0 +1,26 @@
+name: IDEA Runpod-only adapter checks
+on:
+  push:
+    branches:
+      - feat/idea-runpod-only-20261102
+  pull_request:
+    paths:
+      - 'public/api/platform*'
+      - 'tests/php/**'
+      - '.github/workflows/idea-runpod-adapter.yml'
+jobs:
+  php-adapter:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: PHP lint
+        run: |
+          php -l public/api/platform-runpod.php
+          php -l public/api/platform-ai.php
+          php -l public/api/platform-core.php
+          php -l public/api/platform.php
+          php -l public/api/generate.php
+      - name: Mock Runpod API contract (no billed request)
+        run: php tests/php/runpod-adapter-test.php

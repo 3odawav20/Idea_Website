@@ -1,4 +1,4 @@
-import {PlatformProfile,PlatformAddresses,VerifyEmail,PlatformNotifications,PlatformVerification,PlatformOrders,PlatformCart,PlatformDesigns,PlatformAdmin,GeminiSettings} from './pages/Platform';
+import {PlatformProfile,PlatformAddresses,VerifyEmail,PlatformNotifications,PlatformVerification,PlatformOrders,PlatformCart,PlatformDesigns,PlatformAdmin,RunpodSettings} from './pages/Platform';
 import { AccountSecurity } from './pages/AccountSecurity';
 import { useUiText as useLocaleText } from "./i18n/useUiText";
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router";
@@ -167,7 +167,7 @@ export default function App() {
               <Route path="/admin" element={<AdminControlLayout />}>
                 <Route index element={<AdminAccounts />} />
                 <Route path="catalogue" element={<AdminAccounts initialTab="products" />} />
-                <Route path="quality" element={<PlatformAdmin />} /><Route path="platform" element={<PlatformAdmin />} /><Route path="ai" element={<GeminiSettings />} /><Route path="verifications" element={<PlatformAdmin />} />
+                <Route path="quality" element={<PlatformAdmin />} /><Route path="platform" element={<PlatformAdmin />} /><Route path="ai" element={<RunpodSettings />} /><Route path="verifications" element={<PlatformAdmin />} />
                 <Route path="operations" element={<AdminAccounts />} />
                 <Route path="settings" element={<AccountSecurity />} />
                 <Route path="subscriptions" element={<AdminAccounts initialTab="memberships" />} />
