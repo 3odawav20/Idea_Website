@@ -2,6 +2,17 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "vite",
   "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/idea-accounts-api/accounts.php",
+      "destination": "https://livefree.support/idea-accounts-api/accounts.php"
+    },
+    {
+      "source": "/idea-accounts-api/platform.php",
+      "destination": "https://livefree.support/idea-accounts-api/platform.php"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
