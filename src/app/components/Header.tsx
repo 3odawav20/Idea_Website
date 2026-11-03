@@ -9,6 +9,7 @@ import type { Locale } from "../data/types";
 import { Container } from "./ui";
 import { IdeaLogo } from "./IdeaLogo";
 import { DiscoveryNavigation } from "./DiscoveryNavigation";
+import { AnnouncementBar } from "./AnnouncementBar";
 
 const LOCALES: { code: Locale; label: string }[] = [
   { code: "en", label: "EN" },
@@ -111,6 +112,7 @@ export function Header() {
         </div>
       </Container>
 
+      <AnnouncementBar />
       <div className="idea-discovery-desktop-only"><DiscoveryNavigation /></div>
       {/* Mobile drawer */}
       {open && (

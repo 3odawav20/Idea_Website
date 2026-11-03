@@ -7,6 +7,7 @@ import { COLLECTIONS } from "../data/catalog";
 import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
 import { ideaInternalCode } from "../data/ideaProductIdentity";
+import { similarProducts } from "../data/recommendations";
 import { Chip, Container, Section } from "../components/ui";
 import "../components/Discovery.css";
 import { isLargeFormat, isOutdoor20mm, matchesApplication, isColourLabel, isUsageLabel } from "../data/discovery";
@@ -86,6 +87,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   const requestedPage = Number.parseInt(params.get("page") ?? "1", 10);
   const page = Math.min(Math.max(Number.isFinite(requestedPage) ? requestedPage : 1, 1), totalPages);
   const pageResults = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const suggestions = q && results.length===1 ? similarProducts(results[0],products,4) : [];
   const firstResult = results.length ? (page - 1) * PAGE_SIZE + 1 : 0;
   const lastResult = Math.min(page * PAGE_SIZE, results.length);
   const activeCount = [application, finish, size, usage, color].filter(Boolean).length;
@@ -194,7 +196,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           {/* Results */}
           <div id="product-results" style={{minWidth:0, scrollMarginTop: 100}}>
             <form onSubmit={e=>{e.preventDefault(); const data = new FormData(e.currentTarget); setFilter("q", String(data.get("q")??"").trim());}} style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>
-              <input key={q} name="q" defaultValue={q} aria-label={locale === "ar" ? "البحث بالاسم" : locale === "fr" ? "Recherche par nom" : "Search by name"} placeholder={locale === "ar" ? "اسم المنتج أو الكود" : locale === "fr" ? "Nom ou référence" : "Product name or code"} style={{flex:"1 1 180px",minWidth:0,padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}/>
+              <input key={q} name="q" defaultValue={q} aria-label={locale === "ar" ? "البحث بالاسم" : locale === "fr" ? "Recherche par nom" : "Search by name"} placeholder={locale==="ar"?"اسم الشركة أو البراند أو كود البلاطة":locale==="fr"?"Code, marque ou fabricant":"Product code, brand or manufacturer"} style={{flex:"1 1 180px",minWidth:0,padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}/>
               <button type="submit" className="idea-discovery-submit">{locale === "ar" ? "ابحث" : locale === "fr" ? "Rechercher" : "Search"}</button>
               <select aria-label={locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort products"} value={sort} onChange={e=>setFilter("sort",e.target.value)} style={{padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}><option value="source">{locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order"}</option><option value="az">A → Z</option><option value="za">Z → A</option></select>
             </form>
@@ -212,6 +214,13 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
                 <div className="idea-product-results" style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "var(--idea-space-5)" }}>
                   {pageResults.map((p) => <ProductCard key={p.id} product={p} />)}
                 </div>
+                {suggestions.length > 0 && <section className="idea-search-similar">
+                  <h2>{locale==="ar"?"بلاطات وخامات شبيهة بالنتيجة":locale==="fr"?"Produits similaires":"Similar tiles and materials"}</h2>
+                  <p>{locale==="ar"?"اقتراحات حسب الخامة والمقاس والنقشة والتشطيب، وليس حسب السعر لأنه خاص بالإدارة.":"Recommendations by material, size, texture and finish; price similarity is not public."}</p>
+                  <div className="idea-product-results" style={{display:"grid",gridTemplateColumns:"repeat(4,minmax(0,1fr))",gap:"var(--idea-space-5)"}}>
+                    {suggestions.map(p=><ProductCard key={p.id} product={p}/>)}
+                  </div>
+                </section>}
                 {totalPages > 1 && (
                   <nav className="idea-catalogue-pagination" aria-label={locale === "ar" ? "صفحات المنتجات" : locale === "fr" ? "Pages produits" : "Product pages"}>
                     <button disabled={page === 1} onClick={() => goToPage(page - 1)}>
