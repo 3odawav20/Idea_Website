@@ -1,0 +1,70 @@
+/* IDEA bilingual visualizer typography fix — 2026-11-03 */
+html[lang="en"] .surface-material-note,
+html[lang="en"] .eyebrow {
+  font-family: "Jost", system-ui, sans-serif;
+  direction: ltr;
+  text-align: start;
+  letter-spacing: normal;
+}
+html[lang="ar"] .surface-material-note,
+html[lang="ar"] .eyebrow {
+  font-family: "IBM Plex Sans Arabic", "Noto Sans Arabic", system-ui, sans-serif;
+  direction: rtl;
+  text-align: start;
+  letter-spacing: 0;
+}
+.surface-material-note {
+  display: block;
+  white-space: normal !important;
+  font-size: clamp(11px, .95vw, 13px);
+  line-height: 1.65 !important;
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+.eyebrow {
+  white-space: normal !important;
+  line-height: 1.5 !important;
+  overflow-wrap: break-word;
+}
+html[lang="ar"] .eyebrow { line-height: 1.8 !important; }
+html[lang="ar"] .studio-label {letter-spacing:0;line-height:1.6;}
+@media(max-width: 720px) {
+  .surface-material-note {font-size:12px}
+  .eyebrow {font-size:11px}
+}
+
+/* Safe wrapping for the fixed IDEA announcement banner. */
+body p[style*="letter-spacing: 0.1em"][style*="text-align: center"] {
+  font-size: clamp(11px, 1vw, 13px) !important;
+  letter-spacing: .015em !important;
+  line-height: 1.5 !important;
+  text-wrap: balance;
+  overflow-wrap: normal;
+  max-width: 100%;
+}
+body div:has(> p[style*="letter-spacing: 0.1em"][style*="text-align: center"]) {
+  min-height: 44px !important;
+  height: auto !important;
+  padding-block: 7px !important;
+}
+.idea-ceramic-studio .eyebrow {
+  font-size: clamp(11px, .9vw, 13px) !important;
+}
+.idea-ceramic-studio .settings label,
+.idea-ceramic-studio .settings button,
+.idea-ceramic-studio .design-summary small {
+  line-height: 1.5;
+  white-space: normal;
+  overflow-wrap: break-word;
+}
+@media(max-width:680px) {
+  body p[style*="letter-spacing: 0.1em"][style*="text-align: center"] {
+    font-size: 11px !important;
+    line-height: 1.55 !important;
+  }
+  body div:has(> p[style*="letter-spacing: 0.1em"][style*="text-align: center"]) {
+    min-height: 48px !important;
+    padding-block: 7px !important;
+  }
+  .idea-ceramic-studio .settings button { min-height: 37px; }
+}
