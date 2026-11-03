@@ -66,6 +66,24 @@ class IngestionQA(unittest.TestCase):
         self.assertIn("missing_required_product_evidence",rec["flags"])
         self.assertNotIn("70000",json.dumps(rec))
 
+    def test_small_source_printed_dimensions_are_not_lost(self):
+        self.assertEqual(sizes_from("7.5 × 30 سم","")["label"],"7.5 × 30 cm")
+
+    def test_mixed_woo_parent_does_not_launder_sanitaryware_or_adhesives(self):
+        from woo_adapter import material_from_woo_evidence, MATERIAL_CATEGORY_IDS
+        self.assertEqual(MATERIAL_CATEGORY_IDS["source-04"],[176,177,178])
+        self.assertEqual(MATERIAL_CATEGORY_IDS["source-06"],[11350,11317,11078])
+        self.assertEqual(material_from_woo_evidence(
+            "سيراميك جيم 7.5 × 30 سم",["سيراميك", "سيراميك وبورسلين"]),"ceramics")
+        self.assertEqual(material_from_woo_evidence(
+            "بورسلين رويال 60 × 60 سم",["سيراميك وبورسلين"]),"porcelain")
+        self.assertIsNone(material_from_woo_evidence(
+            "لاصق سيراميك متعدد الاستخدامات",["سيراميك وبورسلين"]))
+        self.assertIsNone(material_from_woo_evidence(
+            "Grout for ceramic tiles",["Tiles"]))
+        self.assertIsNone(material_from_woo_evidence(
+            "Mixed floor product",["سيراميك وبورسلين"]))
+
     def test_canonical_source_registry_matches_current_exact_url_list(self):
         reg=json.loads((ROOT/"src/app/data/sourceRegistry.json").read_text("utf-8"))
         r={item["source_id"]:item for item in reg["sources"]}
@@ -82,6 +100,38 @@ class IngestionQA(unittest.TestCase):
         self.assertTrue(all(r.get("price") is None for r in records))
         self.assertTrue(all("image_rights_unconfirmed" in r["flags"] for r in records))
         self.assertFalse(any("prices" in r or "price_html" in r for r in records))
+
+class SupplierCollectionsQA(unittest.TestCase):
+    def test_two_source_08_collections_without_new_supplier_id(self):
+        from ingest import shopify_public_collections
+        urls=shopify_public_collections(SOURCES[7])
+        self.assertEqual(len(urls),2)
+        self.assertEqual(urls[0],"https://abaelmozahem.com/collections/ceramic/products.json")
+        self.assertEqual(urls[1],"https://abaelmozahem.com/collections/porcelain-size/products.json")
+
+    def test_source08_deduplicates_products_and_preserves_material_evidence(self):
+        from unittest.mock import patch
+        from urllib.parse import urlsplit
+        from ingest import extract_shopify
+        def item(pid, tag):
+            return {"id":pid,"title":f"Test {tag} 60x120 cm","handle":f"tile-{pid}",
+                "product_type":"","tags":[tag],"variants":[{"sku":f"SKU-{pid}","price":"450.00"}],
+                "images":[{"src":f"https://supplier.example/{pid}.jpg"}]}
+        def fake_get(url, **kwargs):
+            collection=urlsplit(url).path
+            raw=[item(1,"Ceramic"),item(3,"Porcelain")] if collection.startswith("/collections/ceramic/") else [item(3,"Porcelain"),item(2,"Porcelain")]
+            return 200,url,"application/json",json.dumps({"products":raw}).encode("utf-8")
+        with patch("ingest.robots_check",return_value=(True,None)),patch("ingest.http_get",side_effect=fake_get):
+            entries,errors=extract_shopify(SOURCES[7],max_pages=1,limit=50,verify_count=0)
+        self.assertFalse(errors)
+        self.assertEqual(len(entries),3)
+        self.assertEqual(len({p["source_product_id"] for p in entries}),3)
+        self.assertEqual({p["source_product_id"]:p["material"] for p in entries},
+            {"1":"ceramics","3":"porcelain","2":"porcelain"})
+        self.assertTrue(all(p["stage"]=="QUARANTINE" and not p["approved"] for p in entries))
+        self.assertTrue(all("price" in p and p["price"] is None for p in entries))
+        self.assertTrue(all("450.00" not in json.dumps(p) for p in entries))
+        self.assertIn("/collections/porcelain-size",entries[-1]["source_collection_url"])
 
 if __name__=="__main__":
     unittest.main()

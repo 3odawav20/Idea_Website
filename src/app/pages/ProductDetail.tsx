@@ -262,6 +262,7 @@ export function ProductDetail() {
             ) : (
               <img
                 className="idea-vivid-image"
+                style={{ objectFit: "contain" }}
                 src={visibleImage}
                 alt={`${product.name[locale]} ${activeImg + 1}`}
                 decoding="async"

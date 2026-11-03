@@ -1,0 +1,12 @@
+.idea-admin-promos{display:grid;gap:17px}
+.idea-admin-promos .ids-heading{margin-top:0}
+.idea-admin-promos-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.idea-admin-promos-form .ids-field{min-width:0}
+.idea-admin-promos-form .ids-field input{width:100%;min-height:45px}
+.idea-admin-promos-wide{grid-column:span 2}
+.idea-admin-promos-actions{grid-column:span 2;display:flex;justify-content:flex-end;padding-top:10px}
+.idea-admin-promos-message{margin:12px 0 0;padding:12px;border:1px solid var(--ids-line);border-radius:10px;color:var(--ids-text);font-size:12px}
+.idea-admin-promos .ids-table td strong{font-weight:600;color:var(--ids-text)}
+.idea-admin-promos .ids-table td>div{margin-top:4px;font-size:10px;color:var(--ids-muted)}
+.idea-admin-promos .ids-table{min-width:800px}
+@media(max-width:650px){.idea-admin-promos-form{grid-template-columns:minmax(0,1fr)}.idea-admin-promos-wide,.idea-admin-promos-actions{grid-column:auto}}
