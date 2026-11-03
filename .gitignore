@@ -8,3 +8,8 @@ coverage/
 .htpasswd
 .htpasswd_*
 .DS_Store
+
+# Local ingestion runs and Python interpreter artefacts
+__pycache__/
+*.pyc
+.private/

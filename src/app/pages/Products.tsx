@@ -6,6 +6,7 @@ import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
 import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
+import { ideaInternalCode } from "../data/ideaProductIdentity";
 import { Chip, Container, Section } from "../components/ui";
 import "../components/Discovery.css";
 import { isLargeFormat, isOutdoor20mm, matchesApplication, isColourLabel, isUsageLabel } from "../data/discovery";
@@ -71,7 +72,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     if (usage && !(p.usage ?? []).includes(usage)) return false;
     if (color && !(p.colors ?? []).includes(color)) return false;
     if (q) {
-      const hay = [p.name[locale], p.name.en, p.brand, p.model, p.code, p.collection, p.origin, ...(p.colors ?? []), ...p.sizes.map((s) => s.label)]
+      const hay = [p.name[locale], p.name.en, p.brand, p.manufacturer, p.model, p.code, ideaInternalCode(p), p.collection, p.origin, ...(p.colors ?? []), ...p.sizes.map((s) => s.label)]
         .join(" ").toLowerCase();
       if (!hay.includes(q)) return false;
     }

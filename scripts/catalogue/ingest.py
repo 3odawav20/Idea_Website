@@ -20,6 +20,7 @@ from urllib.robotparser import RobotFileParser
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image
+from identity import decorate_for_review
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOGUE = ROOT / "docs" / "catalogue" / "supplier-qa-2026-11-03"
@@ -113,7 +114,7 @@ def discovery(entry):
 
 def sizes_from(title, description):
     text=BeautifulSoup(description or "", "html.parser").get_text(" ",strip=True) if description else ""
-    match = re.search(r"(?<!\d)(\d{2,3}(?:\.\d+)?)\s*(?:x|×|\*)\s*(\d{2,3}(?:\.\d+)?)\s*(?:cm|سم|سنتيمتر)?(?!\d)", title+" "+text,flags=re.I)
+    match = re.search(r"(?<![\d.])(\d{1,3}(?:\.\d+)?)\s*(?:x|×|\*)\s*(\d{1,3}(?:\.\d+)?)\s*(?:cm|سم|سنتيمتر)?(?![\d.])", title+" "+text,flags=re.I)
     if not match:
         return None
     a,b=float(match[1]),float(match[2])
@@ -180,33 +181,54 @@ def verify_image(url, max_size=8_000_000):
     except Exception as exc:
         return {"ok":False,"reason":type(exc).__name__+":"+str(exc)[:80]}
 
+def shopify_public_collections(source):
+    """Approved source entrypoint plus public material-specific collection pages.
+    The second porcelain URL is part of the SAME source-08 provider; its
+    products must be deduplicated against the approved ceramic collection.
+    """
+    if source["source_id"] == "source-08":
+        return [
+            "https://abaelmozahem.com/collections/ceramic/products.json",
+            "https://abaelmozahem.com/collections/porcelain-size/products.json",
+        ]
+    return ["https://" + host(source["url"]) + "/products.json"]
+
+
 def extract_shopify(source, max_pages=2, limit=250, verify_count=6):
-    # Only collection-scoped public JSON endpoint, never private Storefront/admin API.
-    if source["source_id"]=="source-08":
-        base="https://abaelmozahem.com/collections/ceramic/products.json"
-    else:
-        base="https://"+host(source["url"])+"/products.json"
-    entries=[];errors=[];seen=set()
-    allowed,why=robots_check(base)
-    if allowed is not True:
-        return [],[why or "robots_approval_missing"]
-    for page in range(1,max_pages+1):
-        url=base+"?"+urlencode({"limit":min(limit,250),"page":page})
-        try:
-            status,_,ct,body=http_get(url,limit=5_000_000,accept="application/json")
-            if status!=200: errors.append(f"page={page}:HTTP_{status}");break
-            raw=json.loads(body)
-            batch=raw.get("products",[])
-            if not isinstance(batch,list):errors.append("products_not_array");break
-            for row in batch:
-                pid=str(row.get("id") or "")
-                if not pid or pid in seen: continue
-                seen.add(pid);entries.append(product_from_shopify(row,source))
-            if len(batch)<min(limit,250):break
-            time.sleep(.3)
-        except Exception as exc:
-            errors.append(f"page={page}:{type(exc).__name__}:{str(exc)[:100]}")
-            break
+    # Public, robots-permitted Shopify collection API only. NO paid/private API.
+    entries=[]; errors=[]; seen=set()
+    for base in shopify_public_collections(source):
+        allowed, why=robots_check(base)
+        if allowed is not True:
+            errors.append(f"{base}:{why or 'robots_approval_missing'}")
+            continue
+        for page in range(1,max_pages+1):
+            url=base+"?"+urlencode({"limit":min(limit,250),"page":page})
+            try:
+                status,_,ct,body=http_get(url,limit=5_000_000,accept="application/json")
+                if status!=200:
+                    errors.append(f"{base}:page={page}:HTTP_{status}")
+                    break
+                raw=json.loads(body)
+                batch=raw.get("products",[])
+                if not isinstance(batch,list):
+                    errors.append(f"{base}:products_not_array")
+                    break
+                for item in batch:
+                    pid=str(item.get("id") or "")
+                    if not pid or pid in seen:
+                        continue
+                    seen.add(pid)
+                    row=product_from_shopify(item,source)
+                    row["source_collection_url"]=base.removesuffix("/products.json")
+                    entries.append(row)
+                if len(batch)<min(limit,250):
+                    break
+                time.sleep(.3)
+            except Exception as exc:
+                errors.append(f"{base}:page={page}:{type(exc).__name__}:{str(exc)[:100]}")
+                break
+    # Explicit evidence from the supplier determines category, not room visuals.
     for row in entries[:verify_count]:
         if row["source_image_urls"]:
             row["image_technical_qa"]=verify_image(row["source_image_urls"][0])
@@ -260,17 +282,17 @@ def main():
     print("DISCOVERY",dict(status))
     if args.mode=="discover":return
     products=[]; extraction_diagnostics=[]
-    allowed_ids={"source-08","source-05","source-22"}
+    allowed_ids={"source-08","source-05","source-22","source-04","source-06"}
     for source in SOURCES:
         if source["source_id"] not in allowed_ids:continue
         diagnostic=next((r for r in results if r["source_id"]==source["source_id"]),{})
         if diagnostic.get("status")!="accessible":
             extraction_diagnostics.append({"source_id":source["source_id"],"status":"skipped", "reason":"source_not_accessible"})
             continue
-        if source["source_id"] in ("source-05","source-22"):
+        if source["source_id"] in ("source-05","source-22","source-04","source-06"):
             from woo_adapter import extract as extract_woo
             entries,errors=extract_woo(source,per_page=min(45,max(1,args.limit)),
-                pages=min(2,max(1,args.max_pages)),details=18,verify_count=max(0,min(12,args.verify_count)))
+                pages=min(3,max(1,args.max_pages)),details=9,verify_count=max(0,min(12,args.verify_count)))
         else:
             entries,errors=extract_shopify(source,max_pages=max(1,min(6,args.max_pages)),
                 limit=max(1,min(250,args.limit)),verify_count=max(0,min(30,args.verify_count)))
@@ -279,6 +301,9 @@ def main():
             "extracted":len(entries),"material_tally":dict(Counter(p["material"] for p in entries)),
             "photo_checks":sum(bool(p.get("image_technical_qa",{}).get("ok")) for p in entries),
             "errors":errors})
+    # Every record gets its own stable IDEA reference, without inventing maker/SKU.
+    for item in products:
+        decorate_for_review(item)
     # All extraction is staging/quarantine. No third-party images copied or republished.
     write_json(CATALOGUE/"quarantine-products.json",products)
     write_json(CATALOGUE/"extraction-diagnostics.json",extraction_diagnostics)

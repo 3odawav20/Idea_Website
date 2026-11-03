@@ -1,18 +1,18 @@
 {
-  "generated_at": "2026-11-03T01:02:16+00:00",
+  "generated_at": "2026-11-03T02:04:29+00:00",
   "sources_exact": 40,
-  "new_extracted": 364,
-  "new_technically_image_checked": 18,
-  "new_images_passing_technical_only": 16,
+  "new_extracted": 643,
+  "new_technically_image_checked": 8,
+  "new_images_passing_technical_only": 7,
   "new_visually_approved": 0,
   "new_rights_approved": 0,
   "new_approved": 0,
   "new_staging_live": 0,
   "new_production_live": 0,
   "new_material_tally_unapproved": {
-    "None": 90,
-    "ceramics": 223,
-    "porcelain": 51
+    "porcelain": 255,
+    "ceramics": 253,
+    "None": 135
   },
   "claims_8000_goal_met": false,
   "status": "FAIL_CLOSED_QUARANTINE_NOT_PUBLIC"
