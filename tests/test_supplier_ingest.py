@@ -150,12 +150,17 @@ class BrandSourceEvidenceQA(unittest.TestCase):
     def test_shop_retainer_name_is_not_factory_or_product_brand(self):
         from identity import decorate_for_review
         row={"source_id":"source-05","source_product_id":"432",
+             "source_url":"https://www.cleopatraceramics.store/ar/",
              "retailer_vendor":"Cleopatra Ceramic Store","name":"Joker Brown",
              "manufacturer":None}
         decorate_for_review(row)
-        self.assertIsNone(row["product_brand"])
-        self.assertIsNone(row["product_brand_evidence"])
+        self.assertEqual(row["product_brand"],"Ceramica Cleopatra")
+        self.assertEqual(row["product_brand_evidence"],"official_brand_store")
+        self.assertEqual(row["brand_review_status"],"official_store_context")
         self.assertIsNone(row["manufacturer"])
+        row["source_url"]="https://unrelated-retailer.example/"
+        decorate_for_review(row)
+        self.assertIsNone(row["product_brand"])
 
     def test_supplier_product_title_brands(self):
         from identity import source_claimed_brand, decorate_for_review
@@ -177,7 +182,8 @@ class BrandSourceEvidenceQA(unittest.TestCase):
         self.assertEqual(len(set(x["idea_reference_code"] for x in rows)),len(rows))
         self.assertEqual(sum(x.get("product_brand_evidence")=="shopify_tile_vendor" for x in rows),379)
         self.assertEqual(sum(x.get("product_brand_evidence")=="supplier_product_title" for x in rows),129)
-        self.assertEqual(sum(not x.get("product_brand") for x in rows),135)
+        self.assertEqual(sum(x.get("product_brand_evidence")=="official_brand_store" for x in rows),135)
+        self.assertEqual(sum(not x.get("product_brand") for x in rows),0)
         self.assertTrue(all(not x.get("manufacturer") and x.get("price") is None for x in rows))
         self.assertTrue(all(x["stage"]=="QUARANTINE" and not x["approved"] for x in rows))
 

@@ -1,15 +1,16 @@
 {
-  "generated_at": "2026-11-03T03:38:04+00:00",
+  "generated_at": "2026-11-03T03:44:07+00:00",
   "source_records": 643,
   "unique_brand_names": 12,
   "source_shopify_vendor_brand": 379,
   "source_product_title_brand": 129,
-  "brand_requires_more_evidence": 135,
+  "source_official_brand_store": 135,
+  "brand_requires_more_evidence": 0,
   "manufacturer_identity_documented": 0,
   "per_brand": {
     "Art Ceramic": 48,
     "Beroia": 19,
-    "Ceramica Cleopatra": 143,
+    "Ceramica Cleopatra": 278,
     "Farmora": 56,
     "Gemma": 95,
     "Gloria": 7,
@@ -20,8 +21,6 @@
     "Prima": 36,
     "Royal": 3
   },
-  "still_unresolved_by_source": {
-    "source-05": 135
-  },
-  "note": "Retailer/vendor names are NOT by default manufacturers. Brands sourced from Shopify vendor on verified tile brand category or from supplier product title. No candidate is approved or published."
+  "still_unresolved_by_source": {},
+  "note": "Retailer names are not manufacturers. 379 brands use Shopify tile vendor; 129 use supplier product title; 135 use first-party Cleopatra shop context (group website cross-link). Store context does not certify product manufacturer. Nothing is approved or published."
 }

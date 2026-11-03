@@ -34,8 +34,8 @@ The 135 unclassified records do NOT contribute to material targets. The existing
 
 - A public Shopify vendor field on Aba El Mozahem corresponds to the site's explicit **tile-brand** facet; all **379** source-08 candidates are mapped to one of seven source-declared brands. These values are **not certificates of manufacturer identity**.
 - Source-04/06/22 product titles provide a further **129** provisional brand candidates. Some detail pages also list a branded variant attribute (e.g. GLORIA), but individual claims still require QA.
-- **508 of 643** records have a brand and field provenance (379 source-field; 129 title candidates); **135** remain brand-unresolved. All 135 belong to source-05. Retailer name Cleopatra Ceramic Store alone is not evidence of each product brand or factory.
-- **12 distinct brand names** were identified in this bounded batch. None of the 643 records has a separately proved legal manufacturer identity.
+- **643 of 643** records now have a brand attribution with field provenance: **379** from Shopify tile-vendor, **129** from supplier product titles, and **135** from the first-party Cleopatra ecommerce store context. Ceramica Cleopatra Group links to cleopatraceramics.store on its official website; this is store-brand evidence only, not a per-product legal manufacturer certificate.
+- **12 distinct brand names** were identified in this bounded batch. None of the 643 records has a separately proved legal manufacturer identity. The 135 store-attributed records remain specifically flagged official_store_context for eventual item-level review.
 - brand-evidence-review.csv lists IDEA reference, source vendor, brand, field provenance, review status and product source URL. brand-evidence-summary.json contains measured counts. Neither contains prices or offers.
 - The public product card and AI material atlas show a distinct internal IDEA reference. Brand names and manufacturers are never conflated.
 

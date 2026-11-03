@@ -56,6 +56,12 @@ def review_brand_evidence(item: dict[str,Any]) -> tuple[str|None,str|None]:
     title_brand=source_claimed_brand(item.get("name") or "")
     if title_brand:
         return title_brand,"supplier_product_title"
+    # Ceramica Cleopatra Group itself links to cleopatraceramics.store as its
+    # official ecommerce shop. This is source-STORE brand context, weaker than a
+    # product-specific vendor field; it never asserts legal manufacturer.
+    source_url=str(item.get("source_url") or "").lower()
+    if source_id=="source-05" and "cleopatraceramics.store" in source_url and vendor.casefold()=="cleopatra ceramic store":
+        return "Ceramica Cleopatra","official_brand_store"
     # Do not claim "El Sewify", "Elrwad", "Alwan" or "Cleopatra Ceramic
     # Store" are manufacturers or brands of every product in their shops.
     return None,None
@@ -68,7 +74,8 @@ def decorate_for_review(item: dict[str,Any]) -> dict[str,Any]:
     item["product_brand"]=brand
     item["product_brand_evidence"]=brand_source
     item["brand_review_status"]="source_field" if brand_source=="shopify_tile_vendor" else (
-        "title_candidate" if brand_source else "requires_source_proof"
+        "official_store_context" if brand_source=="official_brand_store" else (
+            "title_candidate" if brand_source else "requires_source_proof")
     )
     item["manufacturer_review_status"]=(
         "source_verified" if item.get("manufacturer") else "requires_product_level_proof"

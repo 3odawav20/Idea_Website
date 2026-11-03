@@ -12,12 +12,13 @@ const studio=readFileSync("src/app/pages/AiVisualizerStudio.tsx","utf8");
 test("shopify vendor is product brand evidence, retailer is not a manufacturer",()=>{
   assert.equal(summary.source_shopify_vendor_brand,379);
   assert.equal(summary.source_product_title_brand,129);
-  assert.equal(summary.brand_requires_more_evidence,135);
+  assert.equal(summary.source_official_brand_store,135);
+  assert.equal(summary.brand_requires_more_evidence,0);
   assert.equal(summary.manufacturer_identity_documented,0);
   assert.equal(summary.unique_brand_names,12);
   assert.equal(products.length,643);
   assert.equal(products.filter(p=>p.source_id==="source-08").length,379);
-  assert.equal(products.filter(p=>p.source_id==="source-05"&&!p.product_brand).length,135);
+  assert.equal(products.filter(p=>p.source_id==="source-05"&&p.product_brand_evidence==="official_brand_store").length,135);
   assert.match(identity,/SHOPIFY_TILE_BRANDS/);
   assert.match(identity,/if source_id=="source-08"/);
   assert.match(identity,/return None,None/);
@@ -34,7 +35,7 @@ test("brand attribution has auditable provenance and does not expose supplier pr
     assert.equal(item.approved,false);
     assert.equal(item.publicly_live,false);
     assert.equal(item.manufacturer,null);
-    if(item.product_brand)assert.ok(["shopify_tile_vendor","supplier_product_title"].includes(item.product_brand_evidence));
+    if(item.product_brand)assert.ok(["shopify_tile_vendor","supplier_product_title","official_brand_store"].includes(item.product_brand_evidence));
     else assert.equal(item.product_brand_evidence,null);
   }
 });

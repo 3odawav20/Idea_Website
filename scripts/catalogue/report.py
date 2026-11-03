@@ -137,11 +137,12 @@ brand_summary={
     "unique_brand_names":len({p.get("product_brand") for p in products if p.get("product_brand")}),
     "source_shopify_vendor_brand":sum(p.get("product_brand_evidence")=="shopify_tile_vendor" for p in products),
     "source_product_title_brand":sum(p.get("product_brand_evidence")=="supplier_product_title" for p in products),
+    "source_official_brand_store":sum(p.get("product_brand_evidence")=="official_brand_store" for p in products),
     "brand_requires_more_evidence":sum(not p.get("product_brand") for p in products),
     "manufacturer_identity_documented":sum(bool(p.get("manufacturer")) for p in products),
     "per_brand":dict(sorted(Counter(p["product_brand"] for p in products if p.get("product_brand")).items())),
     "still_unresolved_by_source":dict(sorted(Counter(p["source_id"] for p in products if not p.get("product_brand")).items())),
-    "note":"Retailer/vendor names are NOT by default manufacturers. Brands sourced from Shopify vendor on verified tile brand category or from supplier product title. No candidate is approved or published."
+    "note":"Retailer names are not manufacturers. 379 brands use Shopify tile vendor; 129 use supplier product title; 135 use first-party Cleopatra shop context (group website cross-link). Store context does not certify product manufacturer. Nothing is approved or published."
 }
 (PATH/"brand-evidence-summary.json").write_text(json.dumps(brand_summary,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
 print("BRAND_EVIDENCE",json.dumps(brand_summary,ensure_ascii=False))
