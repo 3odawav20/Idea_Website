@@ -1,0 +1,206 @@
+{
+  "source_list_version": "2026-11-03",
+  "basis": "Exact 40 URLs from user-provided ingestion directive; no login or CAPTCHA bypass",
+  "sources": [
+    {
+      "source_id": "source-01",
+      "name": "Ahmed El Sallab",
+      "url": "https://www.ahmedelsallab.com/ar/ceramic-porcelain.html"
+    },
+    {
+      "source_id": "source-02",
+      "name": "El Mashreqy Ceramic",
+      "url": "https://mashreqy.com/categories/%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D8%A3%D8%B1%D8%B6%D9%8A%D8%A7%D8%AA"
+    },
+    {
+      "source_id": "source-03",
+      "name": "Mahgoub Ceramic & Porcelain",
+      "url": "https://www.mahgoub.com/ar/home/"
+    },
+    {
+      "source_id": "source-04",
+      "name": "El Sewify",
+      "url": "https://elsweefi.com/"
+    },
+    {
+      "source_id": "source-05",
+      "name": "Cleopatra Ceramic Store",
+      "url": "https://www.cleopatraceramics.store/ar/"
+    },
+    {
+      "source_id": "source-06",
+      "name": "Alwan Ceramic & Porcelain",
+      "url": "https://elwan.eg/"
+    },
+    {
+      "source_id": "source-07",
+      "name": "San George",
+      "url": "https://sangeorge.com.eg/product_cat/new/cremicsss/cer-wall/"
+    },
+    {
+      "source_id": "source-08",
+      "name": "AbaElMozahem",
+      "url": "https://abaelmozahem.com/collections/ceramic"
+    },
+    {
+      "source_id": "source-09",
+      "name": "Ceramica Verdi",
+      "url": "https://ceramicaverdi.com/"
+    },
+    {
+      "source_id": "source-10",
+      "name": "Royal Group",
+      "url": "https://royalgroup-ceramic.com/product-category/%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%88%D8%A8%D9%88%D8%B1%D8%B3%D9%84%D9%8A%D9%86/%E2%81%A0%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%85%D8%B7%D8%A7%D8%A8%D8%AE/"
+    },
+    {
+      "source_id": "source-11",
+      "name": "Ceramica Platino",
+      "url": "https://ceramicaplatino.com/"
+    },
+    {
+      "source_id": "source-12",
+      "name": "Rondy Ceramics",
+      "url": "https://rondyceramics.com/"
+    },
+    {
+      "source_id": "source-13",
+      "name": "Mazloum Home",
+      "url": "https://mazloumhome.com/"
+    },
+    {
+      "source_id": "source-14",
+      "name": "Eissa Group",
+      "url": "https://eissagroup.com.eg/"
+    },
+    {
+      "source_id": "source-15",
+      "name": "Ceramica Market",
+      "url": "https://ceramicamarket.com/ar/"
+    },
+    {
+      "source_id": "source-16",
+      "name": "Ceramica Granito",
+      "url": "https://www.ceramicagranito.com/"
+    },
+    {
+      "source_id": "source-17",
+      "name": "Ceramica Prima",
+      "url": "http://ceramicaprima.com/ar/"
+    },
+    {
+      "source_id": "source-18",
+      "name": "Alfa Ceramic",
+      "url": "http://www.alfaceramic.net/CeramicaAlfa_WebSite_ar/Default_ar.aspx"
+    },
+    {
+      "source_id": "source-19",
+      "name": "Royal Group — Gloria",
+      "url": "https://royalgroup-ceramic.com/product-brand/%D8%AC%D9%84%D9%88%D8%B1%D9%8A%D8%A7/"
+    },
+    {
+      "source_id": "source-20",
+      "name": "Art Ceramic",
+      "url": "https://artceramic-egypt.com/"
+    },
+    {
+      "source_id": "source-21",
+      "name": "Remas",
+      "url": "https://remas-ir.com/"
+    },
+    {
+      "source_id": "source-22",
+      "name": "Elrwad Group",
+      "url": "https://elrwadgroup.com/brand/ceramica-elegant/"
+    },
+    {
+      "source_id": "source-23",
+      "name": "Instagram Ceramica Elegant",
+      "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fceramica_elegant%2F%3Fhl%3Dar&is_from_rle="
+    },
+    {
+      "source_id": "source-24",
+      "name": "Gemma",
+      "url": "https://www.gemma.com.eg/"
+    },
+    {
+      "source_id": "source-25",
+      "name": "Tarek Elsallab",
+      "url": "https://www.tarekelsallab.com/ar/"
+    },
+    {
+      "source_id": "source-26",
+      "name": "Mostafa El Sallab Establishment",
+      "url": "https://elsallab.com/"
+    },
+    {
+      "source_id": "source-27",
+      "name": "Abdelaziz Elsallab",
+      "url": "https://azizsallab.com/"
+    },
+    {
+      "source_id": "source-28",
+      "name": "Majestic Detailing",
+      "url": "https://www.majesticdetailing.ma/copy-of-detailing?lang=ar"
+    },
+    {
+      "source_id": "source-29",
+      "name": "Lecico Egypt",
+      "url": "https://www.lecicoegypt.com/"
+    },
+    {
+      "source_id": "source-30",
+      "name": "Gemma Shop",
+      "url": "https://www.gemma.com.eg/shop"
+    },
+    {
+      "source_id": "source-31",
+      "name": "Duravit Egypt",
+      "url": "https://www.duravit.com.eg/"
+    },
+    {
+      "source_id": "source-32",
+      "name": "Ideal Standard Egypt",
+      "url": "https://idealstandard-egypt.com/"
+    },
+    {
+      "source_id": "source-33",
+      "name": "Facebook Micavit Egypt",
+      "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2FMicavitEgypt%2F%3Flocale%3Dar_AR"
+    },
+    {
+      "source_id": "source-34",
+      "name": "Sebaka Plumbing Shop",
+      "url": "https://www.sebakashop.com/product-category/%D8%A3%D8%B7%D9%82%D9%85-%D8%AD%D9%85%D8%A7%D9%85-%D9%83%D8%A7%D9%85%D9%84%D8%A9/"
+    },
+    {
+      "source_id": "source-35",
+      "name": "Cleopatra Sanitary Ware",
+      "url": "https://www.cleopatraceramics.com/ar/sanitary-ware-products/collection-type/complete-sets"
+    },
+    {
+      "source_id": "source-36",
+      "name": "Rowad El Sabteya",
+      "url": "https://rowadelsabtya.com/"
+    },
+    {
+      "source_id": "source-37",
+      "name": "Sanipure",
+      "url": "https://sanipure-eg.com/"
+    },
+    {
+      "source_id": "source-38",
+      "name": "Remas Duplicate",
+      "url": "https://remas-ir.com/"
+    },
+    {
+      "source_id": "source-39",
+      "name": "GROHE",
+      "url": "https://www.grohe.com/ar-EG/"
+    },
+    {
+      "source_id": "source-40",
+      "name": "Roca Egypt",
+      "url": "https://www.eg.roca.com/ar-EG/about-roca"
+    }
+  ]
+}

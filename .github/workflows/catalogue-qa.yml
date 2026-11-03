@@ -1,0 +1,29 @@
+name: IDEA supplier ingestion QA (offline, no publish)
+on:
+  pull_request:
+    paths:
+      - 'scripts/catalogue/**'
+      - 'tests/test_supplier_ingest.py'
+      - '.github/workflows/catalogue-qa.yml'
+  push:
+    paths:
+      - 'scripts/catalogue/**'
+      - 'tests/test_supplier_ingest.py'
+jobs:
+  ingest-validation:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install limited QA-only dependencies
+        run: python -m pip install -r scripts/catalogue/requirements.txt
+      - name: Check exact source register and fail-closed normalization
+        run: python -m unittest discover -s tests -p test_supplier_ingest.py -v
+      - name: Check Python syntax
+        run: python -m py_compile scripts/catalogue/ingest.py scripts/catalogue/woo_adapter.py scripts/catalogue/report.py scripts/catalogue/sync_registry.py
+      - name: Check known-source baseline without requesting external websites
+        run: python scripts/catalogue/ingest.py --mode baseline

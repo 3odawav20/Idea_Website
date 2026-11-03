@@ -1,5 +1,5 @@
 {
-  "registryVersion": 2,
+  "registryVersion": 3,
   "generatedAt": "2026-09-15T00:00:00.000Z",
   "expectedSourceCount": 40,
   "discoveredSourceCount": 40,
@@ -58,6 +58,17 @@
         "http_status": 403,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://mashreqy.com/categories/%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D8%A3%D8%B1%D8%B6%D9%8A%D8%A7%D8%AA",
+      "source_name_approved_input": "El Mashreqy Ceramic",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://mashreqy.com/categories/floor-ceramic",
+        "adapter": "json-ld",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -113,6 +124,17 @@
         "http_status": 404,
         "content_type": "text/html; charset=us-ascii",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://ceramicaverdi.com/",
+      "source_name_approved_input": "Ceramica Verdi",
+      "discovery_evidence_2026_11_03": {
+        "status": "needs_robots_review",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "robots_unverifiable",
+        "checked_at": "2026-11-03T00:55:17+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -166,6 +188,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://rondyceramics.com/",
+      "source_name_approved_input": "Rondy Ceramics",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://rondyceramic.com/",
+        "adapter": "json-ld",
+        "reason": "redirected_to_different_host_review",
+        "checked_at": "2026-11-03T00:55:19+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -219,6 +252,17 @@
         "http_status": 200,
         "content_type": "text/html;charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.mahgoub.com/ar/home/",
+      "source_name_approved_input": "Mahgoub Ceramic & Porcelain",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://www.mahgoub.com/ar/home/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -272,6 +316,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.ahmedelsallab.com/ar/ceramic-porcelain.html",
+      "source_name_approved_input": "Ahmed El Sallab",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://www.ahmedelsallab.com/ar/ceramic-porcelain.html",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -325,6 +380,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://ceramicamarket.com/ar/",
+      "source_name_approved_input": "Ceramica Market",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://ceramicamarket.com/ar",
+        "adapter": "json-ld",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:21+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -378,6 +444,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://abaelmozahem.com/collections/ceramic",
+      "source_name_approved_input": "AbaElMozahem",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://abaelmozahem.com/collections/ceramic",
+        "adapter": "shopify",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:15+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -431,6 +508,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://ceramicaplatino.com/",
+      "source_name_approved_input": "Ceramica Platino",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://ceramicaplatino.com/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:17+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -484,6 +572,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://royalgroup-ceramic.com/product-category/%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%88%D8%A8%D9%88%D8%B1%D8%B3%D9%84%D9%8A%D9%86/%E2%81%A0%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%85%D8%B7%D8%A7%D8%A8%D8%AE/",
+      "source_name_approved_input": "Royal Group",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://royalgroup-ceramic.com/product-category/%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%88%D8%A8%D9%88%D8%B1%D8%B3%D9%84%D9%8A%D9%86/%E2%81%A0%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%85%D8%B7%D8%A7%D8%A8%D8%AE/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:17+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -537,6 +636,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "http://www.alfaceramic.net/CeramicaAlfa_WebSite_ar/Default_ar.aspx",
+      "source_name_approved_input": "Alfa Ceramic",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "http://www.alfaceramic.net/CeramicaAlfa_WebSite_ar/Default_ar.aspx",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:22+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -592,6 +702,17 @@
         "http_status": 521,
         "content_type": "text/plain; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "http://ceramicaprima.com/ar/",
+      "source_name_approved_input": "Ceramica Prima",
+      "discovery_evidence_2026_11_03": {
+        "status": "needs_robots_review",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "robots_unverifiable",
+        "checked_at": "2026-11-03T00:55:21+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -645,6 +766,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.ceramicagranito.com/",
+      "source_name_approved_input": "Ceramica Granito",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://www.ceramicagranito.com/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:21+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -698,6 +830,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://elsweefi.com/",
+      "source_name_approved_input": "El Sewify",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://elsweefi.com/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -751,6 +894,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://remas-ir.com/",
+      "source_name_approved_input": "Remas",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://remas-ir.com/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:23+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -804,6 +958,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://eissagroup.com.eg/",
+      "source_name_approved_input": "Eissa Group",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://eissagroup.com.eg/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:20+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -857,6 +1022,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": "src/app/data/artceramic.json"
+      },
+      "approved_input_url_2026_11_03": "https://artceramic-egypt.com/",
+      "source_name_approved_input": "Art Ceramic",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://artceramic-egypt.com/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:22+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -910,6 +1086,17 @@
         "http_status": 200,
         "content_type": "text/html",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.gemma.com.eg/",
+      "source_name_approved_input": "Gemma",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://www.gemma.com.eg/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:23+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -965,6 +1152,17 @@
         "http_status": 429,
         "content_type": "text/html; charset=\"utf-8\"",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fceramica_elegant%2F%3Fhl%3Dar&is_from_rle=",
+      "source_name_approved_input": "Instagram Ceramica Elegant",
+      "discovery_evidence_2026_11_03": {
+        "status": "not_crawlable",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "login/social source: no login or CAPTCHA bypass",
+        "checked_at": "2026-11-03T00:55:23+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1018,6 +1216,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://sangeorge.com.eg/product_cat/new/cremicsss/cer-wall/",
+      "source_name_approved_input": "San George",
+      "discovery_evidence_2026_11_03": {
+        "status": "blocked",
+        "http_status": 403,
+        "final_url": "https://sangeorge.com.eg/product_cat/new/cremicsss/cer-wall/",
+        "adapter": null,
+        "reason": "HTTP 403; not bypassed",
+        "checked_at": "2026-11-03T00:55:15+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1071,6 +1280,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.cleopatraceramics.store/ar/",
+      "source_name_approved_input": "Cleopatra Ceramic Store",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://www.cleopatraceramics.store/ar/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1124,6 +1344,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://azizsallab.com/",
+      "source_name_approved_input": "Abdelaziz Elsallab",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://azizsallab.com/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1177,6 +1408,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://elsallab.com/",
+      "source_name_approved_input": "Mostafa El Sallab Establishment",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://elsallab.com/",
+        "adapter": "shopify",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:24+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1230,6 +1472,17 @@
         "http_status": 200,
         "content_type": "text/html",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.gemma.com.eg/shop",
+      "source_name_approved_input": "Gemma Shop",
+      "discovery_evidence_2026_11_03": {
+        "status": "duplicate_provider",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": "source-24"
       }
     },
     {
@@ -1283,6 +1536,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://royalgroup-ceramic.com/product-brand/%D8%AC%D9%84%D9%88%D8%B1%D9%8A%D8%A7/",
+      "source_name_approved_input": "Royal Group — Gloria",
+      "discovery_evidence_2026_11_03": {
+        "status": "duplicate_provider",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": "source-10"
       }
     },
     {
@@ -1338,6 +1602,17 @@
         "http_status": 403,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://idealstandard-egypt.com/",
+      "source_name_approved_input": "Ideal Standard Egypt",
+      "discovery_evidence_2026_11_03": {
+        "status": "out_of_scope_entrypoint",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "supplied URL is for non-tile products or non-material service",
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1391,6 +1666,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://elrwadgroup.com/brand/ceramica-elegant/",
+      "source_name_approved_input": "Elrwad Group",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://elrwadgroup.com/brand/ceramica-elegant/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:23+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1444,6 +1730,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.lecicoegypt.com/",
+      "source_name_approved_input": "Lecico Egypt",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://www.lecicoegypt.com/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1497,6 +1794,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=\"utf-8\"",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2FMicavitEgypt%2F%3Flocale%3Dar_AR",
+      "source_name_approved_input": "Facebook Micavit Egypt",
+      "discovery_evidence_2026_11_03": {
+        "status": "not_crawlable",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "login/social source: no login or CAPTCHA bypass",
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1552,6 +1860,17 @@
         "http_status": 403,
         "content_type": "text/html",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.duravit.com.eg/",
+      "source_name_approved_input": "Duravit Egypt",
+      "discovery_evidence_2026_11_03": {
+        "status": "out_of_scope_entrypoint",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "supplied URL is for non-tile products or non-material service",
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1605,6 +1924,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://elwan.eg/",
+      "source_name_approved_input": "Alwan Ceramic & Porcelain",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://elwan.eg/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1660,6 +1990,17 @@
         "http_status": 404,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.majesticdetailing.ma/copy-of-detailing?lang=ar",
+      "source_name_approved_input": "Majestic Detailing",
+      "discovery_evidence_2026_11_03": {
+        "status": "out_of_scope_entrypoint",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "supplied URL is for non-tile products or non-material service",
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1713,6 +2054,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://sanipure-eg.com/",
+      "source_name_approved_input": "Sanipure",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://sanipure-eg.com/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1766,6 +2118,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://remas-ir.com/",
+      "source_name_approved_input": "Remas Duplicate",
+      "discovery_evidence_2026_11_03": {
+        "status": "duplicate_provider",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:12+00:00",
+        "canonical_source_id": "source-21"
       }
     },
     {
@@ -1819,6 +2182,17 @@
         "http_status": 200,
         "content_type": "text/html;charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.eg.roca.com/ar-EG/about-roca",
+      "source_name_approved_input": "Roca Egypt",
+      "discovery_evidence_2026_11_03": {
+        "status": "out_of_scope_entrypoint",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "supplied URL is for non-tile products or non-material service",
+        "checked_at": "2026-11-03T00:55:27+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1872,6 +2246,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.grohe.com/ar-EG/",
+      "source_name_approved_input": "GROHE",
+      "discovery_evidence_2026_11_03": {
+        "status": "out_of_scope_entrypoint",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "supplied URL is for non-tile products or non-material service",
+        "checked_at": "2026-11-03T00:55:27+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1927,6 +2312,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.sebakashop.com/product-category/%D8%A3%D8%B7%D9%82%D9%85-%D8%AD%D9%85%D8%A7%D9%85-%D9%83%D8%A7%D9%85%D9%84%D8%A9/",
+      "source_name_approved_input": "Sebaka Plumbing Shop",
+      "discovery_evidence_2026_11_03": {
+        "status": "out_of_scope_entrypoint",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "supplied URL is for non-tile products or non-material service",
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -1980,6 +2376,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.cleopatraceramics.com/ar/sanitary-ware-products/collection-type/complete-sets",
+      "source_name_approved_input": "Cleopatra Sanitary Ware",
+      "discovery_evidence_2026_11_03": {
+        "status": "out_of_scope_entrypoint",
+        "http_status": null,
+        "final_url": null,
+        "adapter": null,
+        "reason": "supplied URL is for non-tile products or non-material service",
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -2033,6 +2440,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=utf-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://mazloumhome.com/",
+      "source_name_approved_input": "Mazloum Home",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://mazloumhome.com/",
+        "adapter": "html/browser-review",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:19+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -2086,6 +2504,17 @@
         "http_status": 200,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://www.tarekelsallab.com/ar/",
+      "source_name_approved_input": "Tarek Elsallab",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://www.tarekelsallab.com/ar/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:23+00:00",
+        "canonical_source_id": null
       }
     },
     {
@@ -2139,7 +2568,20 @@
         "http_status": 301,
         "content_type": "text/html; charset=UTF-8",
         "local_export": null
+      },
+      "approved_input_url_2026_11_03": "https://rowadelsabtya.com/",
+      "source_name_approved_input": "Rowad El Sabteya",
+      "discovery_evidence_2026_11_03": {
+        "status": "accessible",
+        "http_status": 200,
+        "final_url": "https://rowadelsabtya.com/",
+        "adapter": "woocommerce",
+        "reason": null,
+        "checked_at": "2026-11-03T00:55:26+00:00",
+        "canonical_source_id": null
       }
     }
-  ]
+  ],
+  "approvedSourceListDate": "2026-11-03",
+  "approvedSourceListCount": 40
 }

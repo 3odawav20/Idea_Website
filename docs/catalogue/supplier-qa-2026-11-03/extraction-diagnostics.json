@@ -1,0 +1,32 @@
+[
+  {
+    "source_id": "source-05",
+    "status": "quarantined",
+    "extracted": 90,
+    "material_tally": {
+      "null": 90
+    },
+    "photo_checks": 6,
+    "errors": []
+  },
+  {
+    "source_id": "source-08",
+    "status": "quarantined",
+    "extracted": 223,
+    "material_tally": {
+      "ceramics": 223
+    },
+    "photo_checks": 4,
+    "errors": []
+  },
+  {
+    "source_id": "source-22",
+    "status": "quarantined",
+    "extracted": 51,
+    "material_tally": {
+      "porcelain": 51
+    },
+    "photo_checks": 6,
+    "errors": []
+  }
+]

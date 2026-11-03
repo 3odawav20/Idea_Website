@@ -1,0 +1,41 @@
+﻿source_id,name,input_url,status,http_status,adapter,final_url,reason,canonical_source_id,checked_at
+source-01,Ahmed El Sallab,https://www.ahmedelsallab.com/ar/ceramic-porcelain.html,accessible,200,html/browser-review,https://www.ahmedelsallab.com/ar/ceramic-porcelain.html,,,2026-11-03T00:55:12+00:00
+source-02,El Mashreqy Ceramic,https://mashreqy.com/categories/%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D8%A3%D8%B1%D8%B6%D9%8A%D8%A7%D8%AA,accessible,200,json-ld,https://mashreqy.com/categories/floor-ceramic,,,2026-11-03T00:55:12+00:00
+source-03,Mahgoub Ceramic & Porcelain,https://www.mahgoub.com/ar/home/,accessible,200,woocommerce,https://www.mahgoub.com/ar/home/,,,2026-11-03T00:55:12+00:00
+source-04,El Sewify,https://elsweefi.com/,accessible,200,woocommerce,https://elsweefi.com/,,,2026-11-03T00:55:12+00:00
+source-05,Cleopatra Ceramic Store,https://www.cleopatraceramics.store/ar/,accessible,200,woocommerce,https://www.cleopatraceramics.store/ar/,,,2026-11-03T00:55:12+00:00
+source-06,Alwan Ceramic & Porcelain,https://elwan.eg/,accessible,200,woocommerce,https://elwan.eg/,,,2026-11-03T00:55:12+00:00
+source-07,San George,https://sangeorge.com.eg/product_cat/new/cremicsss/cer-wall/,blocked,403,,https://sangeorge.com.eg/product_cat/new/cremicsss/cer-wall/,HTTP 403; not bypassed,,2026-11-03T00:55:15+00:00
+source-08,AbaElMozahem,https://abaelmozahem.com/collections/ceramic,accessible,200,shopify,https://abaelmozahem.com/collections/ceramic,,,2026-11-03T00:55:15+00:00
+source-09,Ceramica Verdi,https://ceramicaverdi.com/,needs_robots_review,,,,robots_unverifiable,,2026-11-03T00:55:17+00:00
+source-10,Royal Group,https://royalgroup-ceramic.com/product-category/%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%88%D8%A8%D9%88%D8%B1%D8%B3%D9%84%D9%8A%D9%86/%E2%81%A0%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%85%D8%B7%D8%A7%D8%A8%D8%AE/,accessible,200,woocommerce,https://royalgroup-ceramic.com/product-category/%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%88%D8%A8%D9%88%D8%B1%D8%B3%D9%84%D9%8A%D9%86/%E2%81%A0%D8%B3%D9%8A%D8%B1%D8%A7%D9%85%D9%8A%D9%83-%D9%85%D8%B7%D8%A7%D8%A8%D8%AE/,,,2026-11-03T00:55:17+00:00
+source-11,Ceramica Platino,https://ceramicaplatino.com/,accessible,200,html/browser-review,https://ceramicaplatino.com/,,,2026-11-03T00:55:17+00:00
+source-12,Rondy Ceramics,https://rondyceramics.com/,accessible,200,json-ld,https://rondyceramic.com/,redirected_to_different_host_review,,2026-11-03T00:55:19+00:00
+source-13,Mazloum Home,https://mazloumhome.com/,accessible,200,html/browser-review,https://mazloumhome.com/,,,2026-11-03T00:55:19+00:00
+source-14,Eissa Group,https://eissagroup.com.eg/,accessible,200,woocommerce,https://eissagroup.com.eg/,,,2026-11-03T00:55:20+00:00
+source-15,Ceramica Market,https://ceramicamarket.com/ar/,accessible,200,json-ld,https://ceramicamarket.com/ar,,,2026-11-03T00:55:21+00:00
+source-16,Ceramica Granito,https://www.ceramicagranito.com/,accessible,200,html/browser-review,https://www.ceramicagranito.com/,,,2026-11-03T00:55:21+00:00
+source-17,Ceramica Prima,http://ceramicaprima.com/ar/,needs_robots_review,,,,robots_unverifiable,,2026-11-03T00:55:21+00:00
+source-18,Alfa Ceramic,http://www.alfaceramic.net/CeramicaAlfa_WebSite_ar/Default_ar.aspx,accessible,200,html/browser-review,http://www.alfaceramic.net/CeramicaAlfa_WebSite_ar/Default_ar.aspx,,,2026-11-03T00:55:22+00:00
+source-19,Royal Group — Gloria,https://royalgroup-ceramic.com/product-brand/%D8%AC%D9%84%D9%88%D8%B1%D9%8A%D8%A7/,duplicate_provider,,,,,source-10,2026-11-03T00:55:12+00:00
+source-20,Art Ceramic,https://artceramic-egypt.com/,accessible,200,html/browser-review,https://artceramic-egypt.com/,,,2026-11-03T00:55:22+00:00
+source-21,Remas,https://remas-ir.com/,accessible,200,html/browser-review,https://remas-ir.com/,,,2026-11-03T00:55:23+00:00
+source-22,Elrwad Group,https://elrwadgroup.com/brand/ceramica-elegant/,accessible,200,woocommerce,https://elrwadgroup.com/brand/ceramica-elegant/,,,2026-11-03T00:55:23+00:00
+source-23,Instagram Ceramica Elegant,https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Fceramica_elegant%2F%3Fhl%3Dar&is_from_rle=,not_crawlable,,,,login/social source: no login or CAPTCHA bypass,,2026-11-03T00:55:23+00:00
+source-24,Gemma,https://www.gemma.com.eg/,accessible,200,html/browser-review,https://www.gemma.com.eg/,,,2026-11-03T00:55:23+00:00
+source-25,Tarek Elsallab,https://www.tarekelsallab.com/ar/,accessible,200,woocommerce,https://www.tarekelsallab.com/ar/,,,2026-11-03T00:55:23+00:00
+source-26,Mostafa El Sallab Establishment,https://elsallab.com/,accessible,200,shopify,https://elsallab.com/,,,2026-11-03T00:55:24+00:00
+source-27,Abdelaziz Elsallab,https://azizsallab.com/,accessible,200,html/browser-review,https://azizsallab.com/,,,2026-11-03T00:55:26+00:00
+source-28,Majestic Detailing,https://www.majesticdetailing.ma/copy-of-detailing?lang=ar,out_of_scope_entrypoint,,,,supplied URL is for non-tile products or non-material service,,2026-11-03T00:55:26+00:00
+source-29,Lecico Egypt,https://www.lecicoegypt.com/,accessible,200,html/browser-review,https://www.lecicoegypt.com/,,,2026-11-03T00:55:26+00:00
+source-30,Gemma Shop,https://www.gemma.com.eg/shop,duplicate_provider,,,,,source-24,2026-11-03T00:55:12+00:00
+source-31,Duravit Egypt,https://www.duravit.com.eg/,out_of_scope_entrypoint,,,,supplied URL is for non-tile products or non-material service,,2026-11-03T00:55:26+00:00
+source-32,Ideal Standard Egypt,https://idealstandard-egypt.com/,out_of_scope_entrypoint,,,,supplied URL is for non-tile products or non-material service,,2026-11-03T00:55:26+00:00
+source-33,Facebook Micavit Egypt,https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2FMicavitEgypt%2F%3Flocale%3Dar_AR,not_crawlable,,,,login/social source: no login or CAPTCHA bypass,,2026-11-03T00:55:26+00:00
+source-34,Sebaka Plumbing Shop,https://www.sebakashop.com/product-category/%D8%A3%D8%B7%D9%82%D9%85-%D8%AD%D9%85%D8%A7%D9%85-%D9%83%D8%A7%D9%85%D9%84%D8%A9/,out_of_scope_entrypoint,,,,supplied URL is for non-tile products or non-material service,,2026-11-03T00:55:26+00:00
+source-35,Cleopatra Sanitary Ware,https://www.cleopatraceramics.com/ar/sanitary-ware-products/collection-type/complete-sets,out_of_scope_entrypoint,,,,supplied URL is for non-tile products or non-material service,,2026-11-03T00:55:26+00:00
+source-36,Rowad El Sabteya,https://rowadelsabtya.com/,accessible,200,woocommerce,https://rowadelsabtya.com/,,,2026-11-03T00:55:26+00:00
+source-37,Sanipure,https://sanipure-eg.com/,accessible,200,html/browser-review,https://sanipure-eg.com/,,,2026-11-03T00:55:26+00:00
+source-38,Remas Duplicate,https://remas-ir.com/,duplicate_provider,,,,,source-21,2026-11-03T00:55:12+00:00
+source-39,GROHE,https://www.grohe.com/ar-EG/,out_of_scope_entrypoint,,,,supplied URL is for non-tile products or non-material service,,2026-11-03T00:55:27+00:00
+source-40,Roca Egypt,https://www.eg.roca.com/ar-EG/about-roca,out_of_scope_entrypoint,,,,supplied URL is for non-tile products or non-material service,,2026-11-03T00:55:27+00:00
