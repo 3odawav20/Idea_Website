@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-11-03T01:04:18+00:00",
+  "registry_legacy_embedded_art": 475,
+  "registry_legacy_extracted_records": 691,
+  "sources_total": 40,
+  "source_status": {
+    "accessible": 25,
+    "blocked": 1,
+    "needs_robots_review": 2,
+    "duplicate_provider": 3,
+    "not_crawlable": 2,
+    "out_of_scope_entrypoint": 7
+  },
+  "quarantined_records": 364,
+  "quarantine_reason_events": 1405,
+  "technical_image_checks": 18,
+  "passed_technical_image_checks": 16,
+  "potential_duplicate_keys_flagged": 0,
+  "new_verified": 0,
+  "new_staging_live": 0,
+  "new_production_live": 0,
+  "new_product_images_hosted_on_idea": 0,
+  "publish_approval": "NOT_REQUESTED",
+  "source_terms_rights": "NOT_GRANTED_BY_PUBLIC_VISIBILITY",
+  "classification_risks": [
+    "AbaElMozahem supplier labels may group porcelain under ceramic; manual model-level material checks required",
+    "WooCommerce product pages may lack explicit material type or SKU; do not infer from visuals",
+    "Tile images require face-only visual review; no lifestyle photos accepted as material swatches",
+    "Product-level uniqueness across existing runtime/imported records remains unverified"
+  ]
+}
