@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+require_once __DIR__.'/tile-dimensions.php';
 if(realpath($_SERVER['SCRIPT_FILENAME']??'')===__FILE__){http_response_code(404);exit;}
 function platformAiDir(string $id): string{if(!preg_match('/^[a-f0-9]{32}$/D',$id))accountError(422,'INVALID_JOB');return platformPrivateRoot().'/jobs/'.$id;}
 function platformAiImage(string $value): string{
@@ -72,7 +73,7 @@ function platformAiVerifiedMaskComposite(string $room,string $edited,string $mas
   }
  }
  if($approved===0||$approved>=$width*$height)accountError(502,'RUNPOD_MASK_UNSAFE');
- ob_start();imagejpeg($a,null,94);$final=ob_get_clean();
+ ob_start();imagepng($a,null,6);$final=ob_get_clean();
  imagedestroy($a);imagedestroy($b);imagedestroy($m);
  if(!is_string($final)||!$final)accountError(503,'IMAGE_EXPORT_FAILED');
  return $final;
@@ -135,8 +136,8 @@ function platformAiPollJob(array $u,string $id): array{
   $mask=platformAiDecodedOutput($out['mask']??$out['edit_mask']??null);
   $result=platformAiVerifiedMaskComposite($room,$edited,$mask);
   if(!empty($settings['points']))$result=platformAiComposite($room,$result,$settings['points']);
-  if(file_put_contents($dir.'/result.jpg',$result,LOCK_EX)===false)accountError(503,'STORAGE_UNAVAILABLE');
-  @chmod($dir.'/result.jpg',0600);
+  if(file_put_contents($dir.'/result.png',$result,LOCK_EX)===false)accountError(503,'STORAGE_UNAVAILABLE');
+  @chmod($dir.'/result.png',0600);
   accountQuery("UPDATE idea_ai_jobs SET state='completed',error_code='',updated_at=? WHERE id=? AND user_id=? AND state='processing'",
     [platformNow(),$id,$u['id']]);
   return platformAiJob($u,$id);
@@ -162,9 +163,17 @@ function platformAiAction(string $a,array $d,array $u): array{
  if($a==='ai-create'){
   $limit=platformAiLimit($u);if(!platformSecret('RUNPOD_API_KEY')||!platformSecret('RUNPOD_ENDPOINT_ID')||platformSecret('RUNPOD_WORKER_CONTRACT')!=='idea-qwen-mask-v1')accountError(503,'RUNPOD_API_KEY_REQUIRED');if(platformSecret('RUNPOD_ENDPOINT_ID')==='qwen-image-edit-2511')accountError(503,'RUNPOD_MASK_WORKER_REQUIRED');accountRate('ai-create',10,3600);
   $parent=accountString($d,'parent_id',32);$room=platformAiInputImage($d,'room');if(!$room)accountError(422,'PARENT_IMAGE_UNAVAILABLE');
-  $material=platformAiInputImage($d,'material');$product=accountString($d,'product_id',100);if($product!=='')platformProduct($product);
+  $material=platformAiInputImage($d,'material');$product=accountString($d,'product_id',100,true);$tileSpec=ideaTileCataloguedVariant($product);
+  try { ideaTileAssertMatches($tileSpec,isset($d['size'])?(string)$d['size']:null,$d['tile_width_mm']??null,$d['tile_height_mm']??null); }
+  catch(InvalidArgumentException $e){accountError(422,'PRODUCT_TILE_SIZE_MISMATCH');}
   $settings=[];foreach(['surface'=>50,'size'=>60,'grout'=>40,'angle'=>30,'roomType'=>80,'instructions'=>1200] as $key=>$len)$settings[$key]=accountString($d,$key,$len);if(!in_array($settings['surface'],['floor','walls','wall','both','الأرضية','الجدران','الحوائط'],true))accountError(422,'INVALID_SURFACE');
   $points=$d['points']??[];if(!is_array($points)||count($points)!==0&&count($points)!==4)accountError(422,'INVALID_SURFACE_POINTS');foreach($points as $point){if(!is_array($point)||count($point)!==2||!is_numeric($point[0])||!is_numeric($point[1])||$point[0]<0||$point[0]>1||$point[1]<0||$point[1]>1)accountError(422,'INVALID_SURFACE_POINTS');}$settings['points']=$points;
+  $settings['size']=$tileSpec['size_label'];$settings['tile_width_mm']=$tileSpec['width_mm'];$settings['tile_height_mm']=$tileSpec['height_mm'];
+  $settings['tile_aspect_ratio']=$tileSpec['aspect_ratio'];$settings['tile_size_source']=$tileSpec['source_type'];
+  $joint=$d['grout_width_mm']??2;
+  if(!is_numeric($joint)||!is_finite((float)$joint)||(float)$joint<1||(float)$joint>15)accountError(422,'INVALID_GROUT_WIDTH');
+  $settings['grout_width_mm']=(float)$joint;
+  $settings['physical_scale_calibrated']=false;
   $id=platformId();$dir=platformAiDir($id);mkdir($dir,0700,true);file_put_contents($dir.'/room.jpg',$room);file_put_contents($dir.'/material.jpg',$material);chmod($dir.'/room.jpg',0600);chmod($dir.'/material.jpg',0600);
   try{platformTransaction(function()use($u,$parent,$product,$settings,$id,$limit){accountQuery('SELECT id FROM idea_users WHERE id=?'.platformLock(),[$u['id']]);$now=platformNow();$n=(int)accountQuery("SELECT COUNT(*) FROM idea_ai_jobs WHERE user_id=? AND state IN ('queued','processing','completed') AND settings NOT LIKE ?",[$u['id'],'%"quota_companion":true%'])->fetchColumn();$all=(int)accountQuery('SELECT COUNT(*) FROM idea_ai_jobs WHERE created_at>?',[$now-86400000])->fetchColumn();if($parent===''&&$limit!==null&&$n>=$limit)accountError(429,'AI_SUBSCRIPTION_REQUIRED');if($all>=(int)(platformConfig()['ai_daily_global_limit']??100))accountError(429,'AI_DAILY_LIMIT');
    if($parent!==''){$source=accountQuery('SELECT id,state,settings,created_at FROM idea_ai_jobs WHERE id=? AND user_id=?'.platformLock(),[$parent,$u['id']])->fetch();$sourceSettings=$source?json_decode($source['settings'],true):null;if(!$source||$source['state']!=='completed'||$source['created_at']<$now-600000||!in_array($sourceSettings['surface']??'',['floor','الأرضية'],true)||!in_array($settings['surface'],['walls','wall','الجدران','الحوائط'],true)||accountQuery('SELECT id FROM idea_ai_jobs WHERE parent_id=? LIMIT 1',[$parent])->fetch())accountError(422,'INVALID_COMBINED_SURFACE');$settings['quota_companion']=true;}
@@ -174,8 +183,9 @@ function platformAiAction(string $a,array $d,array $u): array{
   $id=accountString($d,'id',32,true);$job=platformTransaction(function()use($id,$u){$r=accountQuery('SELECT * FROM idea_ai_jobs WHERE id=? AND user_id=?'.platformLock(),[$id,$u['id']])->fetch();if(!$r)accountError(404,'JOB_NOT_FOUND');if($r['state']!=='queued')return $r;accountQuery("UPDATE idea_ai_jobs SET state='processing',attempts=attempts+1,updated_at=? WHERE id=?",[platformNow(),$id]);$r['claimed']=true;return $r;});if(empty($job['claimed']))return ['id'=>$id,'state'=>$job['state']];
   session_write_close();ignore_user_abort(true);@set_time_limit(50);$dir=platformAiDir($id);
   try{
-   $s=json_decode($job['settings'],true);if($job['parent_id']){$parent=platformAiJob($u,$job['parent_id']);$source=platformAiDir($parent['id']).'/result.jpg';if($parent['state']!=='completed'||!is_file($source))accountError(422,'PARENT_IMAGE_UNAVAILABLE');$room=file_get_contents($source);if(file_put_contents($dir.'/room.jpg',$room,LOCK_EX)===false)accountError(503,'STORAGE_UNAVAILABLE');}else $room=file_get_contents($dir.'/room.jpg');$target=match($s['surface']??''){ 'floor','الأرضية'=>'floor only','walls','wall','الجدران','الحوائط'=>'walls only','ceiling','السقف'=>'ceiling only','both','الأرضية والحوائط','الأرضية والجدران'=>'floor and walls only',default=>'the explicitly selected surface only'};$prompt='Edit IMAGE 1, an interior photograph. IMAGE 2 is the ceramic tile face. Replace ONLY the selected surface: '.$target.'. WALLS means VERTICAL WALL FACES only, never the ceiling, floor, mantel, hearth or furniture. FLOOR means only the walkable floor, never walls or ceiling. Keep the ceiling, all unselected surfaces, sofa, table, fireplace opening, lighting, glass, plants and every other object unchanged. Do NOT redesign the room or add objects. Use the actual tile motif from IMAGE 2 in perspective, without inventing veins. Keep the same camera, composition and aspect ratio. Design settings: '.platformJson(['surface'=>$s['surface'],'tile_size_cm'=>$s['size'],'angle'=>$s['angle'],'grout'=>$s['grout']]);
-   // Qwen edit worker is mandatory; all alternate providers are disabled.
+   $s=json_decode($job['settings'],true);if($job['parent_id']){$parent=platformAiJob($u,$job['parent_id']);$source=platformAiDir($parent['id']).'/result.png';if(!is_file($source))$source=platformAiDir($parent['id']).'/result.jpg';if($parent['state']!=='completed'||!is_file($source))accountError(422,'PARENT_IMAGE_UNAVAILABLE');$room=file_get_contents($source);if(file_put_contents($dir.'/room.jpg',$room,LOCK_EX)===false)accountError(503,'STORAGE_UNAVAILABLE');}else $room=file_get_contents($dir.'/room.jpg');$target=match($s['surface']??''){ 'floor','الأرضية'=>'floor only','walls','wall','الجدران','الحوائط'=>'walls only','ceiling','السقف'=>'ceiling only','both','الأرضية والحوائط','الأرضية والجدران'=>'floor and walls only',default=>'the explicitly selected surface only'};$prompt='Edit IMAGE 1, an interior photograph. IMAGE 2 is the ceramic tile face. Replace ONLY the selected surface: '.$target.'. WALLS means VERTICAL WALL FACES only, never the ceiling, floor, mantel, hearth or furniture. FLOOR means only the walkable floor, never walls or ceiling. Keep the ceiling, all unselected surfaces, sofa, table, fireplace opening, lighting, glass, plants and every other object unchanged. Do NOT redesign the room or add objects. Use the actual tile motif from IMAGE 2 in perspective, without inventing veins. Keep the same camera, composition and aspect ratio. Design settings: '.platformJson(['surface'=>$s['surface'],'tile_size_cm'=>$s['size'],'angle'=>$s['angle'],'grout'=>$s['grout']]);
+   $prompt.=' HARD MATERIAL DIMENSIONS: Every tile is exactly '.($s['tile_width_mm']/10).' by '.($s['tile_height_mm']/10).' cm (aspect ratio '.$s['tile_aspect_ratio'].'). Tile joints '.($s['grout_width_mm']??2).' mm. No random resize or invented tile formats. Repeat the exact material reference in consistent perspective. Without a measured room reference, physical tile count is only an approximate visualization and must not be certified as measured.';
+    // Qwen edit worker is mandatory; all alternate providers are disabled.
    $endpoint=platformSecret('RUNPOD_ENDPOINT_ID');
    if(!is_string($endpoint)||!preg_match('/^[A-Za-z0-9_-]{3,120}$/D',$endpoint)
       ||platformSecret('RUNPOD_WORKER_CONTRACT')!=='idea-qwen-mask-v1')
@@ -190,7 +200,10 @@ function platformAiAction(string $a,array $d,array $u): array{
      'target_surface'=>in_array($s['surface']??'',['floor','الأرضية'],true)?'floor':(in_array($s['surface']??'',['wall','walls','الجدران','الحوائط'],true)?'walls':'both'),
      'output_width'=>$roomInfo[0],'output_height'=>$roomInfo[1],
      'return_edit_mask'=>true,'preserve_unmasked_pixels'=>true,
-     'product'=>['id'=>$job['product_id'],'tile_size'=>$s['size']??null],
+     'product'=>['id'=>$job['product_id'],'tile_size'=>$s['size']??null,
+         'tile_width_mm'=>$s['tile_width_mm']??null,'tile_height_mm'=>$s['tile_height_mm']??null,
+         'tile_aspect_ratio'=>$s['tile_aspect_ratio']??null,'grout_width_mm'=>$s['grout_width_mm']??null,
+         'physical_scale_calibrated'=>false],
    ]];
    // Submit and store provider ID; clients poll ai-job for completion.
    [$code,$response]=platformHttp('https://api.runpod.ai/v2/'.$endpoint.'/run',
@@ -208,11 +221,25 @@ function platformAiAction(string $a,array $d,array $u): array{
  }
  accountError(404,'UNKNOWN_ACTION');
 }
-function platformAiDownload(array $u,string $id): never{$job=platformAiJob($u,$id);$path=platformAiDir($id).'/result.jpg';if($job['state']!=='completed'||!is_file($path))accountError(404,'IMAGE_NOT_READY');header('Content-Type: image/jpeg');header('Content-Disposition: inline; filename="IDEA-design-'.$id.'.jpg"');header('Content-Length: '.filesize($path));session_write_close();readfile($path);exit;}
+function platformAiDownload(array $u,string $id): never{
+ $job=platformAiJob($u,$id);
+ $dir=platformAiDir($id);
+ $png=$dir.'/result.png';
+ $path=is_file($png)?$png:$dir.'/result.jpg';
+ if($job['state']!=='completed'||!is_file($path))accountError(404,'IMAGE_NOT_READY');
+ $isPng=$path===$png;
+ header('Content-Type: '.($isPng?'image/png':'image/jpeg'));
+ header('Content-Disposition: inline; filename="IDEA-design-'.$id.($isPng?'.png':'.jpg').'"');
+ header('Content-Length: '.filesize($path));
+ session_write_close();
+ readfile($path);exit;
+}
 
 // Optional manually selected surface: hard preservation outside that polygon.
 // This does not invent a segmentation mask for an automatic edit.
 function platformAiComposite(string $room,string $edited,array $points): string{
- $base=imagecreatefromstring($room);$result=imagecreatefromstring($edited);$w=imagesx($base);$h=imagesy($base);$scaled=imagescale($result,$w,$h,IMG_BICUBIC_FIXED);imagedestroy($result);$mask=imagecreatetruecolor($w,$h);$coords=[];foreach($points as $p){$coords[]=(int)round($p[0]*($w-1));$coords[]=(int)round($p[1]*($h-1));}imagefilledpolygon($mask,$coords,0xffffff);
- for($y=0;$y<$h;$y++)for($x=0;$x<$w;$x++)if(imagecolorat($mask,$x,$y)===0xffffff)imagesetpixel($base,$x,$y,imagecolorat($scaled,$x,$y));ob_start();imagejpeg($base,null,96);$output=ob_get_clean();imagedestroy($base);imagedestroy($scaled);imagedestroy($mask);return $output;
+ $base=imagecreatefromstring($room);$result=imagecreatefromstring($edited);$w=imagesx($base);$h=imagesy($base);
+ if(imagesx($result)!==$w||imagesy($result)!==$h)accountError(502,'RUNPOD_DIMENSIONS_CHANGED');
+ $scaled=$result;$mask=imagecreatetruecolor($w,$h);$coords=[];foreach($points as $p){$coords[]=(int)round($p[0]*($w-1));$coords[]=(int)round($p[1]*($h-1));}imagefilledpolygon($mask,$coords,0xffffff);
+ for($y=0;$y<$h;$y++)for($x=0;$x<$w;$x++)if(imagecolorat($mask,$x,$y)===0xffffff)imagesetpixel($base,$x,$y,imagecolorat($scaled,$x,$y));ob_start();imagepng($base,null,6);$output=ob_get_clean();imagedestroy($base);imagedestroy($scaled);imagedestroy($mask);return $output;
 }

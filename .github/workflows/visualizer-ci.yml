@@ -13,10 +13,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd
       - name: Install app
         run: npm install --no-audit --no-fund --no-package-lock
       - name: Verify visualizer tests
-        run: node --test tests/visualizer.test.mjs tests/ai-mysql-runpod-only.test.mjs tests/material-atlas.test.mjs tests/material-faces-only.test.mjs tests/neutral-theme.test.mjs tests/admin-promotions.test.mjs tests/catalogue-brand-evidence.test.mjs tests/company-control.test.mjs
+        run: node --test tests/visualizer.test.mjs tests/visualizer-locale.test.mjs tests/ai-mysql-runpod-only.test.mjs tests/material-atlas.test.mjs tests/material-faces-only.test.mjs tests/neutral-theme.test.mjs tests/admin-promotions.test.mjs tests/catalogue-brand-evidence.test.mjs tests/company-control.test.mjs
       - name: Verify auth connection regression checks
         run: node --test tests/auth-connection.test.mjs
       - name: Build application
@@ -24,6 +28,8 @@ jobs:
       - name: Build cPanel bundle
         run: npm run build:cpanel
       - name: Check PHP syntax
-        run: php -l server/cpanel/api/visualize.php && php -l server/cpanel/idea-accounts-api/platform-ai.php
+        run: php -l server/cpanel/api/visualize.php && php -l server/cpanel/idea-accounts-api/platform-ai.php && php -l server/cpanel/api/tile-dimensions.php && php -l server/cpanel/api/marketplace.php
+      - name: Verify manufacturer tile dimensions and lossless surface edits
+        run: php tests/tile-physical-size.test.php && php tests/ai-mask-preservation.test.php
       - name: Check cPanel routing assets
         run: test -s dist/api/visualize.php && test -s dist/.htaccess
