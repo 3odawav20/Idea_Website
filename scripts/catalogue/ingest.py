@@ -20,6 +20,7 @@ from urllib.robotparser import RobotFileParser
 import requests
 from bs4 import BeautifulSoup
 from PIL import Image
+from identity import decorate_for_review
 
 ROOT = Path(__file__).resolve().parents[2]
 CATALOGUE = ROOT / "docs" / "catalogue" / "supplier-qa-2026-11-03"
@@ -300,6 +301,9 @@ def main():
             "extracted":len(entries),"material_tally":dict(Counter(p["material"] for p in entries)),
             "photo_checks":sum(bool(p.get("image_technical_qa",{}).get("ok")) for p in entries),
             "errors":errors})
+    # Every record gets its own stable IDEA reference, without inventing maker/SKU.
+    for item in products:
+        decorate_for_review(item)
     # All extraction is staging/quarantine. No third-party images copied or republished.
     write_json(CATALOGUE/"quarantine-products.json",products)
     write_json(CATALOGUE/"extraction-diagnostics.json",extraction_diagnostics)

@@ -30,6 +30,15 @@ The source-08 porcelain-size Shopify section and source-04/source-06 public WooC
 
 The 135 unclassified records do NOT contribute to material targets. The existing 475 embedded Art Ceramic records are separate historical source imports, not newly verified inventory or included in the 643 candidate count. Do not add legacy counts to this table or count marble-look porcelain as natural marble.
 
+## Supplier brand evidence (separate from legal manufacturer)
+
+- A public Shopify vendor field on Aba El Mozahem corresponds to the site's explicit **tile-brand** facet; all **379** source-08 candidates are mapped to one of seven source-declared brands. These values are **not certificates of manufacturer identity**.
+- Source-04/06/22 product titles provide a further **129** provisional brand candidates. Some detail pages also list a branded variant attribute (e.g. GLORIA), but individual claims still require QA.
+- **508 of 643** records have a brand and field provenance (379 source-field; 129 title candidates); **135** remain brand-unresolved. All 135 belong to source-05. Retailer name Cleopatra Ceramic Store alone is not evidence of each product brand or factory.
+- **12 distinct brand names** were identified in this bounded batch. None of the 643 records has a separately proved legal manufacturer identity.
+- brand-evidence-review.csv lists IDEA reference, source vendor, brand, field provenance, review status and product source URL. brand-evidence-summary.json contains measured counts. Neither contains prices or offers.
+- The public product card and AI material atlas show a distinct internal IDEA reference. Brand names and manufacturers are never conflated.
+
 ## Quality checks and gaps
 
 - Exactly 643 distinct (source ID, source product ID) pairs were extracted.

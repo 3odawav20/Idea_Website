@@ -133,5 +133,53 @@ class SupplierCollectionsQA(unittest.TestCase):
         self.assertTrue(all("450.00" not in json.dumps(p) for p in entries))
         self.assertIn("/collections/porcelain-size",entries[-1]["source_collection_url"])
 
+class BrandSourceEvidenceQA(unittest.TestCase):
+    def test_shopify_tile_vendor_maps_to_brand_not_to_factory(self):
+        from identity import decorate_for_review
+        row={"source_id":"source-08","source_product_id":"17111",
+             "retailer_vendor":"kale Turkey","name":"Porcelain tile 120x60",
+             "manufacturer":None}
+        decorate_for_review(row)
+        self.assertEqual(row["product_brand"],"Kale Turkey")
+        self.assertEqual(row["product_brand_evidence"],"shopify_tile_vendor")
+        self.assertEqual(row["brand_review_status"],"source_field")
+        self.assertIsNone(row["manufacturer"])
+        self.assertEqual(row["manufacturer_review_status"],"requires_product_level_proof")
+        self.assertTrue(row["idea_reference_code"].startswith("IDEA-REF-"))
+
+    def test_shop_retainer_name_is_not_factory_or_product_brand(self):
+        from identity import decorate_for_review
+        row={"source_id":"source-05","source_product_id":"432",
+             "retailer_vendor":"Cleopatra Ceramic Store","name":"Joker Brown",
+             "manufacturer":None}
+        decorate_for_review(row)
+        self.assertIsNone(row["product_brand"])
+        self.assertIsNone(row["product_brand_evidence"])
+        self.assertIsNone(row["manufacturer"])
+
+    def test_supplier_product_title_brands(self):
+        from identity import source_claimed_brand, decorate_for_review
+        self.assertEqual(source_claimed_brand("بورسلين بيرويا ايطالك لامع 120 × 300 سم"),"Beroia")
+        self.assertEqual(source_claimed_brand("سيراميك الجوهره جيم 7.5 × 30 سم"),"Gemma")
+        self.assertEqual(source_claimed_brand("بورسلين بورسيلوكس P 3012"),"Porcelux")
+        self.assertIsNone(source_claimed_brand("Joker Brown"))
+        row={"source_id":"source-04","source_product_id":"777",
+             "retailer_vendor":"El Sewify","name":"بورسلين ارضيات جلوريا سينا",
+             "manufacturer":None}
+        decorate_for_review(row)
+        self.assertEqual(row["product_brand"],"Gloria")
+        self.assertEqual(row["brand_review_status"],"title_candidate")
+        self.assertIsNone(row["manufacturer"])
+
+    def test_quarantine_brands_all_get_unique_idea_refs_no_pricing(self):
+        rows=json.loads((ROOT/"docs/catalogue/supplier-qa-2026-11-03/quarantine-products.json").read_text("utf-8"))
+        self.assertEqual(len(rows),643)
+        self.assertEqual(len(set(x["idea_reference_code"] for x in rows)),len(rows))
+        self.assertEqual(sum(x.get("product_brand_evidence")=="shopify_tile_vendor" for x in rows),379)
+        self.assertEqual(sum(x.get("product_brand_evidence")=="supplier_product_title" for x in rows),129)
+        self.assertEqual(sum(not x.get("product_brand") for x in rows),135)
+        self.assertTrue(all(not x.get("manufacturer") and x.get("price") is None for x in rows))
+        self.assertTrue(all(x["stage"]=="QUARANTINE" and not x["approved"] for x in rows))
+
 if __name__=="__main__":
     unittest.main()

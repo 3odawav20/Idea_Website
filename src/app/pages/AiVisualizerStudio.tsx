@@ -6,6 +6,7 @@ import {
   Search, ShieldCheck, Sparkles, UploadCloud, X, ZoomIn, ZoomOut,
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
+import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
 import { supabase } from "../backend/supabaseClient";
@@ -666,9 +667,10 @@ export function AiVisualizerStudio() {
               </span>
               <span className="idea-atlas-card-body">
                 <strong>{product.name[locale] || product.name.en}</strong>
-                <small>{product.manufacturer || product.brand}</small>
+                <small>{product.manufacturer ? productMaker(product, locale).value : product.brand + (locale === "ar" ? " · المصنع قيد التوثيق" : " · maker unverified")}</small>
                 <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + product.finish : ""}</span>
-                <span className="idea-atlas-card-bottom"><span>{product.code || tr("بدون كود موثّق", "No verified SKU")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
+                <span className="idea-atlas-card-reference"><span>{tr("كود IDEA", "IDEA reference")}</span><code dir="ltr">{ideaInternalCode(product)}</code></span>
+                <span className="idea-atlas-card-bottom"><span>{sourceSku(product) ? (tr("كود المورد", "Supplier SKU") + ": " + sourceSku(product)) : tr("كود المورد غير موثّق", "Supplier SKU unverified")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
               </span>
             </button>
           ))}

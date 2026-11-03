@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-11-03T03:38:04+00:00",
+  "source_records": 643,
+  "unique_brand_names": 12,
+  "source_shopify_vendor_brand": 379,
+  "source_product_title_brand": 129,
+  "brand_requires_more_evidence": 135,
+  "manufacturer_identity_documented": 0,
+  "per_brand": {
+    "Art Ceramic": 48,
+    "Beroia": 19,
+    "Ceramica Cleopatra": 143,
+    "Farmora": 56,
+    "Gemma": 95,
+    "Gloria": 7,
+    "Granito": 81,
+    "Ideal Life": 6,
+    "Kale Turkey": 12,
+    "Porcelux": 2,
+    "Prima": 36,
+    "Royal": 3
+  },
+  "still_unresolved_by_source": {
+    "source-05": 135
+  },
+  "note": "Retailer/vendor names are NOT by default manufacturers. Brands sourced from Shopify vendor on verified tile brand category or from supplier product title. No candidate is approved or published."
+}
