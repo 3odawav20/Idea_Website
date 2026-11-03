@@ -21,6 +21,7 @@ test("MySQL tenant AI uses Qwen worker contract, not assumed model availability"
   assert.match(mysql, /Qwen\/Qwen-Image-Edit-2511/);
   assert.match(mysql, /api\.runpod\.ai\/v2\//);
   assert.match(mysql, /RUNPOD_WORKER_NOT_VERIFIED/);
+  assert.match(mysql, /RUNPOD_MASK_WORKER_REQUIRED/);
 });
 test("client cannot direct output to external image URLs or bypass masked composition", () => {
   assert.match(mysql, /platformAiDecodedOutput/);
@@ -35,6 +36,7 @@ test("each buyer/supplier has five lifetime jobs and admin has no cap", () => {
   assert.match(mysql, /if\(\$role==='admin'\)return null/);
   assert.equal((mysql.match(/\$limit=5;/g)||[]).length,2);
   assert.match(mysql, /'period'=>'lifetime'/);
+  assert.equal((mysql.match(/state IN \('queued','processing','completed'\)/g)||[]).length,2, 'Failed and cancelled jobs must not consume lifetime attempts');
   assert.doesNotMatch(mysql, /created_at>\? AND settings NOT LIKE/);
   assert.match(mysql, /platformTransaction/);
   assert.match(mysql, /AI_SUBSCRIPTION_REQUIRED/);

@@ -13,8 +13,8 @@ Target host: `idea-dh.com`; cPanel document root: `/home/lsenet5/idea-dh.com`.
 ## New Runpod-only candidate
 
 - Requires server-only `RUNPOD_API_KEY`, `RUNPOD_ENDPOINT_ID`, and explicit `RUNPOD_WORKER_CONTRACT=idea-qwen-mask-v1`. Never include secrets in browser build, Git, public HTML, or logs.
-- Uses the Qwen Image Edit 2511 worker payload and its returned **edited image plus white-on-black edit mask**; rejects remote URL outputs and missing/mismatched/unsafe masks. This code does not assume the Runpod worker exists.
-- Only floor, walls or both may be selected. New regular accounts are limited to **5 lifetime attempts**; authenticated platform administrators are unlimited. This is an implementation target, not evidence of live account-policy enforcement.
+- Uses the Qwen Image Edit 2511 worker payload and its returned **edited image plus white-on-black edit mask**; rejects remote URL outputs and missing/mismatched/unsafe masks. Runpod lists a public `qwen-image-edit-2511` model endpoint, but its public listing does **not** establish support for this IDEA-specific mask contract. That public ID is deliberately rejected until a compatible masked worker is verified. The custom worker is NOT yet deployed or tested.
+- Only floor, walls or both may be selected. New regular accounts are limited to **5 lifetime attempts**; failed generations that return no usable image are excluded from used-attempt counts, and authenticated platform administrators are unlimited. This is an implementation target, not evidence of live account-policy enforcement.
 - Composites the edited region over the original room. Because the existing MySQL platform stores JPEG results, re-encoding can change compression outside the edit region; **exact, bitwise pixel preservation is not established**.
 - This candidate now uses asynchronous Runpod `run` submission plus `status/{job}` polling via separate `ai-process` and `ai-job` requests to avoid observed 504 gateway timeouts. This flow has passed source/syntax checks, but NOT a live endpoint test; verify real job recovery, mask, and site limits before release.
 
