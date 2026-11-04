@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router";
+import { lazy, Suspense } from "react";
 import "../styles/index.css";
 import { I18nProvider } from "./i18n/i18n";
 import { ThemeProvider } from "./theme/theme";
@@ -32,6 +33,7 @@ import { AdminPromotions } from "./pages/AdminPromotions";
 import { Checkout } from "./pages/Checkout";
 import { RoomDesignerHome, PhotoGuide, RoomDesignerEditor } from "./pages/RoomDesigner";
 import { TileShowroom } from "./pages/TileShowroom";
+const Room3DStudio = lazy(() => import("./pages/Room3DStudio").then(module => ({ default: module.Room3DStudio })));
 import { CompanyControlCenter, CompanyApplication } from "./pages/CompanyControlCenter";
 import { CompanyRevenueReport, AdminAnnouncementEditor, BusinessAdvertising } from "./pages/BusinessGrowth";
 import { AdminCodeLookup } from "./pages/AdminCodeLookup";
@@ -56,7 +58,7 @@ export default function App() {
     <I18nProvider>
       <BackendProvider>
       <StoreProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={window.location.pathname.startsWith("/idea-next/") ? "/idea-next" : undefined}>
           <Routes>
             <Route element={<Layout />}>
               {/* Storefront */}
@@ -98,6 +100,7 @@ export default function App() {
               <Route path="/room-designer" element={<RoomDesignerHome />} />
               <Route path="/room-designer/photo-guide" element={<PhotoGuide />} />
               <Route path="/room-designer/new" element={<RoomDesignerEditor />} />
+              <Route path="/room-designer/3d" element={<Suspense fallback={<div style={{padding:32}}>Loading 3D studio…</div>}><Room3DStudio /></Suspense>} />
               <Route path="/room-designer/project/:projectId" element={<RoomDesignerEditor />} />
 
               {/* Customer account */}
