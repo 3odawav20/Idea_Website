@@ -3,7 +3,7 @@ import { ArrowRight, Layers, FileText, Sparkles, Users, MapPin, Play, FolderOpen
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { HeroCarousel } from "../components/HeroCarousel";
+import { HeroBrandFilm } from "../components/HeroBrandFilm";
 import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
 import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
@@ -30,7 +30,7 @@ export function Home() {
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   return (
     <div className="idea-home-editorial">
-      <HeroCarousel />
+      <HeroBrandFilm />
       <SponsoredHeroVideo />
       <div className="idea-usp">{[
         {icon:Layers,to:"/products",title:text("Premium surface inspiration","إلهام بخامات فاخرة","Inspiration haut de gamme"),sub:text("Explore materials & finishes","اكتشف الخامات والتشطيبات","Matières & finitions")},
