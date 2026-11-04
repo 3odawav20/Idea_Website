@@ -1,619 +1,293 @@
-import { useState, useMemo } from "react";
-import { Link, useParams } from "react-router";
-import { ArrowLeft, Check } from "lucide-react";
+import { useMemo, useState, useEffect } from "react";
+import { Link, useParams, useSearchParams } from "react-router";
+import { ArrowLeft, ArrowRight, Check, ChevronLeft, ChevronRight, Search, SlidersHorizontal, X } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
-import { MATERIAL_LOOKS } from "../components/MaterialLookStrip";
+import surfaceMaterials from "../data/surfaceMaterials.json";
 import type { Product, Locale } from "../data/types";
+import "./TileShowroom.css";
 
-type RoomType = "bathroom" | "living" | "hallway";
+/**
+ * Material-face photos only. Never fall back to Product.image or look banners:
+ * those images often depict rooms, gardens, houses, or furniture.
+ * Supplier original.tiles are isolated product faces, and the local materials
+ * are reviewed tile crops, not staged interiors.
+ */
+type MaterialCrop = { id: string; image: string; width: number; height: number };
+const materialById = new Map(
+  (surfaceMaterials as MaterialCrop[]).map((entry) => [entry.id, entry])
+);
+const allowed = new Set(["ceramics", "porcelain", "marble"]);
+const sourceFace = (url: string) =>
+  /^https:\/\/dashboard\.artceramic-egypt\.com\/uploads\/(?:medium_|large_|small_)?[^?#]+\.(?:jpg|jpeg|png|webp)$/i.test(url);
+function faces(product: Product): string[] {
+  const local = materialById.get(product.id);
+  const supplier = product.source?.original?.tiles?.filter(sourceFace) ?? [];
+  return [...new Set([...(local ? [import.meta.env.BASE_URL.replace(/\/$/, "") + local.image] : []), ...supplier])];
+}
+function dimension(product: Product) {
+  const s = product.sizes.find((sz) =>
+    Number.isFinite(sz.widthMm) && Number.isFinite(sz.heightMm) &&
+    (sz.widthMm ?? 0) > 0 && (sz.heightMm ?? 0) > 0);
+  return s ? { width: s.widthMm!, height: s.heightMm!, label: (s.widthMm! / 10) + " × " + (s.heightMm! / 10) + " cm" } : null;
+}
+type TileItem = { product: Product; photos: string[]; size: NonNullable<ReturnType<typeof dimension>> };
 
-// ── One-point perspective room SVG ─────────────────────────────────────────
-// Viewbox 1000×620, VP at (500,160)
-// Back wall:  250,80 → 750,80 → 750,390 → 250,390
-// Floor:      0,620 → 1000,620 → 750,390 → 250,390
-// Ceiling:    0,0 → 1000,0 → 750,80 → 250,80
-// Left wall:  0,0 → 250,80 → 250,390 → 0,620
-// Right wall: 1000,0 → 750,80 → 750,390 → 1000,620
+const words = {
+  en: {
+    home: "Home", kicker: "IDEA · MATERIAL LIBRARY", title: "The tile. Nothing else.",
+    subtitle: "True tile faces only — no rooms, houses, gardens, furniture, or lifestyle renders.",
+    search: "Search by tile name, brand, code or actual size", all: "All materials",
+    ceramics: "Ceramic tiles", porcelain: "Porcelain", marble: "Natural marble",
+    count: "material designs", chosen: "Selected tile", size: "Actual tile dimensions",
+    faces: "Tile face", source: "Supplier tile-face photograph",
+    details: "Product details", try: "Try in my room", more: "Show more tiles",
+    empty: "No isolated tile photos with verified dimensions match your filters.",
+    clear: "Clear filters", notice: "Each tile preserves its physical width-to-height ratio. The scale of installation in a room depends on measured surface geometry.",
+    next: "Next face", previous: "Previous face", filter: "Filter material", raw: "MATERIAL ONLY",
+    unavailable: "Image unavailable",
+  },
+  ar: {
+    home: "الرئيسية", kicker: "IDEA · مكتبة الخامات", title: "البلاطة فقط. بدون ديكورات.",
+    subtitle: "صور السيراميك والبلاط والخامة نفسها فقط — بدون بيوت أو غرف أو زرع أو أثاث.",
+    search: "ابحث باسم البلاطة أو الشركة أو الكود أو المقاس", all: "كل الخامات",
+    ceramics: "سيراميك وبلاط", porcelain: "بورسلين", marble: "رخام طبيعي",
+    count: "تصميم بلاط", chosen: "البلاطة المختارة", size: "المقاس الحقيقي للبلاطة",
+    faces: "وجه البلاطة", source: "صورة الخامة من المورد",
+    details: "تفاصيل المنتج", try: "جرّبها في صورتك", more: "عرض خامات أكثر",
+    empty: "لا توجد صور خامات منفصلة بمقاسات موثّقة تطابق البحث.",
+    clear: "مسح الفلاتر", notice: "كل بلاطة معروضة بنسبة الطول إلى العرض الصحيحة للمقاس المسجل. حجم التركيب داخل الغرفة يحتاج قياس السطح الحقيقي.",
+    next: "الوجه التالي", previous: "الوجه السابق", filter: "تصفية الخامات", raw: "الخامة فقط",
+    unavailable: "الصورة غير متاحة",
+  },
+  fr: {
+    home: "Accueil", kicker: "IDEA · MATÉRIAUX", title: "Le carreau, sans décor.",
+    subtitle: "La matière seule — sans maisons, jardins, pièces ni mobilier.",
+    search: "Chercher un nom, une marque, un code ou une taille", all: "Tous les matériaux",
+    ceramics: "Carrelage céramique", porcelain: "Grès cérame", marble: "Marbre naturel",
+    count: "matériaux", chosen: "Carreau sélectionné", size: "Dimensions réelles",
+    faces: "Face du carreau", source: "Photographie du fournisseur",
+    details: "Détails du produit", try: "Essayer dans ma pièce", more: "Afficher plus",
+    empty: "Aucune photo de carreau avec dimensions vérifiées ne correspond.",
+    clear: "Réinitialiser", notice: "Le rapport largeur/hauteur réel du carreau est conservé. La pose dans une pièce exige une mesure de la surface.",
+    next: "Face suivante", previous: "Face précédente", filter: "Filtre matériaux", raw: "MATÉRIAU SEUL",
+    unavailable: "Image indisponible",
+  },
+} as const;
 
-function RoomSVG({
-  floorTile,
-  wallTile,
-  roomType,
-}: {
-  floorTile: string | null;
-  wallTile: string | null;
-  roomType: RoomType;
+function TileFace({ item, src, large = false, unavailable }: {
+  item: TileItem; src: string; large?: boolean; unavailable: string;
 }) {
-  const grout = "#cac7bc";
-
+  const local = materialById.get(item.product.id);
+  const [orientation, setOrientation] = useState<"landscape" | "portrait" | null>(
+    local ? (local.width >= local.height ? "landscape" : "portrait") : null
+  );
+  const [failed, setFailed] = useState(false);
+  useEffect(() => {
+    setFailed(false);
+    setOrientation(local ? (local.width >= local.height ? "landscape" : "portrait") : null);
+  }, [src, local?.width, local?.height]);
+  const min = Math.min(item.size.width, item.size.height);
+  const max = Math.max(item.size.width, item.size.height);
+  const landscape = orientation === "landscape" ||
+    (orientation === null && item.size.width > item.size.height);
+  const ratio = landscape ? max / min : min / max;
   return (
-    <svg
-      viewBox="0 0 1000 620"
-      style={{ width: "100%", height: "100%", display: "block" }}
-      preserveAspectRatio="xMidYMid meet"
-    >
-      <defs>
-        {floorTile && (
-          <pattern id="fp" x="0" y="0" width="120" height="120" patternUnits="userSpaceOnUse">
-            <image href={floorTile} x="0" y="0" width="120" height="120" preserveAspectRatio="xMidYMid slice" />
-            <line x1="0" y1="0" x2="0" y2="120" stroke={grout} strokeWidth="2.5" />
-            <line x1="0" y1="0" x2="120" y2="0" stroke={grout} strokeWidth="2.5" />
-          </pattern>
-        )}
-        {wallTile && (
-          <pattern id="wp" x="0" y="0" width="95" height="95" patternUnits="userSpaceOnUse">
-            <image href={wallTile} x="0" y="0" width="95" height="95" preserveAspectRatio="xMidYMid slice" />
-            <line x1="0" y1="0" x2="0" y2="95" stroke={grout} strokeWidth="1.8" />
-            <line x1="0" y1="0" x2="95" y2="0" stroke={grout} strokeWidth="1.8" />
-          </pattern>
-        )}
-        {wallTile && (
-          <pattern id="sp" x="0" y="0" width="95" height="95" patternUnits="userSpaceOnUse">
-            <image href={wallTile} x="0" y="0" width="95" height="95" preserveAspectRatio="xMidYMid slice" />
-            <line x1="0" y1="0" x2="0" y2="95" stroke={grout} strokeWidth="1.8" />
-            <line x1="0" y1="0" x2="95" y2="0" stroke={grout} strokeWidth="1.8" />
-          </pattern>
-        )}
-        <radialGradient id="atmos" cx="50%" cy="15%" r="65%">
-          <stop offset="0%" stopColor="white" stopOpacity="0.18" />
-          <stop offset="100%" stopColor="transparent" stopOpacity="0" />
-        </radialGradient>
-        <filter id="side-shadow">
-          <feColorMatrix type="saturate" values="0.9" />
-          <feComponentTransfer>
-            <feFuncR type="linear" slope="0.78" />
-            <feFuncG type="linear" slope="0.78" />
-            <feFuncB type="linear" slope="0.78" />
-          </feComponentTransfer>
-        </filter>
-      </defs>
-
-      {/* Ambient background */}
-      <rect width="1000" height="620" fill="#f2efe9" />
-
-      {/* Ceiling */}
-      <polygon points="0,0 1000,0 750,80 250,80" fill="#eae7e0" />
-
-      {/* Left wall */}
-      <polygon
-        points="0,0 250,80 250,390 0,620"
-        fill={wallTile ? "url(#sp)" : "#dedad2"}
-        filter={wallTile ? "url(#side-shadow)" : undefined}
-      />
-
-      {/* Right wall */}
-      <polygon
-        points="1000,0 750,80 750,390 1000,620"
-        fill={wallTile ? "url(#sp)" : "#e0dcd4"}
-        filter={wallTile ? "url(#side-shadow)" : undefined}
-      />
-
-      {/* Back wall */}
-      <polygon
-        points="250,80 750,80 750,390 250,390"
-        fill={wallTile ? "url(#wp)" : "#f0ede6"}
-      />
-
-      {/* Floor */}
-      <polygon
-        points="0,620 1000,620 750,390 250,390"
-        fill={floorTile ? "url(#fp)" : "#e2dfd7"}
-      />
-
-      {/* Subtle floor perspective grid when no tile */}
-      {!floorTile && (
-        <g stroke={grout} strokeWidth="1" opacity="0.45">
-          {[100, 200, 300, 400, 600, 700, 800, 900].map((x) => (
-            <line key={x} x1={x} y1="620" x2={x * 0.5 + 250} y2="390" />
-          ))}
-          {[0.25, 0.5, 0.75].map((d) => (
-            <line key={d} x1={d * 250} y1={620 - d * 230} x2={1000 - d * 250} y2={620 - d * 230} />
-          ))}
-        </g>
-      )}
-
-      {/* Room edge lines */}
-      <g stroke="rgba(0,0,0,0.18)" strokeWidth="1.5" fill="none">
-        <line x1="0" y1="620" x2="250" y2="390" />
-        <line x1="1000" y1="620" x2="750" y2="390" />
-        <line x1="250" y1="390" x2="750" y2="390" />
-        <line x1="0" y1="0" x2="250" y2="80" />
-        <line x1="1000" y1="0" x2="750" y2="80" />
-        <line x1="250" y1="80" x2="750" y2="80" />
-        <line x1="250" y1="80" x2="250" y2="390" />
-        <line x1="750" y1="80" x2="750" y2="390" />
-      </g>
-
-      {/* ── BATHROOM fixtures ── */}
-      {roomType === "bathroom" && (
-        <g>
-          {/* Bathtub — right foreground */}
-          <rect x="790" y="430" width="185" height="82" rx="41" fill="white" stroke="#c8c4bc" strokeWidth="2" />
-          <rect x="803" y="442" width="159" height="58" rx="30" fill="#f4f1ec" stroke="#ddd" strokeWidth="1" />
-          <circle cx="858" cy="432" r="5" fill="#aaa" />
-          <line x1="858" y1="432" x2="858" y2="422" stroke="#aaa" strokeWidth="2" />
-          {/* Toilet — left foreground */}
-          <ellipse cx="120" cy="520" rx="58" ry="72" fill="white" stroke="#c8c4bc" strokeWidth="2" />
-          <ellipse cx="120" cy="528" rx="46" ry="58" fill="#f4f1ec" stroke="#ddd" strokeWidth="1" />
-          <rect x="80" y="420" width="80" height="26" rx="8" fill="white" stroke="#c8c4bc" strokeWidth="2" />
-          {/* Vanity / sink on back wall */}
-          <rect x="340" y="360" width="180" height="28" rx="6" fill="white" stroke="#c8c4bc" strokeWidth="1.5" />
-          <ellipse cx="430" cy="388" rx="50" ry="10" fill="#e8e4de" stroke="#ccc" strokeWidth="1" />
-          <line x1="430" y1="375" x2="430" y2="365" stroke="#bbb" strokeWidth="2" />
-        </g>
-      )}
-
-      {/* ── LIVING ROOM fixtures ── */}
-      {roomType === "living" && (
-        <g>
-          {/* Sofa — center foreground */}
-          <rect x="80" y="480" width="520" height="110" rx="22" fill="white" stroke="#c8c4bc" strokeWidth="2" />
-          <rect x="88" y="468" width="504" height="28" rx="14" fill="#e8e4dc" stroke="#ccc" strokeWidth="1.5" />
-          <rect x="94" y="494" width="110" height="78" rx="14" fill="#ede9e2" stroke="#ccc" strokeWidth="1" />
-          <rect x="225" y="494" width="110" height="78" rx="14" fill="#ede9e2" stroke="#ccc" strokeWidth="1" />
-          <rect x="357" y="494" width="110" height="78" rx="14" fill="#ede9e2" stroke="#ccc" strokeWidth="1" />
-          <rect x="490" y="468" width="28" height="120" rx="8" fill="#e0dbd2" stroke="#ccc" strokeWidth="1" />
-          <rect x="88" y="468" width="28" height="120" rx="8" fill="#e0dbd2" stroke="#ccc" strokeWidth="1" />
-          {/* Coffee table */}
-          <ellipse cx="420" cy="455" rx="130" ry="36" fill="white" stroke="#ccc" strokeWidth="1.5" />
-          {/* TV on back wall */}
-          <rect x="355" y="130" width="240" height="140" rx="4" fill="#222" stroke="#333" strokeWidth="1.5" />
-          <rect x="360" y="135" width="230" height="130" fill="#1a1a1a" />
-          <rect x="455" y="270" width="40" height="18" rx="2" fill="#333" />
-          {/* TV unit */}
-          <rect x="310" y="288" width="330" height="16" rx="3" fill="#e0ddd6" stroke="#ccc" strokeWidth="1" />
-        </g>
-      )}
-
-      {/* ── HALLWAY fixtures ── */}
-      {roomType === "hallway" && (
-        <g>
-          {/* Door on back wall */}
-          <rect x="385" y="118" width="130" height="262" fill="none" stroke="#c0bcb4" strokeWidth="3.5" />
-          <rect x="392" y="125" width="116" height="248" rx="2" fill="#ede9e2" stroke="#d4d0c8" strokeWidth="1" />
-          <circle cx="412" cy="256" r="6" fill="#b0a898" />
-          <line x1="412" y1="256" x2="426" y2="256" stroke="#b0a898" strokeWidth="2" />
-          <path d="M392 125 Q450 200 392 373" fill="none" stroke="#d4d0c8" strokeWidth="1" strokeDasharray="4,4" />
-          {/* Console table */}
-          <rect x="30" y="450" width="155" height="14" rx="4" fill="white" stroke="#ccc" strokeWidth="1.5" />
-          <line x1="48" y1="463" x2="48" y2="556" stroke="#d0ccc4" strokeWidth="8" strokeLinecap="round" />
-          <line x1="172" y1="463" x2="172" y2="556" stroke="#d0ccc4" strokeWidth="8" strokeLinecap="round" />
-          <ellipse cx="107" cy="443" rx="45" ry="12" fill="white" stroke="#ccc" strokeWidth="1.5" />
-          {/* Mirror on left wall */}
-          <rect x="18" y="140" width="118" height="188" rx="4" fill="none" stroke="#c0bcb4" strokeWidth="3" />
-          <rect x="24" y="146" width="106" height="176" fill="#f8f6f2" />
-          <line x1="77" y1="146" x2="77" y2="322" stroke="#e4e0d8" strokeWidth="1" />
-          <line x1="24" y1="234" x2="130" y2="234" stroke="#e4e0d8" strokeWidth="1" />
-          {/* Artwork/sconce on right wall */}
-          <rect x="868" y="160" width="100" height="140" rx="4" fill="none" stroke="#c0bcb4" strokeWidth="2.5" />
-          <rect x="874" y="166" width="88" height="128" fill="#f0ede6" />
-          <ellipse cx="918" cy="310" rx="12" ry="6" fill="#b0a898" />
-        </g>
-      )}
-
-      {/* Atmosphere overlay */}
-      <rect width="1000" height="620" fill="url(#atmos)" />
-
-      {/* Floor shadow at base of back wall */}
-      <polygon points="250,385 750,385 750,400 250,400" fill="rgba(0,0,0,0.08)" />
-    </svg>
+    <div className={"idea-tile-face" + (large ? " idea-tile-face-large" : "")}
+      style={{ width: Math.round(ratio * (large ? 310 : 188)) + "px", maxWidth: "100%", aspectRatio: String(ratio) }}>
+      {failed
+        ? <div className="idea-tile-face-error" role="status">{unavailable}</div>
+        : <img src={src} alt={item.product.name.en + " — " + item.size.label}
+            loading={large ? "eager" : "lazy"} decoding="async"
+            onLoad={(event) => {
+              const img = event.currentTarget;
+              if (img.naturalWidth > 0 && img.naturalHeight > 0)
+                setOrientation(img.naturalWidth >= img.naturalHeight ? "landscape" : "portrait");
+            }}
+            onError={() => setFailed(true)}
+            style={{ objectFit: "cover" }} />}
+    </div>
   );
 }
 
-// ── Product filtering by look ──────────────────────────────────────────────
-function getProductsForLook(products: Product[], lookId: string): Product[] {
-  const tiles = products.filter((p) => p.image && ["ceramics", "porcelain"].includes(p.collection));
-
-  let filtered: Product[] = [];
-  switch (lookId) {
-    case "marble":
-      filtered = tiles.filter(
-        (p) =>
-          p.texture?.toLowerCase().includes("marble") ||
-          p.colors?.some((c) => ["White", "Cream", "Gold", "Beige"].includes(c))
-      );
-      break;
-    case "wood":
-      filtered = tiles.filter((p) => p.texture?.toLowerCase().includes("wood"));
-      break;
-    case "stone":
-      filtered = tiles.filter(
-        (p) =>
-          p.texture?.toLowerCase().includes("stone") ||
-          p.texture?.toLowerCase().includes("granite") ||
-          p.colors?.some((c) => ["Grey", "Charcoal", "Anthracite"].includes(c))
-      );
-      break;
-    case "pattern":
-      filtered = tiles.filter((p) => p.collection === "ceramics");
-      break;
-    case "colour":
-      filtered = tiles.filter(
-        (p) =>
-          p.colors?.some((c) => !["White", "Black", "Grey", "Beige", "Cream", "Brown"].includes(c))
-      );
-      break;
-  }
-
-  // Always return at least some products — pad with any tile products
-  return [...new Map([...filtered, ...tiles].map((p) => [p.id, p])).values()].slice(0, 16);
-}
-
-// ── TileShowroom page ──────────────────────────────────────────────────────
-const ROOMS: { id: RoomType; label: Record<Locale, string> }[] = [
-  { id: "bathroom", label: { en: "Bathroom", ar: "الحمام", fr: "Salle de bain" } },
-  { id: "living", label: { en: "Living Room", ar: "غرفة المعيشة", fr: "Salon" } },
-  { id: "hallway", label: { en: "Hallway", ar: "المدخل", fr: "Couloir" } },
-];
-
 export function TileShowroom() {
   const { lookId } = useParams<{ lookId: string }>();
+  const [params, setParams] = useSearchParams();
   const { locale } = useI18n();
+  const lang: Locale = locale === "ar" || locale === "fr" ? locale : "en";
+  const t = words[lang];
   const { products } = useStore();
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("all");
+  const [visible, setVisible] = useState(36);
+  const [faceIndex, setFaceIndex] = useState(0);
 
-  const look = MATERIAL_LOOKS.find((l) => l.id === lookId) ?? MATERIAL_LOOKS[0];
-  const lookProducts = useMemo(() => getProductsForLook(products, lookId ?? "marble"), [products, lookId]);
+  const tiles = useMemo<TileItem[]>(() => products
+    .filter((p) => allowed.has(p.collection))
+    .map((p) => ({ product: p, photos: faces(p), size: dimension(p) }))
+    .filter((row): row is TileItem => row.photos.length > 0 && row.size !== null)
+    .sort((a, b) => a.product.name.en.localeCompare(b.product.name.en)), [products]);
 
-  const [roomType, setRoomType] = useState<RoomType>("bathroom");
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [applyFloor, setApplyFloor] = useState(true);
-  const [applyWall, setApplyWall] = useState(true);
+  const categoryCounts = useMemo(() => {
+    const result = { ceramics: 0, porcelain: 0, marble: 0 };
+    for (const item of tiles) result[item.product.collection as keyof typeof result] += 1;
+    return result;
+  }, [tiles]);
 
-  const activeTile = selectedProduct?.image ?? look.tileImage;
+  const filtered = useMemo(() => {
+    const q = query.trim().toLocaleLowerCase();
+    return tiles.filter(({ product, size }) => {
+      if (category !== "all" && product.collection !== category) return false;
+      // Retain the old look URLs without reintroducing staged-room imagery.
+      if (lookId === "wood" && !/wood|oak|walnut/i.test(product.name.en + " " + (product.texture ?? ""))) return false;
+      if (!q) return true;
+      return [product.name.en, product.name.ar, product.brand, product.manufacturer,
+        product.code, product.model, product.variant, size.label, product.collection]
+        .filter(Boolean).some((value) => value!.toLocaleLowerCase().includes(q));
+    });
+  }, [tiles, query, category, lookId]);
+
+  const wantedId = params.get("product");
+  const chosen = tiles.find(({ product }) => product.id === wantedId || product.slug === wantedId) ??
+    filtered[0] ?? null;
+  const photo = chosen ? chosen.photos[Math.min(faceIndex, chosen.photos.length - 1)] : null;
+
+  const choose = (item: TileItem) => {
+    setParams((previous) => {
+      const next = new URLSearchParams(previous);
+      next.set("product", item.product.slug);
+      return next;
+    }, { replace: true });
+    setFaceIndex(0);
+  };
+  const changeCategory = (nextCategory: string) => {
+    setCategory(nextCategory);
+    setVisible(36);
+    setFaceIndex(0);
+    setParams((previous) => {
+      const next = new URLSearchParams(previous);
+      next.delete("product");
+      return next;
+    }, { replace: true });
+  };
+  const faceCount = chosen?.photos.length ?? 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", height: "calc(100dvh - 70px)", background: "var(--idea-bg-2)" }}>
-      {/* Header */}
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        gap: "var(--idea-space-3)",
-        padding: "var(--idea-space-3) var(--idea-space-5)",
-        background: "var(--idea-surface)",
-        borderBottom: "var(--idea-hairline)",
-        flexShrink: 0,
-        flexWrap: "wrap",
-        rowGap: "var(--idea-space-2)",
-      }}>
-        <Link
-          to="/"
-          style={{
-            display: "flex", alignItems: "center", gap: 6,
-            color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)",
-            textDecoration: "none", flexShrink: 0,
-          }}
-        >
-          <ArrowLeft size={17} /> Home
+    <main className="idea-raw-showroom" dir={lang === "ar" ? "rtl" : "ltr"}>
+      <header className="idea-raw-header">
+        <Link to="/" className="idea-raw-back">
+          {lang === "ar" ? <ArrowRight size={16} /> : <ArrowLeft size={16} />}
+          {t.home}
         </Link>
-        <div style={{ width: 1, height: 20, background: "var(--idea-border)", flexShrink: 0 }} />
-        {/* Look tabs */}
-        <div style={{ display: "flex", gap: 6, overflowX: "auto", scrollbarWidth: "none", flexWrap: "nowrap" }}>
-          {MATERIAL_LOOKS.map((l) => (
-            <Link
-              key={l.id}
-              to={`/tile-showroom/${l.id}`}
-              style={{
-                padding: "6px 16px",
-                background: l.id === look.id ? "var(--idea-gold)" : "transparent",
-                color: l.id === look.id ? "white" : "var(--idea-text-muted)",
-                borderRadius: "var(--idea-radius-full)",
-                fontSize: "var(--idea-text-sm)",
-                textDecoration: "none",
-                whiteSpace: "nowrap",
-                fontFamily: "var(--idea-font-display)",
-                letterSpacing: "0.06em",
-                border: l.id === look.id ? "none" : "var(--idea-hairline)",
-                transition: "all 0.18s",
-                flexShrink: 0,
-              }}
-            >
-              {l.label[locale as Locale]}
-            </Link>
-          ))}
-        </div>
-      </div>
+        <span className="idea-raw-overline">{t.kicker}</span>
+        <h1>{t.title}</h1>
+        <p>{t.subtitle}</p>
+      </header>
 
-      {/* Body */}
-      <div className="idea-showroom-body" style={{ display: "flex", flex: 1, overflow: "hidden" }}>
-        {/* Left — Room view */}
-        <div style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          padding: "var(--idea-space-4) var(--idea-space-5)",
-          gap: "var(--idea-space-3)",
-          overflow: "hidden",
-          minWidth: 0,
-        }}>
-          {/* Controls row */}
-          <div style={{ display: "flex", alignItems: "center", gap: "var(--idea-space-2)", flexWrap: "wrap" }}>
-            {ROOMS.map((r) => (
-              <button
-                key={r.id}
-                onClick={() => setRoomType(r.id)}
-                style={{
-                  padding: "7px 18px",
-                  background: roomType === r.id ? "var(--idea-text)" : "var(--idea-surface)",
-                  color: roomType === r.id ? "white" : "var(--idea-text-muted)",
-                  border: roomType === r.id ? "none" : "var(--idea-hairline)",
-                  borderRadius: "var(--idea-radius-full)",
-                  cursor: "pointer",
-                  fontSize: "var(--idea-text-sm)",
-                  fontFamily: "var(--idea-font-display)",
-                  letterSpacing: "0.06em",
-                  transition: "all 0.18s",
-                }}
-              >
-                {r.label[locale as Locale]}
+      <section className="idea-raw-controls" aria-label={t.filter}>
+        <div className="idea-raw-search">
+          <Search size={19} aria-hidden="true" />
+          <input type="search" value={query} placeholder={t.search}
+            aria-label={t.search}
+            onChange={(event) => { setQuery(event.target.value); setVisible(36); setFaceIndex(0); }} />
+          {query && <button type="button" onClick={() => setQuery("")} aria-label={t.clear}><X size={17} /></button>}
+        </div>
+        <div className="idea-raw-categories" role="group" aria-label={t.filter}>
+          <button type="button" className={category === "all" ? "is-active" : ""} onClick={() => changeCategory("all")}>
+            {t.all} <b>{tiles.length}</b>
+          </button>
+          {(["ceramics", "porcelain", "marble"] as const)
+            .filter((key) => categoryCounts[key] > 0)
+            .map((key) => (
+              <button type="button" key={key}
+                className={category === key ? "is-active" : ""} onClick={() => changeCategory(key)}>
+                {t[key]} <b>{categoryCounts[key]}</b>
               </button>
             ))}
-            <div style={{ flex: 1 }} />
-            {/* Surface toggles */}
-            {[
-              { key: "floor", label: locale === "ar" ? "أرضية" : "Floor", checked: applyFloor, toggle: () => setApplyFloor((v) => !v) },
-              { key: "wall", label: locale === "ar" ? "جدار" : "Walls", checked: applyWall, toggle: () => setApplyWall((v) => !v) },
-            ].map(({ key, label, checked, toggle }) => (
-              <button
-                key={key}
-                onClick={toggle}
-                style={{
-                  display: "flex", alignItems: "center", gap: 6,
-                  padding: "7px 14px",
-                  background: checked ? "var(--idea-gold-soft)" : "var(--idea-surface)",
-                  border: checked ? "1px solid var(--idea-gold)" : "var(--idea-hairline)",
-                  borderRadius: "var(--idea-radius-full)",
-                  cursor: "pointer",
-                  fontSize: "var(--idea-text-sm)",
-                  color: checked ? "var(--idea-gold-bright)" : "var(--idea-text-muted)",
-                  transition: "all 0.18s",
-                }}
-              >
-                {checked && <Check size={13} />}
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {/* Room SVG */}
-          <div style={{
-            flex: 1,
-            background: "white",
-            borderRadius: "var(--idea-radius-lg)",
-            overflow: "hidden",
-            border: "var(--idea-hairline)",
-            boxShadow: "var(--idea-shadow-md)",
-            minHeight: 0,
-          }}>
-            <RoomSVG
-              floorTile={applyFloor ? activeTile : null}
-              wallTile={applyWall ? activeTile : null}
-              roomType={roomType}
-            />
-          </div>
-
-          <p style={{ fontSize: "var(--idea-text-xs)", color: "var(--idea-text-faint)", margin: 0, lineHeight: 1.5 }}>
-            {locale === "ar"
-              ? "معاينة فقط. قد يختلف مظهر البلاط الفعلي حسب الحجم والتشطيب والإضاءة."
-              : "Preview only. Actual tile appearance may vary by size, finish, and lighting."}
-          </p>
         </div>
+      </section>
 
-        {/* Right — Tile picker */}
-        <div style={{
-          width: 300,
-          flexShrink: 0,
-          borderInlineStart: "var(--idea-hairline)",
-          background: "var(--idea-surface)",
-          display: "flex",
-          flexDirection: "column",
-          overflow: "hidden",
-        }} className="idea-tile-picker">
-          {/* Picker header */}
-          <div style={{
-            padding: "var(--idea-space-4) var(--idea-space-4) var(--idea-space-3)",
-            borderBottom: "var(--idea-hairline)",
-            flexShrink: 0,
-          }}>
-            <div style={{
-              fontFamily: "var(--idea-font-display)",
-              fontSize: "var(--idea-text-xs)",
-              letterSpacing: "var(--idea-tracking-wide)",
-              color: "var(--idea-gold-bright)",
-              marginBottom: 4,
-              textTransform: "uppercase",
-            }}>
-              {locale === "ar" ? "اختر البلاطة" : "Select Tile"}
-            </div>
-            <div style={{ fontSize: "var(--idea-text-sm)", color: "var(--idea-text-muted)" }}>
-              {look.label[locale as Locale]} · {lookProducts.length} {locale === "ar" ? "منتج" : "surfaces"}
-            </div>
-          </div>
-
-          {/* Look default option */}
-          <div style={{ padding: "var(--idea-space-3) var(--idea-space-4) 0", flexShrink: 0 }}>
-            <button
-              onClick={() => setSelectedProduct(null)}
-              style={{
-                width: "100%",
-                display: "flex",
-                alignItems: "center",
-                gap: 12,
-                padding: "10px 12px",
-                borderRadius: "var(--idea-radius-md)",
-                border: selectedProduct === null ? "2px solid var(--idea-gold)" : "var(--idea-hairline)",
-                background: selectedProduct === null ? "var(--idea-gold-soft)" : "var(--idea-surface-2)",
-                cursor: "pointer",
-                textAlign: "left",
-              }}
-            >
-              <img
-                src={look.tileImage}
-                alt="Default"
-                style={{ width: 44, height: 44, objectFit: "cover", borderRadius: "var(--idea-radius-sm)", flexShrink: 0 }}
-              />
-              <div>
-                <div style={{
-                  fontFamily: "var(--idea-font-display)",
-                  fontSize: "var(--idea-text-sm)",
-                  color: "var(--idea-text)",
-                  letterSpacing: "0.04em",
-                }}>
-                  {locale === "ar" ? "النمط الافتراضي" : "Look Preview"}
-                </div>
-                <div style={{ fontSize: "var(--idea-text-xs)", color: "var(--idea-text-muted)" }}>
-                  {look.label[locale as Locale]}
-                </div>
-              </div>
-            </button>
-          </div>
-
-          {/* Products grid */}
-          <div style={{
-            flex: 1,
-            overflowY: "auto",
-            padding: "var(--idea-space-3) var(--idea-space-4) var(--idea-space-4)",
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "var(--idea-space-2)",
-            alignContent: "start",
-            scrollbarWidth: "thin",
-          }}>
-            {lookProducts.map((p) => {
-              const isSelected = selectedProduct?.id === p.id;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => setSelectedProduct(isSelected ? null : p)}
-                  style={{
-                    padding: 0,
-                    border: isSelected ? "2px solid var(--idea-gold)" : "var(--idea-hairline)",
-                    borderRadius: "var(--idea-radius-md)",
-                    overflow: "hidden",
-                    cursor: "pointer",
-                    background: "transparent",
-                    display: "flex",
-                    flexDirection: "column",
-                    textAlign: "left",
-                    transition: "border-color 0.15s",
-                    position: "relative",
-                  }}
-                >
-                  {isSelected && (
-                    <div style={{
-                      position: "absolute",
-                      top: 6, right: 6,
-                      background: "var(--idea-gold)",
-                      borderRadius: "var(--idea-radius-full)",
-                      width: 20, height: 20,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      zIndex: 1,
-                    }}>
-                      <Check size={12} color="white" />
-                    </div>
-                  )}
-                  <img
-                    src={p.image}
-                    alt={p.name[locale as Locale]}
-                    style={{ width: "100%", aspectRatio: "1", objectFit: "cover", display: "block" }}
-                    onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                  />
-                  <div style={{ padding: "6px 8px", background: "var(--idea-surface-2)" }}>
-                    <div style={{
-                      fontSize: 11,
-                      color: "var(--idea-text-muted)",
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      fontFamily: "var(--idea-font-display)",
-                      letterSpacing: "0.04em",
-                    }}>
-                      {p.name[locale as Locale]}
-                    </div>
-                    {p.sizes?.[0] && (
-                      <div style={{ fontSize: 10, color: "var(--idea-text-faint)" }}>
-                        {p.sizes[0].label}
-                      </div>
-                    )}
-                  </div>
+      {chosen && photo && (
+        <section className="idea-raw-spotlight" aria-label={t.chosen}>
+          <div className="idea-raw-large-material">
+            <span className="idea-raw-corner-mark">{t.raw}</span>
+            <TileFace item={chosen} src={photo} large unavailable={t.unavailable} />
+            {faceCount > 1 && (
+              <div className="idea-raw-face-navigation">
+                <button type="button" aria-label={t.previous} onClick={() => setFaceIndex((n) => (n - 1 + faceCount) % faceCount)}>
+                  <ChevronLeft size={18} />
                 </button>
-              );
-            })}
+                <span>{faceIndex + 1} / {faceCount}</span>
+                <button type="button" aria-label={t.next} onClick={() => setFaceIndex((n) => (n + 1) % faceCount)}>
+                  <ChevronRight size={18} />
+                </button>
+              </div>
+            )}
           </div>
-
-          {/* CTA strip */}
-          {selectedProduct && (
-            <div style={{
-              padding: "var(--idea-space-4)",
-              borderTop: "var(--idea-hairline)",
-              background: "var(--idea-surface)",
-              flexShrink: 0,
-            }}>
-              <div style={{
-                fontFamily: "var(--idea-font-display)",
-                fontSize: "var(--idea-text-sm)",
-                color: "var(--idea-text)",
-                marginBottom: "var(--idea-space-3)",
-                letterSpacing: "0.04em",
-                whiteSpace: "nowrap",
-                overflow: "hidden",
-                textOverflow: "ellipsis",
-              }}>
-                {selectedProduct.name[locale as Locale]}
-              </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                <Link
-                  to={`/product/${selectedProduct.slug}`}
-                  style={{
-                    flex: 1,
-                    padding: "10px 0",
-                    background: "var(--idea-surface-2)",
-                    border: "var(--idea-hairline)",
-                    borderRadius: "var(--idea-radius-md)",
-                    textAlign: "center",
-                    textDecoration: "none",
-                    color: "var(--idea-text)",
-                    fontSize: "var(--idea-text-sm)",
-                    fontFamily: "var(--idea-font-display)",
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  {locale === "ar" ? "عرض" : "View"}
-                </Link>
-                <Link
-                  to="/request-quote/new"
-                  style={{
-                    flex: 1,
-                    padding: "10px 0",
-                    background: "var(--idea-gold)",
-                    borderRadius: "var(--idea-radius-md)",
-                    textAlign: "center",
-                    textDecoration: "none",
-                    color: "white",
-                    fontSize: "var(--idea-text-sm)",
-                    fontFamily: "var(--idea-font-display)",
-                    letterSpacing: "0.04em",
-                  }}
-                >
-                  {locale === "ar" ? "طلب سعر" : "Get Quote"}
-                </Link>
-              </div>
+          <div className="idea-raw-info">
+            <span className="idea-raw-info-category">
+              {t[chosen.product.collection as "ceramics" | "porcelain" | "marble"]} · {chosen.product.brand}
+            </span>
+            <h2>{chosen.product.name[lang]}</h2>
+            <div className="idea-raw-size-box">
+              <span>{t.size}</span>
+              <strong dir="ltr">{chosen.size.label}</strong>
             </div>
-          )}
-        </div>
+            {chosen.product.model && <p className="idea-raw-model">{chosen.product.model}</p>}
+            <p className="idea-raw-source">{t.source}</p>
+            {faceCount > 1 && (
+              <div className="idea-raw-face-thumbnails" aria-label={t.faces}>
+                {chosen.photos.slice(0, 14).map((src, index) => (
+                  <button type="button" className={index === faceIndex ? "selected" : ""}
+                    key={src} aria-label={t.faces + " " + (index + 1)}
+                    onClick={() => setFaceIndex(index)}>
+                    <img src={src} alt="" loading="lazy" />
+                  </button>
+                ))}
+              </div>
+            )}
+            <div className="idea-raw-actions">
+              <Link to={"/product/" + chosen.product.slug}>{t.details}</Link>
+              <Link to={"/ai-room-visualizer?product=" + encodeURIComponent(chosen.product.id)}>{t.try}</Link>
+            </div>
+            <p className="idea-raw-scale-note">{t.notice}</p>
+          </div>
+        </section>
+      )}
+
+      <div className="idea-raw-results-header">
+        <span><SlidersHorizontal size={16} /> {filtered.length} {t.count}</span>
       </div>
 
-      <style>{`
-        @media (max-width: 860px) {
-          .idea-showroom-body { flex-direction: column !important; overflow: auto !important; }
-          .idea-tile-picker {
-            width: 100% !important;
-            border-inline-start: none !important;
-            border-top: var(--idea-hairline) !important;
-            max-height: 360px;
-          }
-        }
-      `}</style>
-    </div>
+      {filtered.length ? (
+        <>
+          <section className="idea-raw-grid">
+            {filtered.slice(0, visible).map((item) => (
+              <button key={item.product.id} type="button"
+                className={"idea-raw-card" + (item.product.id === chosen?.product.id ? " is-selected" : "")}
+                onClick={() => choose(item)}
+                aria-pressed={item.product.id === chosen?.product.id}>
+                <div className="idea-raw-card-image">
+                  <TileFace item={item} src={item.photos[0]} unavailable={t.unavailable} />
+                  {item.product.id === chosen?.product.id && <Check className="idea-raw-selected-check" size={18} />}
+                </div>
+                <div className="idea-raw-card-info">
+                  <strong>{item.product.name[lang]}</strong>
+                  <span>{item.product.brand}</span>
+                  <b dir="ltr">{item.size.label}</b>
+                </div>
+              </button>
+            ))}
+          </section>
+          {visible < filtered.length &&
+            <button type="button" className="idea-raw-load" onClick={() => setVisible((n) => n + 36)}>{t.more}</button>}
+        </>
+      ) : (
+        <div className="idea-raw-empty">
+          <p>{t.empty}</p>
+          <button type="button" onClick={() => { setQuery(""); changeCategory("all"); }}>{t.clear}</button>
+        </div>
+      )}
+    </main>
   );
 }
