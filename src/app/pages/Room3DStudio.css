@@ -10,7 +10,7 @@
 .idea-room3d-heading span{font-size:10px;letter-spacing:.18em;color:var(--idea-gold-bright,#ac8956)}
 .idea-room3d-heading h1{font-size:clamp(24px,3.6vw,46px);font-weight:740;letter-spacing:-.035em;margin:5px 0 6px}
 .idea-room3d-heading p{font-size:13px;color:var(--idea-text-muted,#888);margin:0;line-height:1.6}
-.idea-room3d-workspace{display:grid;grid-template-columns:minmax(215px,250px) minmax(0,1fr) minmax(215px,260px);gap:13px;max-width:1660px;margin:auto;align-items:start}
+.idea-room3d-workspace{display:grid;grid-template-columns:minmax(220px,250px) minmax(0,1fr) minmax(320px,380px);gap:13px;max-width:1660px;margin:auto;align-items:start}
 .idea-room3d-side,.idea-room3d-main{border:1px solid var(--idea-border,rgba(130,130,130,.25));background:var(--idea-surface,#fff);border-radius:15px;min-width:0;overflow:hidden}
 .idea-room3d-side{padding:18px;display:flex;flex-direction:column;gap:11px;max-height:min(85dvh,900px);overflow:auto}
 .idea-room3d-side h2{font-size:13px;margin:12px 0 0;font-weight:750;display:flex;align-items:center;justify-content:space-between}
