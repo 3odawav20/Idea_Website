@@ -10,7 +10,7 @@ import { ArrowLeft, Camera, RotateCcw, Trash2, Maximize2 } from "lucide-react";
 import { useStore } from "../store/store";
 import { useI18n } from "../i18n/i18n";
 import type { Product } from "../data/types";
-import surfaceMaterials from "../data/surfaceMaterials.json";
+import { Room3DMaterialGallery, materialFace, verifiedSizes } from "./Room3DMaterialGallery";
 import "./Room3DStudio.css";
 
 type Surface = "floor" | "back" | "left" | "right";
@@ -18,7 +18,6 @@ type FixtureKind = "bathtub" | "basin" | "faucet" | "toilet";
 type Fixture = { id: string; kind: FixtureKind; productId?: string; surface: Surface; x: number; y: number; z: number; };
 type CameraPreset = "perspective" | "top" | "front" | "left" | "right";
 const FIXTURE_COLLS = new Set(["sanitary-ware", "faucets", "bathroom-sets", "bathroom-units", "bathtubs", "shower-units"]);
-const localTileImages = new Map((surfaceMaterials as {id:string;image:string}[]).map(m => [m.id,m.image]));
 const SURFACES: Surface[] = ["floor","back","left","right"];
 const labels = {
   en: {
@@ -68,8 +67,7 @@ const fixtureKind = (product: Product): FixtureKind => {
   if (product.collection === "sanitary-ware" && /toilet|wc/i.test(product.name.en)) return "toilet";
   return "basin";
 };
-const materialSize = (p: Product) => p.sizes.find(s =>
-  typeof s.widthMm === "number" && typeof s.heightMm === "number" && s.widthMm > 0 && s.heightMm > 0);
+const materialSize = (p:Product,sizeId?:string) => verifiedSizes(p).find(size=>size.id===sizeId) ?? verifiedSizes(p)[0];
 const clamp = (value: number, low: number, high: number) => Math.max(low, Math.min(high, value));
 const newId = () => "fixture_" + Math.random().toString(36).slice(2,11);
 const defaultPositions = (kind: FixtureKind, surface: Surface, width: number, length: number) => {
@@ -129,11 +127,11 @@ function buildFixture(entry:Fixture) {
   return group;
 }
 
-function makeSurfaceTexture(src:string,repeatX:number,repeatY:number,onReady:(tx:THREE.Texture)=>void) {
+function makeSurfaceTexture(src:string,repeatX:number,repeatY:number,onReady:(tx:THREE.Texture)=>void,onError?:()=>void) {
   const texture=new THREE.TextureLoader().load(src,(t)=>{
     t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;
     t.repeat.set(repeatX,repeatY);t.anisotropy=8;onReady(t);
-  },undefined,()=>{});
+  },undefined,()=>onError?.());
   texture.colorSpace=THREE.SRGBColorSpace;
   texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
   texture.repeat.set(repeatX,repeatY);
@@ -159,22 +157,14 @@ export function Room3DStudio() {
   const [selectedId,setSelectedId]=useState<string|null>(null);
   const [pending,setPending]=useState<{kind:FixtureKind;productId?:string}|null>(null);
   const [tileChoice,setTileChoice]=useState<Record<Surface,string>>({floor:"",back:"",left:"",right:""});
+  const [sizeChoice,setSizeChoice]=useState<Record<Surface,string>>({floor:"",back:"",left:"",right:""});
   const [notice,setNotice]=useState("");
 
   const catalogue=useMemo(()=>products.filter(p=>FIXTURE_COLLS.has(p.collection)&&p.approved),[products]);
   const tiles=useMemo(()=>products.filter(p=>
-    ["ceramics","porcelain","marble"].includes(p.collection) &&
-    materialSize(p) && !!p.source?.original?.tiles?.[0]),[products]);
+    ["ceramics","porcelain","marble"].includes(p.collection) && !!materialSize(p) && !!materialFace(p)),[products]);
   const byId=useMemo(()=>new Map(products.map(p=>[p.id,p])),[products]);
-  const changeSceneMode=(next:RoomMode)=>{
-    if(next==="kitchen" && !Object.values(tileChoice).some(Boolean)){
-      // Only genuine catalogue products: no invented tile materials.
-      const wood=tiles.find(p=>/africa beige/i.test(p.name.en));
-      const stone=tiles.find(p=>/fashion carrara/i.test(p.name.en));
-      setTileChoice(s=>({...s,floor:wood?.id??"",back:stone?.id??"",left:stone?.id??""}));
-    }
-    setRoomMode(next);
-  };
+  const changeSceneMode=(next:RoomMode)=>setRoomMode(next);
 
   const applyView=(preset:CameraPreset)=>{
     setView(preset);
@@ -219,9 +209,8 @@ export function Room3DStudio() {
     const surfaceList={} as Record<Surface,THREE.Mesh>;
     const finish=(id:Surface,a:number,b:number)=>{
       const product=byId.get(tileChoice[id]);
-      const s=product&&materialSize(product);
-      const localImage=product ? localTileImages.get(product.id) : undefined;
-      const face=localImage ? import.meta.env.BASE_URL.replace(/\/$/,"") + localImage : product?.source?.original?.tiles?.[0];
+      const s=product&&materialSize(product,sizeChoice[id]);
+      const face=product?materialFace(product):null;
       const roughness=lighting.finish==="polished"?.18:lighting.finish==="satin"?.38:.79;
       const base=new THREE.MeshPhysicalMaterial({
         color:id==="floor"?0xded9d0:0xe6e0d7,
@@ -234,7 +223,7 @@ export function Room3DStudio() {
       if(face&&s){
         const tw=s.widthMm!/1000,th=s.heightMm!/1000;
         const across=Math.max(.2,a/tw),high=Math.max(.2,b/th);
-        base.map=makeSurfaceTexture(face,across,high,()=>{base.needsUpdate=true;});
+        base.map=makeSurfaceTexture(face,across,high,()=>{base.needsUpdate=true;},()=>setNotice(lang==="ar"?"تعذر تحميل صورة البلاطة الأصلية للـ 3D.":"The source tile image could not load as a WebGL texture."));
         base.normalMap=makeTileNormalMap(across,high);
         base.normalScale.set(.16,.16);
         base.color.set(0xffffff);base.needsUpdate=true;
@@ -342,7 +331,7 @@ export function Room3DStudio() {
       releaseEnvironment();
       renderer.dispose();renderer.domElement.remove();sceneRef.current=null;
     };
-  },[dims.width,dims.length,dims.height,ceiling,placed,tileChoice.floor,tileChoice.back,tileChoice.left,tileChoice.right,byId,roomMode,lighting.finish]);
+  },[dims.width,dims.length,dims.height,ceiling,placed,tileChoice.floor,tileChoice.back,tileChoice.left,tileChoice.right,sizeChoice.floor,sizeChoice.back,sizeChoice.left,sizeChoice.right,byId,roomMode,lighting.finish]);
 
   // Sliders update the live light rig; they do not rebuild the WebGL scene.
   useEffect(()=>{
@@ -388,12 +377,12 @@ export function Room3DStudio() {
   };
   const selected=placed.find(f=>f.id===selectedId);
   const identify=(f:Fixture)=>f.productId?byId.get(f.productId)?.name[lang]??t.mock:t[f.kind];
-  const serialized=()=>JSON.stringify({version:2,dimensions:dims,ceiling,placed,tileChoice,roomMode,lighting},null,2);
+  const serialized=()=>JSON.stringify({version:3,dimensions:dims,ceiling,tileChoice,sizeChoice,roomMode,lighting},null,2);
   const download=()=>{
     const blob=new Blob([serialized()],{type:"application/json"});const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");a.href=url;a.download="idea-room-3d-layout.json";a.click();URL.revokeObjectURL(url);
+    const a=document.createElement("a");a.href=url;a.download="idea-room-3d-materials.json";a.click();URL.revokeObjectURL(url);
   };
-  const reset=()=>{setPlaced([]);setSelectedId(null);setNotice("");};
+  const reset=()=>{setPlaced([]);setSelectedId(null);setTileChoice({floor:"",back:"",left:"",right:""});setSizeChoice({floor:"",back:"",left:"",right:""});setNotice("");};
 
   return (
     <main className="idea-room3d" dir={lang==="ar"?"rtl":"ltr"}>
@@ -420,25 +409,28 @@ export function Room3DStudio() {
             {SURFACES.map(s=><button key={s} type="button" className={surface===s?"active":""}
               onClick={()=>setSurface(s)}>{s==="floor"?t.floor:s==="back"?t.backWall:s==="left"?t.leftWall:t.rightWall}</button>)}
           </div>
-          <h2>{t.floorTile} / {t.wallTile}</h2>
-          {SURFACES.map(k=><label key={k} className="idea-room3d-select-label">{k==="floor"?t.floor:k==="back"?t.backWall:k==="left"?t.leftWall:t.rightWall}
-            <select value={tileChoice[k]} onChange={e=>setTileChoice(s=>({...s,[k]:e.target.value}))}>
-              <option value="">{t.bare}</option>
-              {tiles.slice(0,180).map(p=><option key={p.id} value={p.id}>{p.name[lang]} · {materialSize(p)!.widthMm!/10}×{materialSize(p)!.heightMm!/10} cm</option>)}
-            </select></label>)}
+          <h2>{lang==="ar"?"الخامات المختارة":"Applied materials"}</h2>
+          <div className="idea-room3d-selected-surfaces">
+            {SURFACES.map(k=>{
+              const product=byId.get(tileChoice[k]);
+              const size=product?materialSize(product,sizeChoice[k]):null;
+              return <button type="button" key={k} className={surface===k?"active":""} onClick={()=>setSurface(k)}>
+                {k==="floor"?t.floor:k==="back"?t.backWall:k==="left"?t.leftWall:t.rightWall}
+                <small>{product?product.name[lang]:"—"}{size?" · "+size.widthMm+" × "+size.heightMm+" mm":""}</small>
+              </button>;
+            })}
+          </div>
           <p className="idea-room3d-disclaimer">{t.realSize}</p>
         </aside>
 
         <section className="idea-room3d-main">
-          <div className="idea-room3d-stage" ref={mount} aria-label={t.title}
-            onDragOver={e=>e.preventDefault()}
-            onDrop={dropFixture}>
+          <div className="idea-room3d-stage" ref={mount} aria-label={t.title}>
             <div className="idea-room3d-overlay">
               <span><Camera size={15}/>{t[view]}</span><span>{dims.width} × {dims.length} × {dims.height} m</span>
             </div>
           </div>
           <div className="idea-room3d-bottom">
-            <p>{t.hint}</p>
+            <p>{lang==="ar"?"اسحب لتدوير المشهد، وقرّب بعجلة الماوس. اختار السطح ثم اختار البلاطة الأصلية ومقاسها من الكتالوج.":"Orbit the model, choose a floor or wall, then apply a real tile face at its verified format."}</p>
             <div>
               <button type="button" onClick={()=>applyView("perspective")}><Maximize2 size={15}/>{t.perspective}</button>
               <button type="button" onClick={reset}><RotateCcw size={15}/>{t.reset}</button>
@@ -448,30 +440,19 @@ export function Room3DStudio() {
           {notice&&<p role="status">{notice}</p>}
         </section>
 
-        <aside className="idea-room3d-side idea-room3d-catalog">
-          <h2>{t.catalogue} <small>{catalogue.length}</small></h2>
-          {catalogue.length>0?<div className="idea-room3d-fixture-list">
-            {catalogue.map(p=><button type="button" key={p.id}
-              draggable onDragStart={()=>setPending({kind:fixtureKind(p),productId:p.id})}
-              onClick={()=>place({kind:fixtureKind(p),productId:p.id})}>
-              <img src={p.image} alt="" loading="lazy"/>
-              <span><strong>{p.name[lang]}</strong><small>{p.brand}</small><em>{t.place}</em></span></button>)}
-          </div>:<p className="idea-room3d-empty">{t.catalogueEmpty}</p>}
-          <h3>{t.demo}</h3>
-          <div className="idea-room3d-demo-list">
-            {(["bathtub","basin","faucet","toilet"] as const).map(kind=><button key={kind} type="button"
-              draggable onDragStart={()=>setPending({kind})} onDragEnd={()=>setPending(null)}
-              onClick={()=>place({kind})}><span>{t[kind]}</span><small>{t.place} +</small></button>)}
-          </div>
-          <h2>{t.placements} <small>{placed.length}</small></h2>
-          {placed.length?<div className="idea-room3d-placed">
-            {placed.map(f=><button type="button" key={f.id} className={f.id===selectedId?"active":""}
-              onClick={()=>setSelectedId(f.id)}>{identify(f)} <small>{f.surface}</small></button>)}
-          </div>:<p className="idea-room3d-empty">{t.noItems}</p>}
-          {selected&&<button type="button" className="idea-room3d-delete" onClick={()=>{setPlaced(a=>a.filter(f=>f.id!==selectedId));setSelectedId(null);}}>
-            <Trash2 size={15}/>{t.delete}: {identify(selected)}</button>}
-          <p className="idea-room3d-disclaimer">{t.note}</p>
-        </aside>
+        <Room3DMaterialGallery products={tiles} locale={lang} surface={surface}
+          activeProductId={tileChoice[surface]} activeSizeId={sizeChoice[surface]}
+          onApply={(product,formatId)=>{
+            setTileChoice(old=>({...old,[surface]:product.id}));
+            setSizeChoice(old=>({...old,[surface]:formatId}));
+            setNotice("");
+          }}
+          onClear={()=>{
+            setTileChoice(old=>({...old,[surface]:""}));
+            setSizeChoice(old=>({...old,[surface]:""}));
+            setNotice("");
+          }}
+        />
       </div>
     </main>
   );
