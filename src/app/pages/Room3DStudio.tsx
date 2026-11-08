@@ -6,7 +6,7 @@ import { Room3DLighting, NATURAL_LIGHT } from "./Room3DLighting";
 import type { RoomLightSettings, RoomMode } from "./Room3DLighting";
 import { installMaterialEnvironment, makeLightRig, updateLightRig, makeTileNormalMap, addKitchenPreview } from "./Room3DRealism";
 import type { LightRig } from "./Room3DRealism";
-import { ArrowLeft, Camera, RotateCcw, Trash2, Maximize2 } from "lucide-react";
+import { ArrowLeft, Camera, RotateCcw, Maximize2 } from "lucide-react";
 import { useStore } from "../store/store";
 import { useI18n } from "../i18n/i18n";
 import type { Product } from "../data/types";
@@ -14,10 +14,7 @@ import { Room3DMaterialGallery, materialFace, verifiedSizes } from "./Room3DMate
 import "./Room3DStudio.css";
 
 type Surface = "floor" | "back" | "left" | "right";
-type FixtureKind = "bathtub" | "basin" | "faucet" | "toilet";
-type Fixture = { id: string; kind: FixtureKind; productId?: string; surface: Surface; x: number; y: number; z: number; };
 type CameraPreset = "perspective" | "top" | "front" | "left" | "right";
-const FIXTURE_COLLS = new Set(["sanitary-ware", "faucets", "bathroom-sets", "bathroom-units", "bathtubs", "shower-units"]);
 const SURFACES: Surface[] = ["floor","back","left","right"];
 const labels = {
   en: {
@@ -61,72 +58,8 @@ const labels = {
   }
 } as const;
 
-const fixtureKind = (product: Product): FixtureKind => {
-  if (product.collection === "bathtubs") return "bathtub";
-  if (product.collection === "faucets") return "faucet";
-  if (product.collection === "sanitary-ware" && /toilet|wc/i.test(product.name.en)) return "toilet";
-  return "basin";
-};
 const materialSize = (p:Product,sizeId?:string) => verifiedSizes(p).find(size=>size.id===sizeId) ?? verifiedSizes(p)[0];
 const clamp = (value: number, low: number, high: number) => Math.max(low, Math.min(high, value));
-const newId = () => "fixture_" + Math.random().toString(36).slice(2,11);
-const defaultPositions = (kind: FixtureKind, surface: Surface, width: number, length: number) => {
-  if (surface === "back") return {x:0,y:kind==="faucet"?1.2:kind==="basin"?.85:.35,z:-length/2};
-  if (surface === "left") return {x:-width/2,y:kind==="faucet"?1.2:.85,z:0};
-  if (surface === "right") return {x:width/2,y:kind==="faucet"?1.2:.85,z:0};
-  return {x:0,y:0,z:0};
-};
-
-const colorMaterials = {
-  white: new THREE.MeshStandardMaterial({color:0xf5f4f0,roughness:.28,metalness:.03}),
-  ceramic: new THREE.MeshStandardMaterial({color:0xe5e1db,roughness:.3}),
-  dark: new THREE.MeshStandardMaterial({color:0x535b64,metalness:.8,roughness:.22}),
-  water: new THREE.MeshStandardMaterial({color:0xc5d9df,roughness:.17,transparent:true,opacity:.72}),
-  accent: new THREE.MeshStandardMaterial({color:0xc59b64,metalness:.65,roughness:.31}),
-};
-
-function meshBox(w:number,h:number,d:number,material:THREE.Material,x=0,y=0,z=0) {
-  const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);
-  m.position.set(x,y,z);m.castShadow=true;m.receiveShadow=true;return m;
-}
-function buildFixture(entry:Fixture) {
-  const group=new THREE.Group();group.userData.fixtureId=entry.id;
-  const { white,ceramic,dark,water,accent }=colorMaterials;
-  if(entry.kind==="bathtub"){
-    const tub=meshBox(1.65,.58,.78,white,0,.31,0);
-    group.add(tub,meshBox(1.39,.025,.55,water,0,.605,0));
-    for(const x of [-.77,.77])for(const z of [-.34,.34])
-      group.add(meshBox(.08,.08,.08,ceramic,x,.66,z));
-    const drain=new THREE.Mesh(new THREE.CylinderGeometry(.033,.033,.01,20),dark);
-    drain.position.set(.45,.63,0);group.add(drain);
-  }else if(entry.kind==="basin"){
-    group.add(meshBox(.76,.11,.49,white,0,.04,0));
-    const bowl=new THREE.Mesh(new THREE.CylinderGeometry(.21,.17,.09,28),ceramic);
-    bowl.position.y=.1;group.add(bowl);
-    group.add(meshBox(.045,.27,.04,accent,.2,.27,-.1));
-    group.add(meshBox(.18,.045,.04,accent,.13,.39,-.1));
-    group.add(meshBox(.12,.67,.1,dark,0,-.36,0));
-  }else if(entry.kind==="faucet"){
-    const shaft=new THREE.Mesh(new THREE.CylinderGeometry(.043,.055,.48,18),dark);
-    shaft.position.y=.25;group.add(shaft);
-    const spout=meshBox(.31,.052,.055,dark,.13,.5,0);
-    group.add(spout);
-    const nozzle=new THREE.Mesh(new THREE.CylinderGeometry(.025,.025,.09,16),accent);
-    nozzle.position.set(.28,.44,0);group.add(nozzle);
-    group.add(meshBox(.09,.045,.09,accent,-.065,.24,0));
-  }else{
-    group.add(meshBox(.49,.26,.57,white,0,.23,0));
-    const seat=new THREE.Mesh(new THREE.TorusGeometry(.18,.055,8,32),ceramic);
-    seat.rotation.x=-Math.PI/2;seat.position.set(0,.41,.1);group.add(seat);
-    group.add(meshBox(.46,.5,.16,white,0,.5,-.29));
-  }
-  group.position.set(entry.x,entry.y,entry.z);
-  if(entry.surface==="back")group.rotation.y=0;
-  if(entry.surface==="left")group.rotation.y=Math.PI/2;
-  if(entry.surface==="right")group.rotation.y=-Math.PI/2;
-  return group;
-}
-
 function makeSurfaceTexture(src:string,repeatX:number,repeatY:number,onReady:(tx:THREE.Texture)=>void,onError?:()=>void) {
   const texture=new THREE.TextureLoader().load(src,(t)=>{
     t.colorSpace=THREE.SRGBColorSpace;t.wrapS=t.wrapT=THREE.RepeatWrapping;
@@ -142,7 +75,7 @@ export function Room3DStudio() {
   const mount=useRef<HTMLDivElement>(null);
   const sceneRef=useRef<{
     camera:THREE.PerspectiveCamera;controls:OrbitControls;renderer:THREE.WebGLRenderer;
-    scene:THREE.Scene;surfaces:Record<Surface,THREE.Mesh>;fixtures:THREE.Group[];lightingRig:LightRig;
+    scene:THREE.Scene;surfaces:Record<Surface,THREE.Mesh>;lightingRig:LightRig;
   }|null>(null);
   const lastCamera=useRef<{pos:THREE.Vector3;target:THREE.Vector3}|null>(null);
   const {products}=useStore();const {locale}=useI18n();
@@ -153,14 +86,10 @@ export function Room3DStudio() {
   const [lighting,setLighting]=useState<RoomLightSettings>({...NATURAL_LIGHT});
   const [surface,setSurface]=useState<Surface>("floor");
   const [view,setView]=useState<CameraPreset>("perspective");
-  const [placed,setPlaced]=useState<Fixture[]>([]);
-  const [selectedId,setSelectedId]=useState<string|null>(null);
-  const [pending,setPending]=useState<{kind:FixtureKind;productId?:string}|null>(null);
   const [tileChoice,setTileChoice]=useState<Record<Surface,string>>({floor:"",back:"",left:"",right:""});
   const [sizeChoice,setSizeChoice]=useState<Record<Surface,string>>({floor:"",back:"",left:"",right:""});
   const [notice,setNotice]=useState("");
 
-  const catalogue=useMemo(()=>products.filter(p=>FIXTURE_COLLS.has(p.collection)&&p.approved),[products]);
   const tiles=useMemo(()=>products.filter(p=>
     ["ceramics","porcelain","marble"].includes(p.collection) && !!materialSize(p) && !!materialFace(p)),[products]);
   const byId=useMemo(()=>new Map(products.map(p=>[p.id,p])),[products]);
@@ -247,62 +176,8 @@ export function Room3DStudio() {
       roof.rotation.x=Math.PI/2;roof.position.y=h;scene.add(roof);
     }
     if(roomMode==="kitchen")addKitchenPreview(scene,w,l,h);
-    const fixtureMeshes=placed.map(f=>buildFixture(f));
-    for(const group of fixtureMeshes)scene.add(group);
-    sceneRef.current={camera,controls,renderer,scene,surfaces:surfaceList,fixtures:fixtureMeshes,lightingRig};
-    const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
-    let dragging:string|null=null,downPoint={x:0,y:0};
-    const pointer=(e:PointerEvent)=>{
-      const box=renderer.domElement.getBoundingClientRect();
-      ndc.set(((e.clientX-box.left)/box.width)*2-1,-((e.clientY-box.top)/box.height)*2+1);
-      ray.setFromCamera(ndc,camera);
-    };
-    const surfaceHit=(e:PointerEvent)=>{
-      pointer(e);return ray.intersectObjects(Object.values(surfaceList),false)[0];
-    };
-    const pointerDown=(e:PointerEvent)=>{
-      pointer(e);downPoint={x:e.clientX,y:e.clientY};
-      const hits=ray.intersectObjects(fixtureMeshes,true);
-      if(hits.length){
-        let obj:THREE.Object3D|null=hits[0].object;
-        while(obj&&!obj.userData.fixtureId)obj=obj.parent;
-        if(obj?.userData.fixtureId){
-          dragging=String(obj.userData.fixtureId);
-          setSelectedId(dragging);
-          controls.enabled=false;
-          renderer.domElement.setPointerCapture(e.pointerId);
-          return;
-        }
-      }
-    };
-    const move=(e:PointerEvent)=>{
-      if(!dragging)return;
-      const item=placed.find(f=>f.id===dragging);if(!item)return;
-      const hit=surfaceHit(e);
-      if(!hit||hit.object.userData.surface!==item.surface)return;
-      const {point}=hit;
-      const x=clamp(point.x,-w/2+.3,w/2-.3);
-      const z=clamp(point.z,-l/2+.3,l/2-.3);
-      const y=clamp(point.y,.24,h-.25);
-      const group=fixtureMeshes.find(g=>g.userData.fixtureId===dragging);
-      if(group)group.position.set(item.surface==="left"?-w/2:item.surface==="right"?w/2:x,
-        item.surface==="floor"?0:y,item.surface==="back"?-l/2:z);
-    };
-    const up=(e:PointerEvent)=>{
-      if(dragging){
-        const found=fixtureMeshes.find(g=>g.userData.fixtureId===dragging);
-        if(found)setPlaced(arr=>arr.map(f=>f.id===dragging?{...f,x:found.position.x,y:found.position.y,z:found.position.z}:f));
-      }else if(Math.hypot(e.clientX-downPoint.x,e.clientY-downPoint.y)<6){
-        const hit=surfaceHit(e);
-        if(hit)setSurface(hit.object.userData.surface as Surface);
-      }
-      dragging=null;controls.enabled=true;
-      if(renderer.domElement.hasPointerCapture(e.pointerId))renderer.domElement.releasePointerCapture(e.pointerId);
-    };
-    renderer.domElement.addEventListener("pointerdown",pointerDown);
-    renderer.domElement.addEventListener("pointermove",move);
-    renderer.domElement.addEventListener("pointerup",up);
-    let raf=0;const draw=()=>{raf=requestAnimationFrame(draw);controls.update();renderer.render(scene,camera);};
+    sceneRef.current={camera,controls,renderer,scene,surfaces:surfaceList,lightingRig};
+remove drag fixtures replace floor/wall selection    let raf=0;const draw=()=>{raf=requestAnimationFrame(draw);controls.update();renderer.render(scene,camera);};
     draw();
     const resize=new ResizeObserver(()=>{
       const ww=Math.max(host.clientWidth,1),hh=Math.max(host.clientHeight,1);
@@ -311,8 +186,7 @@ export function Room3DStudio() {
     return()=>{
       cancelAnimationFrame(raf);resize.disconnect();
       lastCamera.current={pos:camera.position.clone(),target:controls.target.clone()};
-      renderer.domElement.removeEventListener("pointerdown",pointerDown);
-      renderer.domElement.removeEventListener("pointermove",move);
+      renderer.domElement.removeEventListener("pointerdown",down);
       renderer.domElement.removeEventListener("pointerup",up);
       controls.dispose();
       scene.traverse(o=>{
@@ -331,7 +205,7 @@ export function Room3DStudio() {
       releaseEnvironment();
       renderer.dispose();renderer.domElement.remove();sceneRef.current=null;
     };
-  },[dims.width,dims.length,dims.height,ceiling,placed,tileChoice.floor,tileChoice.back,tileChoice.left,tileChoice.right,sizeChoice.floor,sizeChoice.back,sizeChoice.left,sizeChoice.right,byId,roomMode,lighting.finish]);
+  },[dims.width,dims.length,dims.height,ceiling,tileChoice.floor,tileChoice.back,tileChoice.left,tileChoice.right,sizeChoice.floor,sizeChoice.back,sizeChoice.left,sizeChoice.right,byId,roomMode,lighting.finish]);
 
   // Sliders update the live light rig; they do not rebuild the WebGL scene.
   useEffect(()=>{
@@ -339,50 +213,12 @@ export function Room3DStudio() {
     if(state)updateLightRig(state.lightingRig,lighting,dims,state.renderer,state.scene);
   },[lighting,roomMode,dims.width,dims.length,dims.height]);
 
-  const place=(choice:{kind:FixtureKind;productId?:string},target:Surface=surface,at?:THREE.Vector3)=>{
-    const validSurface=choice.kind==="bathtub"||choice.kind==="toilet"?"floor":target;
-    const base=defaultPositions(choice.kind,validSurface,dims.width,dims.length);
-    const pos=at&&validSurface===target
-      ? {
-          x:clamp(at.x,-dims.width/2+.32,dims.width/2-.32),
-          y:validSurface==="floor"?0:clamp(at.y,.3,dims.height-.3),
-          z:clamp(at.z,-dims.length/2+.32,dims.length/2-.32),
-        }
-      :base;
-    if(validSurface==="back")pos.z=-dims.length/2;
-    if(validSurface==="left")pos.x=-dims.width/2;
-    if(validSurface==="right")pos.x=dims.width/2;
-    const id=newId();setPlaced(current=>[...current,{...pos,id,kind:choice.kind,productId:choice.productId,surface:validSurface}]);
-    setSelectedId(id);
-  };
-  const dropFixture=(event:React.DragEvent<HTMLDivElement>)=>{
-    event.preventDefault();
-    if(!pending)return;
-    const state=sceneRef.current;
-    if(!state){place(pending);setPending(null);return;}
-    const box=state.renderer.domElement.getBoundingClientRect();
-    const cursor=new THREE.Vector2(
-      (event.clientX-box.left)/box.width*2-1,
-      -(event.clientY-box.top)/box.height*2+1
-    );
-    const ray=new THREE.Raycaster();
-    ray.setFromCamera(cursor,state.camera);
-    const hit=ray.intersectObjects(Object.values(state.surfaces),false)[0];
-    if(hit){
-      const selectedSurface=hit.object.userData.surface as Surface;
-      setSurface(selectedSurface);
-      place(pending,selectedSurface,hit.point);
-    }else place(pending);
-    setPending(null);
-  };
-  const selected=placed.find(f=>f.id===selectedId);
-  const identify=(f:Fixture)=>f.productId?byId.get(f.productId)?.name[lang]??t.mock:t[f.kind];
   const serialized=()=>JSON.stringify({version:3,dimensions:dims,ceiling,tileChoice,sizeChoice,roomMode,lighting},null,2);
   const download=()=>{
     const blob=new Blob([serialized()],{type:"application/json"});const url=URL.createObjectURL(blob);
     const a=document.createElement("a");a.href=url;a.download="idea-room-3d-materials.json";a.click();URL.revokeObjectURL(url);
   };
-  const reset=()=>{setPlaced([]);setSelectedId(null);setTileChoice({floor:"",back:"",left:"",right:""});setSizeChoice({floor:"",back:"",left:"",right:""});setNotice("");};
+  const reset=()=>{setTileChoice({floor:"",back:"",left:"",right:""});setSizeChoice({floor:"",back:"",left:"",right:""});setNotice("");};
 
   return (
     <main className="idea-room3d" dir={lang==="ar"?"rtl":"ltr"}>
