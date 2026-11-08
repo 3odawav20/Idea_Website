@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, Layers, FileText, Sparkles, Users, MapPin, Play, FolderOpen, Download } from "lucide-react";
+import { ArrowRight, Layers, FileText, Users, MapPin, Play, FolderOpen, Download } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
