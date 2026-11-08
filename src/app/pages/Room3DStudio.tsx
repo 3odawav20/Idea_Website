@@ -177,7 +177,21 @@ export function Room3DStudio() {
     }
     if(roomMode==="kitchen")addKitchenPreview(scene,w,l,h);
     sceneRef.current={camera,controls,renderer,scene,surfaces:surfaceList,lightingRig};
-remove drag fixtures replace floor/wall selection    let raf=0;const draw=()=>{raf=requestAnimationFrame(draw);controls.update();renderer.render(scene,camera);};
+    // Click a surface to select it; orbiting remains handled by OrbitControls.
+    const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
+    let downPoint:{x:number;y:number}|null=null;
+    const down=(event:PointerEvent)=>{downPoint={x:event.clientX,y:event.clientY};};
+    const up=(event:PointerEvent)=>{
+      if(!downPoint||Math.hypot(event.clientX-downPoint.x,event.clientY-downPoint.y)>=6)return;
+      const box=renderer.domElement.getBoundingClientRect();
+      ndc.set((event.clientX-box.left)/box.width*2-1,-(event.clientY-box.top)/box.height*2+1);
+      ray.setFromCamera(ndc,camera);
+      const hit=ray.intersectObjects(Object.values(surfaceList),false)[0];
+      if(hit)setSurface(hit.object.userData.surface as Surface);
+    };
+    renderer.domElement.addEventListener("pointerdown",down);
+    renderer.domElement.addEventListener("pointerup",up);
+    let raf=0;const draw=()=>{raf=requestAnimationFrame(draw);controls.update();renderer.render(scene,camera);};
     draw();
     const resize=new ResizeObserver(()=>{
       const ww=Math.max(host.clientWidth,1),hh=Math.max(host.clientHeight,1);
@@ -193,7 +207,7 @@ remove drag fixtures replace floor/wall selection    let raf=0;const draw=()=>{r
         if(o instanceof THREE.Mesh || o instanceof THREE.LineSegments){
           o.geometry.dispose();
           const mats=Array.isArray(o.material)?o.material:[o.material];
-          for(const m of mats)if(m&&!Object.values(colorMaterials).includes(m as THREE.MeshStandardMaterial)){
+          for(const m of mats)if(m){
             const mm=m as THREE.MeshStandardMaterial;
             if(mm.map)mm.map.dispose();
             if(mm.normalMap)mm.normalMap.dispose();
