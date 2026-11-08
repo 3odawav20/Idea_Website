@@ -398,7 +398,7 @@ export function Room3DStudio() {
   return (
     <main className="idea-room3d" dir={lang==="ar"?"rtl":"ltr"}>
       <header className="idea-room3d-heading">
-        <Link to="/room-designer"><ArrowLeft size={17}/>{t.back}</Link>
+        <Link to="/"><ArrowLeft size={17}/>{lang === "ar" ? "الرئيسية" : lang === "fr" ? "Accueil" : "Home"}</Link>
         <div><span>IDEA / 3D SPACE STUDIO</span><h1>{t.title}</h1><p>{t.sub}</p></div>
       </header>
       <div className="idea-room3d-workspace">
