@@ -261,7 +261,7 @@ export function AccountRoomProjects() {
     <>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
         <div className="idea-display" style={{ color: "var(--idea-text)" }}>Saved projects</div>
-        <Link to="/room-designer/new"><Button size="sm"><HomeIcon size={14} /> New project</Button></Link>
+        <Link to="/room-designer/3d"><Button size="sm"><HomeIcon size={14} /> 3D Studio</Button></Link>
       </div>
       {!projects.length ? <EmptyState title="No saved projects" sub="Design a room and save it here." /> : (
         <div style={{ display: "grid", gap: 10 }}>
@@ -270,7 +270,7 @@ export function AccountRoomProjects() {
               <div><div className="idea-display" style={{ color: "var(--idea-text)" }}>{p.name}</div>
                 <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{p.surfaces.length} surfaces · {new Date(p.createdAt).toLocaleDateString()}</div></div>
               <div style={{ display: "flex", gap: 8 }}>
-                <Link to={`/room-designer/project/${p.id}`}><Button size="sm" variant="outline">Open</Button></Link>
+                <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }} title="The previous 2D editor has been retired; your saved project data remains available for future migration.">Legacy layout saved</span>
                 <Button size="sm" variant="ghost" onClick={() => api.deleteRoomProject(p.id)}>Delete</Button>
               </div>
             </Panel>
