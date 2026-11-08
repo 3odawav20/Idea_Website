@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-03T01:04:18+00:00",
+  "generated_at": "2026-11-03T03:44:07+00:00",
   "registry_legacy_embedded_art": 475,
   "registry_legacy_extracted_records": 691,
   "sources_total": 40,
@@ -11,10 +11,10 @@
     "not_crawlable": 2,
     "out_of_scope_entrypoint": 7
   },
-  "quarantined_records": 364,
-  "quarantine_reason_events": 1405,
-  "technical_image_checks": 18,
-  "passed_technical_image_checks": 16,
+  "quarantined_records": 643,
+  "quarantine_reason_events": 2415,
+  "technical_image_checks": 8,
+  "passed_technical_image_checks": 7,
   "potential_duplicate_keys_flagged": 0,
   "new_verified": 0,
   "new_staging_live": 0,

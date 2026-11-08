@@ -1,5 +1,4 @@
 import { useRef, useState, useCallback, useEffect } from "react";
-import { Link } from "react-router";
 import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { useI18n } from "../i18n/i18n";
@@ -173,8 +172,7 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
           cursor: "pointer",
         }}
       >
-        <Link
-          to={`/tile-showroom/${look.id}`}
+        <div
           draggable={false}
           style={{ display: "block", height: "100%", textDecoration: "none", color: "inherit" }}
           onClick={(e) => {
@@ -362,7 +360,7 @@ function LookCard({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number }
               {look.sub[locale as Locale]}
             </p>
           </div>
-        </Link>
+        </div>
       </div>
     </motion.div>
   );

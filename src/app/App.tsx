@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router";
+import { lazy, Suspense } from "react";
 import "../styles/index.css";
 import { I18nProvider } from "./i18n/i18n";
 import { ThemeProvider } from "./theme/theme";
@@ -28,9 +29,13 @@ import {
 import { SubscriptionsHome, SubscriptionsCustomers, SubscriptionsBusinesses, AccountSubscription } from "./pages/Subscriptions";
 import { AdminLayout, AdminOverview, AdminSubscriptions, AdminPayments } from "./pages/Admin";
 import { AdminStudioLayout, AdminStudioHome, AdminProducts, AdminQuality, AdminOperations, AdminSettings, AdminVisualizer } from "./pages/AdminStudio";
+import { AdminPromotions } from "./pages/AdminPromotions";
 import { Checkout } from "./pages/Checkout";
 import { RoomDesignerHome, PhotoGuide, RoomDesignerEditor } from "./pages/RoomDesigner";
-import { TileShowroom } from "./pages/TileShowroom";
+const Room3DStudio = lazy(() => import("./pages/Room3DStudio").then(module => ({ default: module.Room3DStudio })));
+import { CompanyControlCenter, CompanyApplication } from "./pages/CompanyControlCenter";
+import { CompanyRevenueReport, AdminAnnouncementEditor, BusinessAdvertising } from "./pages/BusinessGrowth";
+import { AdminCodeLookup } from "./pages/AdminCodeLookup";
 import { Resources } from "./pages/Resources";
 import { SurfaceStyles } from "./pages/SurfaceStyles";
 
@@ -52,7 +57,7 @@ export default function App() {
     <I18nProvider>
       <BackendProvider>
       <StoreProvider>
-        <BrowserRouter>
+        <BrowserRouter basename={window.location.pathname.startsWith("/idea-next/") ? "/idea-next" : undefined}>
           <Routes>
             <Route element={<Layout />}>
               {/* Storefront */}
@@ -64,8 +69,6 @@ export default function App() {
               <Route path="/favorites" element={<Favorites />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/ai-room-visualizer" element={<AiVisualizerStudio />} />
-              <Route path="/tile-showroom/:lookId" element={<TileShowroom />} />
-              <Route path="/tile-showroom" element={<TileShowroom />} />
               <Route path="/surface-styles" element={<SurfaceStyles />} />
 
               {["about", "showrooms", "downloads", "projects", "journal", "videos", "glossary", "contact", "updates"].map(path => <Route key={path} path={`/${path}`} element={<Resources />} />)}
@@ -81,6 +84,7 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/register/customer" element={<RegisterCustomer />} />
               <Route path="/register/business" element={<RegisterBusiness />} />
+              <Route path="/business/apply" element={<CompanyApplication />} />
               <Route path="/onboarding/role" element={<RoleSelect />} />
 
               {/* Subscriptions + checkout */}
@@ -93,6 +97,7 @@ export default function App() {
               <Route path="/room-designer" element={<RoomDesignerHome />} />
               <Route path="/room-designer/photo-guide" element={<PhotoGuide />} />
               <Route path="/room-designer/new" element={<RoomDesignerEditor />} />
+              <Route path="/room-designer/3d" element={<Suspense fallback={<div style={{padding:32}}>Loading 3D studio…</div>}><Room3DStudio /></Suspense>} />
               <Route path="/room-designer/project/:projectId" element={<RoomDesignerEditor />} />
 
               {/* Customer account */}
@@ -118,7 +123,7 @@ export default function App() {
 
               {/* Business */}
               <Route element={<ProtectedRoute roles={["business"]} />}>
-              <Route path="/business/onboarding" element={<BusinessOnboarding />} />
+              <Route path="/business/onboarding" element={<Navigate to="/business/apply" replace />} />
               <Route path="/business" element={<BusinessLayout />}>
                 <Route index element={<BusinessOverview />} />
                 <Route path="verification" element={<BusinessVerification />} />
@@ -128,7 +133,9 @@ export default function App() {
                 <Route path="offers" element={<BusinessOffers />} />
                 <Route path="offers/:offerId" element={<BusinessOffers />} />
                 <Route path="orders" element={<BusinessOrders />} />
-                <Route path="products" element={<BusinessProducts />} />
+                <Route path="products" element={<CompanyControlCenter mode="supplier" />} />
+                <Route path="sales" element={<CompanyRevenueReport mode="supplier" />} />
+                <Route path="ads" element={<BusinessAdvertising mode="supplier" />} />
                 <Route path="subscription" element={<BusinessSubscriptionPage />} />
                 <Route path="reports" element={<BusinessReports />} />
                 <Route path="team" element={<BusinessReports />} />
@@ -141,6 +148,12 @@ export default function App() {
               <Route path="/admin" element={<AdminStudioLayout />}>
                 <Route index element={<AdminStudioHome />} />
                 <Route path="catalogue" element={<AdminProducts />} />
+                <Route path="companies" element={<CompanyControlCenter mode="admin" />} />
+                <Route path="sales" element={<CompanyRevenueReport mode="admin" />} />
+                <Route path="search" element={<AdminCodeLookup />} />
+                <Route path="announcements" element={<AdminAnnouncementEditor />} />
+                <Route path="advertising" element={<BusinessAdvertising mode="admin" />} />
+                <Route path="promotions" element={<AdminPromotions />} />
                 <Route path="quality" element={<AdminQuality />} />
                 <Route path="operations" element={<AdminOperations />} />
                 <Route path="visualizer" element={<AdminVisualizer />} />

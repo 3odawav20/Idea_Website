@@ -40,5 +40,5 @@ test("product photos preserve source colour and full framing on mobile", () => {
   assert.match(css, /\.idea-vivid-image\s*\{\s*filter:\s*none;/);
   assert.match(card, /objectFit:\s*"contain"/);
   assert.match(detail, /objectFit:\s*"contain"/);
-  assert.match(detail, /useEffect\(\(\) => \{ setActiveImg\(0\); setFailedImages\(\[\]\); \}, \[slug\]\)/);
+  assert.match(detail, /useEffect\(\(\) => \{\s*setActiveImg\(0\);\s*setFailedImages\(\[\]\);[^}]*setLightboxOpen\(false\);[\s\S]*?\},\s*\[slug\]\)/);
 });

@@ -9,7 +9,7 @@ import { Panel, Field, inputStyle, EmptyState } from "../components/dash";
 
 /* ── Landing ─────────────────────────────────────────────────────────────── */
 export function RoomDesignerHome() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container style={{ maxWidth: 960 }}>
@@ -28,7 +28,8 @@ export function RoomDesignerHome() {
             <Link to="/room-designer/new?mode=measured"><Button variant="outline" style={{ marginTop: 12 }}>Create a room</Button></Link>
           </Panel>
         </div>
-        <div style={{ marginTop: "var(--idea-space-5)", display: "flex", gap: 12 }}>
+        <div style={{ marginTop: "var(--idea-space-5)", display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <Link to="/room-designer/3d"><Button>{locale === "ar" ? "غرفة ثلاثية الأبعاد" : locale === "fr" ? "Pièce interactive 3D" : "Interactive 3D Room"}</Button></Link>
           <Link to="/room-designer/photo-guide"><Button variant="ghost"><Camera size={16} /> {t("room.photoGuide")}</Button></Link>
         </div>
       </Container>

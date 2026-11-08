@@ -5,6 +5,8 @@ import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
+import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
+import "./ProductCard.css";
 
 export function ProductCard({ product }: { product: Product }) {
   const { t, locale } = useI18n();
@@ -12,21 +14,26 @@ export function ProductCard({ product }: { product: Product }) {
   const fav = isFavorite(product.id);
   const inCompare = compare.includes(product.id);
   const [imageFailed, setImageFailed] = useState(false);
+  const maker = productMaker(product, locale);
+  const ideaCode = ideaInternalCode(product);
+  const supplierCode = sourceSku(product);
+  const surface = ["ceramics", "porcelain", "marble"].includes(product.collection);
+  const displayImage = surface ? product.source?.original?.tiles?.[0] : product.image;
   const unit = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble" ? "sqm" : "pieces";
 
   return (
-    <div className="idea-product-card" style={{
+    <div className="idea-product-card idea-material-sheet" style={{
       background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
       overflow: "hidden", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
     }}
       onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}
       onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
     >
-      <Link to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
-        {imageFailed ? (
+      <Link className="idea-material-photo" to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
+        {imageFailed || !displayImage ? (
           <span className="idea-image-unavailable">Image unavailable</span>
         ) : (
-          <img className="idea-product-img idea-vivid-image" src={product.image} alt={product.name[locale]} loading="lazy" decoding="async" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center", background: "var(--idea-surface-2)", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
+          <img className="idea-product-img idea-vivid-image" src={displayImage} alt={product.name[locale]} loading="lazy" decoding="async" onError={() => setImageFailed(true)} style={{ width: "100%", height: "100%", objectFit: "contain", objectPosition: "center", background: "var(--idea-surface-2)", transition: "transform .6s cubic-bezier(.22,1,.36,1)" }} />
         )}
         <div style={{ position: "absolute", top: 12, insetInlineStart: 12, display: "flex", gap: 6 }}>
           {product.type && <span style={badgeStyle}>{product.type}</span>}
@@ -42,12 +49,17 @@ export function ProductCard({ product }: { product: Product }) {
       </Link>
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)" }}>
-          {product.manufacturer || t("value.notProvided")}
+        <div className="idea-material-maker" title={maker.label}>
+          <span>{maker.verified ? maker.value : product.brand}</span>
+          <small>{maker.verified ? maker.label : (locale === "ar" ? "العلامة التجارية · المصنع قيد التوثيق" : locale === "fr" ? "Marque · fabricant à vérifier" : "Brand · maker unverified")}</small>
         </div>
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {product.name[locale]}
         </Link>
+        <div className="idea-material-reference" title={locale === "ar" ? "الكود الداخلي لمنتج IDEA" : "Unique IDEA internal reference"}>
+          <span>{locale === "ar" ? "كود IDEA" : "IDEA REF"}</span><code dir="ltr">{ideaCode}</code>
+        </div>
+        {supplierCode && <div className="idea-material-supplier-sku"><span>{locale === "ar" ? "كود المورد" : locale === "fr" ? "Réf. fournisseur" : "Supplier SKU"}</span><b dir="ltr">{supplierCode}</b></div>}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 2 }}>
           {product.sizes[0] && <Tag>{product.sizes[0].label}</Tag>}
           {product.finish && <Tag>{product.finish}</Tag>}

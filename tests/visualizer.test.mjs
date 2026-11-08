@@ -13,6 +13,7 @@ test("one published studio route receives stable catalogue product IDs", () => {
   assert.match(page, /searchParams\.get\("product"\)/);
   assert.match(cards, /encodeURIComponent\(product\.id\)/);
   assert.match(detail, /encodeURIComponent\(product\.id\)/);
+  assert.match(page, /to=\{`\/product\/\$\{product\.slug\}`\}/);
 });
 test("frontend uses real asynchronous jobs and never manufactures a preview", () => {
   assert.match(page, /jobId/);

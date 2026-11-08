@@ -4,7 +4,7 @@ import {
   Activity, ArrowRight, ArrowUpRight, BadgeCheck, BarChart3, Boxes, Check,
   ChevronRight, CircleAlert, ClipboardCheck, Database, Download, ExternalLink,
   Eye, EyeOff, Filter, Globe2, Image as ImageIcon, Layers3, LayoutDashboard,
-  LockKeyhole, Menu, Package, RefreshCw, Search, Settings2, ShieldCheck,
+  LockKeyhole, Menu, Megaphone, Package, RefreshCw, Search, Settings2, ShieldCheck,
   SlidersHorizontal, Sparkles, Store, TrendingUp, Truck, X,
 } from "lucide-react";
 import { useBackend } from "../backend/db";
@@ -18,8 +18,8 @@ import "./AdminStudio.css";
 
 type Material = "ceramics" | "porcelain" | "tiles" | "marble";
 const MATERIALS: Material[] = ["ceramics", "porcelain", "tiles", "marble"];
-const MIN_PER_MATERIAL=1500;
 const TARGET_PER_MATERIAL=2000;
+const MIN_PER_MATERIAL=TARGET_PER_MATERIAL;
 const format=(n:number)=>new Intl.NumberFormat("en-US").format(n);
 const materialName=(s:string)=>s==="marble"?"Natural marble":s.charAt(0).toUpperCase()+s.slice(1);
 const styles={};
@@ -65,7 +65,13 @@ export function AdminStudioLayout(){
  if(!session||session.role!=="admin")return <div className="ids-denied"><LockKeyhole size={30}/><h2>Restricted workspace</h2><p>This area requires an administrator role verified by the authentication server.</p><Link to="/login">Sign in <ArrowRight size={16}/></Link></div>;
  const links=[
   {to:"/admin",label:"Overview",icon:LayoutDashboard,end:true},
+  {to:"/admin/companies",label:"الشركات والبراندات",icon:Building2,end:false},
+  {to:"/admin/sales",label:"تحليل المبيعات",icon:BarChart3,end:false},
+  {to:"/admin/search",label:"البحث بكود المنتج",icon:Search,end:false},
+  {to:"/admin/announcements",label:"الشريط الإعلاني",icon:Megaphone,end:false},
+  {to:"/admin/advertising",label:"طلبات الإعلانات",icon:TrendingUp,end:false},
   {to:"/admin/catalogue",label:"Products",icon:Package,end:false},
+  {to:"/admin/promotions",label:"Private offers",icon:TrendingUp,end:false},
   {to:"/admin/quality",label:"Quality control",icon:ShieldCheck,end:false},
   {to:"/admin/operations",label:"Operations",icon:Truck,end:false},
   {to:"/admin/visualizer",label:"AI visualizer",icon:Sparkles,end:false},
@@ -80,7 +86,7 @@ export function AdminStudioLayout(){
       <div className="ids-nav-label">MANAGEMENT</div>
       <nav className="ids-nav">{links.map(n=><NavLink key={n.to} to={n.to} end={n.end} onClick={()=>setMenu(false)} className={({isActive})=>"ids-navlink"+(isActive?" active":"")}><n.icon size={18}/><span>{n.label}</span></NavLink>)}</nav>
       <div className="ids-sidebar-foot">
-        <div className="ids-quality-promo"><span><Sparkles size={16}/> QUALITY STANDARD</span><strong>Built for precision.</strong><p>Minimum 1,500 individually verified SKUs per core material.</p><Link to="/admin/quality" onClick={()=>setMenu(false)}>View quality report <ArrowRight size={14}/></Link></div>
+        <div className="ids-quality-promo"><span><Sparkles size={16}/> QUALITY STANDARD</span><strong>Built for precision.</strong><p>Target: 2,000 individually verified products per core material.</p><Link to="/admin/quality" onClick={()=>setMenu(false)}>View quality report <ArrowRight size={14}/></Link></div>
         <Link to="/" className="ids-back-store"><ExternalLink size={16}/> View storefront</Link>
         <div className="ids-user"><span className="ids-avatar">{(session.name||"A")[0].toUpperCase()}</span><span><b>{session.name}</b><small>Administrator</small></span><BadgeCheck size={18}/></div>
       </div>
@@ -222,8 +228,8 @@ export function AdminQuality(){
  const filtered=flagged.filter(x=>!needle||x.issue.toLowerCase().includes(needle.toLowerCase())||x.p.name.en.toLowerCase().includes(needle.toLowerCase()));
  return <>
  <Heading kicker="DATA INTEGRITY" title="Quality command" sub="Measured from loaded product records. This screen does not claim a completed visual inspection or supplier-website validation." action={<button className="ids-action-outline" onClick={()=>downloadCSV([["ID","Product","Category","Issue","Source"],...filtered.map(x=>[x.p.id,x.p.name.en,x.p.collection,x.issue,sourceLink(x.p)])],"idea-qa-findings.csv")}><Download size={15}/> Export issues</button>}/>
- <div className="ids-notice"><ShieldCheck size={18}/><span>Release policy: 1,500 <b>individually verified</b> unique products per category, 6,000 total minimum. The numbers below are storefront counts, <b>not</b> verified approvals.</span></div>
- <div className="ids-stats ids-stats-three"><Stat icon={Package} title="Loaded products" value={products.length} sub="Storefront records" accent/><Stat icon={CircleAlert} title="Flagged fields" value={flagged.length} sub="Automatic schema checks"/><Stat icon={BadgeCheck} title="Approved target" value="6,000" sub="4 × 1,500 verified products"/></div>
+ <div className="ids-notice"><ShieldCheck size={18}/><span>Release policy: 2,000 <b>individually verified</b> unique products per category, 8,000 total target. The numbers below are storefront counts, <b>not</b> verified approvals.</span></div>
+ <div className="ids-stats ids-stats-three"><Stat icon={Package} title="Loaded products" value={products.length} sub="Storefront records" accent/><Stat icon={CircleAlert} title="Flagged fields" value={flagged.length} sub="Automatic schema checks"/><Stat icon={BadgeCheck} title="Approved target" value="8,000" sub="4 × 2,000 verified products"/></div>
  <div className="ids-dashboard-grid">
   <div className="ids-panel"><div className="ids-panel-head"><div><span className="ids-kicker">THRESHOLD TRACKER</span><h3>Four material gates</h3></div></div>
   {MATERIALS.map((m,i)=><div className="ids-quality-row" key={m}><span className={"ids-material-icon m"+i}><Layers3 size={18}/></span><div><div><strong>{materialName(m)}</strong><small>{counts[m]} loaded / {MIN_PER_MATERIAL} required</small></div><div className="ids-progress"><span style={{width:Math.min(100,counts[m]*100/MIN_PER_MATERIAL)+"%"}}/></div></div><Pill ok={false}>{counts[m]>=MIN_PER_MATERIAL?"Verify records":"Short "+format(MIN_PER_MATERIAL-counts[m])}</Pill></div>)}

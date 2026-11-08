@@ -147,3 +147,5 @@
 
 # IDEA storefront assets must be available as ordinary Git blobs for static hosting.
 public/images/** -filter -diff -merge -text
+public/media/** -filter -diff -merge -text
+public/fonts/** -filter -diff -merge -text

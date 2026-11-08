@@ -3,7 +3,9 @@ import { ArrowRight, Layers, FileText, Sparkles, Users, MapPin, Play, FolderOpen
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
-import { HeroCarousel } from "../components/HeroCarousel";
+import { HeroBrandFilm } from "../components/HeroBrandFilm";
+import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
+import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
@@ -28,7 +30,8 @@ export function Home() {
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   return (
     <div className="idea-home-editorial">
-      <HeroCarousel />
+      <HeroBrandFilm />
+      <SponsoredHeroVideo />
       <div className="idea-usp">{[
         {icon:Layers,to:"/products",title:text("Premium surface inspiration","إلهام بخامات فاخرة","Inspiration haut de gamme"),sub:text("Explore materials & finishes","اكتشف الخامات والتشطيبات","Matières & finitions")},
         {icon:FileText,to:"/request-quote/new",title:text("Private quote requests","طلبات عروض أسعار خاصة","Devis privés"),sub:text("Specify your project needs","حدد احتياجات مشروعك","Précisez votre projet")},
@@ -37,6 +40,7 @@ export function Home() {
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={22}/><span>{item.title}<small>{item.sub}</small></span></Link>)}</div>
       <HeroSearchPanel />
       <FeaturedCollectionStrip />
+      <SponsoredCollectionCards />
       <section className="idea-home-section">
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
         {EDITORIALS.map((item, index) => (
@@ -50,7 +54,6 @@ export function Home() {
           </article>
         ))}
       </section>
-      <section className="idea-home-section idea-home-look-section"><h2 className="idea-home-centered-title">{text("Search by look", "تصفح حسب شكل الخامة", "Explorer par aspect")}</h2><div className="idea-home-looks">{LOOKS.map(look=><Link key={look.id} to={`/tile-showroom/${look.id}`}><img src={`/images/featured/${look.image}.webp`} alt="" width={240} height={240} loading="lazy"/><span>{look.label[locale]}</span></Link>)}<Link className="idea-home-look-all" to="/surface-styles" aria-label={text("Explore all surface styles", "اكتشف كل أنماط الخامات", "Explorer tous les styles")}><img src="/images/featured/tiles.webp" alt="" width={240} height={240} loading="lazy"/><span>{text("All styles", "كل الأنماط", "Tous les styles")}</span></Link></div></section>
       <SurfaceMaterialStrip />
       <section className="idea-home-room">
         <img src="/images/featured/wood.webp" alt={text("Warm wood-effect floor in a living room", "أرضية بتأثير خشبي في غرفة معيشة", "Sol effet bois dans un salon")} loading="lazy" width={1600} height={900} />

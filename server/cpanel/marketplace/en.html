@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#151515"><meta name="description" content="IDEA company control center, product codes, catalogue, private pricing and advertising requests.">
+<title>IDEA | Company and Product Center</title>
+<link rel="stylesheet" href="./marketplace.css">
+<script src="./marketplace.en.js" defer></script>
+<script>
+try { if(localStorage.getItem("idea-language")==="ar")location.replace("/marketplace/"+location.hash); }catch(_){}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="shell">
+<aside class="rail">
+ <a href="/" class="brand"><span class="brand-icon">I</span><span>IDEA <small>Company management</small></span></a>
+ <div class="rail-caption">Companies and accounts</div>
+ <div id="company-list" class="company-list"><p class="dim">Loading companies...</p></div>
+ <div class="rail-caption">Control panel</div>
+ <nav class="sections" aria-label="Control sections">
+  <button data-page="overview" class="selected">◉ <span>Overview</span></button>
+  <button data-page="products">▦ <span>Products and brands</span></button>
+  <button data-page="search">⌕ <span>Search by code</span></button>
+  <button data-page="sales">▥ <span>Monthly sales</span></button>
+  <button data-page="staff">♙ <span>Company managers</span></button>
+  <button data-page="ticker">☷ <span>Announcement bar</span></button>
+  <button data-page="ads">◈ <span>Advertising packages</span></button>
+ </nav>
+ <div class="rail-foot"><a href="/ai-room-visualizer">IDEA AI Image Studio</a><a href="/products">Ceramic catalogue</a></div>
+</aside>
+<div class="work">
+ <header class="topbar">
+   <div><span class="eyebrow">IDEA / Company Intelligence</span><h1 id="page-title">Company Management</h1><p id="page-subtitle">Each company, its products and private prices — separate permissions and real data</p></div>
+   <div class="header-tools"><select id="lang" aria-label="Language"><option value="ar">Arabic</option><option value="en">English</option></select><button id="theme" type="button" title="Switch light and dark modes">◐</button><a href="/" class="back">Website</a></div>
+ </header>
+ <div id="alert" class="alert" role="status" aria-live="polite" hidden></div>
+ <main id="main">
+  <section id="page-overview" class="page">
+   <div id="identity" class="panel"><p class="dim">Checking your account session...</p></div>
+   <div class="stat-grid">
+    <div class="stat"><small>Registered companies</small><strong id="count-companies">—</strong></div>
+    <div class="stat"><small>Selected company products</small><strong id="count-products">—</strong></div>
+    <div class="stat"><small>Approved products</small><strong id="count-approved">—</strong></div>
+    <div class="stat"><small>Confirmed paid orders</small><strong id="count-sales">—</strong></div>
+   </div>
+   <div class="cols">
+    <article class="panel">
+     <h2>Selected company</h2><div id="company-detail" class="dim">Choose a company from the list</div>
+     <div id="admin-suspend" hidden><p class="warning">Suspending a company hides its products. Reinstatement requires document review.</p><button class="danger" id="suspend-company">Suspend company</button></div>
+    </article>
+    <article class="panel">
+     <h2>Quick actions</h2><p class="dim">Company and product information is stored in MySQL. No fabricated sales are displayed.</p>
+     <div class="quick"><button data-go="products">Add product</button><button data-go="search">Search by product code</button><button data-go="ads">Advertising requests</button></div>
+    </article>
+   </div>
+  </section>
+  <section id="page-products" class="page" hidden>
+    <div class="head-row"><div><h2>Products by company and brand</h2><p class="dim">Tile dimensions in centimetres are also saved in millimetres. Prices are private to administrators and the company.</p></div><button id="product-add">+ New product</button></div>
+    <div id="product-list" class="product-list"></div>
+    <form id="product-form" class="panel" hidden>
+      <h3 id="product-form-title">Add or edit tile</h3><input type="hidden" name="id">
+      <div class="form-grid">
+       <label>Product code / SKU <input name="sku" maxlength="100" required placeholder="Example: CER-60120-01"></label>
+       <label>Product name <input name="title" maxlength="190" required></label>
+       <label>Brand <input name="brand" maxlength="190" required></label>
+       <label>Manufacturer <input name="manufacturer" maxlength="190" required></label>
+       <label>Material <select name="category"><option value="ceramic">Ceramic</option><option value="porcelain">Porcelain</option><option value="marble">Marble</option><option value="granite">Granite</option><option value="tile">Tile</option></select></label>
+       <label>Finish <input name="finish" maxlength="100" placeholder="Matte / Glossy"></label>
+       <label>Actual width (cm) <input name="width_cm" type="number" min="5" max="320" step="0.1" required></label>
+       <label>Actual length (cm) <input name="height_cm" type="number" min="5" max="320" step="0.1" required></label>
+       <label>Colour <input name="color" maxlength="100"></label>
+       <label>Private price (EGP) <input name="price_egp" type="number" min="0" max="1000000000" step="0.01" placeholder="Optional"></label>
+       <label class="span2">URL of tile photo hosted on IDEA <input name="image_url" maxlength="500" placeholder="/uploads/company-products/..."></label>
+       <label class="span2">Description <textarea name="description" rows="2" maxlength="2000"></textarea></label>
+      </div>
+      <p class="warning">A new product remains a draft until an IDEA administrator approves the photos, dimensions and details. Unknown sizes are not accepted.</p>
+      <div class="actions"><button type="submit">Save draft</button><button type="button" class="secondary" id="product-cancel">Cancel</button></div>
+    </form>
+  </section>
+  <section id="page-search" class="page" hidden>
+    <article class="panel search-panel">
+     <h2>Search by tile code, company or brand</h2>
+     <p class="dim">Verified company catalogue results with suggestions based on size, material and finish.</p>
+     <form id="search-form" class="searchbox"><input id="search-input" required maxlength="100" placeholder="Product code / Brand / Manufacturer"><button type="submit">Search</button></form>
+     <div id="search-results" class="product-list"></div>
+     <h3>Similar products</h3><div id="similar-results" class="product-list"></div>
+    </article>
+  </section>
+  <section id="page-sales" class="page" hidden>
+    <article class="panel">
+     <div class="head-row"><h2>Confirmed monthly sales</h2><label>Month <input id="sales-month" type="month"></label></div>
+     <p class="warning">Only orders with confirmed captured payments count; unpaid orders and quotations are excluded.</p>
+     <div id="sales-report" class="table-wrap"></div>
+    </article>
+  </section>
+  <section id="page-staff" class="page" hidden>
+    <article class="panel">
+     <h2>Company managers and permissions</h2><p class="dim">Only a company owner or platform administrator can appoint or revoke an existing manager. Nobody can grant themselves platform administrator rights.</p>
+     <div id="staff-list"></div>
+     <form id="staff-form" class="form-inline"><label>Registered account email <input type="email" name="email" required></label><label>Permission <select name="active"><option value="true">Activate company manager</option><option value="false">Revoke permission</option></select></label><button type="submit">Save</button></form>
+    </article>
+  </section>
+  <section id="page-ticker" class="page" hidden>
+    <article class="panel"><h2>Sticky announcement bar</h2><p class="dim">Messages appear at the top of the site in the visitor's selected language, and only IDEA administrators can edit them.</p>
+     <div id="ticker-list"></div>
+     <form id="ticker-form">
+      <label>Arabic message <textarea name="text_ar" maxlength="500" required rows="2"></textarea></label>
+      <label>Message in English <textarea name="text_en" maxlength="500" required rows="2"></textarea></label>
+      <label>Internal site link <input name="link_path" placeholder="/products" maxlength="300"></label>
+      <label>Status <select name="state"><option value="draft">Draft</option><option value="published">Publish on website</option><option value="archived">Archive</option></select></label>
+      <button type="submit">Save message</button>
+     </form>
+    </article>
+  </section>
+  <section id="page-ads" class="page" hidden>
+   <div class="head-row"><div><h2>IDEA advertising and packages</h2><p class="dim">Administrators control IDEA rates. Google and Meta campaigns require separate variable budgets and approval.</p></div></div>
+   <div id="package-grid" class="package-grid"></div>
+   <article class="panel">
+     <h3>Company advertising request</h3><p class="warning">Before producing or uploading a hero video, contact the team to confirm dimensions and quality. Required: MP4 H.264, 1920×1080, 16:9, 6–20 seconds, maximum 40 MB. Uploads require review.</p>
+     <form id="ad-form" class="form-grid">
+      <label>Package <select name="package_id" id="ad-package"></select></label>
+      <label>Media type <select name="media_kind"><option value="image">Image</option><option value="video">Video</option></select></label>
+      <label class="span2">Advertisement title <input name="title" maxlength="160" required></label>
+      <label class="span2">Details or contact request <textarea name="message" rows="3" maxlength="4000" required></textarea></label>
+      <div class="span2"><button type="submit">Submit request to administrators</button></div>
+     </form>
+     <h3>Campaign requests</h3><div id="ad-requests"></div>
+   </article>
+  </section>
+ </main>
+ <footer>IDEA © 2026 · Account and company data is protected by access controls · <a href="/">Back to website</a></footer>
+</div>
+</div>
+</body>
+</html>

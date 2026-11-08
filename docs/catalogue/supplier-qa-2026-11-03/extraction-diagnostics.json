@@ -1,32 +1,56 @@
 [
   {
+    "source_id": "source-04",
+    "status": "quarantined",
+    "extracted": 53,
+    "material_tally": {
+      "porcelain": 30,
+      "ceramics": 23
+    },
+    "photo_checks": 2,
+    "errors": []
+  },
+  {
     "source_id": "source-05",
     "status": "quarantined",
-    "extracted": 90,
+    "extracted": 135,
     "material_tally": {
-      "null": 90
+      "null": 135
     },
-    "photo_checks": 6,
+    "photo_checks": 2,
+    "errors": []
+  },
+  {
+    "source_id": "source-06",
+    "status": "quarantined",
+    "extracted": 14,
+    "material_tally": {
+      "porcelain": 9,
+      "ceramics": 5
+    },
+    "photo_checks": 0,
     "errors": []
   },
   {
     "source_id": "source-08",
     "status": "quarantined",
-    "extracted": 223,
+    "extracted": 379,
     "material_tally": {
-      "ceramics": 223
+      "ceramics": 223,
+      "porcelain": 156
     },
-    "photo_checks": 4,
+    "photo_checks": 1,
     "errors": []
   },
   {
     "source_id": "source-22",
     "status": "quarantined",
-    "extracted": 51,
+    "extracted": 62,
     "material_tally": {
-      "porcelain": 51
+      "porcelain": 60,
+      "ceramics": 2
     },
-    "photo_checks": 6,
+    "photo_checks": 2,
     "errors": []
   }
 ]

@@ -27,8 +27,7 @@ function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number 
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1], delay: idx * 0.07 }}
     >
-      <Link
-        to={`/tile-showroom/${look.id}`}
+      <div
         style={{ display: "block", textDecoration: "none", position: "relative" }}
         className="idea-sf-thumb"
       >
@@ -124,7 +123,7 @@ function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number 
             }}>{name}</span>
           ))}
         </div>
-      </Link>
+      </div>
     </motion.div>
   );
 }
@@ -219,9 +218,8 @@ export function SurfaceStyles() {
           style={{ display: "flex", gap: "var(--idea-space-2)", alignItems: "center", flexWrap: "wrap" }}
         >
           {MATERIAL_LOOKS.map(look => (
-            <Link
+            <div
               key={look.id}
-              to={`/tile-showroom/${look.id}`}
               title={look.label[locale as Locale]}
               style={{
                 display: "flex", alignItems: "center", gap: "var(--idea-space-2)",
@@ -247,7 +245,7 @@ export function SurfaceStyles() {
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
               }}>{look.label[locale as Locale]}</span>
-            </Link>
+            </div>
           ))}
         </motion.div>
       </div>
@@ -357,28 +355,6 @@ export function SurfaceStyles() {
           </p>
 
           <div style={{ display: "flex", gap: "var(--idea-space-4)", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link
-              to="/tile-showroom"
-              style={{
-                display: "inline-flex", alignItems: "center", gap: "var(--idea-space-2)",
-                background: "var(--idea-gold)",
-                color: "var(--idea-on-gold)",
-                fontFamily: "var(--idea-font-display)",
-                fontSize: "var(--idea-text-sm)",
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                textDecoration: "none",
-                padding: "14px 28px",
-                borderRadius: "var(--idea-radius-full)",
-                border: "none",
-                cursor: "pointer",
-                transition: "background 0.22s, box-shadow 0.22s",
-                boxShadow: "var(--idea-shadow-gold)",
-              }}
-            >
-              {locale === "ar" ? "افتح المرئي" : locale === "fr" ? "Ouvrir le visualiseur" : "Open Room Visualizer"}
-              <ArrowRight size={15} />
-            </Link>
 
             <Link
               to="/products"

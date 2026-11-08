@@ -1,0 +1,28 @@
+/* IDEA cinematic homepage film. Intentionally no video player controls. */
+.idea-editorial-hero.idea-film-ready {
+  position:relative;overflow:hidden;isolation:isolate;background:#302c27;
+  height:calc(100svh - 61px);min-height:540px;max-height:980px;
+}
+.idea-editorial-hero.idea-film-ready .idea-film-shell {
+  position:absolute;inset:0;z-index:1;width:100%;height:100%;overflow:hidden;
+  background:#171512;
+}
+.idea-editorial-hero.idea-film-ready .idea-film-poster,
+.idea-editorial-hero.idea-film-ready .idea-film-video {
+  display:block;position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center center;
+}
+.idea-editorial-hero.idea-film-ready .idea-film-poster {z-index:1;transition:opacity 1s ease}
+.idea-editorial-hero.idea-film-ready .idea-film-video {
+  z-index:2;opacity:0;transition:opacity 1s ease;pointer-events:none!important;
+  user-select:none;-webkit-user-select:none;
+}
+.idea-editorial-hero.idea-film-ready .idea-film-is-playing .idea-film-video {opacity:1}
+.idea-editorial-hero.idea-film-ready .idea-film-is-playing .idea-film-poster {opacity:0}
+@media(max-width:767px){
+  .idea-editorial-hero.idea-film-ready{min-height:430px;height:min(78svh,760px)}
+}
+@media(prefers-reduced-motion:reduce){
+  .idea-editorial-hero.idea-film-ready .idea-film-video{display:none!important}
+  .idea-editorial-hero.idea-film-ready .idea-film-poster{opacity:1!important;transition:none!important}
+}
