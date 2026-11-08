@@ -31,7 +31,6 @@ import { AdminLayout, AdminOverview, AdminSubscriptions, AdminPayments } from ".
 import { AdminStudioLayout, AdminStudioHome, AdminProducts, AdminQuality, AdminOperations, AdminSettings, AdminVisualizer } from "./pages/AdminStudio";
 import { AdminPromotions } from "./pages/AdminPromotions";
 import { Checkout } from "./pages/Checkout";
-import { RoomDesignerHome, PhotoGuide, RoomDesignerEditor } from "./pages/RoomDesigner";
 const Room3DStudio = lazy(() => import("./pages/Room3DStudio").then(module => ({ default: module.Room3DStudio })));
 import { CompanyControlCenter, CompanyApplication } from "./pages/CompanyControlCenter";
 import { CompanyRevenueReport, AdminAnnouncementEditor, BusinessAdvertising } from "./pages/BusinessGrowth";
@@ -94,11 +93,11 @@ export default function App() {
               <Route path="/checkout" element={<Checkout />} />
 
               {/* Room designer */}
-              <Route path="/room-designer" element={<RoomDesignerHome />} />
-              <Route path="/room-designer/photo-guide" element={<PhotoGuide />} />
-              <Route path="/room-designer/new" element={<RoomDesignerEditor />} />
+              <Route path="/room-designer" element={<Navigate to="/room-designer/3d" replace />} />
+              <Route path="/room-designer/photo-guide" element={<Navigate to="/ai-room-visualizer" replace />} />
+              <Route path="/room-designer/new" element={<Navigate to="/room-designer/3d" replace />} />
               <Route path="/room-designer/3d" element={<Suspense fallback={<div style={{padding:32}}>Loading 3D studio…</div>}><Room3DStudio /></Suspense>} />
-              <Route path="/room-designer/project/:projectId" element={<RoomDesignerEditor />} />
+              <Route path="/room-designer/project/:projectId" element={<Navigate to="/account/room-projects" replace />} />
 
               {/* Customer account */}
               <Route element={<ProtectedRoute roles={["customer", "designer", "contractor"]} />}>
