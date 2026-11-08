@@ -13,7 +13,10 @@ export const verifiedSizes = (product:Product) => product.sizes.filter(sizeOk);
 /** Use actual tile-face images only; never a lifestyle, showroom or room photograph. */
 export function materialFace(product:Product):string|null {
   const local=localFaces.get(product.id);
-  if(local)return import.meta.env.BASE_URL.replace(/\/$/,"")+local;
+  if(local){
+    const base=window.location.pathname.startsWith("/idea-next/")?"/idea-next":import.meta.env.BASE_URL.replace(/\/$/,"");
+    return base+local;
+  }
   const face=product.source?.original?.tiles?.find(src => /^https:\/\//.test(src)||src.startsWith("/"));
   return face??null;
 }
