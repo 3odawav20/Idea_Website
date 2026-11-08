@@ -35,7 +35,7 @@ test("tile textures are laid at manufacturer dimensions, not arbitrary square re
   assert.match(studio,/a\/tw/);
   assert.match(studio,/b\/th/);
   assert.match(studio,/makeTileNormalMap\(across,high\)/);
-  assert.match(studio,/materialSize\(product\)/);
+  assert.match(studio,/materialSize\(product,sizeChoice\[id\]\)/);
   assert.match(studio,/roughness=lighting\.finish/);
 });
 
@@ -43,8 +43,8 @@ test("kitchen is explicitly a generic mode and does not invent manufacturer mode
   assert.match(controls,/RoomMode = "empty" \| "kitchen"/);
   assert.match(studio,/roomMode==="kitchen"/);
   assert.match(studio,/changeSceneMode/);
-  assert.match(studio,/africa beige/i);
-  assert.match(studio,/fashion carrara/i);
+  assert.doesNotMatch(studio,/africa beige|fashion carrara/i);
+  assert.match(studio,/changeSceneMode=\(next:RoomMode\)=>setRoomMode\(next\)/);
   assert.match(realism,/IDEA_GENERIC_KITCHEN/);
   assert.match(realism,/makeKitchenWoodTexture/);
   assert.match(realism,/makeKitchenStoneTexture/);
