@@ -35,7 +35,6 @@ export function Home() {
       <div className="idea-usp">{[
         {icon:Layers,to:"/products",title:text("Premium surface inspiration","إلهام بخامات فاخرة","Inspiration haut de gamme"),sub:text("Explore materials & finishes","اكتشف الخامات والتشطيبات","Matières & finitions")},
         {icon:FileText,to:"/request-quote/new",title:text("Private quote requests","طلبات عروض أسعار خاصة","Devis privés"),sub:text("Specify your project needs","حدد احتياجات مشروعك","Précisez votre projet")},
-        {icon:Sparkles,to:"/room-designer",title:text("Room planning","تخطيط الغرف","Conception de pièces"),sub:text("Visualize your palette","تخيّل تنسيق خاماتك","Visualisez votre palette")},
         {icon:Users,to:"/register/business",title:text("For professionals","للمحترفين والشركات","Pour les professionnels"),sub:text("Explore business registration","اكتشف تسجيل الشركات","Inscription professionnelle")},
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={22}/><span>{item.title}<small>{item.sub}</small></span></Link>)}</div>
       <HeroSearchPanel />
@@ -55,13 +54,6 @@ export function Home() {
         ))}
       </section>
       <SurfaceMaterialStrip />
-      <section className="idea-home-room">
-        <img src="/images/featured/wood.webp" alt={text("Warm wood-effect floor in a living room", "أرضية بتأثير خشبي في غرفة معيشة", "Sol effet bois dans un salon")} loading="lazy" width={1600} height={900} />
-        <div><h2>{text("Imagine it in your home.", "تخيّلها في بيتك.", "Imaginez-le chez vous.")}</h2>
-          <p>{text("Explore surfaces and plan your next space with our room designer.", "استكشف الخامات وخطّط مساحتك الجاية مع مصمم الغرف.", "Explorez les surfaces et préparez votre espace avec notre configurateur.")}</p>
-          <Link className="idea-home-text-link" to="/room-designer/new">{t("action.visualize")} <ArrowRight size={16} /></Link>
-        </div>
-      </section>
       <section className="idea-home-section"><h2 className="idea-home-centered-title">{text("Search your destination", "اختار مساحتك", "Choisissez votre espace")}</h2><div className="idea-destination-grid">{DESTINATIONS.map(d=><Link key={d.id} to={`/inspiration/${d.id}`}><img src={`/images/featured/${d.image}.webp`} alt={d.label[locale]} loading="lazy" width={600} height={450}/><span>{d.label[locale]}</span></Link>)}<Link className="idea-destination-all" to="/products" aria-label={text("Browse all materials", "تصفح كل الخامات", "Voir tous les matériaux")}><img src="/images/featured/ceramics.webp" alt="" loading="lazy" width={600} height={450}/><span>{text("All surfaces", "كل الخامات", "Toutes les surfaces")}</span></Link></div></section>
       <section className="idea-home-section"><article className="idea-home-story"><Link className="idea-home-story-image" to="/showrooms"><img src="/images/featured/stone.webp" alt={text("Online surface showroom", "معرض الخامات الإلكتروني", "Showroom virtuel")} loading="lazy" width={1600} height={900}/></Link><div className="idea-home-story-copy"><h2>{text("Your showroom experience.", "تجربة المعرض بطريقتك.", "Votre expérience showroom.")}</h2><p>{text("Discover surfaces in the interactive showroom and explore showroom information.", "اكتشف الخامات في المعرض التفاعلي وتصفح معلومات المعارض.", "Découvrez les surfaces dans notre showroom interactif.")}</p><Link className="idea-home-text-link" to="/showrooms">{text("Explore showrooms", "استكشف المعارض", "Explorer les showrooms")} <ArrowRight size={16}/></Link></div></article></section>
       <section className="idea-home-section"><h2 className="idea-home-centered-title">{text("Explore the world of IDEA", "استكشف عالم IDEA", "Explorer l’univers IDEA")}</h2><div className="idea-home-resource-grid">{[
