@@ -31,6 +31,8 @@ jobs:
         run: npm run build:cpanel
       - name: Check PHP syntax
         run: php -l server/cpanel/api/visualize.php && php -l server/cpanel/idea-accounts-api/platform-ai.php && php -l server/cpanel/api/tile-dimensions.php && php -l server/cpanel/api/marketplace.php
+      - name: Verify PHP/MySQL AI role entitlements at runtime
+        run: php tests/ai-role-policy.test.php
       - name: Verify manufacturer tile dimensions and lossless surface edits
         run: php tests/tile-physical-size.test.php && php tests/ai-mask-preservation.test.php
       - name: Check cPanel routing assets

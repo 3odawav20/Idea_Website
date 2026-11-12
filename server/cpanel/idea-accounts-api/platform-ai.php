@@ -20,12 +20,13 @@ function platformAiRunpodDownload(string $url): string{
  $p=parse_url($url);if(!is_array($p)||($p['scheme']??'')!=='https'||strtolower($p['host']??'')!=='image.runpod.ai'||isset($p['user'])||isset($p['pass']))accountError(502,'RUNPOD_IMAGE_URL_INVALID');if(PHP_SAPI==='cli-server'&&isset($GLOBALS['IDEA_PLATFORM_TEST_DOWNLOAD']))$bytes=($GLOBALS['IDEA_PLATFORM_TEST_DOWNLOAD'])($url);else{if(!extension_loaded('curl'))accountError(503,'CURL_REQUIRED');$c=curl_init($url);$bytes='';curl_setopt_array($c,[CURLOPT_RETURNTRANSFER=>false,CURLOPT_FOLLOWLOCATION=>false,CURLOPT_CONNECTTIMEOUT=>12,CURLOPT_TIMEOUT=>45,CURLOPT_WRITEFUNCTION=>function($ch,$chunk)use(&$bytes){if(strlen($bytes)+strlen($chunk)>25000000)return 0;$bytes.=$chunk;return strlen($chunk);}]);$ok=curl_exec($c);$code=(int)curl_getinfo($c,CURLINFO_RESPONSE_CODE);$err=curl_errno($c);curl_close($c);if($ok===false||$err||$code!==200||!$bytes)accountError(502,'RUNPOD_IMAGE_DOWNLOAD_FAILED');}if(!$bytes)accountError(502,'RUNPOD_IMAGE_DOWNLOAD_FAILED');$info=@getimagesizefromstring($bytes);if(!$info||!in_array($info[2],[IMAGETYPE_JPEG,IMAGETYPE_PNG,IMAGETYPE_WEBP],true)||$info[0]*$info[1]>16000000)accountError(502,'RUNPOD_IMAGE_INVALID');if(!extension_loaded('gd'))accountError(503,'GD_REQUIRED');$im=@imagecreatefromstring($bytes);if(!$im)accountError(502,'RUNPOD_IMAGE_INVALID');ob_start();imagejpeg($im,null,94);$out=ob_get_clean();imagedestroy($im);return $out;
 }
 function platformAiLimit(array $u): ?int{
+ // Authorize on the server, never by a user-supplied role or client quota.
+ // An authenticated buyer gets five lifetime generations; admin has no quota.
+ // Suppliers, anonymous sessions and all other roles are ineligible.
  $role=$u['role']??'';
  if($role==='admin')return null;
- elseif($role==='supplier'){accountCompany($u);$limit=5;}
- elseif($role==='buyer'){accountCustomer($u);$limit=5;}
- else accountError(403,'AI_ACCOUNT_REQUIRED');
- return $limit;
+ if($role==='buyer'){accountCustomer($u);return 5;}
+ accountError(403,'AI_ACCOUNT_REQUIRED');
 }
 function platformAiQuota(array $u): array{
  $limit=platformAiLimit($u);
@@ -157,11 +158,15 @@ function platformAiPollJob(array $u,string $id): array{
 }
 
 function platformAiAction(string $a,array $d,array $u): array{
+ // Enforce eligibility before history, quota, status, generation or processing.
+ // This must run even if a caller bypasses the frontend's visible controls.
+ $limit=platformAiLimit($u);
  if($a==='ai-quota')return platformAiQuota($u);
  if($a==='ai-history')return ['jobs'=>array_map(function($r){$r['settings']=json_decode($r['settings'],true);return $r;},accountQuery('SELECT * FROM idea_ai_jobs WHERE user_id=? ORDER BY created_at DESC LIMIT 50',[$u['id']])->fetchAll())];
  if($a==='ai-job')return platformAiPollJob($u,accountString($d,'id',32,true));
  if($a==='ai-create'){
-  $limit=platformAiLimit($u);if(!platformSecret('RUNPOD_API_KEY')||!platformSecret('RUNPOD_ENDPOINT_ID')||platformSecret('RUNPOD_WORKER_CONTRACT')!=='idea-qwen-mask-v1')accountError(503,'RUNPOD_API_KEY_REQUIRED');if(platformSecret('RUNPOD_ENDPOINT_ID')==='qwen-image-edit-2511')accountError(503,'RUNPOD_MASK_WORKER_REQUIRED');accountRate('ai-create',10,3600);
+  if(!platformSecret('RUNPOD_API_KEY')||!platformSecret('RUNPOD_ENDPOINT_ID')||platformSecret('RUNPOD_WORKER_CONTRACT')!=='idea-qwen-mask-v1')accountError(503,'RUNPOD_API_KEY_REQUIRED');if(platformSecret('RUNPOD_ENDPOINT_ID')==='qwen-image-edit-2511')accountError(503,'RUNPOD_MASK_WORKER_REQUIRED');
+  if($limit!==null)accountRate('ai-create',10,3600); // buyer only; admin has no artificial hourly cap
   $parent=accountString($d,'parent_id',32);$room=platformAiInputImage($d,'room');if(!$room)accountError(422,'PARENT_IMAGE_UNAVAILABLE');
   $material=platformAiInputImage($d,'material');$product=accountString($d,'product_id',100,true);$tileSpec=ideaTileCataloguedVariant($product);
   try { ideaTileAssertMatches($tileSpec,isset($d['size'])?(string)$d['size']:null,$d['tile_width_mm']??null,$d['tile_height_mm']??null); }
@@ -175,7 +180,7 @@ function platformAiAction(string $a,array $d,array $u): array{
   $settings['grout_width_mm']=(float)$joint;
   $settings['physical_scale_calibrated']=false;
   $id=platformId();$dir=platformAiDir($id);mkdir($dir,0700,true);file_put_contents($dir.'/room.jpg',$room);file_put_contents($dir.'/material.jpg',$material);chmod($dir.'/room.jpg',0600);chmod($dir.'/material.jpg',0600);
-  try{platformTransaction(function()use($u,$parent,$product,$settings,$id,$limit){accountQuery('SELECT id FROM idea_users WHERE id=?'.platformLock(),[$u['id']]);$now=platformNow();$n=(int)accountQuery("SELECT COUNT(*) FROM idea_ai_jobs WHERE user_id=? AND state IN ('queued','processing','completed') AND settings NOT LIKE ?",[$u['id'],'%"quota_companion":true%'])->fetchColumn();$all=(int)accountQuery('SELECT COUNT(*) FROM idea_ai_jobs WHERE created_at>?',[$now-86400000])->fetchColumn();if($parent===''&&$limit!==null&&$n>=$limit)accountError(429,'AI_SUBSCRIPTION_REQUIRED');if($all>=(int)(platformConfig()['ai_daily_global_limit']??100))accountError(429,'AI_DAILY_LIMIT');
+  try{platformTransaction(function()use($u,$parent,$product,$settings,$id,$limit){accountQuery('SELECT id FROM idea_users WHERE id=?'.platformLock(),[$u['id']]);$now=platformNow();$n=(int)accountQuery("SELECT COUNT(*) FROM idea_ai_jobs WHERE user_id=? AND state IN ('queued','processing','completed') AND settings NOT LIKE ?",[$u['id'],'%"quota_companion":true%'])->fetchColumn();$all=(int)accountQuery('SELECT COUNT(*) FROM idea_ai_jobs WHERE created_at>?',[$now-86400000])->fetchColumn();if($parent===''&&$limit!==null&&$n>=$limit)accountError(429,'AI_SUBSCRIPTION_REQUIRED');if($limit!==null&&$all>=(int)(platformConfig()['ai_daily_global_limit']??100))accountError(429,'AI_DAILY_LIMIT');
    if($parent!==''){$source=accountQuery('SELECT id,state,settings,created_at FROM idea_ai_jobs WHERE id=? AND user_id=?'.platformLock(),[$parent,$u['id']])->fetch();$sourceSettings=$source?json_decode($source['settings'],true):null;if(!$source||$source['state']!=='completed'||$source['created_at']<$now-600000||!in_array($sourceSettings['surface']??'',['floor','الأرضية'],true)||!in_array($settings['surface'],['walls','wall','الجدران','الحوائط'],true)||accountQuery('SELECT id FROM idea_ai_jobs WHERE parent_id=? LIMIT 1',[$parent])->fetch())accountError(422,'INVALID_COMBINED_SURFACE');$settings['quota_companion']=true;}
    accountQuery('INSERT INTO idea_ai_jobs(id,user_id,parent_id,product_id,state,settings,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)',[$id,$u['id'],$parent?:null,$product,'queued',platformJson($settings),$now,$now]);});}catch(Throwable $e){@unlink($dir.'/room.jpg');@unlink($dir.'/material.jpg');@rmdir($dir);throw $e;}return ['id'=>$id,'state'=>'queued'];
  }
@@ -222,6 +227,7 @@ function platformAiAction(string $a,array $d,array $u): array{
  accountError(404,'UNKNOWN_ACTION');
 }
 function platformAiDownload(array $u,string $id): never{
+ platformAiLimit($u); // company/guest cannot retrieve previous or guessed job IDs
  $job=platformAiJob($u,$id);
  $dir=platformAiDir($id);
  $png=$dir.'/result.png';
