@@ -30,13 +30,13 @@ test("owner film starts muted and transitions into stills after playback; contro
  assert.match(component,/loop=\{false\}/);
  assert.match(component,/onEnded=\{\(\) => setActiveSlide\(1\)\}/);
  assert.match(component,/controls=\{false\}/);
- assert.match(styles,/pointer-events:\\s*none\\s*!important/);
+ assert.match(styles,/pointer-events:\s*none\s*!important/);
 });
 test("film has poster/reduced-motion fallbacks and pauses offscreen",()=>{
  assert.match(component,/prefers-reduced-motion: reduce/);
  assert.match(component,/IntersectionObserver/);
  assert.match(component,/visibilitychange/);
- assert.match(styles,/prefers-reduced-motion:\\s*reduce/);
+ assert.match(styles,/prefers-reduced-motion:\s*reduce/);
  assert.match(styles,/idea-film-poster/);
 });
 
