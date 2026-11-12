@@ -114,10 +114,10 @@ export function Room3DStudio() {
     const host=mount.current;if(!host)return;
     const width=Math.max(host.clientWidth,1),height=Math.max(host.clientHeight,1);
     let renderer:THREE.WebGLRenderer;
-    try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});}catch{
+    try{renderer=new THREE.WebGLRenderer({antialias:true,alpha:false,powerPreference:"high-performance"});}catch{
       setNotice("WebGL is not available in this browser.");return;
     }
-    renderer.setSize(width,height);renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
+    renderer.setSize(width,height);renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio||1,1.5),2));
     renderer.outputColorSpace=THREE.SRGBColorSpace;
     renderer.toneMapping=THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure=lighting.exposure;
@@ -152,7 +152,7 @@ export function Room3DStudio() {
       if(face&&s){
         const tw=s.widthMm!/1000,th=s.heightMm!/1000;
         const across=Math.max(.2,a/tw),high=Math.max(.2,b/th);
-        base.map=makeSurfaceTexture(face,across,high,()=>{base.needsUpdate=true;},()=>setNotice(lang==="ar"?"تعذر تحميل صورة البلاطة الأصلية للـ 3D.":"The source tile image could not load as a WebGL texture."));
+        base.map=makeSurfaceTexture(face,across,high,(texture)=>{texture.anisotropy=Math.min(16,renderer.capabilities.getMaxAnisotropy());base.needsUpdate=true;},()=>setNotice(lang==="ar"?"تعذر تحميل صورة البلاطة الأصلية للـ 3D.":"The source tile image could not load as a WebGL texture."));
         base.normalMap=makeTileNormalMap(across,high);
         base.normalScale.set(.16,.16);
         base.color.set(0xffffff);base.needsUpdate=true;

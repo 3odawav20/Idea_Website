@@ -37,6 +37,7 @@ Remote preview: https://idea-website-6xkyc2rov-abdelrahmanamr895-6118s-projects.
 4. Header height aligned to 64px; existing drawer/scroll-aware header retained. Exact full pixel parity is not certified.
 5. 396 recovered local source tile-face images cover 475 catalogue IDs. AI first-face selection and 3D texture loading prefer the local cache while retaining original catalogue/source records. Other AI face variants may still use their original remote URLs.
 6. 3D gallery card proportions follow the selected verified dimensions, instead of a fixed 120px-tall thumbnail box.
+7. Following the owner's clarification, the complete searchable material library spans the row below the scene. Browser geometry confirmed gallery top 867.8px after scene bottom 812.5px. Supersampling now renders 1.5–2x display resolution and texture anisotropy uses the supported device limit up to 16; this improves raster/texture clarity, not a claim of photorealistic models. Observed canvas 1413px for a 942px display width.
 
 ## Production blockers proved now
 
@@ -84,7 +85,7 @@ Status meanings: **Source only** = code/UI exists, not a verified production cap
 
 - 74 Node tests passed after material cache integration; includes source/contract checks, not 74 end-to-end journeys.
 - 17 Python supplier-ingestion tests passed.
-- Production Vite build and cPanel packaging passed before cache integration; final packaging rerun after integration is recorded separately.
+- Production Vite build and cPanel packaging passed again after cache integration and the below-scene/quality changes. Bundle-size warning remains.
 - Browser: supplied film `readyState=4`, advancing time, `muted=true`, `controls=false`; both theme images loaded; English/Arabic header and RTL checked; drawer opened/closed; 3D canvas rendered, local face images loaded and Acacia Grey became selected; layout download produced JSON.
 - Viewport override did not actually change `innerWidth` from 1280. Therefore a true 390px browser pass is NOT claimed. Saved Arabic screenshot is desktop-width.
 - PHP runtime, live authenticated role isolation, database writes/transactions, real AI generation, payment flows, exhaustive security review and cold offline reload are not verified.
@@ -92,3 +93,7 @@ Status meanings: **Source only** = code/UI exists, not a verified production cap
 ## Rollback
 
 Original worktree remains untouched. Original uncommitted source/media archived separately as `IDEA-local-recovery-20261112.zip`. This branch can be discarded or reverted to `5451589`. No live files, DB rows, secrets or settings were changed. No existing catalogue assets were deleted.
+
+## Publication status
+
+The first recovery commit is `e2250a51c0dc16eb14a7e5b425314846217e11a6`; the below-scene and quality follow-up is `b807e96da8ee89684ba755deed58daef91fb190d`. A transient `Could not resolve host: github.com` interrupted a separate remote query, but the initial push subsequently succeeded and the GitHub connector independently listed `codex/idea-consolidation-audit-20261112`. Verify the final remote head against the exported ZIP before deployment. No production deployment is included. Some prior hero assets are LFS-managed; the standalone source ZIP includes actual checked-out asset bytes.
