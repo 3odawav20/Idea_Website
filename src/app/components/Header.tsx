@@ -76,6 +76,9 @@ export function Header() {
         </form>
         <DiscoveryNavigation onNavigate={() => setOpen(false)} />
         <nav className="idea-navigation-tools">
+          <Link to="/register/customer" onClick={() => setOpen(false)}>{text("Customer account", "حساب اليوزر", "Compte client")}</Link>
+          <Link to="/register/business" onClick={() => setOpen(false)}>{text("Business account", "حساب الشركات", "Compte entreprise")}</Link>
+          <Link to="/admin/login" onClick={() => setOpen(false)}>{text("Admin access", "دخول الإدارة", "Accès admin")}</Link>
           <Link to="/room-designer/3d" onClick={() => setOpen(false)}>{text("3D Studio", "استوديو ثلاثي الأبعاد", "Studio 3D")}</Link>
           <Link to="/ai-room-visualizer" onClick={() => setOpen(false)}>{t("nav.visualizer")}</Link>
           <Link to={account} onClick={() => setOpen(false)}>{session ? t("nav.account") : t("nav.signIn")}</Link>
