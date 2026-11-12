@@ -1,0 +1,59 @@
+/* IDEA editorial contact experience – scoped, responsive, theme-aware. */
+.idea-contact-page{background:var(--idea-bg);color:var(--idea-text);overflow:hidden}
+.idea-contact-hero{position:relative;min-height:clamp(660px,77vh,880px);isolation:isolate;display:flex;align-items:center;overflow:hidden;background:#27211c;color:#fff}
+.idea-contact-hero-image{position:absolute;inset:0;z-index:-2;background-image:url('/images/auth/customer-day.webp');background-position:center;background-size:cover;transform:scale(1.012)}
+[data-theme="dark"] .idea-contact-hero-image{background-image:url('/images/auth/customer-night.webp')}
+.idea-contact-hero:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(18,16,15,.90) 0%,rgba(18,16,15,.75) 35%,rgba(18,16,15,.30) 68%,rgba(18,16,15,.10) 100%)}
+[dir="rtl"] .idea-contact-hero:before{transform:scaleX(-1)}
+.idea-contact-hero-content{width:min(1260px,calc(100% - 104px));margin:0 auto;padding:108px 0 125px;position:relative}
+.idea-contact-back{display:inline-flex;align-items:center;gap:10px;font-size:12px;letter-spacing:.02em;color:rgba(255,255,255,.77);text-decoration:none;margin-bottom:80px}
+.idea-contact-back span{color:#ff731c}
+.idea-contact-kicker,.idea-contact-overline{display:inline-flex;align-items:center;gap:12px;text-transform:uppercase;letter-spacing:.19em;font-size:11px;font-weight:650}
+.idea-contact-kicker{color:#fff4eb}.idea-contact-kicker-line{display:inline-block;width:30px;height:2px;background:#fd6401}
+.idea-contact-hero h1{font-family:var(--idea-font-body);font-weight:500;font-size:clamp(58px,7vw,108px);letter-spacing:-.065em;line-height:1.035;max-width:780px;margin:27px 0 27px}
+.idea-contact-hero h1 span,.idea-contact-hero h1 em{display:block}
+.idea-contact-hero h1 em{font-style:normal;color:#ff731c}
+.idea-contact-hero-content>p{max-width:550px;color:rgba(255,255,255,.8);font-size:clamp(15px,1.36vw,18px);line-height:1.85;margin:0 0 35px}
+.idea-contact-hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.idea-contact-hero-actions a,.idea-contact-appointment-link{min-height:52px;display:inline-flex;align-items:center;justify-content:center;gap:24px;padding:14px 25px;text-decoration:none;font-size:13px;font-weight:650;border-radius:4px;transition:transform .22s ease,background .22s ease}
+.idea-contact-hero-actions a:hover,.idea-contact-appointment-link:hover{transform:translateY(-3px)}
+.idea-contact-primary{background:#fd6401;color:#fff}
+.idea-contact-secondary{background:rgba(255,255,255,.10);backdrop-filter:blur(13px);border:1px solid rgba(255,255,255,.4);color:#fff}
+.idea-contact-hero-index{position:absolute;bottom:32px;inset-inline-end:6vw;font-size:11px;letter-spacing:.22em;color:rgba(255,255,255,.85)}
+.idea-contact-shell{width:min(1260px,calc(100% - 104px));margin:0 auto;padding:110px 0 100px}
+.idea-contact-intro{display:grid;grid-template-columns:1.12fr .88fr;align-items:end;gap:80px;margin-bottom:56px}
+.idea-contact-overline{color:var(--idea-gold);font-size:11px}
+.idea-contact-intro h2{font-size:clamp(36px,4.1vw,65px);font-weight:450;letter-spacing:-.055em;line-height:1.13;margin:24px 0 0}
+.idea-contact-intro h2 span{color:var(--idea-gold)}
+.idea-contact-intro>p{max-width:460px;color:var(--idea-text-muted);font-size:15px;line-height:1.9;margin:0 0 7px}
+.idea-contact-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;border-top:1px solid var(--idea-border);border-bottom:1px solid var(--idea-border);margin-bottom:86px}
+.idea-contact-step{position:relative;padding:34px 34px 40px 0}
+.idea-contact-step:not(:first-child){border-inline-start:1px solid var(--idea-border);padding-inline-start:34px}
+.idea-contact-step-top{display:flex;align-items:center;justify-content:space-between;color:var(--idea-gold);margin-bottom:52px}
+.idea-contact-step-top span{font-size:11px;letter-spacing:.17em}
+.idea-contact-step h3{font-size:25px;font-weight:550;letter-spacing:-.035em;margin:0 0 12px}
+.idea-contact-step p{color:var(--idea-text-muted);font-size:13px;line-height:1.85;max-width:280px;margin:0}
+.idea-contact-pathways{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+.idea-contact-path{position:relative;display:flex;flex-direction:column;justify-content:space-between;min-height:405px;padding:35px;text-decoration:none;isolation:isolate;overflow:hidden;border-radius:8px;transition:transform .32s ease}
+.idea-contact-path:hover{transform:translateY(-4px)}
+.idea-contact-path-top{display:flex;align-items:center;justify-content:space-between;gap:16px;position:relative;z-index:1;font-size:11px;letter-spacing:.11em;font-weight:650}
+.idea-contact-path-top>span{display:inline-flex;align-items:center;gap:8px}
+.idea-contact-path>div{position:relative;z-index:1}
+.idea-contact-path-kicker{font-size:11px;letter-spacing:.18em;font-weight:600}
+.idea-contact-path h2{font-size:clamp(30px,3vw,47px);font-weight:500;line-height:1.08;letter-spacing:-.055em;margin:14px 0}
+.idea-contact-path p{font-size:14px;line-height:1.7;max-width:340px;margin:0}
+.idea-contact-path-photo{color:#fff;background:#312c28 url('/images/featured/porcelain.webp') center/cover no-repeat}
+.idea-contact-path-photo:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(0,0,0,.37),transparent 35%,rgba(0,0,0,.82))}
+.idea-contact-path-ai{background:var(--idea-surface-2);color:var(--idea-text);border:1px solid var(--idea-border)}
+.idea-contact-path-ai:before{content:"";position:absolute;z-index:-1;width:330px;height:330px;right:-120px;top:80px;border:1px solid var(--idea-gold);border-radius:50%;box-shadow:0 0 0 38px var(--idea-gold-soft),0 0 0 92px rgba(253,100,1,.04)}
+.idea-contact-path-ai .idea-contact-path-top,.idea-contact-path-ai .idea-contact-path-kicker{color:var(--idea-gold)}
+.idea-contact-appointment{display:grid;grid-template-columns:56px minmax(0,1fr) auto;gap:26px;align-items:center;border-top:1px solid var(--idea-border);margin-top:92px;padding-top:52px}
+.idea-contact-appointment-icon{width:56px;height:56px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--idea-border);color:var(--idea-gold)}
+.idea-contact-appointment h2{font-weight:550;font-size:clamp(22px,2.1vw,30px);letter-spacing:-.035em;margin:12px 0}
+.idea-contact-appointment p{color:var(--idea-text-muted);font-size:13px;line-height:1.75;max-width:680px;margin:0}
+.idea-contact-appointment-link{border:1px solid var(--idea-border);color:var(--idea-text);white-space:nowrap}
+[dir="rtl"] .idea-contact-hero h1,[dir="rtl"] .idea-contact-intro h2,[dir="rtl"] .idea-contact-path h2,[dir="rtl"] .idea-contact-appointment h2{font-family:var(--idea-font-arabic);letter-spacing:0}
+[dir="rtl"] .idea-contact-path-ai:before{right:auto;left:-120px}
+@media(max-width:900px){.idea-contact-hero-content,.idea-contact-shell{width:calc(100% - 48px)}.idea-contact-intro{gap:36px}.idea-contact-appointment{grid-template-columns:56px 1fr}.idea-contact-appointment-link{grid-column:2;justify-self:start}.idea-contact-pathways{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.idea-contact-hero{min-height:680px;align-items:flex-end}.idea-contact-hero:before{background:linear-gradient(0deg,rgba(14,12,12,.94),rgba(14,12,12,.60) 60%,rgba(14,12,12,.20))}.idea-contact-hero-content{padding:35px 0 85px}.idea-contact-back{margin-bottom:90px}.idea-contact-hero h1{font-size:clamp(49px,10vw,67px)}.idea-contact-hero-content>p{font-size:14px}.idea-contact-hero-index{bottom:20px}.idea-contact-shell{padding:70px 0}.idea-contact-intro{display:block;margin-bottom:38px}.idea-contact-intro>p{margin-top:20px}.idea-contact-steps{grid-template-columns:1fr;margin-bottom:50px}.idea-contact-step,.idea-contact-step:not(:first-child){border-inline-start:0;border-top:1px solid var(--idea-border);padding:25px 0}.idea-contact-step:first-child{border-top:0}.idea-contact-step-top{margin-bottom:22px}.idea-contact-step h3{font-size:23px}.idea-contact-pathways{grid-template-columns:1fr}.idea-contact-path{min-height:330px;padding:25px}.idea-contact-appointment{margin-top:55px;gap:16px;padding-top:38px}.idea-contact-appointment-link{grid-column:1/-1}.idea-contact-hero-actions a{width:100%;justify-content:space-between}}
+@media(prefers-reduced-motion:reduce){.idea-contact-path,.idea-contact-hero-actions a,.idea-contact-appointment-link{transition:none}}
