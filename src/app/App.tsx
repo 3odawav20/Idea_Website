@@ -15,7 +15,7 @@ import { Favorites } from "./pages/Favorites";
 import { RequestQuote } from "./pages/RequestQuote";
 import { HowItWorks } from "./pages/Static";
 import { AiVisualizerStudio } from "./pages/AiVisualizerStudio";
-import { Login, Register, RegisterCustomer, RegisterBusiness, RoleSelect } from "./pages/Auth";
+import { Login, Register, RegisterCustomer, RegisterBusiness, BusinessLogin, AdminLogin, RoleSelect } from "./pages/Auth";
 import {
   AccountLayout, AccountProfile, AccountInbox, AccountRequests, AccountRequestOffers,
   AccountOrders, AccountInvoices, AccountFavorites, AccountCompare, AccountRoomProjects,
@@ -83,6 +83,8 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/register/customer" element={<RegisterCustomer />} />
               <Route path="/register/business" element={<RegisterBusiness />} />
+              <Route path="/business/login" element={<BusinessLogin />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/business/apply" element={<CompanyApplication />} />
               <Route path="/onboarding/role" element={<RoleSelect />} />
 
