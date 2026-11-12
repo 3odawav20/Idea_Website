@@ -42,7 +42,7 @@
 }
 .idea-auth-scene--customer .idea-auth-photo{
   inset:0 32% 0 0;
-  background-image:url('/images/auth/customer.webp'),url('/images/featured/marble.webp');
+  background-image:url('/images/auth/customer-photo.jpg'),url('/images/featured/marble.webp');
   background-position:center top;
 }
 .idea-auth-scene--customer .idea-auth-visual{
@@ -54,12 +54,12 @@
   rgba(14,14,14,.1) 40%,transparent 70%);
 }
 .idea-auth-scene--admin .idea-auth-photo{
-  background-image:url('/images/auth/admin.webp'),url('/images/featured/stone.webp');
+  background-image:url('/images/auth/admin-photo.jpg'),url('/images/featured/stone.webp');
   background-position:center center;
   filter:saturate(.95) brightness(.8);
 }
 .idea-auth-scene--business .idea-auth-photo{
-  background-image:url('/images/auth/business.webp'),url('/images/featured/ceramics.webp');
+  background-image:url('/images/auth/business-photo.jpg'),url('/images/featured/ceramics.webp');
   background-position:center 34%;
   filter:saturate(1.02) brightness(.83);
 }
@@ -335,4 +335,25 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 @media(prefers-reduced-motion:reduce){
   .idea-auth-submit,.idea-auth-input-wrap{transition:none!important}
   .idea-auth-submit:hover{transform:none!important}
+}
+
+
+/* Approved Arabic artboards are the literal owner-supplied screens, cropped to
+   the photographic/editorial panel. The right side is ALWAYS real HTML inputs,
+   never a screenshot or overlaid click-map. On English/French and small screens
+   render live translated text on the unlabelled photographic crop instead. */
+@media (min-width:801px) {
+  html[lang="ar"] .idea-auth-scene--customer .idea-auth-visual {
+    background:#10100f url('/images/auth/customer-reference.jpg') top center / 100% 100% no-repeat;
+  }
+  html[lang="ar"] .idea-auth-scene--business .idea-auth-visual {
+    background:#10100f url('/images/auth/business-reference.jpg') top center / 100% 100% no-repeat;
+  }
+  html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual {
+    background:#10100f url('/images/auth/admin-reference.jpg') top center / 100% 100% no-repeat;
+  }
+  html[lang="ar"] .idea-auth-scene .idea-auth-visual :is(
+    .idea-auth-photo,.idea-auth-copy,.idea-auth-feature-list,.idea-auth-business-types
+  ) { display:none; }
+  html[lang="ar"] .idea-auth-scene .idea-auth-visual::before { display:none; }
 }
