@@ -45,7 +45,6 @@ const ADMIN_FEATURES = [
 ];
 
 const API = String(import.meta.env.VITE_IDEA_ACCOUNT_API || "").trim();
-old social config
 function FeatureItems({ audience,locale }: {audience:Audience;locale:"ar"|"en"|"fr"}) {
   const features=audience==="customer"?CUSTOMER_FEATURES:audience==="business"?BUSINESS_FEATURES:ADMIN_FEATURES;
   return <div className={"idea-auth-feature-list idea-auth-feature-list--"+audience}>
