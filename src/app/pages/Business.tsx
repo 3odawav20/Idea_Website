@@ -164,7 +164,7 @@ export function BusinessRequestDetail() {
   const { locale } = useI18n();
   const nav = useNavigate();
   const req = db.requests.find((r) => r.id === requestId);
-  const [o, setO] = useState({ unitPrice: 0, shipping: 0, prepDays: 0, deliveryDays: 0, quantity: req?.quantity || 0, exact: true, paymentTerms: "", notes: "" });
+  const [o, setO] = useState({ unitPrice: 0, shipping: 0, prepDays: 0, deliveryDays: 0, quantity: req?.quantity || 0, availability: "", paymentTerms: "", notes: "" });
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
   if (!biz || !req || !req.matchedBusinessIds.includes(biz.id)) return <EmptyState title="Request not available to this company" />;
@@ -175,9 +175,9 @@ export function BusinessRequestDetail() {
     setSubmitError("");
     try {
       await api.submitOffer({
-        requestId: req.id, businessId: biz.id, exactProduct: o.exact,
+        requestId: req.id, businessId: biz.id, exactProduct: true,
         quantity: o.quantity, unit: req.unit, unitPrice: o.unitPrice,
-        shipping: o.shipping, taxRate: 0, availability: "In stock",
+        shipping: o.shipping, taxRate: 0, availability: o.availability.trim(),
         prepDays: o.prepDays, deliveryDays: o.deliveryDays,
         paymentTerms: o.paymentTerms, notes: o.notes,
         expiresAt: Date.now() + 72 * 3600_000,
@@ -206,10 +206,11 @@ export function BusinessRequestDetail() {
           <Field label="Preparation (days)"><input type="number" style={inputStyle} value={o.prepDays} onChange={num("prepDays")} /></Field>
           <Field label="Delivery (days)"><input type="number" style={inputStyle} value={o.deliveryDays} onChange={num("deliveryDays")} /></Field>
           <Field label="Payment terms"><input style={inputStyle} value={o.paymentTerms} onChange={(e) => setO((s) => ({ ...s, paymentTerms: e.target.value }))} /></Field>
+           <Field label="Actual availability"><input style={inputStyle} value={o.availability} onChange={(e) => setO((s) => ({ ...s, availability: e.target.value }))} placeholder="Available quantity / lead time" /></Field>
         </div>
-        <label style={{ display: "flex", gap: 8, color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", marginBottom: 12 }}>
-          <input type="checkbox" checked={o.exact} onChange={(e) => setO((s) => ({ ...s, exact: e.target.checked }))} /> Exact product (uncheck for approved equivalent)
-        </label>
+        <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", marginBottom: 12 }}>
+          Supplier offers must match the requested product and variant. Unrequested equivalents are not accepted.
+        </p>
         <p style={{ marginBottom: 12, color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>
           Current quote API confirms unit price and quantity only; delivery, shipping and payment terms require the PHP/MySQL contract before they can be compared or charged.
         </p>
