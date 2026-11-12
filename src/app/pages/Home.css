@@ -107,3 +107,18 @@
     gap: 18px 10px;
   }
 }
+
+
+/* Editorial-only colour refinement. This does NOT grade the source-accurate
+   tile faces, product thumbnails, or AI/3D material previews. */
+.idea-home-editorial :is(
+  .idea-home-story-image img,
+  .idea-home-looks > a img,
+  .idea-destination-grid > a img,
+  .idea-home-room > img,
+  .idea-home-bath-card img,
+  .idea-home-journal img
+) {
+  filter: saturate(1.12) contrast(1.045) brightness(1.02);
+  -webkit-filter: saturate(1.12) contrast(1.045) brightness(1.02);
+}
