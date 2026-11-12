@@ -433,10 +433,11 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 }
 .idea-auth-scene--business .idea-auth-visual {
   isolation:isolate;
-  background:#20262c;
+  /* Bright blue/stone undertone, never an opaque black letterbox. */
+  background:linear-gradient(148deg,#60758a 0%,#887f80 55%,#6f6865 100%);
 }
 .idea-auth-scene--business.idea-auth-scene--light .idea-auth-visual {
-  background:#abb6c3;
+  background:linear-gradient(145deg,#aac3dc,#cdc9c4 52%,#b6b4b0);
 }
 .idea-auth-scene--business .idea-auth-visual::before {
   content:"";
@@ -444,16 +445,32 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   inset:-35px;
   z-index:0;
   pointer-events:none;
-  background-image:var(--idea-business-photo);
+  /* Real soft-focus photo visible THROUGH the glass at top and bottom. */
+  background-image:
+    linear-gradient(155deg,rgba(232,244,255,.16),rgba(255,255,255,.045) 52%,rgba(244,229,209,.12)),
+    var(--idea-business-photo);
   background-repeat:no-repeat;
   background-position:center;
   background-size:cover;
-  opacity:.65;
-  filter:blur(34px) saturate(1.12) brightness(.75);
+  opacity:.96;
+  filter:blur(49px) saturate(.92) brightness(1.23) contrast(.79);
+  transform:translateZ(0);
 }
 .idea-auth-scene--business.idea-auth-scene--light .idea-auth-visual::before {
-  opacity:.70;
-  filter:blur(30px) saturate(1.10) brightness(.90);
+  opacity:.97;
+  filter:blur(47px) saturate(.90) brightness(1.26) contrast(.80);
+}
+/* Glass highlights appear only around the letterboxed edges.
+   The full-size central photograph stays untouched and sharp. */
+.idea-auth-scene--business .idea-auth-visual::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:linear-gradient(155deg,rgba(255,255,255,.21),transparent 48%,rgba(255,255,255,.12));
+  -webkit-mask-image:linear-gradient(to bottom,#000 0%,transparent 27%,transparent 75%,#000 100%);
+  mask-image:linear-gradient(to bottom,#000 0%,transparent 27%,transparent 75%,#000 100%);
 }
 .idea-auth-scene--business .idea-auth-photo,
 .idea-auth-scene--business.idea-auth-scene--light .idea-auth-photo {
@@ -500,10 +517,10 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   position:relative;
   isolation:isolate;
   overflow:hidden;
-  background:rgba(19,25,34,.12);
+  background:rgba(31,44,57,.055);
 }
 .idea-auth-scene--business.idea-auth-scene--light .idea-auth-panel-wrap {
-  background:rgba(46,50,59,.10);
+  background:rgba(170,186,201,.065);
 }
 .idea-auth-scene--business .idea-auth-panel-wrap::before {
   content:"";
@@ -512,11 +529,11 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   z-index:0;
   pointer-events:none;
   background:var(--idea-business-photo) center/cover no-repeat;
-  filter:blur(35px) brightness(.70) saturate(1.13);
-  opacity:.89;
+  filter:blur(48px) brightness(1.12) saturate(.91) contrast(.82);
+  opacity:.93;
 }
 .idea-auth-scene--business.idea-auth-scene--light .idea-auth-panel-wrap::before {
-  filter:blur(36px) brightness(.67) saturate(1.04);
+  filter:blur(46px) brightness(1.18) saturate(.88) contrast(.83);
 }
 .idea-auth-scene--business .idea-auth-panel-wrap::after {
   content:"";
@@ -524,13 +541,14 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   inset:0;
   z-index:0;
   pointer-events:none;
-  background:radial-gradient(ellipse at 9% 7%,rgba(245,249,255,.12),transparent 62%),
-    linear-gradient(145deg,rgba(5,12,20,.22),rgba(20,25,35,.18));
+  background:radial-gradient(ellipse at 9% 7%,rgba(255,255,255,.28),transparent 58%),
+    linear-gradient(145deg,rgba(245,250,255,.035),rgba(16,27,39,.055));
 }
 .idea-auth-scene--business .idea-auth-panel {
   position:relative;
   z-index:1;
-  background:linear-gradient(136deg,rgba(226,239,249,.23) 0%,rgba(84,101,117,.17) 48%,rgba(19,27,38,.23) 100%);
+  /* Readable smoked glass: still translucent, not an opaque fill. */
+  background:linear-gradient(136deg,rgba(22,35,51,.57) 0%,rgba(32,43,56,.52) 48%,rgba(18,29,43,.58) 100%);
   border:1px solid rgba(249,250,253,.43);
   border-radius:22px;
   -webkit-backdrop-filter:blur(22px) saturate(1.65);
@@ -543,7 +561,7 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
     inset 0 -1px 0 rgba(255,255,255,.12);
 }
 .idea-auth-scene--business.idea-auth-scene--light .idea-auth-panel {
-  background:linear-gradient(132deg,rgba(240,246,253,.31),rgba(106,121,136,.17) 45%,rgba(28,39,55,.25));
+  background:linear-gradient(132deg,rgba(24,46,65,.60),rgba(29,46,62,.57) 45%,rgba(15,31,47,.60));
   border-color:rgba(255,255,255,.53);
 }
 .idea-auth-scene--business .idea-auth-panel::before {
