@@ -19,7 +19,9 @@ test("logo-orange light header and true dark header remain independently accessi
   assert.match(header, /html\[data-theme="dark"\] \.idea-reference-header/);
   assert.match(header, /background:\s*#ff7200/);
   assert.match(header, /background:\s*#090909/);
-  assert.match(header, /\.idea-reference-logo\s*\{[\s\S]*?background:\s*#090909/);
+  assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo\s*\{\s*background:\s*transparent/);
+  assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo img\s*\{[\s\S]*?drop-shadow/);
+  assert.doesNotMatch(header, /html\[data-theme="light"\] \.idea-reference-logo\s*\{\s*background:\s*#090909/);
 });
 
 test("subtle editorial colour grade only; original material and product assets untouched", () => {
