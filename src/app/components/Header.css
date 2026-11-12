@@ -148,22 +148,31 @@ html[lang="en"] .idea-navigation-drawer .idea-discovery-nav-item>button{font-wei
 html[data-theme="light"] .idea-reference-header,
 html[data-theme="light"] .idea-reference-header.is-scrolled,
 html[data-theme="light"] .idea-reference-header.is-menu-open {
-  background: rgba(179, 67, 0, .78);
+  background: rgba(145, 43, 2, .76);
   color: #fff;
   border-bottom-color: rgba(255,255,255,.28);
-  backdrop-filter: blur(22px) saturate(1.30);
-  -webkit-backdrop-filter: blur(22px) saturate(1.30);
+  backdrop-filter: blur(24px) saturate(1.36);
+  -webkit-backdrop-filter: blur(24px) saturate(1.36);
   box-shadow: 0 4px 24px rgba(0,0,0,.12);
 }
 html[data-theme="dark"] .idea-reference-header,
 html[data-theme="dark"] .idea-reference-header.is-scrolled,
 html[data-theme="dark"] .idea-reference-header.is-menu-open {
-  background: rgba(11, 11, 13, .59);
+  background: rgba(9, 9, 11, .52);
   color: #fff;
   border-bottom-color: rgba(255,114,0,.25);
-  backdrop-filter: blur(22px) saturate(1.18);
-  -webkit-backdrop-filter: blur(22px) saturate(1.18);
+  backdrop-filter: blur(24px) saturate(1.18);
+  -webkit-backdrop-filter: blur(24px) saturate(1.18);
   box-shadow: 0 4px 24px rgba(0,0,0,.16);
+}
+/* A faint glass edge catches light without placing a panel behind the logo. */
+.idea-reference-header::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 1px;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.28), transparent);
 }
 /* Subtle black depth under the complete navigation typography and icons,
    without placing a solid background behind the logo or its labels. */
