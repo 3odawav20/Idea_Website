@@ -548,3 +548,31 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   background-size:cover;
   filter:none;
 }
+
+/* Keep all account panels visible even when header, photos or browser zoom
+   introduce a large min-content width. Preserve the approved 65/35 layout. */
+.idea-auth-scene {
+  width:100%;
+  max-width:100vw;
+  min-width:0;
+}
+.idea-auth-content {
+  width:100%;
+  max-width:min(100%,2100px);
+  min-width:0;
+}
+.idea-auth-visual,
+.idea-auth-panel-wrap,
+.idea-auth-panel {
+  min-width:0;
+  max-width:100%;
+}
+@media (min-width:1301px) {
+  .idea-auth-content {grid-template-columns:minmax(0,65fr) minmax(0,35fr);}
+}
+@media (min-width:1001px) and (max-width:1300px) {
+  .idea-auth-content {grid-template-columns:minmax(0,61fr) minmax(0,39fr);}
+}
+@media (min-width:801px) and (max-width:1000px) {
+  .idea-auth-content {grid-template-columns:minmax(0,53fr) minmax(0,47fr);}
+}
