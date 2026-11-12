@@ -75,3 +75,37 @@
  .idea-room3d-material-catalog.is-expanded .idea-room3d-material-grid{grid-template-columns:repeat(4,minmax(155px,1fr))}
  .idea-room3d-material-viewport .idea-room3d-material-grid{min-width:max(760px,calc(100% + 270px))}
 }
+
+/* Material explorer: Load More expands the normal document, NOT a fixed-height
+   inner scroll prison. The page wheel stays vertical and the material rail
+   can still be moved horizontally (Shift+wheel, drag, touch or arrows).
+   Full-screen is an independent opt-in view. */
+.idea-room3d-material-catalog:not(.is-expanded){
+  max-height:none;
+  height:auto;
+  overflow:visible;
+}
+.idea-room3d-material-catalog:not(.is-expanded) .idea-room3d-material-viewport{
+  height:auto;
+  min-height:0;
+  max-height:none;
+  overflow-x:auto;
+  overflow-y:hidden;
+  overscroll-behavior-x:contain;
+  overscroll-behavior-y:auto;
+  scrollbar-gutter:stable;
+}
+.idea-room3d-material-catalog:not(.is-expanded) .idea-room3d-material-load{
+  position:sticky;
+  inset-inline-start:0;
+  width:min(100%,calc(100vw - 90px));
+  padding-block:18px 8px;
+}
+.idea-room3d-material-catalog:not(.is-expanded) .idea-room3d-material-grid{
+  align-content:start;
+}
+@media(max-width:700px){
+  .idea-room3d-material-catalog:not(.is-expanded) .idea-room3d-material-load{
+    width:min(100%,calc(100vw - 55px));
+  }
+}
