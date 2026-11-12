@@ -140,7 +140,7 @@ export function AccountRequestOffers() {
           {offers.map((o) => {
             const biz = db.businesses.find((b) => b.id === o.businessId);
             const subtotal = o.unitPrice * o.quantity;
-            const total = subtotal + subtotal * o.taxRate + o.shipping;
+            // Current backend has no verified delivery/tax totals; compare only the confirmed item price.
             const selected = req.acceptedOfferId === o.id;
             return (
               <Panel key={o.id} style={{ border: selected ? "1px solid var(--idea-gold)" : undefined, opacity: o.status === "not-selected" ? 0.55 : 1 }}>
@@ -150,8 +150,8 @@ export function AccountRequestOffers() {
                     <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", marginTop: 2 }}>★ {biz?.rating.toFixed(1)} · {o.exactProduct ? "Exact product" : "Approved equivalent"} · {o.availability}</div>
                   </div>
                   <div style={{ textAlign: "end" }}>
-                    <div className="idea-display" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-xl)" }}>{total.toLocaleString()} EGP</div>
-                    <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{o.unitPrice} EGP/{o.unit} · {o.quantity} {o.unit} · +{o.shipping} shipping · {(o.taxRate * 100).toFixed(0)}% tax</div>
+                    <div className="idea-display" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-xl)" }}>{subtotal.toLocaleString()} EGP</div>
+                    <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{o.unitPrice} EGP/{o.unit} · {o.quantity} {o.unit} · {locale === "ar" ? "الإجمالي قبل الشحن والضريبة؛ التكاليف النهائية غير مؤكدة" : "Product subtotal only; shipping and tax are not confirmed"}</div>
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 16, marginTop: 10, color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", flexWrap: "wrap" }}>
