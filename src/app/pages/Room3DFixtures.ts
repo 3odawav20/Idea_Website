@@ -246,8 +246,11 @@ export function positionFixture(group:THREE.Group,fixture:PlacedFixture,dims:Roo
 export function disposeFixture(group:THREE.Group){
   group.traverse(obj=>{
     if(obj instanceof THREE.Mesh)obj.geometry.dispose();
-    if(obj instanceof Reflector){obj.getRenderTarget().dispose();obj.material.dispose();}
-    if(obj instanceof THREE.Mesh&&obj.userData.fixtureOverlayMaterial)obj.material.dispose();
+    if(obj instanceof Reflector)obj.getRenderTarget().dispose();
+    if(obj instanceof THREE.Mesh&&(obj instanceof Reflector||obj.userData.fixtureOverlayMaterial)){
+      const materials=Array.isArray(obj.material)?obj.material:[obj.material];
+      materials.forEach(material=>material.dispose());
+    }
   });
   const entries=group.userData.finishEntries as Array<{material:THREE.MeshStandardMaterial}>|undefined;
   for(const entry of entries??[])entry.material.dispose();
