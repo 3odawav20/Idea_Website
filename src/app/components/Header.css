@@ -4,7 +4,7 @@
   position:sticky;top:0;z-index:80;
   height:var(--idea-header-height);
   background:#090909;
-  border-bottom:1px solid rgba(200,80,0,.45);
+  border-bottom:1px solid rgba(253,100,1,.45);
   color:#fff;
   backdrop-filter:none;-webkit-backdrop-filter:none;
   transition:background-color .36s ease,border-color .36s ease,backdrop-filter .36s ease,box-shadow .36s ease;
@@ -12,7 +12,7 @@
 .idea-reference-header--home{margin-bottom:0}
 .idea-reference-header.is-scrolled,.idea-reference-header.is-menu-open{
   background:rgba(9,9,10,.97);
-  border-color:rgba(200,80,0,.24);
+  border-color:rgba(253,100,1,.24);
   backdrop-filter:blur(25px) saturate(1.25);-webkit-backdrop-filter:blur(25px) saturate(1.25);
   box-shadow:0 12px 42px rgba(0,0,0,.16);
 }
@@ -157,43 +157,14 @@ html[lang="en"] .idea-navigation-drawer .idea-discovery-nav-item>button{font-wei
   position: relative;
   z-index: 1;
 }
+/* Reflection variables only; visual glass surfaces are neutral below. */
 html[data-theme="light"] .idea-reference-header {
   --idea-glass-glint: rgba(255,255,255,.48);
   --idea-glass-edge: rgba(255,255,255,.27);
-  background-color: rgba(171, 58, 1, .45);
-  background-image: linear-gradient(107deg,
-    rgba(255,255,255,.21) 0%, rgba(255,255,255,.07) 18%,
-    rgba(255,255,255,0) 34%, rgba(255,255,255,.12) 53%,
-    rgba(255,255,255,.035) 76%, rgba(255,255,255,.13) 100%);
-  border-bottom-color: rgba(255,255,255,.40);
-  color: #fff;
-  backdrop-filter: blur(24px) saturate(1.85) contrast(1.04);
-  -webkit-backdrop-filter: blur(24px) saturate(1.85) contrast(1.04);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.40),
-              inset 0 -1px 0 rgba(255,255,255,.12),
-              0 6px 30px rgba(52,17,0,.17);
 }
 html[data-theme="dark"] .idea-reference-header {
   --idea-glass-glint: rgba(255,255,255,.34);
   --idea-glass-edge: rgba(255,255,255,.19);
-  background-color: rgba(10, 10, 12, .38);
-  background-image: linear-gradient(108deg,
-    rgba(255,255,255,.19) 0%, rgba(255,255,255,.04) 20%,
-    rgba(255,255,255,0) 39%, rgba(255,255,255,.09) 58%,
-    rgba(255,255,255,.016) 79%, rgba(255,255,255,.095) 100%);
-  border-bottom-color: rgba(255,255,255,.21);
-  color: #fff;
-  backdrop-filter: blur(24px) saturate(1.52) contrast(1.05);
-  -webkit-backdrop-filter: blur(24px) saturate(1.52) contrast(1.05);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.27),
-              inset 0 -1px 0 rgba(255,255,255,.09),
-              0 6px 30px rgba(0,0,0,.22);
-}
-html[data-theme="light"] .idea-reference-header:is(.is-scrolled,.is-menu-open) {
-  background-color: rgba(151, 48, 0, .62);
-}
-html[data-theme="dark"] .idea-reference-header:is(.is-scrolled,.is-menu-open) {
-  background-color: rgba(8, 8, 10, .58);
 }
 /* Two specular layers simulate reflected environmental light without
    an opaque logo backing, costly shaders or accessibility-hostile distortion. */
