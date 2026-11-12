@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowUpRight, Instagram, Layers3, Sparkles } from "lucide-react";
+import { ArrowUpRight, Layers3, Sparkles } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { IdeaLogo } from "./IdeaLogo";
 import "./Footer.css";
