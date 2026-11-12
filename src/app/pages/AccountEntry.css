@@ -628,3 +628,248 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   .idea-auth-scene--business .idea-auth-panel {background:rgba(27,33,42,.84)}
   .idea-auth-scene--business .idea-auth-copy {background:rgba(13,18,25,.70)}
 }
+
+
+/* Business registration: a real full-bleed editorial layout, not a centered
+   'contain' photo with large blurred letterboxes.
+   The 1672x941 approved image remains uncropped: image aspect ratio is preserved.
+   The feature cards, company tiles and the editable form fill the rest. */
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-visual{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:auto minmax(172px,1fr) minmax(138px,.70fr);
+  align-content:stretch;
+  min-height:calc(100svh - 52px);
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-photo{
+  position:relative;
+  inset:auto!important;
+  grid-column:1;
+  grid-row:1;
+  display:block;
+  width:100%;
+  height:auto;
+  aspect-ratio:1672 / 941;
+  background-image:var(--idea-business-photo);
+  background-size:contain;
+  background-position:center;
+  background-repeat:no-repeat;
+  transform:none;
+  filter:none;
+  opacity:1;
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy{
+  position:relative;
+  inset:auto;
+  top:auto;
+  bottom:auto;
+  grid-column:1;
+  grid-row:1;
+  align-self:end;
+  justify-self:start;
+  box-sizing:border-box;
+  width:auto;
+  max-width:min(78%,620px);
+  margin:0 0 clamp(16px,2.2vw,38px) 5%;
+  padding:clamp(12px,1.45vw,23px);
+}
+[dir="rtl"] .idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy{
+  margin:0 5% clamp(16px,2.2vw,38px) 0;
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature-list{
+  position:relative;
+  inset:auto;
+  bottom:auto;
+  grid-column:1;
+  grid-row:2;
+  align-self:stretch;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  align-items:stretch;
+  padding:clamp(14px,1.7vw,28px) 3%;
+  margin:0;
+  min-height:0;
+  gap:clamp(6px,.8vw,12px);
+  background:linear-gradient(120deg,rgba(30,43,55,.15),rgba(235,242,250,.07));
+  border-block:1px solid rgba(255,255,255,.20);
+  -webkit-backdrop-filter:blur(22px);
+  backdrop-filter:blur(22px);
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  height:100%;
+  min-height:0;
+  padding:clamp(10px,1.2vw,22px) clamp(5px,.8vw,14px);
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:12px;
+  background:linear-gradient(142deg,rgba(229,237,247,.17),rgba(39,48,58,.15));
+  -webkit-backdrop-filter:blur(14px);
+  backdrop-filter:blur(14px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.23),0 8px 20px rgba(4,9,13,.12);
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature::before{display:none}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature svg{
+  width:clamp(23px,2.3vw,38px);
+  height:clamp(23px,2.3vw,38px);
+  margin-bottom:8px;
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature strong{
+  font-size:clamp(12px,1.12vw,17px);
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature small{
+  font-size:clamp(10px,.82vw,13px);
+  max-width:230px;
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types{
+  position:relative;
+  inset:auto;
+  bottom:auto;
+  grid-column:1;
+  grid-row:3;
+  align-self:stretch;
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  padding:clamp(12px,1.7vw,28px) 3%;
+  margin:0;
+  gap:clamp(6px,.85vw,13px);
+  min-height:0;
+  background:linear-gradient(160deg,rgba(222,237,249,.095),rgba(25,37,49,.18));
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types span{
+  align-content:center;
+  place-items:center;
+  min-width:0;
+  min-height:0;
+  height:100%;
+  padding:14px 5px;
+  background:linear-gradient(145deg,rgba(233,241,249,.17),rgba(26,36,48,.32));
+  border:1px solid rgba(255,255,255,.30);
+  -webkit-backdrop-filter:blur(16px);
+  backdrop-filter:blur(16px);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.20);
+}
+.idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types svg{
+  width:clamp(24px,2.2vw,36px);
+  height:clamp(24px,2.2vw,36px);
+}
+/* The form is no longer vertically centered in a tall empty right column. */
+@media(min-width:801px){
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-panel-wrap{
+    display:flex;
+    align-items:stretch;
+    justify-content:stretch;
+    padding:clamp(12px,1.35vw,24px);
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-panel{
+    width:100%;
+    max-width:none;
+    min-height:100%;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:clamp(18px,1.8vw,32px);
+    gap:clamp(12px,1.25vh,22px);
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-fields{
+    flex:1 1 auto;
+    align-content:space-evenly;
+    row-gap:clamp(12px,1.4vh,23px);
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-panel-header{
+    margin-bottom:0;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-actions{
+    margin-top:auto;
+  }
+}
+@media(min-width:801px) and (max-width:1100px){
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy{
+    max-width:92%;
+    padding:12px 15px;
+    margin-bottom:14px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature small{
+    font-size:10px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types span{
+    font-size:10px;
+  }
+}
+/* On phones/tablets, place the photo first, then the feature tiles and types
+   in normal document flow; preserve accessibility and avoid overlapping. */
+@media(max-width:800px){
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-visual{
+    display:grid;
+    grid-template-rows:auto auto auto;
+    min-height:0;
+    max-height:none;
+    overflow:visible;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-photo{
+    background-position:center!important;
+    aspect-ratio:1672 / 941;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy{
+    top:auto;
+    bottom:auto;
+    inset:auto;
+    width:auto;
+    max-width:85%;
+    margin:0 0 14px 5%;
+    padding:11px 13px;
+  }
+  [dir="rtl"] .idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy{
+    margin:0 5% 14px 0;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature-list{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+    padding:12px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature{
+    min-height:118px;
+    padding:10px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    padding:12px;
+    gap:8px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types span{
+    min-height:84px;
+    padding:8px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-panel-wrap{
+    padding:16px 12px;
+  }
+}
+@media(max-width:480px){
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy{
+    max-width:93%;
+    margin-bottom:8px;
+    padding:8px 11px;
+  }
+  [dir="rtl"] .idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy{
+    margin-bottom:8px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy h1{
+    font-size:clamp(18px,5vw,24px);
+    margin-bottom:5px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-copy>p:not(.idea-auth-eyebrow){
+    font-size:10px;
+    line-height:1.45;
+    margin-top:5px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature-list{
+    gap:6px;
+    padding:9px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature{
+    min-height:105px;
+  }
+}
+
