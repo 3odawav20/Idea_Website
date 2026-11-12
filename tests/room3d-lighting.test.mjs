@@ -44,7 +44,9 @@ test("kitchen is explicitly a generic mode and does not invent manufacturer mode
   assert.match(studio,/roomMode==="kitchen"/);
   assert.match(studio,/changeSceneMode/);
   assert.doesNotMatch(studio,/africa beige|fashion carrara/i);
-  assert.match(studio,/changeSceneMode=\(next:RoomMode\)=>setRoomMode\(next\)/);
+  assert.match(studio,/const changeSceneMode=\\(next:RoomMode\\)=>\\{/);
+  assert.match(studio,/setRoomMode\\(next\\)/);
+  assert.match(studio,/fixtureLayouts\\.current\\[roomMode\\]=fixtures/);
   assert.match(realism,/IDEA_GENERIC_KITCHEN/);
   assert.match(realism,/makeKitchenWoodTexture/);
   assert.match(realism,/makeKitchenStoneTexture/);
