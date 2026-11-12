@@ -7,7 +7,6 @@ import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
 import { IdeaLogo } from "./IdeaLogo";
 import { DiscoveryNavigation } from "./DiscoveryNavigation";
-import { AnnouncementBar } from "./AnnouncementBar";
 import "./Header.css";
 
 export function Header() {
@@ -33,16 +32,20 @@ export function Header() {
   }, []);
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   useEffect(() => {
-    if (open) dialog.current?.showModal();
-    else dialog.current?.close();
+    const node = dialog.current;
+    if (!node) return;
+    if (open && !node.open) node.showModal();
+    else if (!open && node.open) node.close();
   }, [open]);
+  // Navigation via browser history also closes the menu, including on iOS Safari.
+  useEffect(() => { setOpen(false); }, [pathname]);
   const account = session ? session.role === "business" ? "/business" : session.role === "admin" ? "/admin" : "/account" : "/login";
   const controls = <>
     <span className="idea-header-languages"><Globe size={15} aria-hidden="true" />
       {(["en", "ar", "fr"] as const).map(code => <button key={code} aria-label={{en:"English",ar:"العربية",fr:"Français"}[code]} aria-pressed={locale === code} onClick={() => setLocale(code)}>{code.toUpperCase()}</button>)}
     </span>
     <button onClick={toggle} aria-label={text("Toggle theme", "تغيير المظهر", "Changer le thème")} title={text("Toggle theme", "تغيير المظهر", "Changer le thème")}>{mode === "dark" ? <Sun size={21} /> : <Moon size={21} />}</button>
-    <Link to="/favorites" aria-label={t("fav.title")} onClick={() => setOpen(false)}><Heart size={20} />{favorites.length > 0 && <small>{favorites.length}</small>}</Link>
+    <Link className="idea-header-favorites" to="/favorites" aria-label={t("fav.title")} onClick={() => setOpen(false)}><Heart size={20} />{favorites.length > 0 && <small>{favorites.length}</small>}</Link>
     <Link to="/request-quote/new" aria-label={t("quote.title")} onClick={() => setOpen(false)}><FileText size={19} />{quote.length > 0 && <small>{quote.length}</small>}</Link>
     <Link to={account} aria-label={session ? t("nav.account") : t("nav.signIn")} onClick={() => setOpen(false)}><User size={20} /></Link>
   </>;
@@ -51,10 +54,13 @@ export function Header() {
       <div className="idea-reference-header-row" dir="ltr">
         <Link className="idea-reference-logo" to="/" aria-label={text("IDEA — Home", "الرئيسية — IDEA", "IDEA — Accueil")}><IdeaLogo compact /></Link>
         <div className="idea-reference-ticker">
-          <AnnouncementBar fallback={<div className="idea-catalogue-announcement" dir={locale === "ar" ? "rtl" : "ltr"}>
+          {/* Static, truthful catalogue fallback until the existing PHP/MySQL
+              platform exposes a verified admin-published announcement contract.
+              No external account-service request or fabricated live sales in the header. */}
+          <div className="idea-catalogue-announcement" dir={locale === "ar" ? "rtl" : "ltr"}>
             <span aria-hidden="true">✦</span><span>{text(`${products.length} products in the catalogue · Explore surfaces & plan your space`, `${products.length} منتج في الكتالوج · اكتشف الخامات وصمّم مساحتك`, `${products.length} produits au catalogue · Découvrez les surfaces`)}</span>
             <span aria-hidden="true">✦</span><Link to="/products">{text("Learn more", "اعرف المزيد", "En savoir plus")}</Link>
-          </div>} />
+          </div>
         </div>
         <div className="idea-reference-actions">{controls}</div>
         <button className="idea-menu-btn" aria-label={text("Menu", "القائمة", "Menu")} aria-haspopup="dialog" aria-expanded={open} aria-controls="idea-navigation-drawer" onClick={() => setOpen(true)}><Menu size={21} /></button>
