@@ -1,0 +1,428 @@
+/* IDEA account entry — artwork-led responsive form matching approved reference screen hierarchy.
+   These screens intentionally remain dark even when the wider storefront has a light canvas. */
+.idea-auth-scene {
+  --idea-auth-orange: var(--idea-gold);
+  --idea-auth-ink: #0c0c0c;
+  --idea-auth-foreground: #f7f5f2;
+  --idea-auth-border: rgba(255,255,255,.27);
+  color:var(--idea-auth-foreground);
+  background: #10100f;
+  min-height:calc(100svh - 52px);
+  overflow:hidden;
+  position:relative;
+}
+.idea-auth-scene--light {
+  --idea-auth-ink:#1c130c;
+  --idea-auth-border:rgba(255,180,101,.36);
+  background:#1b130e; /* Never expose a white auth canvas. */
+}
+.idea-auth-content {
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0, 65%) minmax(420px,35%);
+  width:100%;max-width:2100px;
+  margin:0 auto;
+  min-height:calc(100svh - 52px);
+  isolation:isolate;
+}
+.idea-auth-visual{
+  min-width:0;min-height:750px;position:relative;
+  background:#161513;overflow:hidden;
+  color:#fff;
+}
+.idea-auth-photo{
+  position:absolute;inset:0;
+  pointer-events:none;
+  background-color:#2a2927;
+  background-position:center center;
+  background-size:cover;
+  background-repeat:no-repeat;
+  transform:scale(1.005);
+  isolation:isolate;
+}
+/* Exact approved 1448 x 1086 customer photographs.
+   The responsive crop preserves image aspect ratio: no stretching, recolouring,
+   synthetic faces or replacement stock art. Theme switches the actual file. */
+.idea-auth-scene--customer .idea-auth-photo {
+  inset:0;
+  background-image:url('/images/auth/customer-night.webp');
+  background-position:37% center;
+  background-size:cover;
+  filter:none;
+  transform:none;
+}
+.idea-auth-scene--customer.idea-auth-scene--light .idea-auth-photo {
+  background-image:url('/images/auth/customer-day.webp');
+  filter:none;
+}
+.idea-auth-scene--customer .idea-auth-visual {
+  background:#13110f;
+}
+.idea-auth-scene--customer .idea-auth-visual::before {
+  content:"";
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(270deg,rgba(13,12,12,.94),rgba(15,13,12,.65) 23%,transparent 55%),
+    linear-gradient(0deg,#0d0c0b 0%,rgba(15,13,12,.76) 14%,transparent 44%);
+}
+.idea-auth-scene--customer.idea-auth-scene--light .idea-auth-visual::before {
+  background:
+    linear-gradient(270deg,rgba(22,17,14,.84),rgba(21,17,15,.55) 24%,transparent 55%),
+    linear-gradient(0deg,rgba(17,13,11,.92) 0%,rgba(20,16,13,.64) 14%,transparent 46%);
+}
+.idea-auth-scene--admin .idea-auth-photo{
+  background-image:url('/images/auth/admin-photo.jpg'),url('/images/featured/stone.webp');
+  background-position:center center;
+  filter:saturate(.95) brightness(.8);
+}
+.idea-auth-scene--business .idea-auth-photo{
+  background-image:url('/images/auth/business-photo.jpg'),url('/images/featured/ceramics.webp');
+  background-position:center 34%;
+  filter:saturate(1.02) brightness(.83);
+}
+.idea-auth-scene--admin .idea-auth-visual::before,
+.idea-auth-scene--business .idea-auth-visual::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(0deg,rgba(7,7,7,.99) 0%,rgba(8,8,8,.96) 14%,
+    rgba(8,8,8,.45) 37%,rgba(8,8,8,.06) 72%),
+    linear-gradient(90deg,rgba(5,5,5,.28),transparent 48%);
+}
+.idea-auth-scene--light .idea-auth-photo{filter:brightness(1.075) saturate(1.08)}
+.idea-auth-scene--light .idea-auth-visual{background-color:#20160d}
+.idea-auth-scene--customer .idea-auth-copy{
+  position:absolute;z-index:2;top:15.5%;right:3.4%;left:auto;
+  width:33%;max-width:410px;text-align:start;
+}
+.idea-auth-scene--admin .idea-auth-copy{
+  position:absolute;z-index:2;top:6%;inset-inline-start:16%;width:55%;
+  text-align:start;
+}
+.idea-auth-scene--business .idea-auth-copy{
+  position:absolute;z-index:2;bottom:43%;inset-inline-start:7%;max-width:73%;
+  text-align:start;
+}
+.idea-auth-copy h1{
+  font-family:var(--idea-font-arabic),sans-serif;
+  font-weight:650;letter-spacing:-.018em;
+  line-height:1.42;font-size:clamp(29px,3vw,50px);
+  margin:0 0 13px;text-shadow:0 2px 14px rgba(0,0,0,.72);
+}
+html[lang="en"] .idea-auth-copy h1,
+html[lang="fr"] .idea-auth-copy h1{font-family:var(--idea-font-body);font-size:clamp(29px,2.6vw,47px);line-height:1.18}
+.idea-auth-copy h1 span{display:block;color:var(--idea-auth-orange)}
+.idea-auth-copy>p:not(.idea-auth-eyebrow){
+  max-width:420px;
+  font-size:clamp(12px,1.05vw,17px);line-height:1.8;
+  margin:12px 0 0;color:#eee;text-shadow:0 2px 7px #111;
+}
+.idea-auth-eyebrow{
+  color:#fafafa;font:600 11px var(--idea-font-body);
+  letter-spacing:.34em;margin:0 0 17px;padding-inline-start:34px;position:relative;
+}
+.idea-auth-eyebrow::before{content:"";position:absolute;inset-inline-start:0;top:50%;width:22px;height:2px;background:var(--idea-auth-orange)}
+.idea-auth-feature-list{
+  position:absolute;z-index:2;inset-inline:2% 2%;bottom:3.7%;
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:0;
+}
+.idea-auth-feature{
+  padding:10px 16px 0;position:relative;
+  text-align:center;display:flex;align-items:center;flex-direction:column;gap:4px;
+  min-width:0;
+}
+.idea-auth-feature:not(:first-child)::before{
+  content:"";position:absolute;inset-inline-start:0;top:32%;height:48%;
+  width:1px;background:linear-gradient(transparent,rgba(253,100,1,.6),transparent);
+}
+.idea-auth-feature svg{color:var(--idea-auth-orange);margin-bottom:6px}
+.idea-auth-feature strong{font:650 clamp(12px,1.25vw,19px)/1.55 var(--idea-font-arabic);color:#f4f2ee}
+html[lang="en"] .idea-auth-feature strong,html[lang="fr"] .idea-auth-feature strong{font-family:var(--idea-font-body)}
+.idea-auth-feature small{font:400 clamp(10px,.83vw,14px)/1.65 var(--idea-font-arabic);color:#d5d1cc}
+html[lang="en"] .idea-auth-feature small,html[lang="fr"] .idea-auth-feature small{font-family:var(--idea-font-body)}
+.idea-auth-scene--business .idea-auth-feature-list{
+  bottom:27%;grid-template-columns:repeat(4,minmax(0,1fr));
+  inset-inline:5% 5%;
+}
+.idea-auth-business-types{
+  position:absolute;z-index:2;bottom:3.5%;inset-inline:5%;
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;
+}
+.idea-auth-business-types span{
+  min-width:0;min-height:76px;display:grid;place-items:center;text-align:center;
+  font:600 clamp(10px,.83vw,13px) var(--idea-font-arabic);
+  color:#f8f7f3;
+  border:1px solid rgba(255,255,255,.23);border-radius:9px;
+  background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(8,8,8,.62));
+  backdrop-filter:blur(8px);
+}
+.idea-auth-business-types svg{color:var(--idea-auth-orange)}
+.idea-auth-panel-wrap{
+  position:relative;z-index:3;
+  display:flex;align-items:center;justify-content:center;
+  padding:clamp(18px,2.4vw,44px);
+  background:linear-gradient(135deg,rgba(19,19,19,.93),#0c0c0b 65%,#101010);
+}
+.idea-auth-scene--light .idea-auth-panel-wrap{
+  background:linear-gradient(135deg,rgba(47,30,16,.96),#1c130e 55%,#130f0d);
+}
+.idea-auth-panel{
+  width:100%;max-width:510px;min-width:0;
+  padding:clamp(20px,2.1vw,37px);
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:14px;
+  background:linear-gradient(145deg,rgba(48,45,42,.64),rgba(11,11,11,.89) 54%);
+  box-shadow:0 30px 65px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.12);
+  color:var(--idea-auth-foreground);
+}
+.idea-auth-scene--light .idea-auth-panel{
+  background:linear-gradient(135deg,rgba(66,40,21,.88),rgba(27,20,15,.93));
+  border-color:rgba(253,100,1,.29);
+}
+.idea-auth-scene--admin .idea-auth-panel{max-width:470px;border-color:rgba(253,100,1,.37)}
+.idea-auth-panel-header{position:relative;margin:0 0 20px;text-align:center}
+.idea-auth-panel-header h2{
+  font:700 clamp(21px,1.85vw,31px)/1.35 var(--idea-font-arabic);
+  color:#fff;margin:4px 0 3px;
+}
+html[lang="en"] .idea-auth-panel-header h2,
+html[lang="fr"] .idea-auth-panel-header h2{font-family:var(--idea-font-body)}
+.idea-auth-panel-header p{
+  color:#d6d2cf;font-size:clamp(11px,.85vw,14px);
+  line-height:1.75;margin:9px 0 0;
+}
+.idea-auth-panel-header .idea-auth-capline{font-size:10px;letter-spacing:.18em;color:#d0cac4;display:block}
+.idea-auth-header-icon{position:absolute;inset-inline-start:0;top:4px;color:var(--idea-auth-orange);border-inline-end:1px solid rgba(255,255,255,.4);padding-inline-end:14px}
+.idea-auth-admin-symbol{color:var(--idea-auth-orange);filter:drop-shadow(0 0 9px rgba(253,100,1,.45));margin:0 auto 13px}
+.idea-auth-fields{display:grid;gap:12px}
+.idea-auth-fields--business{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:14px;row-gap:10px}
+.idea-auth-field{display:flex;flex-direction:column;gap:4px;min-width:0;color:#f5f1ec;position:relative}
+.idea-auth-field--full{grid-column:1/-1}
+.idea-auth-label{font:550 12px/1.45 var(--idea-font-arabic);color:#eee;text-align:start}
+html[lang="en"] .idea-auth-label,html[lang="fr"] .idea-auth-label{font-family:var(--idea-font-body)}
+.idea-auth-label em{color:var(--idea-auth-orange);font-style:normal}
+.idea-auth-input-wrap{
+  width:100%;min-width:0;height:43px;position:relative;
+  display:flex;align-items:center;gap:9px;
+  padding:0 12px;
+  border:1px solid rgba(255,255,255,.36);border-radius:5px;
+  background:rgba(12,12,13,.5);
+  transition:border-color .2s,box-shadow .2s,background .2s;
+}
+.idea-auth-input-wrap:focus-within{
+  border-color:var(--idea-auth-orange);
+  box-shadow:0 0 0 2px rgba(253,100,1,.18);
+  background:rgba(12,12,13,.72)
+}
+.idea-auth-input-wrap>svg{color:#e0dbd6;flex:0 0 auto}
+.idea-auth-input-wrap input,.idea-auth-input-wrap select{
+  min-width:0;flex:1;width:100%;height:100%;
+  background:transparent!important;color:#fff!important;
+  border:0!important;border-radius:0!important;outline:none!important;box-shadow:none!important;
+  font:500 12px var(--idea-font-arabic);text-align:start;
+}
+html[lang="en"] .idea-auth-input-wrap input,html[lang="en"] .idea-auth-input-wrap select,
+html[lang="fr"] .idea-auth-input-wrap input,html[lang="fr"] .idea-auth-input-wrap select{font-family:var(--idea-font-body)}
+.idea-auth-input-wrap input::placeholder{color:#989595}
+.idea-auth-input-wrap select{cursor:pointer;color-scheme:dark;appearance:none}
+.idea-auth-input-wrap select option{background:#171717;color:#fff}
+.idea-auth-field--phone .idea-auth-input-wrap select{flex:0 0 65px;max-width:65px;border-inline-start:1px solid rgba(255,255,255,.24)!important;padding-inline-start:8px}
+.idea-auth-eye{
+  color:#dad7d3!important;border:0;background:transparent;
+  display:inline-grid;place-items:center;min-width:31px;min-height:36px;cursor:pointer;padding:0
+}
+.idea-auth-dropzone{
+  position:relative;
+  display:grid;place-items:center;gap:4px;text-align:center;
+  border:1px dashed rgba(255,255,255,.45);border-radius:7px;
+  min-height:80px;padding:10px;
+  color:#f2efe9;background:rgba(0,0,0,.18);
+  cursor:pointer;
+}
+.idea-auth-dropzone svg{color:var(--idea-auth-orange)}
+.idea-auth-dropzone span{font:500 12px var(--idea-font-arabic);max-width:100%;overflow-wrap:anywhere}
+.idea-auth-dropzone small{font-size:10px;color:#bfbab5}
+.idea-auth-dropzone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.idea-auth-actions{margin-top:20px}
+.idea-auth-checkbox{display:flex;align-items:center;gap:8px;min-height:29px;cursor:pointer;font-size:12px;color:#f3f1ef}
+.idea-auth-checkbox input{
+  width:20px;height:20px;accent-color:var(--idea-auth-orange);
+  flex:0 0 auto;cursor:pointer
+}
+.idea-auth-checkbox a,.idea-auth-between>a,.idea-auth-toggle a{color:var(--idea-auth-orange);text-decoration:none}
+.idea-auth-checkbox a:hover,.idea-auth-between>a:hover,.idea-auth-toggle a:hover{text-decoration:underline}
+.idea-auth-between{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;flex-wrap:wrap}
+.idea-auth-feedback{font-size:12px;line-height:1.55;border-radius:7px;padding:10px 12px;margin:12px 0!important;overflow-wrap:anywhere}
+.idea-auth-feedback--error{background:rgba(156,33,20,.18);color:#ffb2ac;border:1px solid rgba(245,81,58,.34)}
+.idea-auth-feedback--success{background:rgba(33,110,70,.2);color:#bbffd5;border:1px solid rgba(33,150,90,.35);display:flex;align-items:center;gap:6px}
+.idea-auth-submit{
+  width:100%;min-height:49px;
+  border:1px solid rgba(255,188,116,.4);
+  border-radius:7px;
+  background:#fd6401;color:#fff;
+  display:flex;justify-content:center;align-items:center;gap:17px;
+  font:750 15px var(--idea-font-arabic);
+  box-shadow:0 8px 18px rgba(0,0,0,.27);
+  margin-top:16px;
+  transition:filter .19s,transform .19s,box-shadow .19s;cursor:pointer
+}
+html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:var(--idea-font-body)}
+.idea-auth-submit:hover:not(:disabled){filter:brightness(1.09);transform:translateY(-1px);box-shadow:0 10px 24px rgba(253,100,1,.2)}
+.idea-auth-submit:disabled{opacity:.63;cursor:progress}
+.idea-auth-toggle{text-align:center;color:#e7e4df;font-size:12px;margin:17px 0 0}
+.idea-auth-social{margin-top:20px;border-top:1px solid rgba(255,255,255,.15)}
+.idea-auth-social>p{text-align:center;color:#dad6d0;margin:11px 0;font-size:12px}
+.idea-auth-social>div{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.idea-auth-social button{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:9px 10px;min-height:44px;
+  background:rgba(0,0,0,.22);color:white;border:1px solid rgba(255,255,255,.36);
+  border-radius:7px;cursor:pointer;font-size:13px
+}
+.idea-auth-social button:hover{background:rgba(255,255,255,.12)}
+.idea-google-mark{font-weight:900;font-size:20px;color:#4285f4;text-shadow:1px 0 #ea4335,-1px 0 #34a853,0 1px #fbbc05}
+.idea-apple-mark{font-size:16px;display:inline-block;border-radius:50%}
+@media(max-width:1300px){
+  .idea-auth-content{grid-template-columns:minmax(0,61%) minmax(400px,39%)}
+  .idea-auth-panel-wrap{padding:18px}
+  .idea-auth-panel{padding:22px}
+  .idea-auth-scene--customer .idea-auth-copy{width:36%;inset-inline-end:2%}
+  .idea-auth-scene--business .idea-auth-copy{bottom:48%}
+  .idea-auth-scene--business .idea-auth-feature-list{bottom:28%}
+}
+@media(max-width:1000px){
+  .idea-auth-content{grid-template-columns:minmax(0,53%) minmax(380px,47%)}
+  .idea-auth-panel-wrap{padding:12px}
+  .idea-auth-panel{padding:18px}
+  .idea-auth-scene--customer .idea-auth-photo{inset:0;opacity:1}
+  .idea-auth-scene--customer .idea-auth-visual::before{background:linear-gradient(0deg,#10100f,transparent 55%),linear-gradient(270deg,rgba(0,0,0,.73),transparent 80%)}
+  .idea-auth-scene--customer .idea-auth-copy{width:87%;inset-inline:6%;top:6%;max-width:none}
+  .idea-auth-scene--admin .idea-auth-copy{width:78%;inset-inline-start:8%}
+  .idea-auth-feature-list{inset-inline:2%;bottom:3%}
+  .idea-auth-feature strong{font-size:12px}
+  .idea-auth-feature small{font-size:10px}
+  .idea-auth-scene--business .idea-auth-feature-list{bottom:25%}
+  .idea-auth-business-types{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+  .idea-auth-business-types span{font-size:10px;padding:2px}
+}
+@media(max-width:800px){
+  .idea-auth-content{display:flex;flex-direction:column}
+  .idea-auth-visual{min-height:450px;max-height:none}
+  .idea-auth-photo{inset:0!important;background-position:center 38%!important}
+  .idea-auth-scene--customer .idea-auth-photo{background-position:39% center!important}
+  .idea-auth-scene--customer .idea-auth-visual::before{background:linear-gradient(0deg,rgba(10,9,8,.94),transparent 63%),linear-gradient(180deg,rgba(7,7,7,.72),transparent 42%)}
+  .idea-auth-copy,.idea-auth-scene--customer .idea-auth-copy,
+  .idea-auth-scene--business .idea-auth-copy,.idea-auth-scene--admin .idea-auth-copy{
+    position:absolute;top:12%;bottom:auto;inset-inline:6%;
+    width:auto;max-width:none;
+  }
+  .idea-auth-copy h1{font-size:clamp(25px,5vw,40px)}
+  .idea-auth-copy>p:not(.idea-auth-eyebrow){font-size:12px;max-width:470px}
+  .idea-auth-feature-list,.idea-auth-scene--business .idea-auth-feature-list{
+    bottom:3.5%;inset-inline:2%;grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .idea-auth-scene--business .idea-auth-visual{min-height:560px}
+  .idea-auth-scene--business .idea-auth-feature-list{bottom:23%;grid-template-columns:repeat(4,minmax(0,1fr))}
+  .idea-auth-business-types{bottom:3%;inset-inline:3%}
+  .idea-auth-panel-wrap{padding:16px 12px 34px}
+  .idea-auth-panel{max-width:650px;padding:25px}
+}
+@media(max-width:480px){
+  .idea-auth-scene{min-height:calc(100svh - 54px)}
+  .idea-auth-visual{min-height:360px}
+  .idea-auth-scene--business .idea-auth-visual{min-height:490px}
+  .idea-auth-scene--admin .idea-auth-visual{min-height:410px}
+  .idea-auth-photo{opacity:.76}
+  .idea-auth-scene--customer .idea-auth-copy{top:7%}
+  .idea-auth-copy h1{font-size:27px;line-height:1.4}
+  .idea-auth-copy>p:not(.idea-auth-eyebrow){font-size:11px;line-height:1.65}
+  .idea-auth-scene--admin .idea-auth-copy{top:5%}
+  .idea-auth-feature-list{bottom:2%}
+  .idea-auth-feature{padding:3px 5px}
+  .idea-auth-feature svg{width:22px;height:22px}
+  .idea-auth-feature strong{font-size:10px}
+  .idea-auth-feature small{font-size:9px;line-height:1.45}
+  .idea-auth-business-types{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .idea-auth-business-types span{font-size:9px;min-height:60px}
+  .idea-auth-panel{padding:19px 15px}
+  .idea-auth-panel-header h2{font-size:24px}
+  .idea-auth-fields--business{grid-template-columns:1fr}
+  .idea-auth-field--full{grid-column:auto}
+  .idea-auth-field .idea-auth-input-wrap{height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+  .idea-auth-submit,.idea-auth-input-wrap{transition:none!important}
+  .idea-auth-submit:hover{transform:none!important}
+}
+
+
+/* Approved Arabic artboards are the literal owner-supplied screens, cropped to
+   the photographic/editorial panel. The right side is ALWAYS real HTML inputs,
+   never a screenshot or overlaid click-map. On English/French and small screens
+   render live translated text on the unlabelled photographic crop instead. */
+@media (min-width:801px) {
+  html[lang="ar"] .idea-auth-scene--business .idea-auth-visual {
+    background:#10100f url('/images/auth/business-reference.jpg') top center / 100% 100% no-repeat;
+  }
+  html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual {
+    background:#10100f url('/images/auth/admin-reference.jpg') top center / 100% 100% no-repeat;
+  }
+  html[lang="ar"] .idea-auth-scene:not(.idea-auth-scene--customer) .idea-auth-visual :is(
+    .idea-auth-photo,.idea-auth-copy,.idea-auth-feature-list,.idea-auth-business-types
+  ) { display:none; }
+  html[lang="ar"] .idea-auth-scene:not(.idea-auth-scene--customer) .idea-auth-visual::before { display:none; }
+}
+
+/* Customer image alignment: keep both people proportionate across iPhone,
+   tablet and desktop without distorting the photo or covering the CTAs. */
+@media (max-width:800px) {
+  .idea-auth-scene--customer .idea-auth-photo {
+    background-size:cover;
+    background-position:39% 44%;
+  }
+  .idea-auth-scene--customer .idea-auth-visual {
+    min-height:clamp(390px,70vw,580px);
+  }
+  .idea-auth-scene--customer .idea-auth-feature-list {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:0;
+  }
+}
+@media (max-width:480px) {
+  .idea-auth-scene--customer .idea-auth-photo { background-position:42% 44%!important; }
+  .idea-auth-scene--customer .idea-auth-visual { min-height:435px; }
+  .idea-auth-scene--customer .idea-auth-copy { top:5%;inset-inline:5%;width:90%; }
+  .idea-auth-scene--customer .idea-auth-copy h1 { font-size:clamp(23px,6.5vw,31px); }
+}
+
+/* Business account: measured, symmetric two-column form and subtle entrance.
+   Keep the owner-approved copy/layout and original company photography unchanged. */
+.idea-auth-scene--business .idea-auth-panel {
+  width:100%;
+  max-width:510px;
+  box-sizing:border-box;
+  animation:idea-business-entry .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.idea-auth-scene--business .idea-auth-fields--business {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:start;
+  column-gap:14px;
+  row-gap:11px;
+}
+.idea-auth-scene--business .idea-auth-fields--business > * {min-width:0;max-width:100%}
+.idea-auth-scene--business .idea-auth-input-wrap,
+.idea-auth-scene--business .idea-auth-submit,
+.idea-auth-scene--business .idea-auth-dropzone {box-sizing:border-box;max-width:100%}
+.idea-auth-scene--business .idea-auth-submit {
+  margin-inline:auto;
+  min-height:49px;
+}
+@keyframes idea-business-entry {
+  from {opacity:0;transform:translateY(12px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@media (max-width:480px) {
+  .idea-auth-scene--business .idea-auth-fields--business {grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce) {
+  .idea-auth-scene--business .idea-auth-panel {animation:none}
+}

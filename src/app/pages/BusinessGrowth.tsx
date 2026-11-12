@@ -143,10 +143,36 @@ export function AdminAnnouncementEditor(){
   </section>;
 }
 
+async function readFileHeader(file:File,length:number):Promise<Uint8Array>{
+  const buf=await file.slice(0,length).arrayBuffer();
+  return new Uint8Array(buf);
+}
+
+function startsWithBytes(data:Uint8Array,signature:number[]):boolean{
+  if(data.length<signature.length)return false;
+  for(let i=0;i<signature.length;i++)if(data[i]!==signature[i])return false;
+  return true;
+}
+
+async function hasValidFileSignature(file:File):Promise<boolean>{
+  const header=await readFileHeader(file,16);
+  if(file.type==="image/jpeg")return startsWithBytes(header,[0xFF,0xD8,0xFF]);
+  if(file.type==="image/png")return startsWithBytes(header,[0x89,0x50,0x4E,0x47,0x0D,0x0A,0x1A,0x0A]);
+  if(file.type==="image/webp"){
+    return startsWithBytes(header,[0x52,0x49,0x46,0x46]) &&
+      header[8]===0x57&&header[9]===0x45&&header[10]===0x42&&header[11]===0x50;
+  }
+  if(file.type==="video/mp4"){
+    return header[4]===0x66&&header[5]===0x74&&header[6]===0x79&&header[7]===0x70;
+  }
+  return false;
+}
+
 async function validateMedia(file:File,placement:string):Promise<void>{
   const video=file.type==="video/mp4";
   const image=["image/jpeg","image/png","image/webp"].includes(file.type);
   if(!video&&!image)throw new Error("النوع المدعوم: JPG / PNG / WebP / MP4 فقط.");
+  if(!(await hasValidFileSignature(file)))throw new Error("محتوى الملف لا يطابق نوعه المعلن.");
   if(file.size>(video?40:5)*1024*1024)
     throw new Error(video?"الفيديو يجب ألا يزيد عن 40MB.":"الصورة يجب ألا تزيد عن 5MB.");
   if(placement==="home_hero_video"&&!video)
@@ -159,7 +185,11 @@ async function validateMedia(file:File,placement:string):Promise<void>{
       const metadata=await new Promise<{w:number;h:number;duration:number}>((resolve,reject)=>{
         const el=document.createElement("video");el.preload="metadata";
         el.onloadedmetadata=()=>resolve({w:el.videoWidth,h:el.videoHeight,duration:el.duration});
-        el.onerror=()=>reject(new Error("تعذّر فحص أبعاد الفيديو."));el.src=temp;
+        el.onerror=()=>reject(new Error("تعذّر فحص أبعاد الفيديو."));
+        el.removeAttribute("src");
+        el.srcObject=null;
+        el.src=temp;
+        el.load();
       });
       if(placement==="home_hero_video"&&(metadata.w!==1920||metadata.h!==1080||
         metadata.duration<6||metadata.duration>20)){

@@ -8,6 +8,7 @@ import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
 import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
+import { distinctStorefrontProducts } from "../data/storefrontDistinct";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import "./Home.css";
@@ -26,6 +27,8 @@ const BATH_SLUGS = ["bathroom-sets", "bathroom-units", "faucets", "shower-units"
 export function Home() {
   const { locale, t } = useI18n();
   const { products } = useStore();
+  // Public home cards show one design per source maker, never repetitive variants.
+  const featuredProducts = distinctStorefrontProducts(products).slice(0, 4);
   const destinations = useCollectionDestinations();
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   return (
@@ -74,9 +77,9 @@ export function Home() {
           </Link>;
         })}</div>
       </section>
-      {products.length > 0 && <section className="idea-home-section">
+      {featuredProducts.length > 0 && <section className="idea-home-section">
         <h2 className="idea-home-centered-title">{t("home.featured")}</h2>
-        <div className="idea-home-products">{products.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} />)}</div>
+        <div className="idea-home-products">{featuredProducts.map((p) => <ProductCard key={p.id} product={p} />)}</div>
         <div className="idea-home-center"><Link className="idea-home-text-link" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link></div>
       </section>}
       <section className="idea-home-section idea-home-quote"><h2>{text("Request a private quote", "اطلب عرض سعر خاص", "Demandez un devis privé")}</h2><p>{t("home.bestPriceBody")}</p>

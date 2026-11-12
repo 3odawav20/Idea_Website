@@ -4,7 +4,7 @@
   position:sticky;top:0;z-index:80;
   height:var(--idea-header-height);
   background:#090909;
-  border-bottom:1px solid rgba(255,121,0,.45);
+  border-bottom:1px solid rgba(253,100,1,.45);
   color:#fff;
   backdrop-filter:none;-webkit-backdrop-filter:none;
   transition:background-color .36s ease,border-color .36s ease,backdrop-filter .36s ease,box-shadow .36s ease;
@@ -12,7 +12,7 @@
 .idea-reference-header--home{margin-bottom:0}
 .idea-reference-header.is-scrolled,.idea-reference-header.is-menu-open{
   background:rgba(9,9,10,.97);
-  border-color:rgba(255,121,0,.24);
+  border-color:rgba(253,100,1,.24);
   backdrop-filter:blur(25px) saturate(1.25);-webkit-backdrop-filter:blur(25px) saturate(1.25);
   box-shadow:0 12px 42px rgba(0,0,0,.16);
 }
@@ -26,22 +26,22 @@
 .idea-reference-ticker{flex:1;min-width:0;overflow:hidden}
 .idea-catalogue-announcement{display:flex;align-items:center;justify-content:center;gap:14px;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;font-size:clamp(11px,1vw,15px);letter-spacing:.06em;text-transform:uppercase;overflow:hidden;text-shadow:0 1px 8px rgba(0,0,0,.65)}
 .idea-catalogue-announcement>span:nth-child(2){overflow:hidden;text-overflow:ellipsis}
-.idea-catalogue-announcement>span[aria-hidden],.idea-catalogue-announcement a{color:#ff970f}
+.idea-catalogue-announcement>span[aria-hidden],.idea-catalogue-announcement a{color:var(--idea-gold)}
 .idea-catalogue-announcement a{flex-shrink:0;text-underline-offset:3px}
 .idea-reference-actions,.idea-header-languages,.idea-navigation-controls{display:flex;align-items:center;gap:12px}
 .idea-reference-actions{flex-shrink:0}
 .idea-reference-header button,.idea-reference-header a{color:inherit}
 .idea-reference-header button,.idea-navigation-content button{background:none;border:0;cursor:pointer;padding:4px;display:inline-flex;align-items:center;justify-content:center;min-height:40px}
 .idea-reference-actions>a,.idea-navigation-controls>a{display:inline-flex;position:relative;align-items:center;justify-content:center;min-width:38px;min-height:40px;color:inherit}
-.idea-reference-actions small,.idea-navigation-controls small{position:absolute;right:-6px;top:-7px;background:#ff7900;color:#fff;border-radius:20px;min-width:14px;text-align:center;font:10px Arial,sans-serif}
+.idea-reference-actions small,.idea-navigation-controls small{position:absolute;right:-6px;top:-7px;background:var(--idea-gold);color:#fff;border-radius:20px;min-width:14px;text-align:center;font:10px Arial,sans-serif}
 .idea-header-languages{gap:3px;font-size:11px}
 .idea-header-languages button{font:inherit;font-weight:600;opacity:.65}
-.idea-header-languages button[aria-pressed=true]{color:#ff970f;opacity:1}
+.idea-header-languages button[aria-pressed=true]{color:var(--idea-gold);opacity:1}
 .idea-reference-header .idea-menu-btn{display:inline-flex!important;flex-shrink:0;border:1px solid transparent;border-radius:9px;min-width:42px;min-height:42px;transition:background .24s ease,transform .24s ease,border-color .24s ease}
 .idea-reference-header .idea-menu-btn:hover,.idea-reference-header .idea-menu-btn[aria-expanded=true]{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.19);transform:translateY(-1px)}
 .idea-reference-header .idea-admin-ticker{background:transparent!important;border:0!important;color:#eee;min-height:0;font-size:13px}
 .idea-reference-header .idea-admin-ticker-mark{display:none}
-.idea-reference-header :focus-visible,.idea-navigation-content :focus-visible{outline:2px solid #ff7900;outline-offset:3px}
+.idea-reference-header :focus-visible,.idea-navigation-content :focus-visible{outline:2px solid var(--idea-gold);outline-offset:3px}
 
 /* Hamburger dropdown: both former horizontal bars live here as grouped accordions. */
 .idea-navigation-drawer{
@@ -68,7 +68,7 @@
 .idea-navigation-drawer .idea-discovery-nav-main{display:flex;flex-direction:column;align-items:stretch;gap:0;max-width:none;padding:0;margin:0}
 .idea-navigation-drawer .idea-discovery-nav-item{width:100%}
 .idea-navigation-drawer .idea-discovery-nav-item>button{display:flex;width:100%;justify-content:space-between;align-items:center;gap:12px;min-height:49px;padding:12px 4px;color:var(--idea-text);border:0;border-bottom:1px solid var(--idea-border);background:transparent;font-size:13px;text-align:start;cursor:pointer}
-.idea-navigation-drawer .idea-discovery-nav-item>button[aria-expanded=true]{color:var(--idea-gold-bright,#ff7900)}
+.idea-navigation-drawer .idea-discovery-nav-item>button[aria-expanded=true]{color:var(--idea-gold-bright,var(--idea-gold))}
 .idea-navigation-drawer .idea-discovery-nav-item>button svg{flex-shrink:0;transition:transform .25s ease}
 .idea-navigation-drawer .idea-discovery-nav-item>button[aria-expanded=true] svg{transform:rotate(180deg)}
 .idea-navigation-drawer .idea-discovery-menu{
@@ -78,9 +78,9 @@
   animation:idea-accordion-drop .22s ease both;
 }
 @keyframes idea-accordion-drop{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
-.idea-navigation-drawer .idea-discovery-menu h3{font-size:12px;line-height:1.4;color:var(--idea-gold-bright,#ff7900);margin:0 0 10px}
+.idea-navigation-drawer .idea-discovery-menu h3{font-size:12px;line-height:1.4;color:var(--idea-gold-bright,var(--idea-gold));margin:0 0 10px}
 .idea-navigation-drawer .idea-discovery-menu a{display:block;padding:7px 0;color:var(--idea-text-muted);font-size:12px;line-height:1.5;text-decoration:none}
-.idea-navigation-drawer .idea-discovery-menu a:hover,.idea-navigation-drawer .idea-discovery-nav-utility a:hover{color:var(--idea-gold-bright,#ff7900)}
+.idea-navigation-drawer .idea-discovery-menu a:hover,.idea-navigation-drawer .idea-discovery-nav-utility a:hover{color:var(--idea-gold-bright,var(--idea-gold))}
 .idea-navigation-drawer .idea-discovery-nav-utility{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px 18px;padding:20px 4px 6px;max-width:none;margin:0;border:0}
 .idea-navigation-drawer .idea-discovery-nav-utility a{font-size:12px;color:var(--idea-text-muted);text-decoration:none}
 .idea-navigation-tools{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:20px;border-top:1px solid var(--idea-border)}
@@ -141,4 +141,167 @@ html[lang="en"] .idea-navigation-drawer .idea-discovery-nav-item>button{font-wei
 @media(prefers-reduced-motion:reduce){
   .idea-reference-header,.idea-reference-logo,.idea-reference-header .idea-menu-btn,
   .idea-navigation-drawer,.idea-navigation-drawer .idea-discovery-menu{animation:none!important;transition:none!important}
+}
+
+/* Liquid Glass-inspired navigation: translucent dyed glass, not a solid bar.
+   Keep 52/54px normal-flow height to preserve responsive hero alignment. */
+.idea-reference-header {
+  isolation: isolate;
+  background-clip: padding-box;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  transition: background-color .36s ease, border-color .36s ease,
+              box-shadow .36s ease, backdrop-filter .36s ease;
+}
+.idea-reference-header-row {
+  position: relative;
+  z-index: 1;
+}
+/* Reflection variables only; visual glass surfaces are neutral below. */
+html[data-theme="light"] .idea-reference-header {
+  --idea-glass-glint: rgba(255,255,255,.48);
+  --idea-glass-edge: rgba(255,255,255,.27);
+}
+html[data-theme="dark"] .idea-reference-header {
+  --idea-glass-glint: rgba(255,255,255,.34);
+  --idea-glass-edge: rgba(255,255,255,.19);
+}
+/* Two specular layers simulate reflected environmental light without
+   an opaque logo backing, costly shaders or accessibility-hostile distortion. */
+.idea-reference-header::before,
+.idea-reference-header::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+.idea-reference-header::before {
+  inset-block: 0;
+  background:
+    radial-gradient(ellipse 34% 95% at 17% -65%, var(--idea-glass-glint), transparent 90%),
+    linear-gradient(176deg, rgba(255,255,255,.22) 0, transparent 23%);
+  opacity: .7;
+}
+.idea-reference-header::after {
+  inset-block: auto 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%, var(--idea-glass-edge) 15%,
+    rgba(255,255,255,.55) 40%, rgba(255,255,255,.13) 64%,
+    var(--idea-glass-edge) 88%, transparent 100%);
+  opacity: .80;
+}
+/* Glass controls retain the native hit area and floating highlight. */
+.idea-reference-header .idea-reference-actions :is(a,button),
+.idea-reference-header .idea-menu-btn {
+  border-radius: 12px;
+  transition: background-color .22s ease, box-shadow .22s ease, transform .22s ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  .idea-reference-header .idea-reference-actions :is(a,button):hover,
+  .idea-reference-header .idea-menu-btn:hover {
+    background-color: rgba(255,255,255,.14);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.35),
+                0 3px 10px rgba(0,0,0,.12);
+    transform: translateY(-1px);
+  }
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-theme="light"] .idea-reference-header { background-color: rgba(151,48,0,.91); }
+  html[data-theme="dark"] .idea-reference-header { background-color: rgba(9,9,11,.87); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .idea-reference-header .idea-reference-actions :is(a,button),
+  .idea-reference-header .idea-menu-btn { transition: none; transform: none; }
+}
+/* Subtle black depth under the complete navigation typography and icons,
+   without placing a solid background behind the logo or its labels. */
+.idea-reference-header :is(a, button, span, strong, small, .idea-catalogue-announcement) {
+  text-shadow: 0 1px 3px rgba(0,0,0,.66), 0 3px 10px rgba(0,0,0,.34);
+}
+.idea-reference-header :is(a, button) > svg {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.62));
+}
+
+/* No black rectangle behind the brand mark: only a soft shadow
+   following the original transparent PNG's actual letter contours. */
+html[data-theme="light"] .idea-reference-logo {
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+}
+html[data-theme="light"] .idea-reference-logo img {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .72))
+          drop-shadow(0 3px 4px rgba(0, 0, 0, .35));
+  -webkit-filter: drop-shadow(0 1px 2px rgba(0, 0, 0, .72))
+                  drop-shadow(0 3px 4px rgba(0, 0, 0, .35));
+}
+html[data-theme="light"] .idea-reference-header .idea-catalogue-announcement,
+html[data-theme="light"] .idea-reference-header .idea-catalogue-announcement :is(a, span),
+html[data-theme="light"] .idea-reference-header .idea-header-languages button,
+html[data-theme="light"] .idea-reference-header .idea-reference-actions :is(button,a) {
+  color: #fff;
+}
+html[data-theme="light"] .idea-reference-header .idea-header-languages button[aria-pressed="true"] {
+  opacity: 1;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+html[data-theme="light"] .idea-reference-header :focus-visible {
+  outline-color: #fff;
+}
+html[data-theme="light"] .idea-reference-header .idea-reference-actions small {
+  background: #090909;
+  color: #fff;
+}
+
+/* Transparent neutral crystal glass — never coloured orange or charcoal.
+   The image or page beneath supplies the colour; only frosted white reflections
+   and backdrop blur are added. Keep the original IDEA mark fully transparent. */
+html[data-theme="light"] .idea-reference-header,
+html[data-theme="light"] .idea-reference-header:is(.is-scrolled, .is-menu-open) {
+  background-color: rgba(255,255,255,.09);
+  background-image: linear-gradient(115deg,
+    rgba(255,255,255,.31), rgba(255,255,255,.035) 35%,
+    rgba(255,255,255,.16) 70%, rgba(255,255,255,.08));
+  color: #1b1b1b;
+  border-bottom-color: rgba(255,255,255,.40);
+  backdrop-filter: blur(26px) saturate(1.08);
+  -webkit-backdrop-filter: blur(26px) saturate(1.08);
+  box-shadow: inset 0 1px rgba(255,255,255,.55), 0 4px 18px rgba(0,0,0,.055);
+}
+html[data-theme="dark"] .idea-reference-header,
+html[data-theme="dark"] .idea-reference-header:is(.is-scrolled, .is-menu-open) {
+  background-color: rgba(255,255,255,.045);
+  background-image: linear-gradient(115deg,
+    rgba(255,255,255,.16), rgba(255,255,255,.018) 35%,
+    rgba(255,255,255,.07) 72%, rgba(255,255,255,.025));
+  color: #fff;
+  border-bottom-color: rgba(255,255,255,.22);
+  backdrop-filter: blur(26px) saturate(1.08);
+  -webkit-backdrop-filter: blur(26px) saturate(1.08);
+  box-shadow: inset 0 1px rgba(255,255,255,.27), 0 4px 20px rgba(0,0,0,.10);
+}
+html[data-theme="light"] .idea-reference-header .idea-catalogue-announcement,
+html[data-theme="light"] .idea-reference-header .idea-catalogue-announcement :is(span,a),
+html[data-theme="light"] .idea-reference-header .idea-header-languages button,
+html[data-theme="light"] .idea-reference-header .idea-reference-actions :is(button,a) {
+  color: #222;
+}
+html[data-theme="light"] .idea-reference-header .idea-catalogue-announcement a,
+html[data-theme="light"] .idea-reference-header .idea-header-languages button[aria-pressed="true"] {
+  color: var(--idea-gold);
+}
+html[data-theme="light"] .idea-reference-header :is(a,button,span,strong,small) {
+  text-shadow: 0 1px 1px rgba(255,255,255,.60);
+}
+html[data-theme="dark"] .idea-reference-header :is(a,button,span,strong,small) {
+  text-shadow: 0 2px 4px rgba(0,0,0,.78);
+}
+/* Override older opaque fallback if blur is unavailable; retain translucency. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-theme="light"] .idea-reference-header { background: rgba(255,255,255,.75); }
+  html[data-theme="dark"] .idea-reference-header { background: rgba(25,25,25,.72); }
 }

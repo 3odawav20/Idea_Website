@@ -15,7 +15,7 @@ import { Favorites } from "./pages/Favorites";
 import { RequestQuote } from "./pages/RequestQuote";
 import { HowItWorks } from "./pages/Static";
 import { AiVisualizerStudio } from "./pages/AiVisualizerStudio";
-import { Login, Register, RegisterCustomer, RegisterBusiness, RoleSelect } from "./pages/Auth";
+import { Login, Register, RegisterCustomer, RegisterBusiness, BusinessLogin, AdminLogin, RoleSelect } from "./pages/Auth";
 import {
   AccountLayout, AccountProfile, AccountInbox, AccountRequests, AccountRequestOffers,
   AccountOrders, AccountInvoices, AccountFavorites, AccountCompare, AccountRoomProjects,
@@ -40,7 +40,7 @@ import { SurfaceStyles } from "./pages/SurfaceStyles";
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
-  if (!session) return <Navigate to="/login" replace />;
+  if (!session) return <Navigate to={roles?.includes("admin") ? "/admin/login" : roles?.includes("business") ? "/business/login" : "/login"} replace />;
   if (roles && !roles.includes(session.role)) return <Navigate to="/" replace />;
   return <Outlet />;
 }
@@ -83,6 +83,8 @@ export default function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/register/customer" element={<RegisterCustomer />} />
               <Route path="/register/business" element={<RegisterBusiness />} />
+              <Route path="/business/login" element={<BusinessLogin />} />
+              <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/business/apply" element={<CompanyApplication />} />
               <Route path="/onboarding/role" element={<RoleSelect />} />
 

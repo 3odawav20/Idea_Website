@@ -6,6 +6,7 @@ import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
 import { ART_CERAMIC_CATALOGUE } from "../data/artceramicImport";
 import { ProductCard } from "../components/ProductCard";
+import { distinctStorefrontProducts } from "../data/storefrontDistinct";
 import { ideaInternalCode } from "../data/ideaProductIdentity";
 import { similarProducts } from "../data/recommendations";
 import { Chip, Container, Section } from "../components/ui";
@@ -81,13 +82,17 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
   };
 
   const sort = params.get("sort") ?? "source";
-  const results = scope.filter(matches);
+  // Group visual duplicates only AFTER applying filters, retaining every source
+  // variant for exact searches, colours, dimensions and individual product links.
+  const results = distinctStorefrontProducts(scope.filter(matches));
   if (sort !== "source") results.sort((a,b) => sort === "za" ? b.name[locale].localeCompare(a.name[locale]) : a.name[locale].localeCompare(b.name[locale]));
   const totalPages = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
   const requestedPage = Number.parseInt(params.get("page") ?? "1", 10);
   const page = Math.min(Math.max(Number.isFinite(requestedPage) ? requestedPage : 1, 1), totalPages);
   const pageResults = results.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-  const suggestions = q && results.length===1 ? similarProducts(results[0],products,4) : [];
+  const suggestions = q && results.length===1
+    ? distinctStorefrontProducts([results[0], ...similarProducts(results[0], products, 12)]).slice(1, 5)
+    : [];
   const firstResult = results.length ? (page - 1) * PAGE_SIZE + 1 : 0;
   const lastResult = Math.min(page * PAGE_SIZE, results.length);
   const activeCount = [application, finish, size, usage, color].filter(Boolean).length;

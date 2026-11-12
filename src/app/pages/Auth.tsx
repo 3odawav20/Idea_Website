@@ -6,6 +6,7 @@ import { supabase, backendConfigurationError } from "../backend/supabaseClient";
 import { Container, Section, Button } from "../components/ui";
 import { Panel, Field, inputStyle } from "../components/dash";
 import { SocialAuth } from "../components/SocialAuth";
+import { AccountEntry } from "./AccountEntry";
 
 function AuthShell({ mode, redirectTo = "/account" }: { mode: "login" | "register"; redirectTo?: string }) {
   const { t, locale } = useI18n(); const nav = useNavigate();
@@ -96,8 +97,13 @@ function AuthShell({ mode, redirectTo = "/account" }: { mode: "login" | "registe
     <div style={{ textAlign: "center", marginTop: "var(--idea-space-4)", color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{mode === "login" ? <><span>{t("auth.noAccount")} </span><Link to="/register" style={{ color: "var(--idea-gold-bright)" }}>{t("auth.createAccount")}</Link></> : <><span>{t("auth.haveAccount")} </span><Link to="/login" style={{ color: "var(--idea-gold-bright)" }}>{t("auth.signIn")}</Link></>}</div>
   </Panel></Container></Section>;
 }
-export function Login() { return <AuthShell mode="login" />; }
-export function Register() { return <AuthShell mode="register" />; }
-export function RegisterCustomer() { return <AuthShell mode="register" />; }
-export function RegisterBusiness() { return <AuthShell mode="register" redirectTo="/business/apply" />; }
+
+/* Customer, business and admin each have a distinct, owner-approved entry screen.
+   The old Supabase AuthShell remains private and is no longer routed. */
+export function Login() { return <AccountEntry audience="customer" mode="login" />; }
+export function Register() { return <AccountEntry audience="customer" mode="register" />; }
+export function RegisterCustomer() { return <AccountEntry audience="customer" mode="register" />; }
+export function RegisterBusiness() { return <AccountEntry audience="business" mode="register" />; }
+export function BusinessLogin() { return <AccountEntry audience="business" mode="login" />; }
+export function AdminLogin() { return <AccountEntry audience="admin" mode="login" />; }
 export function RoleSelect() { return <Login />; }
