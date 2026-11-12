@@ -25,6 +25,8 @@ jobs:
         run: node --test tests/auth-connection.test.mjs
       - name: Verify real material gallery dimensions and source images
         run: node --test tests/room3d-materials.test.mjs
+      - name: Report IDEA production readiness (read-only, non-blocking)
+        run: node scripts/idea-readiness-audit.mjs
       - name: Build application
         run: npm run build
       - name: Build cPanel bundle
