@@ -3,6 +3,8 @@ DirectoryIndex index.html
 RewriteEngine On
 
 # Never rewrite API calls to the SPA entry point.
+# Preserve existing cPanel PHP/MySQL account endpoint routing.
+RewriteRule ^idea-accounts-api/ - [END]
 RewriteRule ^api/ - [END]
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
