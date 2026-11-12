@@ -1,4 +1,4 @@
-import { copyFile, mkdir, stat } from "node:fs/promises";
+import { copyFile, mkdir, stat, cp } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = process.cwd();
@@ -9,4 +9,6 @@ await stat(resolve(dist, "index.html"));
 await mkdir(resolve(dist, "api"), { recursive: true });
 await copyFile(backend, resolve(dist, "api/visualize.php"));
 await copyFile(htaccess, resolve(dist, ".htaccess"));
+// Copy only audited auth PHP endpoints; never package production credentials.
+await cp(resolve(root, "server/cpanel/idea-accounts-api/auth"), resolve(dist, "idea-accounts-api/auth"), { recursive: true });
 console.log("IDEA cPanel package prepared in dist/; PHP must run on an enabled PHP hosting account.");
