@@ -141,3 +141,19 @@ Class codes: `M` mandatory **business requirement but branch NOT necessarily saf
 - **Next execution:** inspect and protect source, run a release readiness audit, then controlled PHP/MySQL contract inventory with backup; port PR #103 server-confirmed RFQ only after account storage is verified. Every next agent must append timestamp, affected files, verified checks, SHA, preview/live status, and blockers.
 
 **Do not mark milestones complete without evidence.**
+
+### 2026-11-12 — P0 read-only production smoke + automated audit
+
+- **Samsung4 real HTTPS requests with browser-like User-Agent**, without cookies or tokens:
+  - `GET https://idea-dh.com/` → HTTP **200**, `text/html`.
+  - `GET https://idea-dh.com/api/platform.php?action=features` → HTTP **200**, `application/json`; JSON includes `runpod_model: "qwen-image-edit-2511"` (label only, **not proof** of working AI worker or quota).
+  - `GET https://idea-dh.com/api/marketplace.php?action=search&q=MAZE` → HTTP **200**, `application/json`; this is **not** proof of records, authenticated company operations or correct private prices.
+  - `GET https://idea-dh.com/api/visualize.php?action=status` → HTTP **404**. Before replacing client routing, reconcile the current MySQL platform/AI endpoints; do not fake this route.
+  - With bare curl default headers, home and features returned HTTP **406**, but with ordinary Chrome-style request headers returned 200. **Do not call the site down based on that client-specific 406.**
+- These endpoints were **unauthenticated read-only smoke checks**. They do not inspect the private MySQL schema, sessions, orders, payment, Runpod mask output or customer/company/admin authorization.
+- **P0 issue**: [#106](https://github.com/3odawav20/Idea_Website/issues/106), tracking effective main protection, security alert inventory, backup and rollback. These gates **remain open**; no GitHub settings were changed.
+- **Owner instructions saved** in a new draft [PR #105](https://github.com/3odawav20/Idea_Website/pull/105). Local copies stored in `C:\Users\rakan\Desktop\_AI_REMOTE_WORK\IDEA_Header_QA_20261112\docs`; both files' Git blob SHA1 checks matched GitHub exactly at initial write. Existing untracked user files untouched.
+- Added `scripts/idea-readiness-audit.mjs` (offline read-only, no secrets/network) with unit tests; modified `.github/workflows/visualizer-ci.yml` to print non-blocking readiness gates on each PR build. Manual `--strict` exists for a true release gate and should fail until all live prerequisites are verified.
+- Initial PR #105 GitHub Actions run [43284711367](https://github.com/3odawav20/Idea_Website/actions/runs/43284711367) was **SUCCESS** on `1d40a36f`; later workflow/status commits require fresh CI verification. Do not attribute an older green run to a newer commit.
+
+**Next safe action:** examine existing cPanel PHP + MySQL schema with an authorized read-only session, verify backup/restore, then port only the compatible server-confirmed RFQ logic from PR #103 into PHP/MySQL with real multi-role tenant tests. Do not modify production until those gates pass.
