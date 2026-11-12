@@ -1,0 +1,28 @@
+<?php
+/**
+ * PRIVATE CONFIG TEMPLATE ONLY. DO NOT COMMIT REAL VALUES, AND NEVER UPLOAD
+ * THIS FILE INSIDE public_html or /home/lsenet5/idea-dh.com.
+ *
+ * Production destination: /home/lsenet5/idea_private/oauth-config.php
+ *
+ * Set bridge_verified=true ONLY AFTER actual PHP/MySQL session callbacks and
+ * the existing idea_users account-linking contract pass a production E2E test.
+ * A provider's e2e_verified must remain false until a real user can sign in,
+ * sign out and return to an existing non-admin account correctly.
+ */
+return [
+    'bridge_verified' => false,
+    'site_url' => 'https://idea-dh.com',
+    'providers' => [
+        'google' => ['client_id'=>'', 'client_secret'=>'', 'e2e_verified'=>false],
+        'facebook' => ['client_id'=>'', 'client_secret'=>'', 'e2e_verified'=>false],
+        'apple' => ['services_id'=>'', 'team_id'=>'', 'key_id'=>'',
+                    'private_key_file'=>'/home/lsenet5/idea_private/apple-authkey.p8',
+                    'e2e_verified'=>false],
+        'twitter' => ['client_id'=>'', 'client_secret'=>'', 'e2e_verified'=>false],
+        'azure' => ['client_id'=>'', 'client_secret'=>'', 'tenant'=>'common',
+                    'e2e_verified'=>false],
+    ],
+    'sms' => ['account_sid'=>'', 'api_key'=>'', 'api_secret'=>'',
+              'verify_service_sid'=>'', 'e2e_verified'=>false],
+];
