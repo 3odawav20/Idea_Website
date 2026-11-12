@@ -109,7 +109,7 @@ html[lang="en"] .idea-navigation-drawer .idea-discovery-nav-item>button{font-wei
   .idea-reference-header{--idea-header-height:54px}
   .idea-reference-header-row{
     min-height:var(--idea-header-height);
-    padding-inline:max(12px,env(safe-area-inset-left)),max(12px,env(safe-area-inset-right));
+    padding-inline:max(12px,env(safe-area-inset-left)) max(12px,env(safe-area-inset-right));
     gap:6px;
   }
   .idea-reference-logo{flex-basis:106px}
