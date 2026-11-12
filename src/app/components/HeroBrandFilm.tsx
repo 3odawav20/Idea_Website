@@ -117,7 +117,7 @@ export function HeroBrandFilm() {
       <span
         key={`${startIndex}-${index}`}
         className="idea-film-word"
-        style={{ animationDelay: `${0.12 + (startIndex + index) * 0.145}s` }}
+        style={{ animationDelay: `${(activeSlide === 0 ? 2.15 : 0.32) + (startIndex + index) * 0.31}s` }}
       >
         {word}
       </span>
