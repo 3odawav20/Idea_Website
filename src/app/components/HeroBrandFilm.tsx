@@ -111,6 +111,18 @@ export function HeroBrandFilm() {
     };
   }, [mode, activeSlide]);
 
+  // Each word gets its own entrance, while the h1 stays one readable phrase for assistive technology.
+  const animatedWords = (line: string, startIndex: number) =>
+    line.trim().split(/\\s+/u).map((word, index) => (
+      <span
+        key={`${startIndex}-${index}`}
+        className="idea-film-word"
+        style={{ animationDelay: `${0.12 + (startIndex + index) * 0.145}s` }}
+      >
+        {word}
+      </span>
+    ));
+
   const ariaLabel = locale === "ar"
     ? "فيلم IDEA الرسمي لخامات السيراميك والبورسلين والرخام"
     : locale === "fr"
@@ -148,7 +160,14 @@ export function HeroBrandFilm() {
         <div className="idea-film-caption-scrim" aria-hidden="true" />
         <div key={`${mode}-${activeSlide}-${locale}`} className="idea-film-caption" dir={locale === "ar" ? "rtl" : "ltr"}>
           <p className="idea-film-eyebrow">{locale === "ar" ? "إيديا" : "IDEA"}</p>
-          <h1>{captions[activeSlide][0]}<span>{captions[activeSlide][1]}</span></h1>
+          <h1 aria-label={`${captions[activeSlide][0]} ${captions[activeSlide][1]}`}>
+            <span className="idea-film-line idea-film-line--white" aria-hidden="true">
+              {animatedWords(captions[activeSlide][0], 0)}
+            </span>
+            <span className="idea-film-line idea-film-line--orange" aria-hidden="true">
+              {animatedWords(captions[activeSlide][1], captions[activeSlide][0].trim().split(/\\s+/u).length)}
+            </span>
+          </h1>
         </div>
       </div>
     </section>
