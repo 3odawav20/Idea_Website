@@ -233,7 +233,11 @@ export function positionFixture(group:THREE.Group,fixture:PlacedFixture,dims:Roo
   const wallMargin=Math.min(wallLength/2,half*scale+.06);
   const horizontal=THREE.MathUtils.clamp(onWall==="back"?fixture.x:fixture.z,-wallLength/2+wallMargin,wallLength/2-wallMargin);
   if(onWall){
-    const y=fixture.kind==="door"?Math.min(h/2,1.07):THREE.MathUtils.clamp(fixture.y,.5,h-.45);
+    const halfHeight=fixture.kind==="mirror"?.57:fixture.kind==="window"?.54:fixture.kind==="tv"?.38:fixture.kind==="shower"?.8:.5;
+    const clearance=halfHeight*scale;
+    const y=fixture.kind==="door"?Math.min(h/2,1.07):THREE.MathUtils.clamp(
+      fixture.y,Math.min(clearance,h/2),Math.max(Math.min(clearance,h/2),h-clearance)
+    );
     if(onWall==="back"){group.position.set(horizontal,y,-l/2+.055);group.rotation.set(0,0,0);}
     if(onWall==="left"){group.position.set(-w/2+.055,y,horizontal);group.rotation.set(0,Math.PI/2,0);}
     if(onWall==="right"){group.position.set(w/2-.055,y,horizontal);group.rotation.set(0,-Math.PI/2,0);}
