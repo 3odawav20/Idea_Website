@@ -11,6 +11,7 @@
  */
 declare(strict_types=1);
 
+if (realpath((string)($_SERVER['SCRIPT_FILENAME']??'')) === __FILE__) { http_response_code(404); exit; }
 const IDEA_OAUTH_NAMES = ['google','facebook','apple','twitter','azure'];
 
 function ideaOauthFail(int $status, string $error): never {
@@ -76,7 +77,7 @@ function ideaOauthClientId(string $provider, array $cfg): string {
 function ideaOauthEndpoints(string $provider, array $cfg): array {
     return match($provider){
         'google'=>['https://accounts.google.com/o/oauth2/v2/auth','https://oauth2.googleapis.com/token','openid email profile'],
-        'facebook'=>['https://www.facebook.com/v24.0/dialog/oauth','https://graph.facebook.com/v24.0/oauth/access_token','email public_profile'],
+        'facebook'=>['https://www.facebook.com/v27.0/dialog/oauth','https://graph.facebook.com/v27.0/oauth/access_token','email public_profile'],
         'apple'=>['https://appleid.apple.com/auth/authorize','https://appleid.apple.com/auth/token','name email'],
         'twitter'=>['https://twitter.com/i/oauth2/authorize','https://api.x.com/2/oauth2/token','tweet.read users.read'],
         'azure'=>['https://login.microsoftonline.com/common/oauth2/v2.0/authorize','https://login.microsoftonline.com/common/oauth2/v2.0/token','openid email profile'],
@@ -314,7 +315,7 @@ function ideaOauthCallback(string $provider): never {
         if (!is_string($token['access_token']??null)) ideaOauthFail(401,'INVALID_ACCESS_TOKEN');
         $headers=['Authorization: Bearer '.$token['access_token']];
         if ($provider==='facebook'){
-            $url='https://graph.facebook.com/v24.0/me?fields=id,name,email';
+            $url='https://graph.facebook.com/v27.0/me?fields=id,name,email';
             $profile=ideaOauthHttp($url,[],$headers);
             $subject=$profile['id']??null;
             // Meta may omit email. Do not trust it to auto-link existing accounts.
