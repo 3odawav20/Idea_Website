@@ -1,0 +1,25 @@
+.idea-room3d-material-catalog{gap:11px;grid-column:1/-1;max-height:none}
+.idea-room3d-material-caption{font-size:11px;color:var(--idea-text-muted,#888);margin:0}
+.idea-room3d-material-caption strong{color:var(--idea-text,#fff)}
+.idea-room3d-material-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.idea-room3d-material-tabs button{background:var(--idea-surface-2,#292929);border:1px solid var(--idea-border,#484848);border-radius:8px;color:var(--idea-text,#fff);font-size:10px;padding:9px 5px}
+.idea-room3d-material-tabs button.active{background:var(--idea-gold,#ff7900);color:#171717;border-color:var(--idea-gold,#ff7900);font-weight:700}
+.idea-room3d-material-search{display:flex;gap:7px;align-items:center;background:var(--idea-surface-2,#292929);color:var(--idea-text-muted,#888);border:1px solid var(--idea-border,#484848);border-radius:8px;padding:7px 9px}
+.idea-room3d-material-search input{width:100%;min-width:0;background:transparent;border:0;outline:0;color:var(--idea-text,#fff);font-size:11px}
+.idea-room3d-material-clear,.idea-room3d-material-more{display:flex;align-items:center;gap:6px;justify-content:center;background:var(--idea-surface-2,#292929);color:var(--idea-text,#fff);border:1px solid var(--idea-border,#484848);padding:9px;border-radius:8px;font-size:11px}
+.idea-room3d-material-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;max-height:600px;overflow-y:auto}
+.idea-room3d-material-card{min-width:0;display:flex;flex-direction:column;gap:6px;padding:7px;background:var(--idea-surface-2,#282828);border:1px solid var(--idea-border,#444);border-radius:10px}
+.idea-room3d-material-card.is-selected{border-color:var(--idea-gold,#ff7900)}
+.idea-room3d-material-face{height:180px;width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:6px;background:#353535}
+.idea-room3d-material-face img{max-height:100%;max-width:100%;object-fit:contain}
+.idea-room3d-material-card strong{font-size:13px;font-weight:600!important;overflow-wrap:anywhere;line-height:1.4}
+.idea-room3d-material-card small{font-size:11px;font-weight:500!important;color:var(--idea-text-muted,#999);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.idea-room3d-material-card label{font-size:9px;color:var(--idea-text-muted,#aaa);display:flex;flex-direction:column;gap:3px}
+.idea-room3d-material-card select{width:100%;background:var(--idea-surface,#202020);color:var(--idea-text,#eee);border:1px solid var(--idea-border,#555);border-radius:6px;padding:6px 2px;font-size:10px}
+.idea-room3d-material-card>button{background:var(--idea-gold,#ff7900);color:#141414;border:0;border-radius:6px;padding:8px 4px;min-height:44px;font-size:12px;font-weight:600!important}
+.idea-room3d-selected-surfaces{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+.idea-room3d-selected-surfaces button{border:1px solid var(--idea-border,#555);border-radius:7px;padding:9px 7px;background:var(--idea-surface-2,#292929);color:var(--idea-text,#eee);font-size:10px;text-align:start;min-width:0}
+.idea-room3d-selected-surfaces button.active{border-color:var(--idea-gold,#ff7900)}
+.idea-room3d-selected-surfaces small{display:block;line-height:1.5;font-size:9px;color:var(--idea-text-muted,#aaa);overflow-wrap:anywhere}
+@media(max-width:1180px){.idea-room3d-material-grid{grid-template-columns:repeat(4,minmax(0,1fr));max-height:350px}}
+@media(max-width:700px){.idea-room3d-material-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:440px}}

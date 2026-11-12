@@ -27,7 +27,9 @@ export function BusinessLayout() {
     { to: "/business/requests", label: t("acct.requests") },
     { to: "/business/offers", label: t("acct.offers") },
     { to: "/business/orders", label: t("acct.orders") },
-    { to: "/business/products", label: t("biz.products") },
+    { to: "/business/products", label: "البراندات والمنتجات" },
+    { to: "/business/sales", label: "مبيعات الشركة" },
+    { to: "/business/ads", label: "باكيجات الدعاية" },
     { to: "/business/subscription", label: t("acct.subscription") },
     { to: "/business/reports", label: t("biz.reports") },
     { to: "/business/settings", label: t("acct.settings") },
@@ -294,7 +296,7 @@ export function BusinessOverview() {
     <Panel style={{ textAlign: "center" }}>
       <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)" }}>Welcome to the Business Center</div>
       <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", margin: "10px 0 16px" }}>Complete onboarding to start supplying and submitting offers.</p>
-      <Link to="/business/onboarding"><Button>{t("biz.onboarding")}</Button></Link>
+      <Link to="/business/apply"><Button>{t("biz.onboarding")}</Button></Link>
     </Panel>
   );
   return <BusinessReports />;

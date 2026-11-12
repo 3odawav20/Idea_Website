@@ -22,10 +22,10 @@
   --idea-hero-control-bg: rgba(255, 255, 255, 0.86);
 
   /* ── Color: gold accent scale (richer in dark mode) ── */
-  --idea-gold: #ff7200;
-  --idea-gold-bright: #ff7200;
-  --idea-gold-deep: #d85d00;
-  --idea-gold-soft: rgba(255, 114, 0, 0.12);
+  --idea-gold: #fd6401;
+  --idea-gold-bright: #fd6401;
+  --idea-gold-deep: #fd6401;
+  --idea-gold-soft: rgba(253, 100, 1, 0.12);
   --idea-gold-sheen: #fff0e2;
 
   /* ── Color: text ── */
@@ -70,14 +70,14 @@
   --idea-hairline: 1px solid var(--idea-border);
   --idea-shadow-sm: 0 2px 8px rgba(69, 69, 69, 0.12);
   --idea-shadow-md: 0 12px 32px rgba(69, 69, 69, 0.16);
-  --idea-shadow-gold: 0 8px 30px rgba(255, 114, 0, 0.18);
+  --idea-shadow-gold: 0 8px 30px rgba(253, 100, 1, 0.18);
   --idea-shadow-overlay: 0 30px 60px rgba(0, 0, 0, 0.5);
   --idea-shadow-drawer: 0 0 60px rgba(0, 0, 0, 0.6);
 
   /* ── Typography families ── */
-  --idea-font-display: 'Oswald', 'Jost';
-  --idea-font-body: 'Jost';
-  --idea-font-arabic: 'IBM Plex Sans Arabic', sans-serif;
+  --idea-font-display: 'Ubuntu', Arial, sans-serif;
+  --idea-font-body: 'Ubuntu', Arial, sans-serif;
+  --idea-font-arabic: 'Cairo', Arial, sans-serif;
 
   /* ── Type scale ── */
   --idea-text-xs: 12px;
@@ -112,10 +112,10 @@
   --idea-hero-control-bg: rgba(26, 26, 26, 0.68);
 
   /* IDEA orange stays the brand accent in both themes. */
-  --idea-gold: #ff7200;
-  --idea-gold-bright: #ff8a32;
-  --idea-gold-deep: #cf5b00;
-  --idea-gold-soft: rgba(255, 114, 0, 0.16);
+  --idea-gold: #fd6401;
+  --idea-gold-bright: #fd6401;
+  --idea-gold-deep: #fd6401;
+  --idea-gold-soft: rgba(253, 100, 1, 0.16);
   --idea-gold-sheen: #f3e7db;
 
   --idea-text: #f5f5f5;
@@ -123,12 +123,12 @@
   --idea-text-faint: #858585;
   --idea-on-gold: #ffffff;
 
-  --idea-border: rgba(255, 114, 0, 0.18);
+  --idea-border: rgba(253, 100, 1, 0.18);
   --idea-border-neutral: rgba(255, 255, 255, 0.1);
 
   --idea-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.4);
   --idea-shadow-md: 0 12px 32px rgba(0, 0, 0, 0.5);
-  --idea-shadow-gold: 0 8px 30px rgba(255, 114, 0, 0.18);
+  --idea-shadow-gold: 0 8px 30px rgba(253, 100, 1, 0.18);
   --idea-shadow-overlay: 0 30px 60px rgba(0, 0, 0, 0.5);
   --idea-shadow-drawer: 0 0 60px rgba(0, 0, 0, 0.6);
 }
@@ -225,11 +225,15 @@ textarea:disabled {
   color: var(--idea-on-gold);
 }
 
-/* custom scrollbar to match the dark theme */
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--idea-bg); }
+/* A discreet neutral browser scrollbar replaces the old bright-orange right rail.
+   Keep scrolling usable instead of hiding native controls entirely. */
+html { scrollbar-color: rgba(116,116,116,.65) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--idea-gold-deep);
+  background: rgba(116,116,116,.58);
+  border: 2px solid transparent;
+  background-clip: padding-box;
   border-radius: var(--idea-radius-full);
 }
 
@@ -409,4 +413,108 @@ textarea:disabled {
   .idea-main-collection-title {font-size:15px!important;padding:3px 6px;}
   .idea-main-collection-footer {inset-inline:10px;bottom:10px;font-size:10px;gap:5px;}
   .idea-main-collection-footer svg {width:14px;height:14px;}
+}
+
+/* IDEA LOCALE TYPOGRAPHY 20261103 */
+
+/* Locale-locked typography and layout: never use Latin heading tracking in RTL. */
+:root { font-synthesis: none; }
+html[lang="ar"] body,
+html[lang="ar"] input,
+html[lang="ar"] select,
+html[lang="ar"] textarea,
+html[lang="ar"] button {
+  font-family: var(--idea-font-arabic), system-ui, sans-serif;
+  letter-spacing: normal;
+}
+html[lang="en"] body,
+html[lang="en"] input,
+html[lang="en"] select,
+html[lang="en"] textarea,
+html[lang="en"] button,
+html[lang="fr"] body {
+  font-family: var(--idea-font-body), system-ui, sans-serif;
+}
+html[lang="ar"] h1, html[lang="ar"] h2, html[lang="ar"] h3,
+html[lang="ar"] h4, html[lang="ar"] .idea-display,
+html[lang="ar"] [class*="eyebrow"],
+html[lang="ar"] [class*="kicker"] {
+  font-family: var(--idea-font-arabic), system-ui, sans-serif;
+  letter-spacing: 0 !important;
+  line-height: 1.45;
+  text-transform: none;
+}
+html[lang="en"] h1, html[lang="en"] h2, html[lang="en"] h3,
+html[lang="fr"] h1, html[lang="fr"] h2, html[lang="fr"] h3 {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+html[lang] button, html[lang] a, html[lang] label,
+html[lang] .idea-home-story-copy, html[lang] .idea-home-centered-title,
+html[lang] .idea-home-quote, html[lang] .idea-admin-ticker {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+html[lang] input, html[lang] select, html[lang] textarea { max-width: 100%; }
+html[lang="ar"] input[type="email"], html[lang="ar"] input[type="url"],
+html[lang="ar"] input[type="tel"], html[lang="ar"] input[type="number"] {
+  direction: ltr;
+  text-align: start;
+}
+@media (max-width: 600px) {
+  html[lang] h1 { font-size: clamp(1.8rem, 7vw, 2.65rem); }
+  html[lang] h2 { font-size: clamp(1.45rem, 5vw, 2.1rem); }
+  html[lang] p, html[lang] label { line-height: 1.65; }
+  html[lang] .idea-home-section { width: min(100% - 32px, 1280px); }
+}
+
+html[lang="ar"] body, html[lang="ar"] body * { font-family: "Cairo", Arial, sans-serif !important; }
+html[lang] :where(p, h1, h2, h3, h4, label, button, td, th) { overflow-wrap: anywhere; min-width: 0; }
+
+/* Locale-specific typography: do not force 100-weight; preserve real hierarchy. */
+html[lang="en"] body, html[lang="en"] body *,
+html[lang="fr"] body, html[lang="fr"] body * {
+  font-family: "Ubuntu", Arial, sans-serif !important;
+}
+html[lang="en"] :where(button, input, select, textarea),
+html[lang="fr"] :where(button, input, select, textarea) {
+  font-family: "Ubuntu", Arial, sans-serif !important;
+}
+/* Long localized labels can wrap inside controls rather than leak outside. */
+html[lang] :where(button, [role="button"], .idea-studio-rail, .idea-home-resource-grid a, .idea-home-story-copy, .idea-navigation-content, .idea-home-newsletter) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+html[lang] :where(button, [role="button"]) {
+  white-space: normal;
+  line-height: 1.35;
+}
+html[lang] :where(input, textarea, select) {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+html[lang] :where(h1, h2, h3, h4) {
+  text-wrap: balance;
+}
+@media (max-width: 680px) {
+  html[lang] :where(.idea-navigation-content, .idea-home-story-copy, .idea-home-newsletter, .idea-studio-rail) {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
+
+/* Compact original IDEA emblem replaces the pointer on mouse/trackpad devices.
+   Keep native touch behavior and I-beam in editable fields. */
+@media (hover: hover) and (pointer: fine) {
+  html, body, body * {
+    cursor: url('/images/brand/idea-cursor.png') 2 2, auto;
+  }
+  body :is(input:not([type="button"]):not([type="submit"]), textarea, [contenteditable="true"], [role="textbox"]) {
+    cursor: text;
+  }
+  body :is([disabled], [aria-disabled="true"]) {
+    cursor: not-allowed;
+  }
 }

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router";
 import { ChevronDown } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
-import { LOOKS, DESTINATIONS } from "../data/discovery";
+import { DESTINATIONS } from "../data/discovery";
 import "./DiscoveryNavigation.css";
 export function DiscoveryNavigation({ onNavigate }: { onNavigate?: () => void }) {
   const { locale } = useI18n();
@@ -32,9 +32,8 @@ export function DiscoveryNavigation({ onNavigate }: { onNavigate?: () => void })
         <div><h3>{item.label}</h3><Link to={item.to} onClick={close}>{text("View collection", "تصفح القسم", "Voir la collection")}</Link>
           {item.id === "brand" ? <>{[["/about",text("Our approach","فكرتنا","Notre approche")],["/how-it-works",text("How it works","طريقة الاستخدام","Fonctionnement")],["/subscriptions",text("Memberships","العضويات","Abonnements")],["/register/business",text("For professionals","للمحترفين والشركات","Professionnels")]].map(([to,label]) => <Link key={to} to={to} onClick={close}>{label}</Link>)}</> : item.id === "bath" ? <>{[["sanitary-ware",text("Basins & sanitary ware","الأحواض والأدوات الصحية","Vasques & sanitaires")],["bathtubs",text("Bathtubs","البانيوهات","Baignoires")],["faucets",text("Faucets","الخلاطات","Robinetterie")],["shower-units",text("Showers","الدش","Douches")],["bathroom-units",text("Bathroom furniture","وحدات الحمام","Meubles de bain")]].map(([slug,label]) => <Link key={slug} to={`/collections/${slug}`} onClick={close}>{label}</Link>)}</> : <><Link to={`/products?category=${item.id === "porcelain" ? "porcelain" : "ceramics"}&application=Floor`} onClick={close}>{text("Floor tiles","بلاط الأرضيات","Sols")}</Link><Link to={`/products?category=${item.id === "porcelain" ? "porcelain" : "ceramics"}&application=Wall`} onClick={close}>{text("Wall tiles","بلاط الحوائط","Murs")}</Link></>}
         </div>
-        <div><h3>{text("Looks · inspiration","شكل الخامة · إلهام","Aspects · inspiration")}</h3>{LOOKS.map(look => <Link key={look.id} to={`/tile-showroom/${look.id}`} onClick={close}>{look.label[locale]}</Link>)}</div>
         <div><h3>{text("Destination of use","المساحة والاستخدام","Destination")}</h3>{DESTINATIONS.map(d => <Link key={d.id} to={`/inspiration/${d.id}`} onClick={close}>{d.label[locale]}</Link>)}</div>
-        <div><h3>{text("Explore & plan","استكشف وخطط","Explorer & concevoir")}</h3><Link to="/products?format=large" onClick={close}>{text("Large formats","مقاسات كبيرة","Grands formats")}</Link><Link to="/products?format=outdoor20" onClick={close}>{text("20 mm outdoor","خارجي 20 مم","Extérieur 20 mm")}</Link><Link to="/room-designer" onClick={close}>{text("Room configurator","مصمم الغرف","Configurateur")}</Link><Link to="/downloads" onClick={close}>{text("Catalogue & downloads","الكتالوج والتنزيلات","Catalogue & téléchargements")}</Link><Link to="/glossary" onClick={close}>{text("Tile glossary","دليل المصطلحات","Glossaire")}</Link></div>
+        <div><h3>{text("Explore & plan","استكشف وخطط","Explorer & concevoir")}</h3><Link to="/products?format=large" onClick={close}>{text("Large formats","مقاسات كبيرة","Grands formats")}</Link><Link to="/products?format=outdoor20" onClick={close}>{text("20 mm outdoor","خارجي 20 مم","Extérieur 20 mm")}</Link><Link to="/room-designer/3d" onClick={close}>{text("Offline 3D Studio","استوديو 3D بدون AI","Studio 3D hors ligne")}</Link><Link to="/ai-room-visualizer" onClick={close}>{text("AI Visualizer","المحاكي الذكي","Visualiseur IA")}</Link><Link to="/downloads" onClick={close}>{text("Catalogue & downloads","الكتالوج والتنزيلات","Catalogue & téléchargements")}</Link><Link to="/glossary" onClick={close}>{text("Tile glossary","دليل المصطلحات","Glossaire")}</Link></div>
       </div>}
     </div>)}</div>
     <div className="idea-discovery-nav-utility">{resources.map(([to,label]) => <Link key={to} to={to} onClick={close}>{label}</Link>)}</div>

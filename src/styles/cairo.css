@@ -1,0 +1,29 @@
+/* Cairo, self-hosted under the bundled SIL Open Font License. */
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/fonts/cairo/7ecb9b6a465072bc.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/fonts/cairo/361766f154ae7cab.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/fonts/cairo/ed4acaa1f0bc9976.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Cairo';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/fonts/cairo/cad8564334938a58.ttf) format('truetype');
+}

@@ -1,50 +1,66 @@
 # IDEA Supplier Catalogue QA — 2026-11-03
 
-**Status:** Extraction completed into a private review queue only. Zero newly approved, rights-cleared, staging-live or production-live products.
+**Status:** Bounded public supplier extraction; all records remain in quarantine for administrator QA. No newly approved, staging-live or publicly live products.
 
-## Source inventory
+## Exact source scope
 
-Exactly 40 user-provided source URLs: 25 accessible, 1 blocked, 2 robots-unverifiable, 3 duplicate providers, 2 social-login-only and 7 out-of-scope input URLs. See source-status.csv and the approved source list, which retains exact URL provenance. Repeated providers: Royal Group, Gemma and Remas.
+40 user-provided URLs were preserved. Discovery from the source register: 25 accessible, 1 blocked, 2 robots-unverifiable, 3 duplicate providers, 2 social-login-only and 7 out-of-scope entrypoints. The same provider is not double-counted when the approved list repeats it.
 
-## Measured local results
+## Measured extraction — not published stock
 
-| Source | Retrieved records | Supplier-based provisional classification |
-| --- | ---: | --- |
-| AbaElMozahem | 223 | Supplier-labelled ceramic; models may include porcelain and require verification |
-| Cleopatra Store | 90 | Material unclassified; SKU often absent |
-| Elrwad Group | 51 | Supplier-labelled porcelain |
-| Total | 364 | All quarantined / zero approved |
+| Supplier | Source ID | Unapproved QA candidate records | Material evidence |
+| --- | --- | ---: | --- |
+| Aba El Mozahem | source-08 | 379 | 223 ceramics, 156 porcelain |
+| Cleopatra Store | source-05 | 135 | Material unresolved |
+| Elrwad Group | source-22 | 62 | 60 porcelain, 2 ceramics |
+| El Sewify | source-04 | 53 | 30 porcelain, 23 ceramics |
+| Alwan | source-06 | 14 | 9 porcelain, 5 ceramics |
+| **Total** | | **643** | **253 ceramics, 255 porcelain, 135 unclassified** |
 
-Among 364 candidates, 292 have parsed size, 152 have source SKU, 18 image samples were checked, 16 passed image size/type/decoding tests, 2 failed. No image was yet visually confirmed to be a standalone source tile face, rights-cleared or rehosted. Potential SKU collisions detected within this pilot: zero; this does not prove overall deduplication.
+The source-08 porcelain-size Shopify section and source-04/source-06 public WooCommerce material-specific categories were added with per-product ID deduplication. The original supplier entrypoint is unchanged and retained in every record. No basins, taps, grout, adhesive or bath products count toward ceramic/porcelain targets.
 
-## Existing cataloguing is not new inventory
+## Four independently verified targets
 
-The already embedded Art Ceramic export contains 475 records, not independently certified by material. The legacy source registry records 691 previously extracted records; these are historical counts, not proof of newly verified unique or publicly live products. Many newly retrieved records may already be in the application.
-
-## Material acceptance targets
-
-| Material | Pilot extracted (unverified) | Newly approved | Newly live | Verified goal | Verified shortfall |
+| Material | Extracted candidates (NOT approved) | New approved | New publicly live | Required verified | Shortfall |
 | --- | ---: | ---: | ---: | ---: | ---: |
-| Ceramics | 223 | 0 | 0 | 2,000 | 2,000 |
-| Porcelain | 51 | 0 | 0 | 2,000 | 2,000 |
-| Tiles (otherwise unclassified) | 0 | 0 | 0 | 2,000 | 2,000 |
+| Ceramics | 253 | 0 | 0 | 2,000 | 2,000 |
+| Porcelain | 255 | 0 | 0 | 2,000 | 2,000 |
+| Tiles (otherwise unclassified material category) | 0 | 0 | 0 | 2,000 | 2,000 |
 | Natural marble | 0 | 0 | 0 | 2,000 | 2,000 |
 
-90 Cleopatra products are still material-unclassified; they have not been silently counted as a material class. Marble-look porcelain must not be labeled natural marble. No basins, taps, showers, baths or sanitaryware count toward the four targets.
+The 135 unclassified records do NOT contribute to material targets. The existing 475 embedded Art Ceramic records are separate historical source imports, not newly verified inventory or included in the 643 candidate count. Do not add legacy counts to this table or count marble-look porcelain as natural marble.
 
-## Technical implementation
+## Supplier brand evidence (separate from legal manufacturer)
 
-scripts/catalogue/approved-sources.json preserves exact forty source URLs. ingest.py discovers public source capability and extracts bounded Shopify collection records, with robots checks and no login bypass. woo_adapter.py uses the public WooCommerce Store API and limited source product-page checks. report.py emits exact evidence files. sync_registry.py adds approved input links and dated discovery evidence into canonical sourceRegistry.json while preserving historical counts. All outputs are quarantine; public catalog.ts, IDEA website data and production were NOT modified.
+- A public Shopify vendor field on Aba El Mozahem corresponds to the site's explicit **tile-brand** facet; all **379** source-08 candidates are mapped to one of seven source-declared brands. These values are **not certificates of manufacturer identity**.
+- Source-04/06/22 product titles provide a further **129** provisional brand candidates. Some detail pages also list a branded variant attribute (e.g. GLORIA), but individual claims still require QA.
+- **643 of 643** records now have a brand attribution with field provenance: **379** from Shopify tile-vendor, **129** from supplier product titles, and **135** from the first-party Cleopatra ecommerce store context. Ceramica Cleopatra Group links to cleopatraceramics.store on its official website; this is store-brand evidence only, not a per-product legal manufacturer certificate.
+- **12 distinct brand names** were identified in this bounded batch. None of the 643 records has a separately proved legal manufacturer identity. The 135 store-attributed records remain specifically flagged official_store_context for eventual item-level review.
+- brand-evidence-review.csv lists IDEA reference, source vendor, brand, field provenance, review status and product source URL. brand-evidence-summary.json contains measured counts. Neither contains prices or offers.
+- The public product card and AI material atlas show a distinct internal IDEA reference. Brand names and manufacturers are never conflated.
 
-Evidence files: source-diagnostics.json, source-status.csv, extraction-diagnostics.json, quarantine-products.json, admin-review-queue.csv, qa-errors.csv, possible-duplicates.csv, material-acceptance.csv, release-blocked-report.json and report.json. The admin review CSV has product URL, name, source category, size, SKU and image reference only. Public-repository output contains no actual product price and no secret keys.
+## Quality checks and gaps
 
-## Operations, review and publication
+- Exactly 643 distinct (source ID, source product ID) pairs were extracted.
+- **126** candidates lack an extracted size, **340** lack a documented SKU, and **14** lack supplier image links.
+- **8** first-image technical spot checks were performed in this run and **7** passed file/resolution tests. These results do not certify the other images.
+- **Zero** standalone tile-face images, manufacturer identity claims or usage rights have been fully cleared for release.
+- Duplicate SKU check returned zero potential conflicts within its limited key coverage, not proof that all candidates are unique across existing catalogues.
+- Manufacturer vs retailer remains unresolved when suppliers do not state the maker. Size and material labels remain source-backed provisional evidence.
+- The source catalogue is **not a promotion-price feed**. No guessed prices or unapproved promotions were put in public JSON.
 
-Dependencies: python -m pip install -r scripts/catalogue/requirements.txt
-Tests: python -m unittest discover -s tests -p test_supplier_ingest.py -v
-Baseline: python scripts/catalogue/ingest.py --mode baseline
-Re-scan: python scripts/catalogue/ingest.py --mode all --workers 5 --max-pages 2 --verify-count 6
-Reports: python scripts/catalogue/report.py
-Canonical metadata: python scripts/catalogue/sync_registry.py
+## Admin/private finances
 
-Approval requires individual exact product/SKU/material/maker/dimensions evidence, original standalone tile-face images (no rooms, vehicles, facades or lifestyle mockups), verified supplier usage rights, technical + visual review, duplicate resolution and live local product URL proof. Source-image access alone is not a license to rehost. Keep every SKU/size variant grouped by actual model. Prices must remain admin-private; never export to public catalogue. After evidence and consent: staged deployment, route/image QA, full backup, explicit release approval, rollback. No live deploy was executed in this batch.
+Existing public.catalogue_admin_prices policy already restricts price access to authenticated server-verified administrators. The new administrator-only promotions migration and form allow multiple supplier price/promotion drafts with source URLs, dates, private row-level security and no automatic storefront publication. The migration has not been applied to production by this batch. Financial offers are not exported in public catalogue data.
+
+## Reproducible workflow
+
+Run the bounded extractor from the repository root:
+
+    python -m unittest discover -s tests -p test_supplier_ingest.py -v
+    python scripts/catalogue/ingest.py --mode shopify --workers 3 --max-pages 3 --limit 250 --verify-count 2
+    python scripts/catalogue/report.py
+
+Use source-status.csv, extraction-diagnostics.json, admin-review-queue.csv, qa-errors.csv, possible-duplicates.csv, material-acceptance.csv and release-blocked-report.json for source-by-source QA. All records remain in EXTRACTED/QUARANTINE until verified at every gate: material, product identity, dimensions, exact SKU, standalone tile-face photos, rights, duplicates, internal IDEA link, and real browser checks. Record failures rather than silently filling fields.
+
+Production release requires an approved staging build, actual image HTTP/media QA, backup and rollback and explicit approval. No production release performed.

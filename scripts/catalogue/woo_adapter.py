@@ -7,12 +7,43 @@ from urllib.parse import urlencode
 from bs4 import BeautifulSoup
 from ingest import http_get, robots_check, verify_image, sizes_from, material_from
 
+# Exact public Woo Store API category IDs observed on 2026-11-03.
+# Parent categories include adhesives/other goods, so each product is still classified
+# from source title + exact leaf categories, or quarantined as unclassified.
+MATERIAL_CATEGORY_IDS = {
+    "source-04": [176, 177, 178],             # Porcelain; floor and wall ceramic.
+    "source-06": [11350, 11317, 11078],      # Porcelain; ceramic; mixed materials.
+}
+NON_TILE_WORDS = __import__("re").compile(
+    r"لاصق|غراء|مستلزمات|معجون|فواصل|روبة|شريط|مقص|قاطع|"
+    r"\b(?:adhesive|grout|glue|sealant|faucet|basin|sink|toilet|shower|bathtub|accessories)\b",
+    __import__("re").I,
+)
+
+def material_from_woo_evidence(title, categories):
+    """A mixed parent taxonomy is not proof of porcelain; prefer exact leaf/title."""
+    if NON_TILE_WORDS.search(title):
+        return None
+    has_porcelain = bool(__import__("re").search(r"بورسلين|\bporcelain\b",title,__import__("re").I))
+    has_ceramic = bool(__import__("re").search(r"سيراميك|\bceramic\b",title,__import__("re").I))
+    if has_porcelain != has_ceramic:
+        return "porcelain" if has_porcelain else "ceramics"
+    clean=[x.strip().lower() for x in categories]
+    specific=[x for x in clean if not (
+        ("سيراميك" in x and "بورسلين" in x) or
+        ("ceramic" in x and "porcelain" in x))]
+    if specific:
+        return material_from(" ".join(specific),[],None,title)
+    return None
+
 def from_woo(raw, source, detail=None):
     title=unescape((raw.get("name") or "").strip())
     page=raw.get("permalink")
     detail=detail or {}
-    category_text=" ".join(unescape(cat.get("name") or "") for cat in raw.get("categories",[]) if isinstance(cat,dict))
-    material=material_from(category_text,[],None,title) or detail.get("material")
+    categories=[unescape(cat.get("name") or "") for cat in raw.get("categories",[]) if isinstance(cat,dict)]
+    category_text=" ".join(categories)
+    material=material_from_woo_evidence(title,categories) or (
+        None if NON_TILE_WORDS.search(title) else detail.get("material"))
     size=sizes_from(title,raw.get("description","")) or detail.get("size")
     sku=raw.get("sku") or None
     images=[img.get("src") for img in raw.get("images",[]) if isinstance(img,dict) and img.get("src")]
@@ -27,6 +58,7 @@ def from_woo(raw, source, detail=None):
         "source_url":source["url"],"product_url":page,"source_product_id":str(raw.get("id") or ""),
         "name":title,"retailer_vendor":source["name"],"manufacturer":None,
         "supplier_category":category_text or detail.get("supplier_category"),"material":material,
+        "source_category_id":raw.get("_idea_source_category_id"),
         "size":size,"sku":sku,"source_image_urls":list(dict.fromkeys(images)),
         "variant_count":len(raw.get("variations") or []),"flags":flags,
         "product_page_qa":detail,"stage":"QUARANTINE","approved":False,"publicly_live":False,"price":None,
@@ -62,26 +94,38 @@ def page_qa(item):
 
 def extract(source, per_page=40, pages=1, details=20, verify_count=6):
     base="https://"+source["url"].split("/")[2]+"/wp-json/wc/store/v1/products"
-    can,why=robots_check(base)
-    if can is not True:
-        return [],[why or "robots_not_approved"]
     products=[]; errors=[]; seen=set()
-    for page in range(1, min(pages,4)+1):
-        try:
-            endpoint=base+"?"+urlencode({"per_page":min(per_page,100),"page":page})
-            status,_,ct,body=http_get(endpoint,limit=4_000_000,accept="application/json")
-            if status!=200:
-                errors.append(f"Woo Store API HTTP {status} page {page}")
+    # Use exact source-declared ceramic/porcelain sections; never scan sanitaryware
+    # from a mixed WooCommerce store and silently claim those products as tiles.
+    categories=MATERIAL_CATEGORY_IDS.get(source["source_id"],[None])
+    for category in categories:
+        category_filter={"category":category} if category is not None else {}
+        sample_url=base+"?"+urlencode({"per_page":min(per_page,100),"page":1,**category_filter})
+        can,why=robots_check(sample_url)
+        if can is not True:
+            errors.append(f"category={category}:{why or 'robots_not_approved'}")
+            continue
+        for page in range(1,min(pages,4)+1):
+            try:
+                endpoint=base+"?"+urlencode({"per_page":min(per_page,100),"page":page,**category_filter})
+                status,_,ct,body=http_get(endpoint,limit=4_000_000,accept="application/json")
+                if status!=200:
+                    errors.append(f"Woo category={category} HTTP {status} page {page}")
+                    break
+                raw=json.loads(body)
+                if not isinstance(raw,list):
+                    errors.append(f"category={category}:not_array")
+                    break
+                for item in raw:
+                    if item.get("id") not in seen:
+                        seen.add(item.get("id"))
+                        item["_idea_source_category_id"]=category
+                        products.append(item)
+                if len(raw)<min(per_page,100):
+                    break
+            except Exception as exc:
+                errors.append(f"category={category}:"+type(exc).__name__+":"+str(exc)[:120])
                 break
-            raw=json.loads(body)
-            if not isinstance(raw,list):errors.append("not_array");break
-            for item in raw:
-                if item.get("id") not in seen:
-                    seen.add(item.get("id"))
-                    products.append(item)
-            if len(raw)<per_page:break
-        except Exception as exc:
-            errors.append(type(exc).__name__+":"+str(exc)[:120]);break
     # Only budgeted product detail pages qualify for more evidence.
     details_for={}
     with ThreadPoolExecutor(max_workers=4) as pool:

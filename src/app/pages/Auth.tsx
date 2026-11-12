@@ -5,8 +5,10 @@ import { useI18n } from "../i18n/i18n";
 import { supabase, backendConfigurationError } from "../backend/supabaseClient";
 import { Container, Section, Button } from "../components/ui";
 import { Panel, Field, inputStyle } from "../components/dash";
+import { SocialAuth } from "../components/SocialAuth";
+import { AccountEntry } from "./AccountEntry";
 
-function AuthShell({ mode }: { mode: "login" | "register" }) {
+function AuthShell({ mode, redirectTo = "/account" }: { mode: "login" | "register"; redirectTo?: string }) {
   const { t, locale } = useI18n(); const nav = useNavigate();
   const tr = (ar: string, en: string, fr = en) => locale === "ar" ? ar : locale === "fr" ? fr : en;
   const authFailure = (error: unknown) => {
@@ -39,7 +41,7 @@ function AuthShell({ mode }: { mode: "login" | "register" }) {
       const result = mode === "register"
         ? await supabase.auth.signUp({
             email: email.trim(), password,
-            options: { data: { display_name: name.trim() }, emailRedirectTo: `${window.location.origin}/account` },
+            options: { data: { display_name: name.trim() }, emailRedirectTo: window.location.origin + redirectTo },
           })
         : await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (result.error) { setMessage(authFailure(result.error)); return; }
@@ -47,7 +49,17 @@ function AuthShell({ mode }: { mode: "login" | "register" }) {
         setMessage(tr("راجع بريدك الإلكتروني لتأكيد الحساب، وبعدها سجّل دخول.", "Check your email to confirm your account, then sign in."));
         return;
       }
-      nav("/account");
+      if (mode === "login" && result.data.user) {
+        // Resolve permissions from the server-side role table. Never trust a
+        // user-controlled metadata flag to unlock company/platform routes.
+        const { data: verifiedRole, error: roleLookupError } = await supabase
+          .from("user_roles").select("role").eq("user_id", result.data.user.id).single();
+        if (roleLookupError) throw roleLookupError;
+        nav(verifiedRole?.role === "admin" ? "/admin"
+          : verifiedRole?.role === "supplier" ? "/business" : "/account");
+      } else {
+        nav(redirectTo);
+      }
     } catch (error) {
       setMessage(authFailure(error));
     } finally {
@@ -80,12 +92,18 @@ function AuthShell({ mode }: { mode: "login" | "register" }) {
       <Button style={{ width: "100%" }} disabled={busy} onClick={() => void submit()}><Mail size={16} />{busy ? "Working…" : mode === "login" ? t("auth.signIn") : t("auth.createAccount")}<ArrowRight size={16} /></Button>
       {mode === "login" && <button type="button" disabled={busy} onClick={() => void reset()} style={{ display: "inline-flex", alignItems: "center", gap: "var(--idea-space-2)", marginTop: "var(--idea-space-4)", border: 0, background: "transparent", color: "var(--idea-gold-bright)", cursor: "pointer", fontFamily: "var(--idea-font-body)", fontSize: "var(--idea-text-sm)" }}><KeyRound size={14} />Reset password</button>}
     </>}
+    <SocialAuth redirectTo={redirectTo}/>
     <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "var(--idea-space-2)", marginTop: "var(--idea-space-5)", color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}><ShieldCheck size={13} color="var(--idea-gold)" />New accounts are buyers by default. Supplier and admin access is assigned server-side.</div>
     <div style={{ textAlign: "center", marginTop: "var(--idea-space-4)", color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{mode === "login" ? <><span>{t("auth.noAccount")} </span><Link to="/register" style={{ color: "var(--idea-gold-bright)" }}>{t("auth.createAccount")}</Link></> : <><span>{t("auth.haveAccount")} </span><Link to="/login" style={{ color: "var(--idea-gold-bright)" }}>{t("auth.signIn")}</Link></>}</div>
   </Panel></Container></Section>;
 }
-export function Login() { return <AuthShell mode="login" />; }
-export function Register() { return <AuthShell mode="register" />; }
-export function RegisterCustomer() { return <AuthShell mode="register" />; }
-export function RegisterBusiness() { return <AuthShell mode="register" />; }
+
+/* Customer, business and admin each have a distinct, owner-approved entry screen.
+   The old Supabase AuthShell remains private and is no longer routed. */
+export function Login() { return <AccountEntry audience="customer" mode="login" />; }
+export function Register() { return <AccountEntry audience="customer" mode="register" />; }
+export function RegisterCustomer() { return <AccountEntry audience="customer" mode="register" />; }
+export function RegisterBusiness() { return <AccountEntry audience="business" mode="register" />; }
+export function BusinessLogin() { return <AccountEntry audience="business" mode="login" />; }
+export function AdminLogin() { return <AccountEntry audience="admin" mode="login" />; }
 export function RoleSelect() { return <Login />; }

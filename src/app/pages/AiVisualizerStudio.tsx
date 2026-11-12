@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { localMaterialFace } from "../data/localMaterialFace";
 import { Link, useSearchParams } from "react-router";
 import {
   ArrowLeftRight, Check, ChevronDown, CircleAlert, Download, Expand,
@@ -6,6 +7,7 @@ import {
   Search, ShieldCheck, Sparkles, UploadCloud, X, ZoomIn, ZoomOut,
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
+import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
 import { supabase } from "../backend/supabaseClient";
@@ -66,9 +68,11 @@ function wait(ms: number, signal: AbortSignal) {
 /** Source-labelled product faces are the only allowed images in the material gallery. */
 function materialFaces(product: Product): string[] {
   const sourceFaces = product.source?.original?.tiles || [];
-  return [...new Set(sourceFaces.filter((url) =>
+  const faces = [...new Set(sourceFaces.filter((url) =>
     /^https:\/\/[^\s]+\.(?:png|jpe?g|webp)(?:\?[^\s]*)?$/i.test(url)
   ))];
+  const cached = localMaterialFace(product.id);
+  return cached ? [cached, ...faces.slice(1)] : faces;
 }
 
 export function AiVisualizerStudio() {
@@ -78,6 +82,24 @@ export function AiVisualizerStudio() {
   const [searchParams, setSearchParams] = useSearchParams();
   const ar = locale === "ar";
   const tr = (arabic: string, english: string, french?: string) => ar ? arabic : locale === "fr" ? (french || english) : english;
+  // Supplier catalogue text is sometimes only populated in one language.
+  // Never display arbitrary Arabic text in English UI (or vice versa).
+  const containsArabic = (value: string) => /[\u0600-\u06FF]/u.test(value);
+  const containsLatin = (value: string) => /[A-Za-z]/.test(value);
+  const localizedValue = (value: string | null | undefined, fallbackAr: string, fallbackEn: string): string => {
+    const original = String(value || "").trim();
+    if (!original) return tr(fallbackAr, fallbackEn);
+    if (ar) return containsArabic(original) || !containsLatin(original) ? original : fallbackAr;
+    return containsArabic(original) ? fallbackEn : original;
+  };
+  const localizedName = (product: Product): string => {
+    const direct = String(product.name[locale] || "").trim();
+    const english = String(product.name.en || "").trim();
+    const arabic = String(product.name.ar || "").trim();
+    const code = product.code || ideaInternalCode(product);
+    if (ar) return containsArabic(direct) ? direct : containsArabic(arabic) ? arabic : "خامة " + code;
+    return direct && !containsArabic(direct) ? direct : english && !containsArabic(english) ? english : "Material " + code;
+  };
   const selectedId = searchParams.get("product");
   const selectedProduct = products.find((product) => product.id === selectedId || product.slug === selectedId) || null;
 
@@ -114,6 +136,14 @@ export function AiVisualizerStudio() {
   const requestRef = useRef<AbortController | null>(null);
 
   const selectedFaces = useMemo(() => selectedProduct ? materialFaces(selectedProduct) : [], [selectedProduct]);
+  // Never offer an arbitrary default; only use dimensions recorded for this product variant.
+  const physicalSizes = (selectedProduct?.sizes || []).filter((size) =>
+    Number.isFinite(size.widthMm) && Number.isFinite(size.heightMm) &&
+    Number(size.widthMm) >= 50 && Number(size.heightMm) >= 50 &&
+    Number(size.widthMm) <= 3200 && Number(size.heightMm) <= 3200
+  );
+  const selectedPhysicalSize = physicalSizes.find((size) => size.id === tileSize) || physicalSizes[0] || null;
+
   const selectedFaceImage = selectedFaces[faceIndex] || selectedFaces[0] || null;
   const safePhotoUrl = safeBlobUrl(photoUrl);
   const safeMaterialUrl = safeBlobUrl(materialUrl);
@@ -250,6 +280,7 @@ export function AiVisualizerStudio() {
     setMaterial(null);
     setMaterialUrl(null);
     setFaceIndex(0);
+    setTileSize("");
     setResult(null);
     setQuality(null);
     setError("");
@@ -320,6 +351,11 @@ export function AiVisualizerStudio() {
       setError(tr("اختر منتجًا حقيقيًا من المكتبة.", "Select a real catalogue product."));
       return;
     }
+    if (!selectedPhysicalSize) {
+      setError(tr("مقاس البلاطة غير موثق لهذا المنتج. يجب إضافة المقاس الحقيقي قبل التوليد.",
+                  "This product has no verified physical tile dimensions. Add an actual size before generating."));
+      return;
+    }
     if (quota && !quota.unlimited && quota.remaining === 0) {
       setError(tr("استخدمت المحاولات الخمس المتاحة.", "Your five lifetime attempts have been used."));
       return;
@@ -347,7 +383,10 @@ export function AiVisualizerStudio() {
       form.append("surface", surface);
       form.append("roomKind", roomKind);
       form.append("rotation", String(rotation));
-      form.append("tileSize", selectedProduct.sizes[0]?.label || tileSize);
+      form.append("tileSize", selectedPhysicalSize.label);
+       form.append("tile_width_mm", String(selectedPhysicalSize.widthMm));
+       form.append("tile_height_mm", String(selectedPhysicalSize.heightMm));
+       form.append("variant_id", selectedPhysicalSize.id);
       form.append("grout", grout);
       form.append("idempotencyKey", crypto.randomUUID());
       setStage("validating");
@@ -391,7 +430,7 @@ export function AiVisualizerStudio() {
     }
   }
 
-  const productName = selectedProduct?.name[locale] || tr("اختر خامة", "Select a material");
+  const productName = selectedProduct ? localizedName(selectedProduct) : tr("اختر خامة", "Select a material");
   const stageText: Record<JobStage, string> = {
     idle: tr("جاهز", "Ready"),
     uploading: tr("رفع الملفات الآمن", "Secure upload"),
@@ -405,11 +444,11 @@ export function AiVisualizerStudio() {
   const displaySource = viewMode === "original" ? safePhotoUrl : viewMode === "result" ? result : safePhotoUrl;
 
   return (
-    <main className="idea-studio" dir={ar ? "rtl" : "ltr"}>
+    <main className="idea-studio" lang={locale} dir={ar ? "rtl" : "ltr"}>
       <header className="idea-studio-commandbar">
         <div>
           <span className="idea-studio-brandmark"><Layers3 size={19} /></span>
-          <span><b>IDEA</b><small>IMMUTABLE SCENE ENGINE</small></span>
+          <span><b>IDEA</b><small>{tr("محرك حماية المشهد", "IMMUTABLE SCENE ENGINE")}</small></span>
         </div>
         <div className="idea-studio-command-status">
           <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : ""}`}>
@@ -428,11 +467,11 @@ export function AiVisualizerStudio() {
 
       <section className="idea-studio-intro">
         <div>
-          <span className="idea-studio-kicker"><Sparkles size={14} /> IDEA MATERIAL INTELLIGENCE / 2030</span>
+          <span className="idea-studio-kicker"><Sparkles size={14} /> {tr("IDEA / استوديو الخامات 2030", "IDEA MATERIAL INTELLIGENCE / 2030")}</span>
           <h1>{tr("غيّر السطح.", "Change the surface.")}<em>{tr(" لا تغيّر الغرفة.", " Never the room.")}</em></h1>
           <p>{tr("المشهد الأصلي يظل مرجعًا ثابتًا. لا تُنشر أي نتيجة إلا بعد التحقق من القناع والأبعاد وإعادة تركيب البكسلات المحمية من الصورة الأصلية.", "Your original scene remains immutable. No result is released without mask, dimension and protected-pixel verification.")}</p>
         </div>
-        <div className="idea-studio-trust"><LockKeyhole size={18} /><span><b>PIXEL-SAFE COMPOSITING</b><small>ORIGINAL FRAME · VERIFIED MASK · IDEA WATERMARK</small></span></div>
+        <div className="idea-studio-trust"><LockKeyhole size={18} /><span><b>{tr("تركيب آمن للصورة", "PIXEL-SAFE COMPOSITING")}</b><small>{tr("الصورة الأصلية · قناع معتمد · علامة IDEA", "ORIGINAL FRAME · VERIFIED MASK · IDEA WATERMARK")}</small></span></div>
       </section>
 
       <div className="idea-studio-workspace">
@@ -441,7 +480,7 @@ export function AiVisualizerStudio() {
           <button className="idea-studio-upload" type="button" onClick={() => inputRef.current?.click()}>
             <UploadCloud size={24} />
             <strong>{photo ? tr("تغيير صورة الغرفة", "Replace room image") : tr("ارفع صورة الغرفة", "Upload room image")}</strong>
-            <small>JPG · PNG · WEBP · 12 MB</small>
+            <small dir="ltr">JPG · PNG · WEBP · 12 MB</small>
           </button>
           <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={onRoomFile} capture="environment" />
           {photoMeta && (
@@ -542,7 +581,7 @@ export function AiVisualizerStudio() {
               <i>{quality.protectedPixelsCompositedFromOriginal ? tr("المناطق المحمية من الأصل", "Protected pixels from original") : "—"}</i>
             </div>
           )}
-          {error && <div className="idea-studio-error" role="alert"><CircleAlert size={17} /><span>{error}</span>{!session && <Link to="/login">{tr("تسجيل الدخول", "Sign in")}</Link>}</div>}
+          {error && <div className="idea-studio-error" role="alert"><CircleAlert size={17} /><span>{localizedValue(error, "تعذر إتمام الطلب. يُرجى المحاولة مرة أخرى.", "The request could not be completed. Please try again.")}</span>{!session && <Link to="/login">{tr("تسجيل الدخول", "Sign in")}</Link>}</div>}
         </section>
 
         <aside className="idea-studio-rail idea-studio-material">
@@ -568,10 +607,10 @@ export function AiVisualizerStudio() {
           <h3>{productName}</h3>
           {selectedProduct && (
             <>
-              <p>{selectedProduct.manufacturer || selectedProduct.brand}</p>
+              <p>{localizedValue(selectedProduct.manufacturer || selectedProduct.brand, "الشركة المصنعة غير مترجمة", "Manufacturer name not localized")}</p>
               <dl className="idea-studio-product-specs">
                 <div><dt>{tr("الكود", "Code")}</dt><dd>{selectedProduct.code || "—"}</dd></div>
-                <div><dt>{tr("التشطيب", "Finish")}</dt><dd>{selectedProduct.finish || "—"}</dd></div>
+                <div><dt>{tr("التشطيب", "Finish")}</dt><dd>{localizedValue(selectedProduct.finish, "التشطيب غير محدد", "Finish not specified")}</dd></div>
                 <div><dt>{tr("المقاس", "Dimensions")}</dt><dd>{selectedProduct.sizes[0]?.label || "—"}</dd></div>
               </dl>
               <Link className="idea-studio-product-link" to={`/product/${selectedProduct.slug}`}>{tr("فتح صفحة المنتج", "Open product page")}</Link>
@@ -593,16 +632,22 @@ export function AiVisualizerStudio() {
             <div className="idea-studio-choice">{[0,45,90].map((value) => <button type="button" key={value} className={rotation === value ? "active" : ""} onClick={() => setRotation(value)}>{value}°</button>)}</div>
           </div>
           <div className="idea-studio-control-block">
-            <label>{tr("المقاس المرجعي", "Reference scale")}</label>
-            <select value={selectedProduct?.sizes[0]?.label || tileSize} onChange={(event) => setTileSize(event.target.value)} disabled={Boolean(selectedProduct?.sizes[0]?.label)}>
-              <option>30 × 30 cm</option><option>60 × 60 cm</option><option>60 × 120 cm</option><option>80 × 80 cm</option><option>120 × 120 cm</option>
-            </select>
+            <label>{tr("المقاس الحقيقي للبلاطة", "Actual tile size")}</label>
+            <select value={selectedPhysicalSize?.id || ""} onChange={(event) => setTileSize(event.target.value)} disabled={physicalSizes.length <= 1}>
+               {physicalSizes.length ? physicalSizes.map((size) => (
+                 <option value={size.id} key={size.id}>
+                   {String(Number(size.widthMm) / 10) + " × " + String(Number(size.heightMm) / 10) + " cm"}
+                 </option>
+               )) : <option value="">{tr("المقاس غير متوفر", "Size unavailable")}</option>}
+             </select>
+             <small className="idea-studio-size-note">{tr("المقاس من بيانات المنتج. القياس داخل الغرفة تقريبي دون مرجع معايرة معروف.",
+               "Dimensions come from this product. In-room scale remains approximate without a measured reference.")}</small>
           </div>
           <div className="idea-studio-control-block">
             <label>{tr("لون الفواصل", "Grout tone")}</label>
             <div className="idea-studio-colors">{["#3b3b3b","#ffffff","#ddd8cf","#9b998f"].map((color) => <button type="button" key={color} style={{ background: color }} className={grout === color ? "active" : ""} onClick={() => setGrout(color)} aria-label={color} />)}</div>
           </div>
-          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={busy || !photo || !selectedProduct || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
+          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={busy || !photo || !selectedProduct || !selectedPhysicalSize || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
             <Sparkles size={17} /> {tr("ابدأ التوليد المحمي", "Generate with scene lock")}
           </button>
           <small className="idea-studio-consent">{tr("ببدء التوليد تُرسل الصورتان إلى Runpod للمعالجة المؤقتة وفق سياسة الخصوصية.", "Generation sends the room and material references to Runpod for temporary processing.")}</small>
@@ -610,7 +655,7 @@ export function AiVisualizerStudio() {
       </div>
 
       <section className="idea-studio-library" id="idea-material-atlas" aria-labelledby="idea-atlas-heading">
-        <div className="idea-atlas-overline"><span className="idea-studio-kicker">IDEA / MATERIAL ATLAS 2030</span><span>{tr("كتالوج مستورد • يتوسع مع كل مورد جديد", "Source-linked catalogue · expanding with supplier imports")}</span></div>
+        <div className="idea-atlas-overline"><span className="idea-studio-kicker">{tr("IDEA / مكتبة الخامات 2030", "IDEA / MATERIAL ATLAS 2030")}</span><span>{tr("كتالوج مستورد • يتوسع مع كل مورد جديد", "Source-linked catalogue · expanding with supplier imports")}</span></div>
         <div className="idea-studio-library-head">
           <div>
             <h2 id="idea-atlas-heading">{tr("عالم كامل من", "A universe of")} <em>{tr("الخامات المعمارية.", "architectural surfaces.")}</em></h2>
@@ -646,7 +691,7 @@ export function AiVisualizerStudio() {
               <label className="idea-atlas-facet" key={item.key}><span>{item.label}</span>
                 <select value={item.value} onChange={(event) => item.set(event.target.value)}>
                   <option value="">{tr("الكل", "All")}</option>
-                  {item.options.map((value) => <option value={value} key={value}>{value}</option>)}
+                  {item.options.map((value) => <option value={value} key={value}>{localizedValue(value, "بيانات المصدر غير مترجمة", "Source value not localized")}</option>)}
                 </select>
               </label>
             ))}
@@ -657,7 +702,8 @@ export function AiVisualizerStudio() {
         </div>
         <div className="idea-studio-swatches">
           {visibleAtlasProducts.map((product) => (
-            <button type="button" key={product.id} onClick={() => chooseProduct(product.id)}
+            <article className="idea-atlas-product" key={product.id}>
+            <button type="button" onClick={() => chooseProduct(product.id)}
               aria-pressed={selectedProduct?.id === product.id} className={selectedProduct?.id === product.id ? "selected" : ""}>
               <span className="idea-studio-swatch-image">
                 <img src={materialFaces(product)[0]} alt="" loading="lazy" decoding="async" />
@@ -665,12 +711,15 @@ export function AiVisualizerStudio() {
                 {selectedProduct?.id === product.id && <i><Check size={13} /></i>}
               </span>
               <span className="idea-atlas-card-body">
-                <strong>{product.name[locale] || product.name.en}</strong>
-                <small>{product.manufacturer || product.brand}</small>
-                <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + product.finish : ""}</span>
-                <span className="idea-atlas-card-bottom"><span>{product.code || tr("بدون كود موثّق", "No verified SKU")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
+                <strong>{localizedName(product)}</strong>
+                <small>{localizedValue(product.manufacturer ? productMaker(product, locale).value : product.brand, "الشركة غير مترجمة", "Maker name not localized")}{product.manufacturer ? "" : tr(" · المصنع غير مؤكد", " · maker unverified")}</small>
+                <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + localizedValue(product.finish, "تشطيب غير محدد", "Finish not specified") : ""}</span>
+                <span className="idea-atlas-card-reference"><span>{tr("كود IDEA", "IDEA reference")}</span><code dir="ltr">{ideaInternalCode(product)}</code></span>
+                <span className="idea-atlas-card-bottom"><span>{sourceSku(product) ? (tr("كود المورد", "Supplier SKU") + ": " + sourceSku(product)) : tr("كود المورد غير موثّق", "Supplier SKU unverified")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
               </span>
             </button>
+            <Link className="idea-studio-product-link" to={`/product/${product.slug}`}>{tr("تفاصيل الخامة", "Material details")}</Link>
+            </article>
           ))}
         </div>
         {!eligibleProducts.length && <div className="idea-studio-no-products"><Search size={26} /><strong>{tr("مفيش خامات مطابقة للفلاتر دي", "No matching materials")}</strong><p>{tr("جرّب بحث تاني أو امسح الفلاتر.", "Try another search or clear your filters.")}</p><button type="button" onClick={resetAtlas}>{tr("عرض كل الخامات", "Browse all materials")}</button></div>}

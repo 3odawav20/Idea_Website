@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#151515"><meta name="description" content="IDEA company control center, product codes, catalogue, private pricing and advertising requests.">
+<title>IDEA | مركز الشركات والمنتجات</title>
+<link rel="stylesheet" href="./marketplace.css">
+<script src="./marketplace.js" defer></script>
+<script>
+try { if(localStorage.getItem("idea-language")==="en")location.replace("/marketplace/en.html"+location.hash); }catch(_){}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">تخطّي إلى المحتوى</a>
+<div class="shell">
+<aside class="rail">
+ <a href="/" class="brand"><span class="brand-icon">I</span><span>IDEA <small>إدارة الشركات</small></span></a>
+ <div class="rail-caption">الشركات والحسابات</div>
+ <div id="company-list" class="company-list"><p class="dim">جارٍ تحميل الشركات...</p></div>
+ <div class="rail-caption">لوحة التحكم</div>
+ <nav class="sections" aria-label="أقسام التحكم">
+  <button data-page="overview" class="selected">◉ <span>نظرة عامة</span></button>
+  <button data-page="products">▦ <span>المنتجات والبراندات</span></button>
+  <button data-page="search">⌕ <span>البحث بالكود</span></button>
+  <button data-page="sales">▥ <span>المبيعات الشهرية</span></button>
+  <button data-page="staff">♙ <span>مديرو الشركات</span></button>
+  <button data-page="ticker">☷ <span>الشريط الإعلاني</span></button>
+  <button data-page="ads">◈ <span>باقات الدعاية</span></button>
+ </nav>
+ <div class="rail-foot"><a href="/ai-room-visualizer">استوديو صور IDEA</a><a href="/products">كتالوج السيراميك</a></div>
+</aside>
+<div class="work">
+ <header class="topbar">
+   <div><span class="eyebrow">IDEA / إدارة الشركات</span><h1 id="page-title">لوحة إدارة الشركات</h1><p id="page-subtitle">كل شركة ومنتجاتها وأسعارها — صلاحيات مستقلة وبيانات حقيقية</p></div>
+   <div class="header-tools"><select id="lang" aria-label="Language"><option value="ar">العربية</option><option value="en">الإنجليزية</option></select><button id="theme" type="button" title="الوضع الفاتح والداكن">◐</button><a href="/" class="back">الموقع</a></div>
+ </header>
+ <div id="alert" class="alert" role="status" aria-live="polite" hidden></div>
+ <main id="main">
+  <section id="page-overview" class="page">
+   <div id="identity" class="panel"><p class="dim">التحقق من جلسة الحساب...</p></div>
+   <div class="stat-grid">
+    <div class="stat"><small>الشركات المسجلة</small><strong id="count-companies">—</strong></div>
+    <div class="stat"><small>منتجات الشركة المختارة</small><strong id="count-products">—</strong></div>
+    <div class="stat"><small>المنتجات المعتمدة</small><strong id="count-approved">—</strong></div>
+    <div class="stat"><small>عمليات البيع المدفوعة</small><strong id="count-sales">—</strong></div>
+   </div>
+   <div class="cols">
+    <article class="panel">
+     <h2>الشركة المختارة</h2><div id="company-detail" class="dim">اختر شركة من القائمة</div>
+     <div id="admin-suspend" hidden><p class="warning">إيقاف الشركة يخفي منتجاتها. إعادة التفعيل تتطلب مراجعة المستندات من لوحة التوثيق.</p><button class="danger" id="suspend-company">إيقاف الشركة</button></div>
+    </article>
+    <article class="panel">
+     <h2>إجراءات سريعة</h2><p class="dim">بيانات الشركات والمنتجات محفوظة على MySQL؛ لا نعرض مبيعات وهمية.</p>
+     <div class="quick"><button data-go="products">إضافة منتج</button><button data-go="search">البحث بكود منتج</button><button data-go="ads">طلبات الإعلانات</button></div>
+    </article>
+   </div>
+  </section>
+  <section id="page-products" class="page" hidden>
+    <div class="head-row"><div><h2>المنتجات حسب الشركة والبراند</h2><p class="dim">مقاس البلاطة بالسنتيمتر يُحفظ أيضًا بوحدة المليمتر. الأسعار خاصة بالأدمن والشركة.</p></div><button id="product-add">+ منتج جديد</button></div>
+    <div id="product-list" class="product-list"></div>
+    <form id="product-form" class="panel" hidden>
+      <h3 id="product-form-title">إضافة أو تعديل بلاطة</h3><input type="hidden" name="id">
+      <div class="form-grid">
+       <label>كود المنتج / SKU <input name="sku" maxlength="100" required placeholder="مثال: CER-60120-01"></label>
+       <label>اسم المنتج <input name="title" maxlength="190" required></label>
+       <label>البراند <input name="brand" maxlength="190" required></label>
+       <label>الشركة المصنعة <input name="manufacturer" maxlength="190" required></label>
+       <label>الخامة <select name="category"><option value="ceramic">سيراميك</option><option value="porcelain">بورسلين</option><option value="marble">رخام</option><option value="granite">جرانيت</option><option value="tile">بلاط</option></select></label>
+       <label>التشطيب <input name="finish" maxlength="100" placeholder="مطفي / لامع"></label>
+       <label>العرض الحقيقي (سم) <input name="width_cm" type="number" min="5" max="320" step="0.1" required></label>
+       <label>الطول الحقيقي (سم) <input name="height_cm" type="number" min="5" max="320" step="0.1" required></label>
+       <label>اللون <input name="color" maxlength="100"></label>
+       <label>السعر الخاص (جنيه) <input name="price_egp" type="number" min="0" max="1000000000" step="0.01" placeholder="اختياري"></label>
+       <label class="span2">رابط صورة البلاطة المرفوعة على IDEA <input name="image_url" maxlength="500" placeholder="/uploads/company-products/..."></label>
+       <label class="span2">الوصف <textarea name="description" rows="2" maxlength="2000"></textarea></label>
+      </div>
+      <p class="warning">المنتج الجديد يظل مسودة حتى يوافق أدمن IDEA على الصور والمقاس والبيانات. لا تُقبل مقاسات مجهولة.</p>
+      <div class="actions"><button type="submit">حفظ كمسودة</button><button type="button" class="secondary" id="product-cancel">إلغاء</button></div>
+    </form>
+  </section>
+  <section id="page-search" class="page" hidden>
+    <article class="panel search-panel">
+     <h2>ابحث بكود البلاطة أو الشركة أو البراند</h2>
+     <p class="dim">نتائج حقيقية من كتالوج الشركات المعتمد، مع مقترحات وفق المقاس والنوع والتشطيب.</p>
+     <form id="search-form" class="searchbox"><input id="search-input" required maxlength="100" placeholder="كود المنتج / البراند / الشركة المصنعة"><button type="submit">بحث</button></form>
+     <div id="search-results" class="product-list"></div>
+     <h3>منتجات مشابهة</h3><div id="similar-results" class="product-list"></div>
+    </article>
+  </section>
+  <section id="page-sales" class="page" hidden>
+    <article class="panel">
+     <div class="head-row"><h2>المبيعات الشهرية المؤكدة</h2><label>الشهر <input id="sales-month" type="month"></label></div>
+     <p class="warning">تُحسب فقط الطلبات التي استلمت دفعة مؤكدة من مزود الدفع، ولا تدخل الطلبات غير المدفوعة أو عروض الأسعار.</p>
+     <div id="sales-report" class="table-wrap"></div>
+    </article>
+  </section>
+  <section id="page-staff" class="page" hidden>
+    <article class="panel">
+     <h2>مديرو الشركة وصلاحياتهم</h2><p class="dim">صاحب الشركة أو أدمن المنصة فقط يقدر يضيف مديرًا مسجلًا أو يلغي صلاحياته. لا أحد يستطيع منح نفسه صلاحية أدمن المنصة.</p>
+     <div id="staff-list"></div>
+     <form id="staff-form" class="form-inline"><label>البريد الإلكتروني للحساب المسجل <input type="email" name="email" required></label><label>الصلاحية <select name="active"><option value="true">تفعيل مدير الشركة</option><option value="false">إلغاء الصلاحية</option></select></label><button type="submit">حفظ</button></form>
+    </article>
+  </section>
+  <section id="page-ticker" class="page" hidden>
+    <article class="panel"><h2>الشريط العلوي الثابت</h2><p class="dim">الرسائل تظهر فوق الموقع باللغة التي يختارها الزائر، وتتحكم بها إدارة IDEA فقط.</p>
+     <div id="ticker-list"></div>
+     <form id="ticker-form">
+      <label>رسالة بالعربي <textarea name="text_ar" maxlength="500" required rows="2"></textarea></label>
+      <label>Message in English <textarea name="text_en" maxlength="500" required rows="2"></textarea></label>
+      <label>رابط داخل الموقع <input name="link_path" placeholder="/products" maxlength="300"></label>
+      <label>الحالة <select name="state"><option value="draft">مسودة</option><option value="published">نشر على الموقع</option><option value="archived">أرشفة</option></select></label>
+      <button type="submit">حفظ الرسالة</button>
+     </form>
+    </article>
+  </section>
+  <section id="page-ads" class="page" hidden>
+   <div class="head-row"><div><h2>الدعاية وباقات IDEA</h2><p class="dim">الأسعار الداخلية يتحكم بها الأدمن؛ Google وMeta تعتمد على ميزانية متغيرة وموافقة منفصلة.</p></div></div>
+   <div id="package-grid" class="package-grid"></div>
+   <article class="panel">
+     <h3>طلب إعلان للشركة</h3><p class="warning">قبل تصوير أو رفع فيديو الهيرو، تواصل مع الإدارة لتأكيد المقاس والجودة. المطلوب: MP4 H.264، مقاس 1920×1080، نسبة 16:9، من 6 إلى 20 ثانية، وحجم لا يزيد عن 40MB. رفع الملفات غير متاح قبل مراجعة الطلب.</p>
+     <form id="ad-form" class="form-grid">
+      <label>الباقة <select name="package_id" id="ad-package"></select></label>
+      <label>نوع المحتوى <select name="media_kind"><option value="image">صورة</option><option value="video">فيديو</option></select></label>
+      <label class="span2">عنوان الإعلان <input name="title" maxlength="160" required></label>
+      <label class="span2">التفاصيل أو طلب التواصل <textarea name="message" rows="3" maxlength="4000" required></textarea></label>
+      <div class="span2"><button type="submit">إرسال الطلب للإدارة</button></div>
+     </form>
+     <h3>طلبات الحملات</h3><div id="ad-requests"></div>
+   </article>
+  </section>
+ </main>
+ <footer>IDEA © 2026 · بيانات الحسابات والشركات محمية بنظام الصلاحيات · <a href="/">العودة للموقع</a></footer>
+</div>
+</div>
+</body>
+</html>
