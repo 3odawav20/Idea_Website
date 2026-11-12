@@ -57,13 +57,12 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
   const counts=useMemo(()=>Object.fromEntries(categories.map(key=>[key,products.filter(p=>matchesCategory(p,key)).length])) as Record<Category,number>,[products]);
   const shown=filtered.slice(0,limit);
   const toggleExpanded=()=>{
+    // Keep the horizontal position of the chosen materials when opening/closing.
     if(scroller.current)savedScroll.current={top:scroller.current.scrollTop,left:scroller.current.scrollLeft};
     setExpanded(previous=>!previous);
   };
-  const more=()=>{
-    setLimit(prev=>Math.min(filtered.length,prev+48));
-    if(!expanded)toggleExpanded();
-  };
+  // Loading another batch must NEVER open a modal or lock page scrolling.
+  const more=()=>setLimit(prev=>Math.min(filtered.length,prev+48));
   const chooseCategory=(value:Category)=>{
     setCategory(value);
     setLimit(48);
@@ -71,7 +70,9 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
   };
   useEffect(()=>{
     const root=scroller.current,target=sentinel.current;
-    if(!root||!target||shown.length>=filtered.length||typeof IntersectionObserver==="undefined")return;
+    // Auto-pagination is reserved for the explicitly expanded material browser.
+    // On the normal page the user's Load More click controls the batches.
+    if(!expanded||!root||!target||shown.length>=filtered.length||typeof IntersectionObserver==="undefined")return;
     const observer=new IntersectionObserver(entries=>{
       if(entries.some(entry=>entry.isIntersecting))setLimit(prev=>Math.min(filtered.length,prev+48));
     },{root,rootMargin:"80px",threshold:.01});
@@ -105,7 +106,13 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     return ()=>{document.body.style.overflow=previousOverflow;window.removeEventListener("keydown",keydown);};
   },[expanded]);
 
-  const scroll=(x:number,y:number)=>scroller.current?.scrollBy({left:x,top:y,behavior:"smooth"});
+  const scroll=(x:number,y:number)=>{
+    if(!expanded&&y!==0){
+      window.scrollBy({top:y,behavior:"smooth"});
+      return;
+    }
+    scroller.current?.scrollBy({left:x,top:y,behavior:"smooth"});
+  };
   const gallery=<aside className={"idea-room3d-side idea-room3d-material-catalog"+(expanded?" is-expanded":"")} aria-label={t.title}>
     <h2>{t.title}<small>{products.length} {t.count}</small></h2>
     <p className="idea-room3d-material-caption">{t.surface}: <strong>{t[surface]}</strong></p>
