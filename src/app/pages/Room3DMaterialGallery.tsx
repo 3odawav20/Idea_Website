@@ -59,10 +59,12 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
         const sizes=verifiedSizes(product),image=materialFace(product);
         const chosen=sizeOptions[product.id] && sizes.some(s=>s.id===sizeOptions[product.id])?sizeOptions[product.id]:sizes[0].id;
         const selectedSize=sizes.find(size=>size.id===chosen)!;
+        const previewWidth=Math.min(140,180*selectedSize.widthMm!/selectedSize.heightMm!);
+        const previewHeight=previewWidth*selectedSize.heightMm!/selectedSize.widthMm!;
         const isActive=activeProductId===product.id&&activeSizeId===chosen;
         return <article className={"idea-room3d-material-card"+(isActive?" is-selected":"")} key={product.id}>
-          <div className="idea-room3d-material-face" style={{aspectRatio:String(selectedSize.widthMm)+"/"+String(selectedSize.heightMm)}}>
-            <img src={image!} alt={product.name[locale]} loading="lazy"/>
+          <div className="idea-room3d-material-face">
+            <img src={image!} alt={product.name[locale]} loading="lazy" style={{width:previewWidth,height:previewHeight}}/>
           </div>
           <strong title={product.name[locale]}>{product.name[locale]}</strong>
           <small>{product.manufacturer||product.brand}</small>
