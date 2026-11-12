@@ -529,3 +529,22 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   .idea-auth-scene .idea-auth-copy {animation:none!important}
   .idea-auth-social .idea-auth-provider {transition:none!important}
 }
+
+/* Business account artwork slots for the owner's exact separate night/day images.
+   Existing approved business-photo.jpg remains as the underlying fallback until
+   the exact owner-supplied images are available as binary repository assets. */
+.idea-auth-scene--business.idea-auth-scene--dark .idea-auth-photo {
+  background-image:
+    url('/images/auth/business-night.webp'),
+    url('/images/auth/business-photo.jpg');
+  background-position:center 34%;
+  background-size:cover;
+}
+.idea-auth-scene--business.idea-auth-scene--light .idea-auth-photo {
+  background-image:
+    url('/images/auth/business-day.webp'),
+    url('/images/auth/business-photo.jpg');
+  background-position:center 34%;
+  background-size:cover;
+  filter:none;
+}
