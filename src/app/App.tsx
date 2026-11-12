@@ -40,7 +40,7 @@ import { SurfaceStyles } from "./pages/SurfaceStyles";
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
-  if (!session) return <Navigate to="/login" replace />;
+  if (!session) return <Navigate to={roles?.includes("admin") ? "/admin/login" : roles?.includes("business") ? "/business/login" : "/login"} replace />;
   if (roles && !roles.includes(session.role)) return <Navigate to="/" replace />;
   return <Outlet />;
 }
