@@ -24,7 +24,7 @@ const Ctx = createContext<BackendCtx | null>(null);
 export interface Api {
   signIn: (provider: string, role: Role, info?: { name?: string; email?: string; phone?: string }) => User;
   signOut: () => void; setRole: (role: Role) => void; createBusiness: (b: Partial<Business>) => Business; updateBusinessStatus: (id: string, status: BusinessStatus) => void; connectProduct: (bizId: string, productId: string) => void;
-  createRequest: (r: Omit<QuoteRequest, "id" | "createdAt" | "status" | "deadlineAt" | "matchedBusinessIds" | "customerId">, hours: number) => QuoteRequest; submitOffer: (o: Omit<Offer, "id" | "createdAt" | "status">) => Offer; acceptOffer: (offerId: string) => Order | null;
+  createRequest: (r: Omit<QuoteRequest, "id" | "createdAt" | "status" | "deadlineAt" | "matchedBusinessIds" | "customerId">, hours: number) => Promise<QuoteRequest>; submitOffer: (o: Omit<Offer, "id" | "createdAt" | "status">) => Promise<Offer>; acceptOffer: (offerId: string) => Order | null;
   sandboxPay: (orderId: string, ok: boolean) => void; subscribe: (planId: string, interval: "monthly" | "annual", paid: boolean) => Subscription | null; cancelSubscription: (userId: string) => void; updatePlan: (plan: Plan) => void; updatePayment: (cfg: PaymentMethodConfig) => void; testPayment: (key: PaymentMethodKey) => void; markRead: (id: string) => void; saveRoomProject: (p: RoomProject) => void; deleteRoomProject: (id: string) => void; reset: () => void;
 }
 function dbRole(role: "buyer" | "supplier" | "admin"): Role { return role === "buyer" ? "customer" : role === "supplier" ? "business" : "admin"; }
@@ -62,8 +62,61 @@ export function BackendProvider({ children }: { children: ReactNode }) {
   const unavailable = (): never => { throw new Error(backendConfigurationError); };
   const api = useMemo<Api>(() => ({
     signIn: unavailable, signOut: () => { void requireSupabase().auth.signOut(); }, setRole: unavailable, createBusiness: unavailable, updateBusinessStatus: unavailable, connectProduct: unavailable,
-    createRequest: (r) => { if (!session) return unavailable(); const pending: QuoteRequest = { ...r, id: "pending", customerId: session.id, status: "Request Submitted", createdAt: Date.now(), deadlineAt: Date.now(), matchedBusinessIds: [] }; void requireSupabase().rpc("create_buyer_request", { p_governorate: r.governorate, p_destination: r.destination || null, p_delivery_date: r.deliveryDate || null, p_project_type: r.projectType || null, p_notes: r.notes || null, p_items: [{ productId: r.productId, quantity: r.quantity, unit: r.unit, variantLabel: r.variantLabel || null }] }).then(({ error }) => { if (error) console.error("IDEA RFQ creation failed", error); else void refresh(); }); return pending; },
-    submitOffer: (offer) => { const request = db.requests.find((entry) => entry.id === offer.requestId); if (!request?.requestItemId) return unavailable(); const pending: Offer = { ...offer, id: "pending", status: "submitted", createdAt: Date.now() }; void requireSupabase().rpc("submit_supplier_quote", { p_request_id: offer.requestId, p_availability: offer.availability || null, p_lead_time_days: offer.prepDays || null, p_minimum_order_quantity: null, p_notes: offer.notes || null, p_expires_at: new Date(offer.expiresAt).toISOString(), p_items: [{ requestItemId: request.requestItemId, quantity: offer.quantity, unitPrice: offer.unitPrice }] }).then(({ error }) => { if (error) console.error("IDEA quote submission failed", error); else void refresh(); }); return pending; }, acceptOffer: unavailable, sandboxPay: unavailable, subscribe: unavailable, cancelSubscription: unavailable, updatePlan: unavailable, updatePayment: unavailable, testPayment: unavailable,
+    // Never return a fabricated "pending" quotation. The caller may clear its cart
+    // only after the database has returned a persisted request ID.
+    createRequest: async (r) => {
+      if (!session || session.role !== "customer") throw new Error("A signed-in buyer account is required.");
+      if (!(Number.isFinite(r.quantity) && r.quantity > 0) || !r.productId) throw new Error("A product and positive quantity are required.");
+      const { data, error } = await requireSupabase().rpc("create_buyer_request", {
+        p_governorate: r.governorate,
+        p_destination: r.destination || null,
+        p_delivery_date: r.deliveryDate || null,
+        p_project_type: r.projectType || null,
+        p_notes: r.notes || null,
+        p_items: [{ productId: r.productId, quantity: r.quantity, unit: r.unit, variantLabel: r.variantLabel || null }],
+      });
+      if (error) throw error;
+      if (typeof data !== "string" || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(data)) {
+        throw new Error("The request service did not confirm a saved request ID.");
+      }
+      const confirmed: QuoteRequest = {
+        ...r, id: data, customerId: session.id, status: "Request Submitted",
+        createdAt: Date.now(), deadlineAt: 0, matchedBusinessIds: [],
+      };
+      setDb(old => ({ ...old, requests: [...old.requests.filter(item => item.id !== data), confirmed] }));
+      // A read-after-write refresh is useful, but a refresh error must not turn
+      // a successfully committed RFQ into an apparent failed submission.
+      await refresh().catch(err => console.error("IDEA RFQ refresh failed after confirmed save", err));
+      return confirmed;
+    },
+    submitOffer: async (offer) => {
+      if (!session || session.role !== "business") throw new Error("A signed-in supplier account is required.");
+      const request = db.requests.find(entry => entry.id === offer.requestId);
+      if (!request?.requestItemId || !request.matchedBusinessIds.includes(offer.businessId)) {
+        throw new Error("This supplier is not assigned to the requested product.");
+      }
+      if (!Number.isFinite(offer.quantity) || offer.quantity <= 0 ||
+          !Number.isFinite(offer.unitPrice) || offer.unitPrice <= 0) {
+        throw new Error("Quantity and unit price must be positive.");
+      }
+      const { data, error } = await requireSupabase().rpc("submit_supplier_quote", {
+        p_request_id: offer.requestId,
+        p_availability: offer.availability || null,
+        p_lead_time_days: offer.prepDays || null,
+        p_minimum_order_quantity: null,
+        p_notes: offer.notes || null,
+        p_expires_at: new Date(offer.expiresAt).toISOString(),
+        p_items: [{ requestItemId: request.requestItemId, quantity: offer.quantity, unitPrice: offer.unitPrice }],
+      });
+      if (error) throw error;
+      if (typeof data !== "string" || !/^[0-9a-f]{8}-(?:[0-9a-f]{4}-){3}[0-9a-f]{12}$/i.test(data)) {
+        throw new Error("The quotation service did not confirm a saved offer ID.");
+      }
+      const saved: Offer = { ...offer, id: data, status: "submitted", createdAt: Date.now() };
+      setDb(old => ({ ...old, offers: [...old.offers.filter(item => item.id !== data), saved] }));
+      await refresh().catch(err => console.error("IDEA offer refresh failed after confirmed save", err));
+      return saved;
+    }, acceptOffer: unavailable, sandboxPay: unavailable, subscribe: unavailable, cancelSubscription: unavailable, updatePlan: unavailable, updatePayment: unavailable, testPayment: unavailable,
     markRead: (id) => { void requireSupabase().from("notifications").update({ read_at: new Date().toISOString() }).eq("id", id).then(({ error }) => { if (error) console.error("IDEA notification update failed", error); else void refresh(); }); }, saveRoomProject: unavailable, deleteRoomProject: unavailable, reset: unavailable,
   }), [db.requests, session]);
   return <Ctx.Provider value={{ db, session, api }}>{children}</Ctx.Provider>;
