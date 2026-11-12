@@ -143,21 +143,39 @@ html[lang="en"] .idea-navigation-drawer .idea-discovery-nav-item>button{font-wei
   .idea-navigation-drawer,.idea-navigation-drawer .idea-discovery-menu{animation:none!important;transition:none!important}
 }
 
-/* Brand mode contract: brilliant IDEA orange day, true black at night.
-   Only the outer header changes; the dialog keeps its accessible theme surface. */
+/* Transparent glass header in both modes. Keep it in normal document flow
+   so the hero begins directly beneath the compact 52/54px header. */
 html[data-theme="light"] .idea-reference-header,
 html[data-theme="light"] .idea-reference-header.is-scrolled,
 html[data-theme="light"] .idea-reference-header.is-menu-open {
-  background: #ff7200;
+  background: rgba(179, 67, 0, .78);
   color: #fff;
-  border-bottom-color: rgba(255,255,255,.42);
+  border-bottom-color: rgba(255,255,255,.28);
+  backdrop-filter: blur(22px) saturate(1.30);
+  -webkit-backdrop-filter: blur(22px) saturate(1.30);
+  box-shadow: 0 4px 24px rgba(0,0,0,.12);
 }
 html[data-theme="dark"] .idea-reference-header,
 html[data-theme="dark"] .idea-reference-header.is-scrolled,
 html[data-theme="dark"] .idea-reference-header.is-menu-open {
-  background: #090909;
+  background: rgba(11, 11, 13, .59);
   color: #fff;
-  border-bottom-color: rgba(255,114,0,.44);
+  border-bottom-color: rgba(255,114,0,.25);
+  backdrop-filter: blur(22px) saturate(1.18);
+  -webkit-backdrop-filter: blur(22px) saturate(1.18);
+  box-shadow: 0 4px 24px rgba(0,0,0,.16);
+}
+/* Subtle black depth under the complete navigation typography and icons,
+   without placing a solid background behind the logo or its labels. */
+.idea-reference-header :is(a, button, span, strong, small, .idea-catalogue-announcement) {
+  text-shadow: 0 1px 3px rgba(0,0,0,.66), 0 3px 10px rgba(0,0,0,.34);
+}
+.idea-reference-header :is(a, button) > svg {
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,.62));
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-theme="light"] .idea-reference-header { background: rgba(157,58,0,.92); }
+  html[data-theme="dark"] .idea-reference-header { background: rgba(12,12,14,.90); }
 }
 /* No black rectangle behind the brand mark: only a soft shadow
    following the original transparent PNG's actual letter contours. */
