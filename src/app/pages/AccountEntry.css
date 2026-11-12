@@ -393,3 +393,36 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   .idea-auth-scene--customer .idea-auth-copy { top:5%;inset-inline:5%;width:90%; }
   .idea-auth-scene--customer .idea-auth-copy h1 { font-size:clamp(23px,6.5vw,31px); }
 }
+
+/* Business account: measured, symmetric two-column form and subtle entrance.
+   Keep the owner-approved copy/layout and original company photography unchanged. */
+.idea-auth-scene--business .idea-auth-panel {
+  width:100%;
+  max-width:510px;
+  box-sizing:border-box;
+  animation:idea-business-entry .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.idea-auth-scene--business .idea-auth-fields--business {
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  align-items:start;
+  column-gap:14px;
+  row-gap:11px;
+}
+.idea-auth-scene--business .idea-auth-fields--business > * {min-width:0;max-width:100%}
+.idea-auth-scene--business .idea-auth-input-wrap,
+.idea-auth-scene--business .idea-auth-submit,
+.idea-auth-scene--business .idea-auth-dropzone {box-sizing:border-box;max-width:100%}
+.idea-auth-scene--business .idea-auth-submit {
+  margin-inline:auto;
+  min-height:49px;
+}
+@keyframes idea-business-entry {
+  from {opacity:0;transform:translateY(12px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@media (max-width:480px) {
+  .idea-auth-scene--business .idea-auth-fields--business {grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:reduce) {
+  .idea-auth-scene--business .idea-auth-panel {animation:none}
+}
