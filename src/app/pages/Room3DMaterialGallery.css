@@ -50,3 +50,28 @@
  .idea-room3d-material-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}
  .idea-room3d-scrollbar-tools{align-items:flex-start}
 }
+
+/* Material library opens as a real fullscreen overlay with both scroll axes. */
+.idea-room3d-material-catalog.is-expanded{
+  position:fixed;inset:16px;z-index:8000;box-sizing:border-box;
+  max-width:none;max-height:calc(100dvh - 32px);
+  width:auto;height:auto;display:flex;flex-direction:column;
+  padding:20px 24px;overflow:hidden;
+  border:1px solid var(--idea-gold);border-radius:20px;
+  background:var(--idea-surface);
+  box-shadow:0 0 0 9000px rgba(0,0,0,.72),0 32px 80px rgba(0,0,0,.45);
+}
+.idea-room3d-material-catalog.is-expanded .idea-room3d-material-viewport{
+  flex:1 1 0;min-height:0;max-height:none;height:auto;
+}
+.idea-room3d-material-catalog.is-expanded .idea-room3d-material-grid{
+  grid-template-columns:repeat(7,minmax(175px,1fr));
+}
+.idea-room3d-material-viewport .idea-room3d-material-grid{
+  min-width:max(1750px,calc(100% + 330px));
+}
+@media(max-width:700px){
+ .idea-room3d-material-catalog.is-expanded{inset:8px;padding:12px;max-height:calc(100dvh - 16px)}
+ .idea-room3d-material-catalog.is-expanded .idea-room3d-material-grid{grid-template-columns:repeat(4,minmax(155px,1fr))}
+ .idea-room3d-material-viewport .idea-room3d-material-grid{min-width:max(760px,calc(100% + 270px))}
+}
