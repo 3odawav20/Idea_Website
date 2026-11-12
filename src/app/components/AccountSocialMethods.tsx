@@ -86,7 +86,7 @@ export function AccountSocialMethods({
     setReady(new Set());
     setPhoneReady(false);
     if (!base) return () => controller.abort();
-    const statusUrl = new URL(base.href.replace(/\/$/, "") + "/auth/providers");
+    const statusUrl = new URL(base.href.replace(/\/$/, "") + "/auth/providers/");
     void fetch(statusUrl.href, {
       method: "GET", credentials: "include", redirect: "error",
       headers: { Accept: "application/json" }, signal: controller.signal,
