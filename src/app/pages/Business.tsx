@@ -164,12 +164,30 @@ export function BusinessRequestDetail() {
   const { locale } = useI18n();
   const nav = useNavigate();
   const req = db.requests.find((r) => r.id === requestId);
-  const [o, setO] = useState({ unitPrice: 180, shipping: 4000, prepDays: 3, deliveryDays: 7, quantity: req?.quantity || 0, exact: true, paymentTerms: "50% deposit", notes: "" });
-  if (!biz || !req) return <EmptyState title="Request not available" />;
+  const [o, setO] = useState({ unitPrice: 0, shipping: 0, prepDays: 0, deliveryDays: 0, quantity: req?.quantity || 0, exact: true, paymentTerms: "", notes: "" });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  if (!biz || !req || !req.matchedBusinessIds.includes(biz.id)) return <EmptyState title="Request not available to this company" />;
   const product = products.find((p) => p.id === req.productId);
-  const submit = () => {
-    api.submitOffer({ requestId: req.id, businessId: biz.id, exactProduct: o.exact, quantity: o.quantity, unit: req.unit, unitPrice: o.unitPrice, shipping: o.shipping, taxRate: 0.14, availability: "In stock", prepDays: o.prepDays, deliveryDays: o.deliveryDays, paymentTerms: o.paymentTerms, notes: o.notes, expiresAt: Date.now() + 72 * 3600_000 });
-    nav("/business/offers");
+  const submit = async () => {
+    if (submitting) return;
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      await api.submitOffer({
+        requestId: req.id, businessId: biz.id, exactProduct: o.exact,
+        quantity: o.quantity, unit: req.unit, unitPrice: o.unitPrice,
+        shipping: o.shipping, taxRate: 0, availability: "In stock",
+        prepDays: o.prepDays, deliveryDays: o.deliveryDays,
+        paymentTerms: o.paymentTerms, notes: o.notes,
+        expiresAt: Date.now() + 72 * 3600_000,
+      });
+      nav("/business/offers");
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setSubmitting(false);
+    }
   };
   const num = (k: keyof typeof o) => (e: React.ChangeEvent<HTMLInputElement>) => setO((s) => ({ ...s, [k]: Number(e.target.value) }));
   return (
@@ -192,7 +210,11 @@ export function BusinessRequestDetail() {
         <label style={{ display: "flex", gap: 8, color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", marginBottom: 12 }}>
           <input type="checkbox" checked={o.exact} onChange={(e) => setO((s) => ({ ...s, exact: e.target.checked }))} /> Exact product (uncheck for approved equivalent)
         </label>
-        <Button onClick={submit}>Submit private offer</Button>
+        <p style={{ marginBottom: 12, color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>
+          Current quote API confirms unit price and quantity only; delivery, shipping and payment terms require the PHP/MySQL contract before they can be compared or charged.
+        </p>
+        {submitError && <p role="alert" style={{ color: "var(--idea-danger)", marginBottom: 12 }}>{submitError}</p>}
+        <Button disabled={submitting} onClick={() => void submit()}>{submitting ? "Confirming offer…" : "Submit private offer"}</Button>
       </Panel>
     </>
   );
