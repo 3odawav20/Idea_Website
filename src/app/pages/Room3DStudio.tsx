@@ -440,6 +440,11 @@ export function Room3DStudio() {
                 <input type="range" min="0" max="360" step="5" value={currentFixture.rotation}
                   onChange={e=>editFixture(currentFixture.id,{rotation:Number(e.target.value)})}/>
               </label>}
+              <label>{lang==="ar"?"حجم العنصر":lang==="fr"?"Taille de l'objet":"Object size"}: {Math.round((currentFixture.scale??1)*100)}%
+                <input type="range" min=".6" max="1.5" step=".05" value={currentFixture.scale??1}
+                  onChange={e=>editFixture(currentFixture.id,{scale:Number(e.target.value)})}
+                  aria-label={lang==="ar"?"تكبير وتصغير العنصر":lang==="fr"?"Taille":"Object size"} />
+              </label>
               <div className="idea-room3d-fixture-actions">
                 <button type="button" onClick={duplicateFixture}><Copy size={14}/>{lang==="ar"?"نسخة":"Duplicate"}</button>
                 <button type="button" onClick={deleteFixture}><Trash2 size={14}/>{lang==="ar"?"حذف":"Remove"}</button>
