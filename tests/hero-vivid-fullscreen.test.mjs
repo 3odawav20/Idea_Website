@@ -17,9 +17,9 @@ test("cinematic hero fills the viewport below the header on desktop and mobile",
 test("day orange glass and night dark glass retain visible logos and subtle black type shadows", () => {
   assert.match(header, /html\[data-theme="light"\] \.idea-reference-header/);
   assert.match(header, /html\[data-theme="dark"\] \.idea-reference-header/);
-  assert.match(header, /background:\s*rgba\(179,\s*67,\s*0,\s*\.78\)/);
-  assert.match(header, /background:\s*rgba\(11,\s*11,\s*13,\s*\.59\)/);
-  assert.match(header, /backdrop-filter:\s*blur\(22px\)/);
+  assert.match(header, /background:\s*rgba\(145,\s*43,\s*2,\s*\.76\)/);
+  assert.match(header, /background:\s*rgba\(9,\s*9,\s*11,\s*\.52\)/);
+  assert.match(header, /backdrop-filter:\s*blur\(24px\)/);
   assert.match(header, /text-shadow:\s*0 1px 3px rgba\(0,0,0/);
   assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo\s*\{\s*background:\s*transparent/);
   assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo img\s*\{[\s\S]*?drop-shadow/);
