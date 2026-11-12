@@ -355,21 +355,16 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 }
 
 
-/* Approved Arabic artboards are the literal owner-supplied screens, cropped to
-   the photographic/editorial panel. The right side is ALWAYS real HTML inputs,
-   never a screenshot or overlaid click-map. On English/French and small screens
-   render live translated text on the unlabelled photographic crop instead. */
+/* Keep legacy approved admin artboard alone. Business registration uses the
+   supplied DAY/NIGHT photography plus real translated HTML copy in all locales. */
 @media (min-width:801px) {
-  html[lang="ar"] .idea-auth-scene--business .idea-auth-visual {
-    background:#10100f url('/images/auth/business-reference.jpg') top center / 100% 100% no-repeat;
-  }
   html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual {
     background:#10100f url('/images/auth/admin-reference.jpg') top center / 100% 100% no-repeat;
   }
-  html[lang="ar"] .idea-auth-scene:not(.idea-auth-scene--customer) .idea-auth-visual :is(
+  html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual :is(
     .idea-auth-photo,.idea-auth-copy,.idea-auth-feature-list,.idea-auth-business-types
   ) { display:none; }
-  html[lang="ar"] .idea-auth-scene:not(.idea-auth-scene--customer) .idea-auth-visual::before { display:none; }
+  html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual::before { display:none; }
 }
 
 /* Customer image alignment: keep both people proportionate across iPhone,
@@ -394,8 +389,8 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   .idea-auth-scene--customer .idea-auth-copy h1 { font-size:clamp(23px,6.5vw,31px); }
 }
 
-/* Business account: measured, symmetric two-column form and subtle entrance.
-   Keep the owner-approved copy/layout and original company photography unchanged. */
+/* Business account: measured, symmetric real-HTML form and subtle entrance.
+   The owner-supplied original factory photos now switch with the theme. */
 .idea-auth-scene--business .idea-auth-panel {
   width:100%;
   max-width:510px;
@@ -425,4 +420,193 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 }
 @media (prefers-reduced-motion:reduce) {
   .idea-auth-scene--business .idea-auth-panel {animation:none}
+}
+
+/* BUSINESS REGISTRATION — actual translucent glass over genuine image backdrop.
+   Approved 1672×941 photos retain full composition: contain, no zoom/crop/stretch.
+   Soft duplicate behind each side fills letterboxing without cropping the original. */
+.idea-auth-scene--business {
+  --idea-business-photo:url('/images/auth/business-night-20261112.webp');
+}
+.idea-auth-scene--business.idea-auth-scene--light {
+  --idea-business-photo:url('/images/auth/business-day-20261112.webp');
+}
+.idea-auth-scene--business .idea-auth-visual {
+  isolation:isolate;
+  background:#20262c;
+}
+.idea-auth-scene--business.idea-auth-scene--light .idea-auth-visual {
+  background:#abb6c3;
+}
+.idea-auth-scene--business .idea-auth-visual::before {
+  content:"";
+  position:absolute;
+  inset:-35px;
+  z-index:0;
+  pointer-events:none;
+  background-image:var(--idea-business-photo);
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:cover;
+  opacity:.65;
+  filter:blur(34px) saturate(1.12) brightness(.75);
+}
+.idea-auth-scene--business.idea-auth-scene--light .idea-auth-visual::before {
+  opacity:.70;
+  filter:blur(30px) saturate(1.10) brightness(.90);
+}
+.idea-auth-scene--business .idea-auth-photo,
+.idea-auth-scene--business.idea-auth-scene--light .idea-auth-photo {
+  inset:0;
+  z-index:1;
+  background-color:transparent;
+  background-image:var(--idea-business-photo);
+  background-position:center;
+  background-size:contain;
+  background-repeat:no-repeat;
+  filter:none;
+  transform:none;
+  opacity:1;
+}
+/* Text is protected by its own local glass; the photo remains sharp. */
+.idea-auth-scene--business .idea-auth-copy {
+  z-index:3;
+  box-sizing:border-box;
+  padding:18px clamp(15px,2.1vw,27px);
+  border:1px solid rgba(255,255,255,.37);
+  border-radius:18px;
+  background:linear-gradient(128deg,rgba(27,35,45,.38),rgba(8,13,21,.24));
+  -webkit-backdrop-filter:blur(17px) saturate(1.55);
+  backdrop-filter:blur(17px) saturate(1.55);
+  box-shadow:0 16px 43px rgba(0,0,0,.21),inset 0 1px 0 rgba(255,255,255,.30);
+}
+.idea-auth-scene--business .idea-auth-copy > * {
+  position:relative;
+  z-index:1;
+}
+.idea-auth-scene--business .idea-auth-feature-list {
+  z-index:3;
+  border:1px solid rgba(255,255,255,.20);
+  border-radius:12px;
+  padding:8px 0;
+  background:rgba(16,21,27,.25);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+}
+.idea-auth-scene--business .idea-auth-business-types {z-index:3}
+/* The registration FORM itself is transparent; the right-hand photographic
+   layer is visibly refracted by backdrop-filter, not an opaque dark card. */
+.idea-auth-scene--business .idea-auth-panel-wrap {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:rgba(19,25,34,.12);
+}
+.idea-auth-scene--business.idea-auth-scene--light .idea-auth-panel-wrap {
+  background:rgba(46,50,59,.10);
+}
+.idea-auth-scene--business .idea-auth-panel-wrap::before {
+  content:"";
+  position:absolute;
+  inset:-58px;
+  z-index:0;
+  pointer-events:none;
+  background:var(--idea-business-photo) center/cover no-repeat;
+  filter:blur(35px) brightness(.70) saturate(1.13);
+  opacity:.89;
+}
+.idea-auth-scene--business.idea-auth-scene--light .idea-auth-panel-wrap::before {
+  filter:blur(36px) brightness(.67) saturate(1.04);
+}
+.idea-auth-scene--business .idea-auth-panel-wrap::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:0;
+  pointer-events:none;
+  background:radial-gradient(ellipse at 9% 7%,rgba(245,249,255,.12),transparent 62%),
+    linear-gradient(145deg,rgba(5,12,20,.22),rgba(20,25,35,.18));
+}
+.idea-auth-scene--business .idea-auth-panel {
+  position:relative;
+  z-index:1;
+  background:linear-gradient(136deg,rgba(226,239,249,.23) 0%,rgba(84,101,117,.17) 48%,rgba(19,27,38,.23) 100%);
+  border:1px solid rgba(249,250,253,.43);
+  border-radius:22px;
+  -webkit-backdrop-filter:blur(22px) saturate(1.65);
+  backdrop-filter:blur(22px) saturate(1.65);
+  box-shadow:
+    0 27px 68px rgba(0,0,0,.39),
+    0 7px 23px rgba(0,0,0,.17),
+    inset 0 1.5px 0 rgba(255,255,255,.64),
+    inset 1px 0 0 rgba(255,255,255,.22),
+    inset 0 -1px 0 rgba(255,255,255,.12);
+}
+.idea-auth-scene--business.idea-auth-scene--light .idea-auth-panel {
+  background:linear-gradient(132deg,rgba(240,246,253,.31),rgba(106,121,136,.17) 45%,rgba(28,39,55,.25));
+  border-color:rgba(255,255,255,.53);
+}
+.idea-auth-scene--business .idea-auth-panel::before {
+  content:"";
+  position:absolute;
+  inset:1px;
+  z-index:0;
+  border-radius:20px;
+  pointer-events:none;
+  background:linear-gradient(147deg,rgba(255,255,255,.19),transparent 24%,transparent 75%,rgba(255,255,255,.06));
+}
+.idea-auth-scene--business .idea-auth-panel > * {
+  position:relative;
+  z-index:1;
+}
+.idea-auth-scene--business .idea-auth-input-wrap {
+  background:rgba(8,15,26,.25);
+  border:1px solid rgba(255,255,255,.41);
+  -webkit-backdrop-filter:blur(10px) saturate(1.20);
+  backdrop-filter:blur(10px) saturate(1.20);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.13);
+}
+.idea-auth-scene--business .idea-auth-input-wrap:focus-within {
+  background:rgba(7,14,24,.36);
+  border-color:#fd6401;
+}
+.idea-auth-scene--business .idea-auth-dropzone,
+.idea-auth-scene--business .idea-auth-social button {
+  -webkit-backdrop-filter:blur(9px);
+  backdrop-filter:blur(9px);
+}
+@media(max-width:800px){
+  .idea-auth-scene--business .idea-auth-photo {
+    background-position:center center!important;
+    background-size:contain;
+    opacity:1;
+  }
+  .idea-auth-scene--business .idea-auth-copy {
+    top:6%;
+    bottom:auto;
+    inset-inline:5%;
+    max-width:none;
+    width:auto;
+    padding:14px 16px;
+  }
+  .idea-auth-scene--business .idea-auth-panel-wrap {overflow:visible}
+}
+@media(max-width:480px){
+  .idea-auth-scene--business .idea-auth-photo {
+    background-position:center center!important;
+    background-size:contain;
+    opacity:1;
+  }
+  .idea-auth-scene--business .idea-auth-copy {
+    top:4%;
+    inset-inline:4%;
+    padding:12px 13px;
+    border-radius:14px;
+  }
+  .idea-auth-scene--business .idea-auth-copy h1 {font-size:23px}
+  .idea-auth-scene--business .idea-auth-panel {border-radius:18px}
+}
+@supports not ((backdrop-filter:blur(8px)) or (-webkit-backdrop-filter:blur(8px))){
+  .idea-auth-scene--business .idea-auth-panel {background:rgba(27,33,42,.84)}
+  .idea-auth-scene--business .idea-auth-copy {background:rgba(13,18,25,.70)}
 }

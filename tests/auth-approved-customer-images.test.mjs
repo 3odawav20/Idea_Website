@@ -28,7 +28,19 @@ test("customer account remains real HTML: inputs and submit, not a screenshot cl
   assert.match(customer, /<button className="idea-auth-submit" type="submit"/);
 });
 
-test("company and admin approved screens remain intact while updating customer art", () => {
-  assert.match(css, /url\('\/images\/auth\/business-reference\.jpg'\)/);
+test("company registration uses the approved factory photos for both themes, with no image crop", () => {
+  for (const name of ["business-night-20261112.webp", "business-day-20261112.webp"]) {
+    const path = "public/images/auth/" + name;
+    assert.ok(statSync(path).size > 100_000, path + " must contain the provided full photo");
+    assert.ok(css.includes("url('/images/auth/" + name + "')"));
+  }
+  assert.match(css, /\.idea-auth-scene--business \.idea-auth-photo,[\s\S]*?background-size:contain;/);
+  assert.doesNotMatch(css, /background:[^\n]*url\('\/images\/auth\/business-reference\.jpg'\)/);
   assert.match(css, /url\('\/images\/auth\/admin-reference\.jpg'\)/);
+});
+test("company registration form uses true translucent glass while keeping real inputs", () => {
+  assert.match(css, /\.idea-auth-scene--business \.idea-auth-panel-wrap::before/);
+  assert.match(css, /\.idea-auth-scene--business \.idea-auth-panel\s*\{[\s\S]*?backdrop-filter:blur\(22px\)/);
+  assert.match(css, /\.idea-auth-scene--business \.idea-auth-copy\s*\{[\s\S]*?backdrop-filter:blur\(17px\)/);
+  assert.doesNotMatch(css, /html\[lang="ar"\] \.idea-auth-scene:not\(\.idea-auth-scene--customer\)/);
 });
