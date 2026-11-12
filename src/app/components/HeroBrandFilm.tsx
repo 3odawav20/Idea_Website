@@ -49,15 +49,33 @@ export function HeroBrandFilm() {
     video.defaultMuted = true;
     if (activeSlide === 0) video.currentTime = 0;
 
+    // Do not treat a transient play() abort while media is loading as a broken film.
+    // Wait for the first decoded frame before attempting to start playback.
+    let playPending = false;
     const resume = () => {
       if (activeSlide !== 0 || reduce.matches || document.hidden) {
         video.pause();
         if (reduce.matches) setActiveSlide(1);
         return;
       }
+      if (!video.paused || playPending || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return;
+      playPending = true;
       const promise = video.play();
-      if (promise && typeof promise.catch === "function") {
-        void promise.catch(() => { setPlaying(false); setActiveSlide(1); });
+      if (promise && typeof promise.then === "function") {
+        void promise.then(
+          () => { playPending = false; },
+          (reason: unknown) => {
+            playPending = false;
+            setPlaying(false);
+            // AbortError is expected during source/visibility changes, not a
+            // reason to permanently replace the owner's video with a still.
+            if (reason instanceof DOMException && reason.name === "AbortError") return;
+            // Only an actual media error advances to the image fallback.
+            if (video.error) setActiveSlide(1);
+          },
+        );
+      } else {
+        playPending = false;
       }
     };
     const onVisibility = () => {
@@ -80,11 +98,15 @@ export function HeroBrandFilm() {
     }
     document.addEventListener("visibilitychange", onVisibility);
     reduce.addEventListener?.("change", onMotion);
+    video.addEventListener("loadeddata", resume);
+    video.addEventListener("canplay", resume);
     resume();
     return () => {
       observer?.disconnect();
       document.removeEventListener("visibilitychange", onVisibility);
       reduce.removeEventListener?.("change", onMotion);
+      video.removeEventListener("loadeddata", resume);
+      video.removeEventListener("canplay", resume);
       video.pause();
     };
   }, [mode, activeSlide]);
