@@ -29,3 +29,8 @@ test("registration honors consent and all entry animations honor reduced motion"
   assert.match(css, /prefers-reduced-motion/);
   assert.match(css, /idea-auth-copy-enter/);
 });
+
+test("entry source contains no accidental replacement markers", () => {
+  assert.doesNotMatch(entry, /old social config/);
+  assert.doesNotMatch(entry, /showSocial\(/);
+});
