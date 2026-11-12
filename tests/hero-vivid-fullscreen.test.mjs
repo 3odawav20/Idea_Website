@@ -14,11 +14,13 @@ test("cinematic hero fills the viewport below the header on desktop and mobile",
   assert.doesNotMatch(hero, /max-height:\s*1200px/);
 });
 
-test("logo-orange light header and true dark header remain independently accessible", () => {
+test("day orange glass and night dark glass retain visible logos and subtle black type shadows", () => {
   assert.match(header, /html\[data-theme="light"\] \.idea-reference-header/);
   assert.match(header, /html\[data-theme="dark"\] \.idea-reference-header/);
-  assert.match(header, /background:\s*#ff7200/);
-  assert.match(header, /background:\s*#090909/);
+  assert.match(header, /background:\s*rgba\(179,\s*67,\s*0,\s*\.78\)/);
+  assert.match(header, /background:\s*rgba\(11,\s*11,\s*13,\s*\.59\)/);
+  assert.match(header, /backdrop-filter:\s*blur\(22px\)/);
+  assert.match(header, /text-shadow:\s*0 1px 3px rgba\(0,0,0/);
   assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo\s*\{\s*background:\s*transparent/);
   assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo img\s*\{[\s\S]*?drop-shadow/);
   assert.doesNotMatch(header, /html\[data-theme="light"\] \.idea-reference-logo\s*\{\s*background:\s*#090909/);
