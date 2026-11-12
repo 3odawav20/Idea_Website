@@ -160,7 +160,9 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
   const heroHeading = isAdmin
     ? [tr("لوحة تحكم منصة IDEA","IDEA platform control"),tr("إدارة كاملة... رؤية أشمل.","Complete control. Clearer vision.")]
     : isBusiness
-    ? [tr("تسجيل حساب شركة","Register your business"),tr("انضم إلى شبكة الأعمال في IDEA","Join IDEA's business network")]
+    ? (isRegister
+      ? [tr("تسجيل حساب شركة","Register your business"),tr("انضم إلى شبكة الأعمال في IDEA","Join IDEA's business network")]
+      : [tr("دخول حساب الشركة","Business sign in"),tr("إدارة شركتك مع IDEA","Manage your business with IDEA")])
     : [tr("أنشئ حسابك","Create your account"),tr("كعميل منزلي","For your home")];
 
   return <section className={"idea-auth-scene idea-auth-scene--"+audience+" idea-auth-scene--"+theme} dir={locale==="ar"?"rtl":"ltr"} aria-label={selectedTitle}>
@@ -195,9 +197,11 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
             {!isAdmin&&<span className="idea-auth-header-icon">{isBusiness?<Building2 size={31}/>:<Home size={34}/>}</span>}
             <h2>{selectedTitle}</h2>
             {isAdmin&&<small className="idea-auth-capline">ADMIN ACCESS</small>}
-            {isBusiness&&<small className="idea-auth-capline">COMPANY REGISTRATION (B2B)</small>}
+            {isBusiness&&<small className="idea-auth-capline">{isRegister?"COMPANY REGISTRATION (B2B)":"COMPANY ACCOUNT ACCESS (B2B)"}</small>}
             <p>{isAdmin?tr("منطقة آمنة ومخصصة لإدارة منصة IDEA","A secure area reserved for IDEA administrators")
-              :isBusiness?tr("أنشئ حساب شركتك للوصول إلى الأسعار التجارية وإرسال طلبات عروض الأسعار والتعاون مع شبكة IDEA.","Register your company to access business enquiries and the IDEA partner network.")
+              :isBusiness?(isRegister
+                 ? tr("أنشئ حساب شركتك للوصول إلى الأسعار التجارية وإرسال طلبات عروض الأسعار والتعاون مع شبكة IDEA.","Register your company to access business enquiries and the IDEA partner network.")
+                 : tr("سجّل دخولك لإدارة منتجات شركتك وعروض الأسعار والطلبات.","Sign in to manage your company products, quotations and orders."))
               :isRegister?tr("سجّل الآن للاستمتاع بتجربة مخصصة لاختيار وتشطيب شقتك أو منزلك.","Create your account for a personalized home finishing experience.")
               :tr("سجّل دخولك إلى حسابك الشخصي في IDEA.","Access your personal IDEA account.")}</p>
           </div>
