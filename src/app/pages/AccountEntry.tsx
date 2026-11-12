@@ -172,7 +172,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     ? [tr("تسجيل حساب شركة","Register your business"),tr("انضم إلى شبكة الأعمال في IDEA","Join IDEA's business network")]
     : [tr("أنشئ حسابك","Create your account"),tr("كعميل منزلي","For your home")];
 
-  return <section className={"idea-auth-scene idea-auth-scene--"+audience+" idea-auth-scene--"+theme} dir={locale==="ar"?"rtl":"ltr"} aria-label={selectedTitle}>
+  return <section className={"idea-auth-scene idea-auth-scene--"+audience+" idea-auth-scene--"+theme+" idea-auth-scene--"+(isRegister?"register":"login")} dir={locale==="ar"?"rtl":"ltr"} aria-label={selectedTitle}>
     <div className="idea-auth-content">
       <div className="idea-auth-visual">
         <div className="idea-auth-photo" role="img" aria-label={isAdmin?tr("مقر إدارة المنصة","IDEA management office"):isBusiness?tr("مصنع وشحنات الرخام والسيراميك","Ceramic and marble factory"):tr("اختيار تشطيبات المنزل","Home finishing selections")}/>
