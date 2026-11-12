@@ -32,12 +32,17 @@ test("client cannot direct output to external image URLs or bypass masked compos
   assert.match(mysql, /preserve_unmasked_pixels'=>true/);
   assert.doesNotMatch(mysql, /CURL_FOLLOWLOCATION.*true/);
 });
-test("each buyer/supplier has five lifetime jobs and admin has no cap", () => {
+test("MySQL AI permits buyers five lifetime attempts, admins unlimited, suppliers forbidden", () => {
   assert.match(mysql, /if\(\$role==='admin'\)return null/);
-  assert.equal((mysql.match(/\$limit=5;/g)||[]).length,2);
+  assert.match(mysql, /if\(\$role==='buyer'\)\{accountCustomer\(\$u\);return 5;\}/);
+  assert.doesNotMatch(mysql, /\$role==='supplier'.*\$limit=5/);
+  assert.match(mysql, /accountError\(403,'AI_ACCOUNT_REQUIRED'\)/);
+  assert.match(mysql, /function platformAiAction\(string \$a,array \$d,array \$u\): array\{[\s\S]*?\$limit=platformAiLimit\(\$u\)/);
+  assert.match(mysql, /function platformAiDownload\(array \$u,string \$id\): never\{\s*platformAiLimit\(\$u\)/);
+  assert.match(mysql, /if\(\$limit!==null\)accountRate\('ai-create',10,3600\)/);
+  assert.match(mysql, /if\(\$limit!==null&&\$all>=/);
   assert.match(mysql, /'period'=>'lifetime'/);
   assert.equal((mysql.match(/state IN \('queued','processing','completed'\)/g)||[]).length,2, 'Failed and cancelled jobs must not consume lifetime attempts');
-  assert.doesNotMatch(mysql, /created_at>\? AND settings NOT LIKE/);
   assert.match(mysql, /platformTransaction/);
   assert.match(mysql, /AI_SUBSCRIPTION_REQUIRED/);
 });
