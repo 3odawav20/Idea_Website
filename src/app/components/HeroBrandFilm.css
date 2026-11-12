@@ -4,9 +4,10 @@
   overflow: hidden;
   isolation: isolate;
   background: #171512;
-  height: 100svh;
-  min-height: 540px;
-  max-height: 1200px;
+  /* Exactly the visible viewport under the compact header, on desktop and tablets. */
+  height: calc(100svh - 52px);
+  min-height: 0;
+  max-height: none;
 }
 .idea-editorial-hero.idea-film-ready .idea-film-shell {
   position: absolute;
@@ -58,6 +59,15 @@
 .idea-editorial-hero.idea-film-ready .idea-film-is-playing .idea-film-poster {
   opacity: 0;
 }
+
+/* Subtle cinematic colour grade is presentation-only.
+   Original media files and colour-critical catalogue tile faces stay untouched. */
+.idea-editorial-hero.idea-film-ready :is(.idea-film-video, .idea-film-still, .idea-film-poster) {
+  filter: saturate(1.14) contrast(1.055) brightness(1.025);
+  -webkit-filter: saturate(1.14) contrast(1.055) brightness(1.025);
+  backface-visibility: hidden;
+}
+
 
 /* Always retain the brand palette, even when site theme is light. */
 .idea-editorial-hero.idea-film-ready .idea-film-caption-scrim,
@@ -150,8 +160,10 @@ html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption h1 {
 }
 @media (max-width: 767px) {
   .idea-editorial-hero.idea-film-ready {
-    min-height: 430px;
-    height: min(78svh, 760px);
+    /* iPhone / Android: viewport minus the 54px navigation row. */
+    height: calc(100svh - 54px);
+    min-height: 0;
+    max-height: none;
   }
   .idea-editorial-hero.idea-film-ready .idea-film-caption {
     inset-inline: max(18px, env(safe-area-inset-left)) max(18px, env(safe-area-inset-right));
