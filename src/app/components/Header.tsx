@@ -56,7 +56,7 @@ export function Header() {
         <div className="idea-reference-ticker">
           {/* Static, truthful catalogue fallback until the existing PHP/MySQL
               platform exposes a verified admin-published announcement contract.
-              No Supabase request or fabricated live sales in the header. */}
+              No external account-service request or fabricated live sales in the header. */}
           <div className="idea-catalogue-announcement" dir={locale === "ar" ? "rtl" : "ltr"}>
             <span aria-hidden="true">✦</span><span>{text(`${products.length} products in the catalogue · Explore surfaces & plan your space`, `${products.length} منتج في الكتالوج · اكتشف الخامات وصمّم مساحتك`, `${products.length} produits au catalogue · Découvrez les surfaces`)}</span>
             <span aria-hidden="true">✦</span><Link to="/products">{text("Learn more", "اعرف المزيد", "En savoir plus")}</Link>
