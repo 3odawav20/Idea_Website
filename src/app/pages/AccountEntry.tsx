@@ -10,6 +10,7 @@ import {
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import "./AccountEntry.css";
+import { AccountSocialMethods } from "../components/AccountSocialMethods";
 
 type Audience = "customer" | "business" | "admin";
 type Mode = "register" | "login";
@@ -44,8 +45,6 @@ const ADMIN_FEATURES = [
 ];
 
 const API = String(import.meta.env.VITE_IDEA_ACCOUNT_API || "").trim();
-const socialProviders = new Set(String(import.meta.env.VITE_IDEA_AUTH_PROVIDERS || "").split(",").map(v=>v.trim().toLowerCase()).filter(Boolean));
-
 function FeatureItems({ audience,locale }: {audience:Audience;locale:"ar"|"en"|"fr"}) {
   const features=audience==="customer"?CUSTOMER_FEATURES:audience==="business"?BUSINESS_FEATURES:ADMIN_FEATURES;
   return <div className={"idea-auth-feature-list idea-auth-feature-list--"+audience}>
@@ -157,19 +156,13 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     if(!valid){setError(tr("PDF أو JPG أو PNG فقط، وبحد أقصى 10 ميجابايت لكل ملف.","PDF, JPG or PNG only; 10 MB maximum per file."));return;}
     setError("");setDocs(list.slice(0,5));
   };
-  const showSocial=(provider:"google"|"apple")=>{
-    if(!socialProviders.has(provider)){setError(tr("تسجيل الدخول عبر "+(provider==="google"?"Google":"Apple")+" لم يُربط بمزوّد هوية معتمد بعد.","Real "+(provider==="google"?"Google":"Apple")+" sign-in is not configured yet."));return;}
-    if(!openApi){setError(tr("يلزم اتصال PHP/MySQL أولًا لتفعيل طريقة الدخول.","Account backend configuration is required."));return;}
-    const url=API.replace(/\/$/,"")+"/oauth/"+provider;
-    const validUrl=new URL(url,window.location.origin);
-    if(validUrl.protocol!=="https:"){setError(tr("رابط تسجيل الدخول غير آمن.","Insecure authentication endpoint."));return;}
-    window.location.assign(validUrl.href);
-  };
   const goto=isAdmin?"/admin/login":isBusiness?"/register/business":"/register/customer";
   const heroHeading = isAdmin
     ? [tr("لوحة تحكم منصة IDEA","IDEA platform control"),tr("إدارة كاملة... رؤية أشمل.","Complete control. Clearer vision.")]
     : isBusiness
-    ? [tr("تسجيل حساب شركة","Register your business"),tr("انضم إلى شبكة الأعمال في IDEA","Join IDEA's business network")]
+    ? (isRegister
+      ? [tr("تسجيل حساب شركة","Register your business"),tr("انضم إلى شبكة الأعمال في IDEA","Join IDEA's business network")]
+      : [tr("دخول حساب الشركة","Business sign in"),tr("إدارة شركتك مع IDEA","Manage your business with IDEA")])
     : [tr("أنشئ حسابك","Create your account"),tr("كعميل منزلي","For your home")];
 
   return <section className={"idea-auth-scene idea-auth-scene--"+audience+" idea-auth-scene--"+theme} dir={locale==="ar"?"rtl":"ltr"} aria-label={selectedTitle}>
@@ -204,9 +197,11 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
             {!isAdmin&&<span className="idea-auth-header-icon">{isBusiness?<Building2 size={31}/>:<Home size={34}/>}</span>}
             <h2>{selectedTitle}</h2>
             {isAdmin&&<small className="idea-auth-capline">ADMIN ACCESS</small>}
-            {isBusiness&&<small className="idea-auth-capline">COMPANY REGISTRATION (B2B)</small>}
+            {isBusiness&&<small className="idea-auth-capline">{isRegister?"COMPANY REGISTRATION (B2B)":"COMPANY ACCOUNT ACCESS (B2B)"}</small>}
             <p>{isAdmin?tr("منطقة آمنة ومخصصة لإدارة منصة IDEA","A secure area reserved for IDEA administrators")
-              :isBusiness?tr("أنشئ حساب شركتك للوصول إلى الأسعار التجارية وإرسال طلبات عروض الأسعار والتعاون مع شبكة IDEA.","Register your company to access business enquiries and the IDEA partner network.")
+              :isBusiness?(isRegister
+                 ? tr("أنشئ حساب شركتك للوصول إلى الأسعار التجارية وإرسال طلبات عروض الأسعار والتعاون مع شبكة IDEA.","Register your company to access business enquiries and the IDEA partner network.")
+                 : tr("سجّل دخولك لإدارة منتجات شركتك وعروض الأسعار والطلبات.","Sign in to manage your company products, quotations and orders."))
               :isRegister?tr("سجّل الآن للاستمتاع بتجربة مخصصة لاختيار وتشطيب شقتك أو منزلك.","Create your account for a personalized home finishing experience.")
               :tr("سجّل دخولك إلى حسابك الشخصي في IDEA.","Access your personal IDEA account.")}</p>
           </div>
@@ -290,11 +285,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
               {isRegister?tr("لديك حساب بالفعل؟","Already have an account?"):tr("ليس لديك حساب؟","Need an account?")}
               {" "}<Link to={isRegister?isBusiness?"/business/login":"/login":goto}>{isRegister?tr("تسجيل الدخول","Sign in"):tr("إنشاء حساب جديد","Create an account")}</Link>
             </p>}
-            {isCustomer&&<div className="idea-auth-social">
-              <p>{tr("أو سجّل عبر","Or continue with")}</p>
-              <div><button type="button" onClick={()=>showSocial("apple")} aria-label="Apple"><span className="idea-apple-mark">●</span> Apple</button>
-                <button type="button" onClick={()=>showSocial("google")} aria-label="Google"><strong className="idea-google-mark">G</strong> Google</button></div>
-            </div>}
+            <AccountSocialMethods audience={audience} mode={mode} api={API} consent={consent} />
           </div>
         </form>
       </div>

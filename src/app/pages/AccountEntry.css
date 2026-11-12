@@ -426,3 +426,153 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 @media (prefers-reduced-motion:reduce) {
   .idea-auth-scene--business .idea-auth-panel {animation:none}
 }
+
+/* Shared identity options across buyer, supplier and administrator sign-in.
+   Provider buttons are intentionally disabled unless the PHP/MySQL backend
+   advertises a working provider. No fake social-login actions. */
+.idea-auth-social-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.idea-auth-social .idea-auth-provider {
+  position:relative;
+  min-width:0;min-height:48px;
+  display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:7px;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.33);
+  background:rgba(20,19,18,.44);
+  border-radius:9px;
+  font-size:12px;font-weight:600;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.idea-auth-social .idea-auth-provider > svg {flex:0 0 auto}
+.idea-auth-social .idea-auth-provider > span {flex:0 1 auto}
+.idea-auth-social .idea-auth-provider > small {
+  display:block;
+  width:100%;
+  font-size:9px;
+  font-weight:450;
+  line-height:1.1;
+  color:rgba(255,255,255,.58);
+}
+.idea-auth-social .idea-auth-provider:disabled {
+  opacity:.65;
+  cursor:not-allowed;
+}
+.idea-auth-social .idea-auth-provider:hover:not(:disabled),
+.idea-auth-social .idea-auth-provider:focus-visible:not(:disabled) {
+  border-color:var(--idea-auth-orange);
+  background:rgba(253,100,1,.12);
+  box-shadow:0 6px 20px rgba(0,0,0,.14);
+  transform:translateY(-2px);
+}
+.idea-auth-social .idea-auth-otp {
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:8px;
+  padding-top:12px;
+}
+.idea-auth-otp label {
+  font-size:12px;
+  color:#eee;
+}
+.idea-auth-social .idea-auth-otp-row {
+  display:flex;
+  flex-direction:row;
+  gap:8px;
+}
+.idea-auth-otp-row input {
+  display:block;
+  flex:1;
+  width:100%;
+  min-width:0;
+  border:1px solid rgba(255,255,255,.4);
+  background:rgba(0,0,0,.3);
+  color:white;
+  padding:10px;
+  border-radius:7px;
+}
+.idea-auth-otp-row button {
+  min-width:92px;
+  border-color:rgba(253,100,1,.5);
+}
+.idea-auth-social .idea-auth-social-caption,
+.idea-auth-social .idea-auth-social-message {
+  color:rgba(255,255,255,.7);
+  text-align:center;
+  line-height:1.5;
+  font-size:11px;
+}
+.idea-auth-scene:not(.idea-auth-scene--business) .idea-auth-panel {
+  animation:idea-auth-fade-in .55s cubic-bezier(.18,.8,.22,1) both;
+}
+.idea-auth-scene .idea-auth-copy {
+  animation:idea-auth-copy-enter .72s cubic-bezier(.18,.8,.22,1) .08s both;
+}
+@keyframes idea-auth-fade-in {
+  from {opacity:0;transform:translateY(14px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@keyframes idea-auth-copy-enter {
+  from {opacity:0;transform:translateY(10px)}
+  to {opacity:1;transform:translateY(0)}
+}
+@media(max-width:390px) {
+  .idea-auth-social .idea-auth-provider {font-size:11px;padding:8px 5px}
+  .idea-auth-social-grid {gap:6px}
+  .idea-auth-otp-row button {min-width:75px;font-size:11px}
+}
+@media(prefers-reduced-motion: reduce) {
+  .idea-auth-scene:not(.idea-auth-scene--business) .idea-auth-panel,
+  .idea-auth-scene .idea-auth-copy {animation:none!important}
+  .idea-auth-social .idea-auth-provider {transition:none!important}
+}
+
+/* Business account artwork slots for the owner's exact separate night/day images.
+   Existing approved business-photo.jpg remains as the underlying fallback until
+   the exact owner-supplied images are available as binary repository assets. */
+.idea-auth-scene--business.idea-auth-scene--dark .idea-auth-photo {
+  background-image:
+    url('/images/auth/business-night.webp'),
+    url('/images/auth/business-photo.jpg');
+  background-position:center 34%;
+  background-size:cover;
+}
+.idea-auth-scene--business.idea-auth-scene--light .idea-auth-photo {
+  background-image:
+    url('/images/auth/business-day.webp'),
+    url('/images/auth/business-photo.jpg');
+  background-position:center 34%;
+  background-size:cover;
+  filter:none;
+}
+
+/* Keep all account panels visible even when header, photos or browser zoom
+   introduce a large min-content width. Preserve the approved 65/35 layout. */
+.idea-auth-scene {
+  width:100%;
+  max-width:100vw;
+  min-width:0;
+}
+.idea-auth-content {
+  width:100%;
+  max-width:min(100%,2100px);
+  min-width:0;
+}
+.idea-auth-visual,
+.idea-auth-panel-wrap,
+.idea-auth-panel {
+  min-width:0;
+  max-width:100%;
+}
+@media (min-width:1301px) {
+  .idea-auth-content {grid-template-columns:minmax(0,65fr) minmax(0,35fr);}
+}
+@media (min-width:1001px) and (max-width:1300px) {
+  .idea-auth-content {grid-template-columns:minmax(0,61fr) minmax(0,39fr);}
+}
+@media (min-width:801px) and (max-width:1000px) {
+  .idea-auth-content {grid-template-columns:minmax(0,53fr) minmax(0,47fr);}
+}
