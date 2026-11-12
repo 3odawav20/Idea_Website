@@ -547,7 +547,8 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 .idea-auth-scene--business .idea-auth-panel {
   position:relative;
   z-index:1;
-  background:linear-gradient(136deg,rgba(233,244,253,.18) 0%,rgba(97,116,134,.13) 48%,rgba(23,37,50,.13) 100%);
+  /* Readable smoked glass: still translucent, not an opaque fill. */
+  background:linear-gradient(136deg,rgba(22,35,51,.57) 0%,rgba(32,43,56,.52) 48%,rgba(18,29,43,.58) 100%);
   border:1px solid rgba(249,250,253,.43);
   border-radius:22px;
   -webkit-backdrop-filter:blur(22px) saturate(1.65);
@@ -560,7 +561,7 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
     inset 0 -1px 0 rgba(255,255,255,.12);
 }
 .idea-auth-scene--business.idea-auth-scene--light .idea-auth-panel {
-  background:linear-gradient(132deg,rgba(242,249,255,.21),rgba(111,133,151,.13) 45%,rgba(37,55,73,.16));
+  background:linear-gradient(132deg,rgba(24,46,65,.60),rgba(29,46,62,.57) 45%,rgba(15,31,47,.60));
   border-color:rgba(255,255,255,.53);
 }
 .idea-auth-scene--business .idea-auth-panel::before {
