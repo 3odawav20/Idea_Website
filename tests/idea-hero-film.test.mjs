@@ -11,18 +11,17 @@ test("homepage uses an inline cinematic brand film, not the old slides",()=>{
  assert.match(component,/className="idea-film-video"/);
 });
 test("both desktop and mobile films use IDEA-owned media URLs",()=>{
- assert.match(component,/\/media\/hero\/idea-brand-v1-1080\.mp4/);
- assert.match(component,/\/media\/hero\/idea-brand-v1-720\.mp4/);
+ assert.match(component,/\/media\/hero\/idea-owner-20261112\.mp4/);
+ assert.match(component,/\/media\/hero\/idea-owner-20261112-mobile\.mp4/);
  assert.match(component,/media="\(max-width: 767px\)"/);
- assert.match(component,/idea-brand-v1-poster\.jpg/);
+ assert.match(component,/idea-light-porcelain\.webp/);
 });
-test("dark mode uses only its dedicated videos without a poster",()=>{
+test("both themes use the supplied film with theme-specific image fallbacks",()=>{
  assert.match(component,/mode === "dark"/);
- assert.match(component,/idea-dark-desktop\.mp4/);
- assert.match(component,/idea-dark-mobile\.mp4/);
- assert.match(component,/poster: undefined/);
+ assert.match(component,/idea-dark-porcelain\.webp/);
+ assert.match(component,/idea-dark-marble\.webp/);
  assert.match(component,/key=\{mode\}/);
- assert.match(component,/\}, \[mode\]\)/);
+ assert.match(component,/onEnded=\{\(\) => setActiveSlide\(1\)\}/);
  assert.doesNotMatch(styles,/url\(/);
 });
 test("decorative film is a silent autoplay looping background with no controls",()=>{

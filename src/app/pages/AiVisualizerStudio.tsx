@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import { localMaterialFace } from "../data/localMaterialFace";
 import { Link, useSearchParams } from "react-router";
 import {
   ArrowLeftRight, Check, ChevronDown, CircleAlert, Download, Expand,
@@ -67,9 +68,11 @@ function wait(ms: number, signal: AbortSignal) {
 /** Source-labelled product faces are the only allowed images in the material gallery. */
 function materialFaces(product: Product): string[] {
   const sourceFaces = product.source?.original?.tiles || [];
-  return [...new Set(sourceFaces.filter((url) =>
+  const faces = [...new Set(sourceFaces.filter((url) =>
     /^https:\/\/[^\s]+\.(?:png|jpe?g|webp)(?:\?[^\s]*)?$/i.test(url)
   ))];
+  const cached = localMaterialFace(product.id);
+  return cached ? [cached, ...faces.slice(1)] : faces;
 }
 
 export function AiVisualizerStudio() {
