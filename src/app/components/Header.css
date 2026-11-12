@@ -142,3 +142,44 @@ html[lang="en"] .idea-navigation-drawer .idea-discovery-nav-item>button{font-wei
   .idea-reference-header,.idea-reference-logo,.idea-reference-header .idea-menu-btn,
   .idea-navigation-drawer,.idea-navigation-drawer .idea-discovery-menu{animation:none!important;transition:none!important}
 }
+
+/* Brand mode contract: brilliant IDEA orange day, true black at night.
+   Only the outer header changes; the dialog keeps its accessible theme surface. */
+html[data-theme="light"] .idea-reference-header,
+html[data-theme="light"] .idea-reference-header.is-scrolled,
+html[data-theme="light"] .idea-reference-header.is-menu-open {
+  background: #ff7200;
+  color: #fff;
+  border-bottom-color: rgba(255,255,255,.42);
+}
+html[data-theme="dark"] .idea-reference-header,
+html[data-theme="dark"] .idea-reference-header.is-scrolled,
+html[data-theme="dark"] .idea-reference-header.is-menu-open {
+  background: #090909;
+  color: #fff;
+  border-bottom-color: rgba(255,114,0,.44);
+}
+html[data-theme="light"] .idea-reference-logo {
+  background: #090909;
+  padding: 3px 6px;
+  border-radius: 7px;
+}
+html[data-theme="light"] .idea-reference-header .idea-catalogue-announcement,
+html[data-theme="light"] .idea-reference-header .idea-catalogue-announcement :is(a, span),
+html[data-theme="light"] .idea-reference-header .idea-header-languages button,
+html[data-theme="light"] .idea-reference-header .idea-reference-actions :is(button,a) {
+  color: #fff;
+}
+html[data-theme="light"] .idea-reference-header .idea-header-languages button[aria-pressed="true"] {
+  opacity: 1;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+html[data-theme="light"] .idea-reference-header :focus-visible {
+  outline-color: #fff;
+}
+html[data-theme="light"] .idea-reference-header .idea-reference-actions small {
+  background: #090909;
+  color: #fff;
+}
