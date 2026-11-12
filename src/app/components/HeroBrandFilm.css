@@ -1,28 +1,45 @@
 /* IDEA cinematic homepage film. Intentionally no video player controls. */
 .idea-editorial-hero.idea-film-ready {
   position:relative;overflow:hidden;isolation:isolate;background:#302c27;
-  height:calc(100svh - 61px);min-height:540px;max-height:980px;
+  height:100svh;min-height:540px;max-height:1200px;
 }
 .idea-editorial-hero.idea-film-ready .idea-film-shell {
   position:absolute;inset:0;z-index:1;width:100%;height:100%;overflow:hidden;
   background:#171512;
 }
 .idea-editorial-hero.idea-film-ready .idea-film-poster,
+.idea-editorial-hero.idea-film-ready .idea-film-still,
 .idea-editorial-hero.idea-film-ready .idea-film-video {
   display:block;position:absolute;inset:0;width:100%;height:100%;
   object-fit:cover;object-position:center center;
 }
 .idea-editorial-hero.idea-film-ready .idea-film-poster {z-index:1;transition:opacity 1s ease}
+.idea-editorial-hero.idea-film-ready .idea-film-still{z-index:3;opacity:0;transform:scale(1.035);transition:opacity 1.4s ease,transform 9s cubic-bezier(.2,.4,.2,1);pointer-events:none}
+.idea-editorial-hero.idea-film-ready .idea-film-still.is-active{opacity:1;transform:scale(1)}
 .idea-editorial-hero.idea-film-ready .idea-film-video {
-  z-index:2;opacity:0;transition:opacity 1s ease;pointer-events:none!important;
+  z-index:2;opacity:0;transition:opacity 1.4s ease;pointer-events:none!important;
   user-select:none;-webkit-user-select:none;
 }
 .idea-editorial-hero.idea-film-ready .idea-film-is-playing .idea-film-video {opacity:1}
 .idea-editorial-hero.idea-film-ready .idea-film-is-playing .idea-film-poster {opacity:0}
+.idea-film-caption-scrim{position:absolute;inset:35% 0 0;z-index:4;pointer-events:none;background:linear-gradient(0deg,rgba(12,9,6,.72),transparent 90%)}
+.idea-film-caption{position:absolute;z-index:5;inset-inline:4vw;bottom:6vh;max-width:none;text-align:center;color:#f5efdf;pointer-events:none;animation:idea-caption-enter 1.2s ease both}
+.idea-film-caption .idea-film-eyebrow{font-size:12px;letter-spacing:.2em;line-height:1.6;margin:0 0 22px;color:#f5efdf}
+.idea-film-caption h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(36px,5.2vw,104px);line-height:1.12;letter-spacing:-.025em;margin:0;text-wrap:balance;overflow-wrap:break-word}
+.idea-film-caption h1 span{display:inline;color:inherit;margin-inline-start:.25em}
+[data-idea-brand-film="light"] .idea-film-caption-scrim{background:linear-gradient(0deg,rgba(250,245,233,.86),transparent 95%)}
+[data-idea-brand-film="light"] .idea-film-caption,[data-idea-brand-film="light"] .idea-film-eyebrow{color:#282119}
+[data-idea-brand-film="light"] .idea-film-caption h1 span{color:inherit}
+html[lang="ar"] .idea-film-caption{max-width:760px;text-align:start}
+html[lang="ar"] .idea-film-caption .idea-film-eyebrow{letter-spacing:0}
+html[lang="ar"] .idea-film-caption h1{font-size:clamp(30px,3.6vw,66px);line-height:1.5;letter-spacing:0}
+@keyframes idea-caption-enter{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
 @media(max-width:767px){
   .idea-editorial-hero.idea-film-ready{min-height:430px;height:min(78svh,760px)}
 }
 @media(prefers-reduced-motion:reduce){
   .idea-editorial-hero.idea-film-ready .idea-film-video{display:none!important}
   .idea-editorial-hero.idea-film-ready .idea-film-poster{opacity:1!important;transition:none!important}
+  .idea-editorial-hero.idea-film-ready .idea-film-still{transition:none!important;transform:none!important}
+  .idea-film-caption{animation:none}
 }

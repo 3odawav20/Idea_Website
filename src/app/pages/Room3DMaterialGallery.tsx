@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { Search, X } from "lucide-react";
 import type { Product, ProductSize, Locale } from "../data/types";
 import surfaceMaterials from "../data/surfaceMaterials.json";
+import { localMaterialFace } from "../data/localMaterialFace";
 import "./Room3DMaterialGallery.css";
 
 export type MaterialSurface = "floor" | "back" | "left" | "right";
@@ -12,6 +13,8 @@ export const verifiedSizes = (product:Product) => product.sizes.filter(sizeOk);
 
 /** Use actual tile-face images only; never a lifestyle, showroom or room photograph. */
 export function materialFace(product:Product):string|null {
+  const cached = localMaterialFace(product.id);
+  if (cached) return cached;
   const local=localFaces.get(product.id);
   if(local){
     const base=window.location.pathname.startsWith("/idea-next/")?"/idea-next":import.meta.env.BASE_URL.replace(/\/$/,"");
@@ -55,10 +58,13 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
       {shown.map(product=>{
         const sizes=verifiedSizes(product),image=materialFace(product);
         const chosen=sizeOptions[product.id] && sizes.some(s=>s.id===sizeOptions[product.id])?sizeOptions[product.id]:sizes[0].id;
+        const selectedSize=sizes.find(size=>size.id===chosen)!;
+        const previewWidth=Math.min(140,180*selectedSize.widthMm!/selectedSize.heightMm!);
+        const previewHeight=previewWidth*selectedSize.heightMm!/selectedSize.widthMm!;
         const isActive=activeProductId===product.id&&activeSizeId===chosen;
         return <article className={"idea-room3d-material-card"+(isActive?" is-selected":"")} key={product.id}>
-          <div className="idea-room3d-material-face" style={{aspectRatio:String(sizes[0].widthMm)+"/"+String(sizes[0].heightMm)}}>
-            <img src={image!} alt={product.name[locale]} loading="lazy"/>
+          <div className="idea-room3d-material-face">
+            <img src={image!} alt={product.name[locale]} loading="lazy" style={{width:previewWidth,height:previewHeight}}/>
           </div>
           <strong title={product.name[locale]}>{product.name[locale]}</strong>
           <small>{product.manufacturer||product.brand}</small>

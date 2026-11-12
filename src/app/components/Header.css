@@ -1,6 +1,6 @@
 /* Floating transparent navigation. The editorial home hero sits behind this 76px header. */
 .idea-reference-header{
-  --idea-header-height:76px;
+  --idea-header-height:64px;
   position:sticky;top:0;z-index:80;
   height:var(--idea-header-height);
   background:rgba(14,14,15,.13);

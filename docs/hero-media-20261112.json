@@ -1,0 +1,26 @@
+{
+  "video": "D:\\New folder (2)\\4903b885-785d-4ca3-b0bf-089a1ed4ef5a.mp4",
+  "video_sha256": "57b183a07d6a8fe6ecaca368032940bb0cb2f55afea966d1c6b4bb79efe09c72",
+  "images": [
+    {
+      "source": "C:\\Users\\rakan\\Downloads\\ChatGPT Image Nov 8, 2026, 01_16_20 PM.png",
+      "target": "idea-dark-porcelain.webp",
+      "sha256": "d86f5b33960a7c6164c3ee7fc5f68ab4d779a4b4f68208c322ac20cd035342bb"
+    },
+    {
+      "source": "C:\\Users\\rakan\\Downloads\\ChatGPT Image Nov 8, 2026, 01_24_36 PM.png",
+      "target": "idea-dark-marble.webp",
+      "sha256": "be4730c1a021c8d709ede47c91b2fa7533af224608f08ed2253e10865d64b1c6"
+    },
+    {
+      "source": "C:\\Users\\rakan\\Downloads\\ChatGPT Image Nov 8, 2026, 01_25_14 PM.png",
+      "target": "idea-light-porcelain.webp",
+      "sha256": "38f259972920706ce5b38be2be0475b8697ac9392dd01fa8408e83fc057c7cd3"
+    },
+    {
+      "source": "C:\\Users\\rakan\\Downloads\\ChatGPT Image Nov 8, 2026, 01_25_26 PM.png",
+      "target": "idea-light-marble.webp",
+      "sha256": "9e540880cddb3c372db46d4164d5349501696687ca51950122b93f9f2b9498ff"
+    }
+  ]
+}
