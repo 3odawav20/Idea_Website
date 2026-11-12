@@ -60,13 +60,16 @@ test("private prices and promotions never public; no fabricated sales",()=>{
   assert.match(growth,/لن نختلق مبيعات/);
   assert.doesNotMatch(growth,/Math\.random/);
 });
-test("announcement ticker is admin managed, translated, sticky and mobile safe",()=>{
+test("admin announcement implementation remains staged; live header never reads Supabase",()=>{
+  // The legacy Supabase schema/editor is source-only pending verified PHP/MySQL migration.
   assert.match(sql,/create policy "idea_announcements_read"/);
   assert.match(sql,/is_published and \(starts_at is null/);
   assert.match(growth,/idea_site_announcements/);
   assert.match(ticker,/idea_site_announcements/);
   assert.match(ticker,/locale==="ar"\?a\.title_ar/);
-  assert.match(read("src/app/components/Header.tsx"),/<AnnouncementBar\b/);
+  const header = read("src/app/components/Header.tsx");
+  assert.match(header,/idea-catalogue-announcement/);
+  assert.doesNotMatch(header,/<AnnouncementBar\b|supabase/i);
   assert.match(read("src/app/components/Header.css"),/position:sticky/);
   assert.match(read("src/app/components/AnnouncementBar.css"),/prefers-reduced-motion/);
   assert.match(read("src/app/components/AnnouncementBar.css"),/max-width:640px/);
