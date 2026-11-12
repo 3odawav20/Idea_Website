@@ -403,6 +403,31 @@ export function Room3DStudio() {
                   {fixtureKinds.map(kind=><option key={kind} value={kind}>{fixtureLabels[kind][lang]}</option>)}
                 </select>
               </label>
+              <label>{lang==="ar"?"لون / تشطيب العنصر":lang==="fr"?"Couleur / finition":"Object colour / finish"}
+                <input type="color" value={currentFixture.color??"#f1f0eb"}
+                  aria-label={lang==="ar"?"اختار لون العنصر":lang==="fr"?"Choisir la couleur":"Choose object colour"}
+                  onChange={e=>editFixture(currentFixture.id,{color:e.target.value})}/>
+              </label>
+              <div className="idea-room3d-fixture-colors" role="group"
+                aria-label={lang==="ar"?"ألوان جاهزة":lang==="fr"?"Couleurs":"Finish presets"}>
+                {["#f1f0eb","#24282b","#d2c2a4","#95aab6","#b7a99d","#785846"].map(c=><button key={c}
+                  type="button" title={c} aria-label={c}
+                  aria-pressed={(currentFixture.color??"#f1f0eb")===c}
+                  style={{backgroundColor:c}} onClick={()=>editFixture(currentFixture.id,{color:c})}/>)}
+              </div>
+              {wallFixtureKinds.includes(currentFixture.kind)&&<label>{lang==="ar"?"مكان المراية / الحيطة":lang==="fr"?"Mur de fixation":"Mounting wall"}
+                <select value={currentFixture.wall??"back"} onChange={e=>{
+                  const wall=e.target.value as "back"|"left"|"right";
+                  editFixture(currentFixture.id,{
+                    wall,x:0,z:0,
+                    y:currentFixture.kind==="door"?1.05:Math.max(.65,currentFixture.y)
+                  });
+                }}>
+                  <option value="back">{t.backWall}</option>
+                  <option value="left">{t.leftWall}</option>
+                  <option value="right">{t.rightWall}</option>
+                </select>
+              </label>}
               <div className="idea-room3d-fixture-coordinates">
                 <label>X<input type="number" min={-dims.width/2} max={dims.width/2} step=".1" value={currentFixture.x.toFixed(2)}
                   onChange={e=>editFixture(currentFixture.id,{x:Number(e.target.value)})}/></label>
