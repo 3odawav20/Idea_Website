@@ -143,6 +143,18 @@ export function createRoomFixture(kind:FixtureKind,id:string): THREE.Group {
       });
       reflection.position.z=.035;
       g.add(reflection);
+      // Reflector can render nearly black in software WebGL. A subtle
+      // silver-glass sheen keeps the surface readable without replacing
+      // its live reflections on supported hardware.
+      const sheen=new THREE.Mesh(new THREE.PlaneGeometry(.755,1.025),
+        new THREE.MeshPhysicalMaterial({
+          color:0xaebdc8,metalness:.72,roughness:.08,clearcoat:1,
+          clearcoatRoughness:.06,transparent:true,opacity:.46,
+          depthWrite:false,envMapIntensity:1.4,side:THREE.DoubleSide
+        }));
+      sheen.position.z=.038;
+      sheen.userData.fixtureOverlayMaterial=true;
+      g.add(sheen);
       break;
     }
     case "sofa":
@@ -235,6 +247,7 @@ export function disposeFixture(group:THREE.Group){
   group.traverse(obj=>{
     if(obj instanceof THREE.Mesh)obj.geometry.dispose();
     if(obj instanceof Reflector){obj.getRenderTarget().dispose();obj.material.dispose();}
+    if(obj instanceof THREE.Mesh&&obj.userData.fixtureOverlayMaterial)obj.material.dispose();
   });
   const entries=group.userData.finishEntries as Array<{material:THREE.MeshStandardMaterial}>|undefined;
   for(const entry of entries??[])entry.material.dispose();
