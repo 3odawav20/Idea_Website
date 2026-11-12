@@ -40,18 +40,35 @@
   transform:scale(1.005);
   isolation:isolate;
 }
-.idea-auth-scene--customer .idea-auth-photo{
-  inset:0 32% 0 0;
-  background-image:url('/images/auth/customer-photo.jpg'),url('/images/featured/marble.webp');
-  background-position:center top;
+/* Exact approved 1448 x 1086 customer photographs.
+   The responsive crop preserves image aspect ratio: no stretching, recolouring,
+   synthetic faces or replacement stock art. Theme switches the actual file. */
+.idea-auth-scene--customer .idea-auth-photo {
+  inset:0;
+  background-image:url('/images/auth/customer-night.webp');
+  background-position:37% center;
+  background-size:cover;
+  filter:none;
+  transform:none;
 }
-.idea-auth-scene--customer .idea-auth-visual{
-  background:linear-gradient(100deg,transparent 0%,transparent 61%,#171615 67%,#0c0c0b 100%),#181816;
+.idea-auth-scene--customer.idea-auth-scene--light .idea-auth-photo {
+  background-image:url('/images/auth/customer-day.webp');
+  filter:none;
 }
-.idea-auth-scene--customer .idea-auth-visual::before{
-  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
-  background:linear-gradient(0deg,#0e0e0d 0%,rgba(12,12,12,.96) 12%,
-  rgba(14,14,14,.1) 40%,transparent 70%);
+.idea-auth-scene--customer .idea-auth-visual {
+  background:#13110f;
+}
+.idea-auth-scene--customer .idea-auth-visual::before {
+  content:"";
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(270deg,rgba(13,12,12,.94),rgba(15,13,12,.65) 23%,transparent 55%),
+    linear-gradient(0deg,#0d0c0b 0%,rgba(15,13,12,.76) 14%,transparent 44%);
+}
+.idea-auth-scene--customer.idea-auth-scene--light .idea-auth-visual::before {
+  background:
+    linear-gradient(270deg,rgba(22,17,14,.84),rgba(21,17,15,.55) 24%,transparent 55%),
+    linear-gradient(0deg,rgba(17,13,11,.92) 0%,rgba(20,16,13,.64) 14%,transparent 46%);
 }
 .idea-auth-scene--admin .idea-auth-photo{
   background-image:url('/images/auth/admin-photo.jpg'),url('/images/featured/stone.webp');
@@ -73,7 +90,7 @@
 .idea-auth-scene--light .idea-auth-photo{filter:brightness(1.075) saturate(1.08)}
 .idea-auth-scene--light .idea-auth-visual{background-color:#20160d}
 .idea-auth-scene--customer .idea-auth-copy{
-  position:absolute;z-index:2;top:15.5%;inset-inline-end:3.4%;
+  position:absolute;z-index:2;top:15.5%;right:3.4%;left:auto;
   width:33%;max-width:410px;text-align:start;
 }
 .idea-auth-scene--admin .idea-auth-copy{
@@ -276,9 +293,9 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   .idea-auth-content{grid-template-columns:minmax(0,53%) minmax(380px,47%)}
   .idea-auth-panel-wrap{padding:12px}
   .idea-auth-panel{padding:18px}
-  .idea-auth-scene--customer .idea-auth-photo{inset-inline-end:0;opacity:.82}
-  .idea-auth-scene--customer .idea-auth-visual::before{background:linear-gradient(0deg,#10100f,transparent 60%),linear-gradient(90deg,transparent,rgba(0,0,0,.45))}
-  .idea-auth-scene--customer .idea-auth-copy{width:90%;inset-inline:5%;top:9%;max-width:none}
+  .idea-auth-scene--customer .idea-auth-photo{inset:0;opacity:1}
+  .idea-auth-scene--customer .idea-auth-visual::before{background:linear-gradient(0deg,#10100f,transparent 55%),linear-gradient(270deg,rgba(0,0,0,.73),transparent 80%)}
+  .idea-auth-scene--customer .idea-auth-copy{width:87%;inset-inline:6%;top:6%;max-width:none}
   .idea-auth-scene--admin .idea-auth-copy{width:78%;inset-inline-start:8%}
   .idea-auth-feature-list{inset-inline:2%;bottom:3%}
   .idea-auth-feature strong{font-size:12px}
@@ -291,8 +308,8 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   .idea-auth-content{display:flex;flex-direction:column}
   .idea-auth-visual{min-height:450px;max-height:none}
   .idea-auth-photo{inset:0!important;background-position:center 38%!important}
-  .idea-auth-scene--customer .idea-auth-photo{background-position:center 17%!important}
-  .idea-auth-scene--customer .idea-auth-visual::before{background:linear-gradient(0deg,#10100f,transparent 70%)}
+  .idea-auth-scene--customer .idea-auth-photo{background-position:39% center!important}
+  .idea-auth-scene--customer .idea-auth-visual::before{background:linear-gradient(0deg,rgba(10,9,8,.94),transparent 63%),linear-gradient(180deg,rgba(7,7,7,.72),transparent 42%)}
   .idea-auth-copy,.idea-auth-scene--customer .idea-auth-copy,
   .idea-auth-scene--business .idea-auth-copy,.idea-auth-scene--admin .idea-auth-copy{
     position:absolute;top:12%;bottom:auto;inset-inline:6%;
@@ -343,17 +360,36 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
    never a screenshot or overlaid click-map. On English/French and small screens
    render live translated text on the unlabelled photographic crop instead. */
 @media (min-width:801px) {
-  html[lang="ar"] .idea-auth-scene--customer .idea-auth-visual {
-    background:#10100f url('/images/auth/customer-reference.jpg') top center / 100% 100% no-repeat;
-  }
   html[lang="ar"] .idea-auth-scene--business .idea-auth-visual {
     background:#10100f url('/images/auth/business-reference.jpg') top center / 100% 100% no-repeat;
   }
   html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual {
     background:#10100f url('/images/auth/admin-reference.jpg') top center / 100% 100% no-repeat;
   }
-  html[lang="ar"] .idea-auth-scene .idea-auth-visual :is(
+  html[lang="ar"] .idea-auth-scene:not(.idea-auth-scene--customer) .idea-auth-visual :is(
     .idea-auth-photo,.idea-auth-copy,.idea-auth-feature-list,.idea-auth-business-types
   ) { display:none; }
-  html[lang="ar"] .idea-auth-scene .idea-auth-visual::before { display:none; }
+  html[lang="ar"] .idea-auth-scene:not(.idea-auth-scene--customer) .idea-auth-visual::before { display:none; }
+}
+
+/* Customer image alignment: keep both people proportionate across iPhone,
+   tablet and desktop without distorting the photo or covering the CTAs. */
+@media (max-width:800px) {
+  .idea-auth-scene--customer .idea-auth-photo {
+    background-size:cover;
+    background-position:39% 44%;
+  }
+  .idea-auth-scene--customer .idea-auth-visual {
+    min-height:clamp(390px,70vw,580px);
+  }
+  .idea-auth-scene--customer .idea-auth-feature-list {
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:0;
+  }
+}
+@media (max-width:480px) {
+  .idea-auth-scene--customer .idea-auth-photo { background-position:42% 44%!important; }
+  .idea-auth-scene--customer .idea-auth-visual { min-height:435px; }
+  .idea-auth-scene--customer .idea-auth-copy { top:5%;inset-inline:5%;width:90%; }
+  .idea-auth-scene--customer .idea-auth-copy h1 { font-size:clamp(23px,6.5vw,31px); }
 }
