@@ -225,11 +225,15 @@ textarea:disabled {
   color: var(--idea-on-gold);
 }
 
-/* custom scrollbar to match the dark theme */
-::-webkit-scrollbar { width: 10px; height: 10px; }
-::-webkit-scrollbar-track { background: var(--idea-bg); }
+/* A discreet neutral browser scrollbar replaces the old bright-orange right rail.
+   Keep scrolling usable instead of hiding native controls entirely. */
+html { scrollbar-color: rgba(116,116,116,.65) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: var(--idea-gold-deep);
+  background: rgba(116,116,116,.58);
+  border: 2px solid transparent;
+  background-clip: padding-box;
   border-radius: var(--idea-radius-full);
 }
 
