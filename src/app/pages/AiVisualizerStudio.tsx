@@ -78,6 +78,8 @@ function materialFaces(product: Product): string[] {
 export function AiVisualizerStudio() {
   const { locale } = useI18n();
   const { session } = useBackend();
+  // Presentation guard only. PHP/MySQL checks the authenticated role on every AI action.
+  const aiEligible = session?.role === "admin" || session?.role === "customer";
   const { products } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const ar = locale === "ar";
@@ -208,7 +210,7 @@ export function AiVisualizerStudio() {
   useEffect(() => () => { if (materialUrl) URL.revokeObjectURL(materialUrl); }, [materialUrl]);
 
   useEffect(() => {
-    if (!session || !supabase) {
+    if (!aiEligible || !supabase) {
       setQuota(null);
       return;
     }
@@ -226,7 +228,7 @@ export function AiVisualizerStudio() {
       setIntegration(data.integration || (response.ok ? "configuration_present_unverified" : "configuration_required"));
     })().catch(() => { if (active) setIntegration("unavailable"); });
     return () => { active = false; };
-  }, [session?.id]);
+  }, [session?.id, aiEligible]);
 
   async function onRoomFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -342,6 +344,14 @@ export function AiVisualizerStudio() {
 
   async function generate() {
     if (busy) return;
+    if (!session) {
+      setError(tr("سجّل حساب مستخدم أولًا قبل توليد الصور.", "Create a customer account and sign in to generate images."));
+      return;
+    }
+    if (!aiEligible) {
+      setError(tr("توليد الصور متاح لحسابات العملاء والأدمن فقط. حسابات الشركات غير مؤهلة.", "Image generation is limited to customer and admin accounts; company accounts are ineligible."));
+      return;
+    }
     if (!photo) {
       setError(tr("ارفع صورة الغرفة أولًا.", "Upload your room photo first."));
       inputRef.current?.click();
@@ -460,7 +470,11 @@ export function AiVisualizerStudio() {
               ? tr("أدمن · توليد غير محدود", "Admin · unlimited quota")
               : quota
                 ? tr(`${quota.remaining} / ${quota.limit} محاولات متبقية`, `${quota.remaining} / ${quota.limit} attempts remaining`)
-                : tr("سجّل الدخول لمعرفة الرصيد", "Sign in to view quota")}
+                : !session
+                  ? tr("سجّل الدخول لمعرفة الرصيد", "Sign in to view quota")
+                  : !aiEligible
+                    ? tr("حساب الشركات غير مؤهل للـAI", "Company accounts cannot use AI")
+                    : tr("رصيد المحاولات غير متاح", "Quota unavailable")}
           </span>
         </div>
       </header>
@@ -647,7 +661,9 @@ export function AiVisualizerStudio() {
             <label>{tr("لون الفواصل", "Grout tone")}</label>
             <div className="idea-studio-colors">{["#3b3b3b","#ffffff","#ddd8cf","#9b998f"].map((color) => <button type="button" key={color} style={{ background: color }} className={grout === color ? "active" : ""} onClick={() => setGrout(color)} aria-label={color} />)}</div>
           </div>
-          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={busy || !photo || !selectedProduct || !selectedPhysicalSize || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
+          {!session && <small role="status"><Link to="/login">{tr("سجّل الدخول بحساب مستخدم لتوليد الصور.", "Sign in with a customer account to generate images.")}</Link></small>}
+          {session && !aiEligible && <small role="status">{tr("حسابات الشركات ليس لها صلاحية توليد الصور.", "Company accounts are not eligible for AI generation.")}</small>}
+          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={!aiEligible || busy || !photo || !selectedProduct || !selectedPhysicalSize || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
             <Sparkles size={17} /> {tr("ابدأ التوليد المحمي", "Generate with scene lock")}
           </button>
           <small className="idea-studio-consent">{tr("ببدء التوليد تُرسل الصورتان إلى Runpod للمعالجة المؤقتة وفق سياسة الخصوصية.", "Generation sends the room and material references to Runpod for temporary processing.")}</small>
