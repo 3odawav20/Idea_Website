@@ -113,7 +113,7 @@ export function HeroBrandFilm() {
 
   // Each word gets its own entrance, while the h1 stays one readable phrase for assistive technology.
   const animatedWords = (line: string, startIndex: number) =>
-    line.trim().split(/\\s+/u).map((word, index) => (
+    line.trim().split(/\s+/u).map((word, index) => (
       <span
         key={`${startIndex}-${index}`}
         className="idea-film-word"
@@ -165,7 +165,7 @@ export function HeroBrandFilm() {
               {animatedWords(captions[activeSlide][0], 0)}
             </span>
             <span className="idea-film-line idea-film-line--orange" aria-hidden="true">
-              {animatedWords(captions[activeSlide][1], captions[activeSlide][0].trim().split(/\\s+/u).length)}
+              {animatedWords(captions[activeSlide][1], captions[activeSlide][0].trim().split(/\s+/u).length)}
             </span>
           </h1>
         </div>
