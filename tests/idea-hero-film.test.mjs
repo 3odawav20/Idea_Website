@@ -46,7 +46,7 @@ test("branded word-by-word captions maintain white/orange contrast and progressi
  assert.match(component,/className="idea-film-word"/);
  assert.match(component,/animationDelay:/);
  assert.match(component,/aria-label=\{`\$\{captions/);
- assert.match(styles,/color:\s*#ff7200/);
+ assert.match(styles,/color:\s*var\(--idea-gold\)/);
  assert.match(styles,/color:\s*#fff/);
  assert.match(styles,/idea-film-word-reveal/);
  assert.match(styles,/text-shadow:/);
