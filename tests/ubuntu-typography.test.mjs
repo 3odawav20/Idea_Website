@@ -7,7 +7,8 @@ const header = readFileSync("src/app/components/Header.css", "utf8");
 const film = readFileSync("src/app/components/HeroBrandFilm.tsx", "utf8");
 
 test("Google Ubuntu is the requested Latin font; Arabic Cairo stays supported", () => {
-  assert.match(fonts, /fonts\.googleapis\.com\/css2\?family=Ubuntu/);
+  assert.match(fonts, /fonts\.googleapis\.com\/css2\?family=(?:Audiowide&family=)?Ubuntu/);
+  assert.match(fonts, /family=Audiowide/);
   assert.match(fonts, /import '\.\/cairo\.css'/);
   assert.match(styles, /--idea-font-display: 'Ubuntu'/);
   assert.match(styles, /--idea-font-body: 'Ubuntu'/);
