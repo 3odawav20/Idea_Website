@@ -75,8 +75,8 @@
   --idea-shadow-drawer: 0 0 60px rgba(0, 0, 0, 0.6);
 
   /* ── Typography families ── */
-  --idea-font-display: 'Josefin Sans', Arial, sans-serif;
-  --idea-font-body: 'Josefin Sans', Arial, sans-serif;
+  --idea-font-display: 'Ubuntu', Arial, sans-serif;
+  --idea-font-body: 'Ubuntu', Arial, sans-serif;
   --idea-font-arabic: 'Cairo', Arial, sans-serif;
 
   /* ── Type scale ── */
@@ -468,4 +468,35 @@ html[lang="ar"] input[type="tel"], html[lang="ar"] input[type="number"] {
 html[lang="ar"] body, html[lang="ar"] body * { font-family: "Cairo", Arial, sans-serif !important; }
 html[lang] :where(p, h1, h2, h3, h4, label, button, td, th) { overflow-wrap: anywhere; min-width: 0; }
 
-html[lang="en"] body, html[lang="en"] body * { font-family: "Josefin Sans", Arial, sans-serif !important; font-weight: 100 !important; }
+/* Locale-specific typography: do not force 100-weight; preserve real hierarchy. */
+html[lang="en"] body, html[lang="en"] body *,
+html[lang="fr"] body, html[lang="fr"] body * {
+  font-family: "Ubuntu", Arial, sans-serif !important;
+}
+html[lang="en"] :where(button, input, select, textarea),
+html[lang="fr"] :where(button, input, select, textarea) {
+  font-family: "Ubuntu", Arial, sans-serif !important;
+}
+/* Long localized labels can wrap inside controls rather than leak outside. */
+html[lang] :where(button, [role="button"], .idea-studio-rail, .idea-home-resource-grid a, .idea-home-story-copy, .idea-navigation-content, .idea-home-newsletter) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+html[lang] :where(button, [role="button"]) {
+  white-space: normal;
+  line-height: 1.35;
+}
+html[lang] :where(input, textarea, select) {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+html[lang] :where(h1, h2, h3, h4) {
+  text-wrap: balance;
+}
+@media (max-width: 680px) {
+  html[lang] :where(.idea-navigation-content, .idea-home-story-copy, .idea-home-newsletter, .idea-studio-rail) {
+    max-width: 100%;
+    min-width: 0;
+  }
+}
