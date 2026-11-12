@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Search, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Maximize2, Minimize2, Search, X } from "lucide-react";
+import { createPortal } from "react-dom";
 import type { Product, ProductSize, Locale } from "../data/types";
 import surfaceMaterials from "../data/surfaceMaterials.json";
 import { localMaterialFace } from "../data/localMaterialFace";
@@ -42,6 +43,8 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
   const [category,setCategory]=useState<Category>("all");
   const [query,setQuery]=useState("");
   const [limit,setLimit]=useState(48);
+  const [expanded,setExpanded]=useState(false);
+  const savedScroll=useRef({top:0,left:0});
   const [sizeOptions,setSizeOptions]=useState<Record<string,string>>({});
   const scroller=useRef<HTMLDivElement>(null);
   const sentinel=useRef<HTMLDivElement>(null);
@@ -53,7 +56,14 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
   },[products,category,query]);
   const counts=useMemo(()=>Object.fromEntries(categories.map(key=>[key,products.filter(p=>matchesCategory(p,key)).length])) as Record<Category,number>,[products]);
   const shown=filtered.slice(0,limit);
-  const more=()=>setLimit(prev=>Math.min(filtered.length,prev+48));
+  const toggleExpanded=()=>{
+    if(scroller.current)savedScroll.current={top:scroller.current.scrollTop,left:scroller.current.scrollLeft};
+    setExpanded(previous=>!previous);
+  };
+  const more=()=>{
+    setLimit(prev=>Math.min(filtered.length,prev+48));
+    if(!expanded)toggleExpanded();
+  };
   const chooseCategory=(value:Category)=>{
     setCategory(value);
     setLimit(48);
@@ -67,7 +77,7 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     },{root,rootMargin:"80px",threshold:.01});
     observer.observe(target);
     return ()=>observer.disconnect();
-  },[shown.length,filtered.length]);
+  },[shown.length,filtered.length,expanded]);
 
   useEffect(()=>{
     const root=scroller.current;
@@ -79,10 +89,24 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     };
     root.addEventListener("wheel",onWheel,{passive:false});
     return ()=>root.removeEventListener("wheel",onWheel);
-  },[]);
+  },[expanded]);
+  useEffect(()=>{
+    if(scroller.current){
+      scroller.current.scrollTop=savedScroll.current.top;
+      scroller.current.scrollLeft=savedScroll.current.left;
+    }
+  },[expanded]);
+  useEffect(()=>{
+    if(!expanded)return;
+    const previousOverflow=document.body.style.overflow;
+    document.body.style.overflow="hidden";
+    const keydown=(event:KeyboardEvent)=>{if(event.key==="Escape")setExpanded(false);};
+    window.addEventListener("keydown",keydown);
+    return ()=>{document.body.style.overflow=previousOverflow;window.removeEventListener("keydown",keydown);};
+  },[expanded]);
 
   const scroll=(x:number,y:number)=>scroller.current?.scrollBy({left:x,top:y,behavior:"smooth"});
-  return <aside className="idea-room3d-side idea-room3d-material-catalog" aria-label={t.title}>
+  const gallery=<aside className={"idea-room3d-side idea-room3d-material-catalog"+(expanded?" is-expanded":"")} aria-label={t.title}>
     <h2>{t.title}<small>{products.length} {t.count}</small></h2>
     <p className="idea-room3d-material-caption">{t.surface}: <strong>{t[surface]}</strong></p>
     <div className="idea-room3d-material-tabs" role="group" aria-label={t.title}>
@@ -97,6 +121,7 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     <div className="idea-room3d-scrollbar-tools">
       <small>{t.allCount}: {filtered.length} · {t.navigation}</small>
       <div>
+        <button type="button" aria-label={expanded?(locale==="ar"?"إغلاق المكتبة":"Close material library"):(locale==="ar"?"افتح مكتبة الخامات":"Expand material library")} onClick={toggleExpanded}>{expanded?<Minimize2 size={17}/>:<Maximize2 size={17}/>}</button>
         <button type="button" aria-label={t.leftArrow} onClick={()=>scroll(-440,0)}><ArrowLeft size={17}/></button>
         <button type="button" aria-label={t.rightArrow} onClick={()=>scroll(440,0)}><ArrowRight size={17}/></button>
         <button type="button" aria-label={t.upArrow} onClick={()=>scroll(0,-440)}><ArrowUp size={17}/></button>
@@ -145,4 +170,5 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     {!filtered.length&&<p className="idea-room3d-empty">{t.none}</p>}
     <p className="idea-room3d-disclaimer">{t.scale}</p>
   </aside>;
+  return expanded?createPortal(gallery,document.body):gallery;
 }
