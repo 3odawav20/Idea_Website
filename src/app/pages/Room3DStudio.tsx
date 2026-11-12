@@ -6,11 +6,13 @@ import { Room3DLighting, NATURAL_LIGHT } from "./Room3DLighting";
 import type { RoomLightSettings, RoomMode } from "./Room3DLighting";
 import { installMaterialEnvironment, makeLightRig, updateLightRig, makeTileNormalMap, addKitchenPreview } from "./Room3DRealism";
 import type { LightRig } from "./Room3DRealism";
-import { ArrowLeft, Camera, RotateCcw, Maximize2 } from "lucide-react";
+import { ArrowLeft, Camera, RotateCcw, Maximize2, Plus, Trash2, Copy, RotateCw } from "lucide-react";
 import { useStore } from "../store/store";
 import { useI18n } from "../i18n/i18n";
 import type { Product } from "../data/types";
 import { Room3DMaterialGallery, materialFace, verifiedSizes } from "./Room3DMaterialGallery";
+import { createRoomFixture, disposeFixture, fixtureKinds, fixtureLabels, fixturePreset, positionFixture, wallFixtureKinds } from "./Room3DFixtures";
+import type { PlacedFixture, FixtureKind, RoomDimensions } from "./Room3DFixtures";
 import "./Room3DStudio.css";
 
 type Surface = "floor" | "back" | "left" | "right";
@@ -71,11 +73,29 @@ function makeSurfaceTexture(src:string,repeatX:number,repeatY:number,onReady:(tx
   return texture;
 }
 
+function syncRoomFixtures(scene:THREE.Scene,groups:Map<string,THREE.Group>,items:PlacedFixture[],dims:RoomDimensions){
+  const ids=new Set(items.map(i=>i.id));
+  for(const [id,group] of groups){
+    if(!ids.has(id)){scene.remove(group);disposeFixture(group);groups.delete(id);}
+  }
+  for(const fixture of items){
+    let group=groups.get(fixture.id);
+    if(group&&group.userData.kind!==fixture.kind){
+      scene.remove(group);disposeFixture(group);groups.delete(fixture.id);group=undefined;
+    }
+    if(!group){
+      group=createRoomFixture(fixture.kind,fixture.id);
+      scene.add(group);
+      groups.set(fixture.id,group);
+    }
+    positionFixture(group,fixture,dims);
+  }
+}
 export function Room3DStudio() {
   const mount=useRef<HTMLDivElement>(null);
   const sceneRef=useRef<{
     camera:THREE.PerspectiveCamera;controls:OrbitControls;renderer:THREE.WebGLRenderer;
-    scene:THREE.Scene;surfaces:Record<Surface,THREE.Mesh>;lightingRig:LightRig;
+    scene:THREE.Scene;surfaces:Record<Surface,THREE.Mesh>;lightingRig:LightRig;fixtureGroups:Map<string,THREE.Group>;
   }|null>(null);
   const lastCamera=useRef<{pos:THREE.Vector3;target:THREE.Vector3}|null>(null);
   const {products}=useStore();const {locale}=useI18n();
@@ -89,11 +109,47 @@ export function Room3DStudio() {
   const [tileChoice,setTileChoice]=useState<Record<Surface,string>>({floor:"",back:"",left:"",right:""});
   const [sizeChoice,setSizeChoice]=useState<Record<Surface,string>>({floor:"",back:"",left:"",right:""});
   const [notice,setNotice]=useState("");
+  const [fixtures,setFixtures]=useState<PlacedFixture[]>([]);
+  const [selectedFixture,setSelectedFixture]=useState<string|null>(null);
+  const [addKind,setAddKind]=useState<FixtureKind>("basin");
+  const nextFixtureId=useRef(1);
+  const fixtureLayouts=useRef<Partial<Record<RoomMode,PlacedFixture[]>>>({});
+  const fixturesRef=useRef(fixtures);
+  fixturesRef.current=fixtures;
 
   const tiles=useMemo(()=>products.filter(p=>
     ["ceramics","porcelain","marble"].includes(p.collection) && !!materialSize(p) && !!materialFace(p)),[products]);
   const byId=useMemo(()=>new Map(products.map(p=>[p.id,p])),[products]);
-  const changeSceneMode=(next:RoomMode)=>setRoomMode(next);
+  const changeSceneMode=(next:RoomMode)=>{
+    if(next===roomMode)return;
+    fixtureLayouts.current[roomMode]=fixtures;
+    setRoomMode(next);
+    setSelectedFixture(null);
+    setFixtures(fixtureLayouts.current[next] ?? fixturePreset(next));
+  };
+  const addFixture=()=>{
+    const wall=wallFixtureKinds.includes(addKind)?(surface==="floor"?"back":surface):undefined;
+    const offset=Math.min(fixtures.length*.31,1.15);
+    const fixture:PlacedFixture={
+      id:"custom-"+nextFixtureId.current++,
+      kind:addKind,
+      x:wall==="left"||wall==="right"?0:offset-.5,
+      z:wall==="back"?-dims.length/2:wall==="left"?-dims.length/4:wall==="right"?dims.length/4:offset-.4,
+      y:wall?(addKind==="door"?1.05:addKind==="window"?1.65:1.5):0,
+      rotation:0,wall
+    };
+    setFixtures(old=>[...old,fixture]);
+    setSelectedFixture(fixture.id);
+  };
+  const editFixture=(id:string,changes:Partial<PlacedFixture>)=>setFixtures(old=>old.map(item=>item.id===id?{...item,...changes}:item));
+  const deleteFixture=()=>{if(!selectedFixture)return;setFixtures(old=>old.filter(item=>item.id!==selectedFixture));setSelectedFixture(null);};
+  const duplicateFixture=()=>{
+    const item=fixtures.find(o=>o.id===selectedFixture);if(!item)return;
+    const newId="custom-"+nextFixtureId.current++;
+    setFixtures(old=>[...old,{...item,id:newId,x:item.x+.25,z:item.z+.25}]);
+    setSelectedFixture(newId);
+  };
+  const currentFixture=fixtures.find(item=>item.id===selectedFixture);
 
   const applyView=(preset:CameraPreset)=>{
     setView(preset);
@@ -176,21 +232,74 @@ export function Room3DStudio() {
       roof.rotation.x=Math.PI/2;roof.position.y=h;scene.add(roof);
     }
     if(roomMode==="kitchen")addKitchenPreview(scene,w,l,h);
-    sceneRef.current={camera,controls,renderer,scene,surfaces:surfaceList,lightingRig};
-    // Click a surface to select it; orbiting remains handled by OrbitControls.
+    const fixtureGroups=new Map<string,THREE.Group>();
+    syncRoomFixtures(scene,fixtureGroups,fixturesRef.current,dims);
+    sceneRef.current={camera,controls,renderer,scene,surfaces:surfaceList,lightingRig,fixtureGroups};
+    // Pick and drag real 3D objects on their floor or selected wall plane.
     const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
     let downPoint:{x:number;y:number}|null=null;
-    const down=(event:PointerEvent)=>{downPoint={x:event.clientX,y:event.clientY};};
-    const up=(event:PointerEvent)=>{
-      if(!downPoint||Math.hypot(event.clientX-downPoint.x,event.clientY-downPoint.y)>=6)return;
+    let dragging:{id:string;fixture:PlacedFixture;plane:THREE.Plane;moved:boolean}|null=null;
+    const setPointerRay=(event:PointerEvent)=>{
       const box=renderer.domElement.getBoundingClientRect();
       ndc.set((event.clientX-box.left)/box.width*2-1,-(event.clientY-box.top)/box.height*2+1);
       ray.setFromCamera(ndc,camera);
+    };
+    const down=(event:PointerEvent)=>{
+      downPoint={x:event.clientX,y:event.clientY};
+      if(event.button!==0)return;
+      setPointerRay(event);
+      const groups=Array.from(fixtureGroups.values());
+      const hits=ray.intersectObjects(groups,true);
+      if(!hits.length)return;
+      let node:THREE.Object3D|null=hits[0].object;
+      while(node && !node.userData.fixtureId)node=node.parent;
+      const id=node?.userData.fixtureId as string|undefined;
+      const fixture=fixturesRef.current.find(item=>item.id===id);
+      if(!fixture)return;
+      setSelectedFixture(fixture.id);
+      const normal=fixture.wall==="back"?new THREE.Vector3(0,0,1):fixture.wall==="left"||fixture.wall==="right"?new THREE.Vector3(1,0,0):new THREE.Vector3(0,1,0);
+      const point=fixture.wall==="back"?new THREE.Vector3(0,0,-l/2):fixture.wall==="left"?new THREE.Vector3(-w/2,0,0):fixture.wall==="right"?new THREE.Vector3(w/2,0,0):new THREE.Vector3(0,0,0);
+      dragging={id:fixture.id,fixture:{...fixture},plane:new THREE.Plane().setFromNormalAndCoplanarPoint(normal,point),moved:false};
+      controls.enabled=false;
+      renderer.domElement.setPointerCapture(event.pointerId);
+    };
+    const move=(event:PointerEvent)=>{
+      if(!dragging||!downPoint)return;
+      if(Math.hypot(event.clientX-downPoint.x,event.clientY-downPoint.y)<4 && !dragging.moved)return;
+      setPointerRay(event);
+      const point=new THREE.Vector3();
+      if(!ray.ray.intersectPlane(dragging.plane,point))return;
+      if(dragging.fixture.wall==="back"){dragging.fixture.x=point.x;dragging.fixture.y=dragging.fixture.kind==="door"?h/2:point.y;}
+      else if(dragging.fixture.wall==="left"||dragging.fixture.wall==="right"){dragging.fixture.z=point.z;dragging.fixture.y=dragging.fixture.kind==="door"?h/2:point.y;}
+      else {dragging.fixture.x=point.x;dragging.fixture.z=point.z;}
+      dragging.moved=true;
+      const group=fixtureGroups.get(dragging.id);
+      if(group)positionFixture(group,dragging.fixture,dims);
+    };
+    const up=(event:PointerEvent)=>{
+      if(dragging){
+        const done=dragging;
+        dragging=null;
+        controls.enabled=true;
+        if(renderer.domElement.hasPointerCapture(event.pointerId))renderer.domElement.releasePointerCapture(event.pointerId);
+        if(done.moved)setFixtures(old=>old.map(item=>item.id===done.id?done.fixture:item));
+        downPoint=null;
+        return;
+      }
+      if(!downPoint||Math.hypot(event.clientX-downPoint.x,event.clientY-downPoint.y)>=6)return;
+      setPointerRay(event);
       const hit=ray.intersectObjects(Object.values(surfaceList),false)[0];
       if(hit)setSurface(hit.object.userData.surface as Surface);
+      downPoint=null;
+    };
+    const cancel=(event:PointerEvent)=>{
+      dragging=null;downPoint=null;controls.enabled=true;
+      if(renderer.domElement.hasPointerCapture(event.pointerId))renderer.domElement.releasePointerCapture(event.pointerId);
     };
     renderer.domElement.addEventListener("pointerdown",down);
+    renderer.domElement.addEventListener("pointermove",move);
     renderer.domElement.addEventListener("pointerup",up);
+    renderer.domElement.addEventListener("pointercancel",cancel);
     let raf=0;const draw=()=>{raf=requestAnimationFrame(draw);controls.update();renderer.render(scene,camera);};
     draw();
     const resize=new ResizeObserver(()=>{
@@ -201,7 +310,9 @@ export function Room3DStudio() {
       cancelAnimationFrame(raf);resize.disconnect();
       lastCamera.current={pos:camera.position.clone(),target:controls.target.clone()};
       renderer.domElement.removeEventListener("pointerdown",down);
+      renderer.domElement.removeEventListener("pointermove",move);
       renderer.domElement.removeEventListener("pointerup",up);
+      renderer.domElement.removeEventListener("pointercancel",cancel);
       controls.dispose();
       scene.traverse(o=>{
         if(o instanceof THREE.Mesh || o instanceof THREE.LineSegments){
@@ -221,24 +332,30 @@ export function Room3DStudio() {
     };
   },[dims.width,dims.length,dims.height,ceiling,tileChoice.floor,tileChoice.back,tileChoice.left,tileChoice.right,sizeChoice.floor,sizeChoice.back,sizeChoice.left,sizeChoice.right,byId,roomMode,lighting.finish]);
 
+  // Swapping and editing fixtures updates only their meshes, not the full renderer.
+  useEffect(()=>{
+    const state=sceneRef.current;
+    if(state)syncRoomFixtures(state.scene,state.fixtureGroups,fixtures,dims);
+  },[fixtures,roomMode,dims.width,dims.length,dims.height]);
+
   // Sliders update the live light rig; they do not rebuild the WebGL scene.
   useEffect(()=>{
     const state=sceneRef.current;
     if(state)updateLightRig(state.lightingRig,lighting,dims,state.renderer,state.scene);
   },[lighting,roomMode,dims.width,dims.length,dims.height]);
 
-  const serialized=()=>JSON.stringify({version:3,dimensions:dims,ceiling,tileChoice,sizeChoice,roomMode,lighting},null,2);
+  const serialized=()=>JSON.stringify({version:4,dimensions:dims,ceiling,tileChoice,sizeChoice,roomMode,lighting,fixtures},null,2);
   const download=()=>{
     const blob=new Blob([serialized()],{type:"application/json"});const url=URL.createObjectURL(blob);
     const a=document.createElement("a");a.href=url;a.download="idea-room-3d-materials.json";a.click();URL.revokeObjectURL(url);
   };
-  const reset=()=>{setTileChoice({floor:"",back:"",left:"",right:""});setSizeChoice({floor:"",back:"",left:"",right:""});setNotice("");};
+  const reset=()=>{setTileChoice({floor:"",back:"",left:"",right:""});setSizeChoice({floor:"",back:"",left:"",right:""});setFixtures([]);setSelectedFixture(null);setNotice("");};
 
   return (
     <main className="idea-room3d" dir={lang==="ar"?"rtl":"ltr"}>
       <header className="idea-room3d-heading">
         <Link to="/"><ArrowLeft size={17}/>{lang === "ar" ? "الرئيسية" : lang === "fr" ? "Accueil" : "Home"}</Link>
-        <div><span>IDEA / 3D SPACE STUDIO</span><h1>{t.title}</h1><p>{t.sub}</p></div>
+        <div><span>IDEA / 3D SPACE STUDIO</span><h1><strong className="idea-room3d-heading-brand">IDEA</strong> <span className="idea-room3d-heading-title">{t.title.replace(/^IDEA\s*·\s*/,"")}</span></h1><p>{t.sub}</p></div>
       </header>
       <div className="idea-room3d-workspace">
         <aside className="idea-room3d-side">
@@ -250,6 +367,45 @@ export function Room3DStudio() {
           </div>
           <Room3DLighting locale={lang} mode={roomMode} onModeChange={changeSceneMode}
             settings={lighting} onSettingsChange={setLighting} />
+          <section className="idea-room3d-fixture-editor" aria-label={lang==="ar"?"عناصر الغرفة":"Room fixtures"}>
+            <h2>{lang==="ar"?"الأثاث والتجهيزات القابلة للتعديل":lang==="fr"?"Éléments modifiables":"Editable furniture & fixtures"}</h2>
+            <p className="idea-room3d-disclaimer">{lang==="ar"?"اختار عنصر واضغط إضافة. اسحبه جوه المشهد أو عدّل مكانه من هنا. الأشكال للتخطيط وليست موديلات مورّد موثقة.":lang==="fr"?"Ajoutez et déplacez des éléments génériques dans la pièce.": "Add and drag generic planning objects, then adjust position and rotation below. Not exact supplier models."}</p>
+            <select aria-label={lang==="ar"?"اختار التجهيز":"Choose fixture"} value={addKind} onChange={e=>setAddKind(e.target.value as FixtureKind)}>
+              {fixtureKinds.map(kind=><option key={kind} value={kind}>{fixtureLabels[kind][lang]}</option>)}
+            </select>
+            <button className="idea-room3d-fixture-add" type="button" onClick={addFixture}><Plus size={15}/>{lang==="ar"?"أضف للغرفة":"Add to room"}</button>
+            <div className="idea-room3d-fixture-chips">
+              {fixtures.map(item=><button key={item.id} type="button" className={item.id===selectedFixture?"active":""} onClick={()=>setSelectedFixture(item.id)}>{fixtureLabels[item.kind][lang]}</button>)}
+            </div>
+            {currentFixture&&<div className="idea-room3d-fixture-properties">
+              <strong>{lang==="ar"?"تعديل العنصر":"Edit selected object"}</strong>
+              <label>{lang==="ar"?"بدّل العنصر":"Replace with"}
+                <select value={currentFixture.kind} onChange={e=>{
+                  const kind=e.target.value as FixtureKind;
+                  const wall=wallFixtureKinds.includes(kind)?(currentFixture.wall??(surface==="floor"?"back":surface)):undefined;
+                  editFixture(currentFixture.id,{kind,wall,y:wall?kind==="door"?dims.height/2:1.5:0});
+                }}>
+                  {fixtureKinds.map(kind=><option key={kind} value={kind}>{fixtureLabels[kind][lang]}</option>)}
+                </select>
+              </label>
+              <div className="idea-room3d-fixture-coordinates">
+                <label>X<input type="number" min={-dims.width/2} max={dims.width/2} step=".1" value={currentFixture.x.toFixed(2)}
+                  onChange={e=>editFixture(currentFixture.id,{x:Number(e.target.value)})}/></label>
+                <label>Z<input type="number" min={-dims.length/2} max={dims.length/2} step=".1" value={currentFixture.z.toFixed(2)}
+                  onChange={e=>editFixture(currentFixture.id,{z:Number(e.target.value)})}/></label>
+                {currentFixture.wall&&<label>Y<input type="number" min=".4" max={dims.height} step=".1" value={currentFixture.y.toFixed(2)}
+                  onChange={e=>editFixture(currentFixture.id,{y:Number(e.target.value)})}/></label>}
+              </div>
+              {!currentFixture.wall&&<label className="idea-room3d-rotation"><RotateCw size={13}/> {lang==="ar"?"الدوران":"Rotation"}: {currentFixture.rotation}°
+                <input type="range" min="0" max="360" step="5" value={currentFixture.rotation}
+                  onChange={e=>editFixture(currentFixture.id,{rotation:Number(e.target.value)})}/>
+              </label>}
+              <div className="idea-room3d-fixture-actions">
+                <button type="button" onClick={duplicateFixture}><Copy size={14}/>{lang==="ar"?"نسخة":"Duplicate"}</button>
+                <button type="button" onClick={deleteFixture}><Trash2 size={14}/>{lang==="ar"?"حذف":"Remove"}</button>
+              </div>
+            </div>}
+          </section>
           <h2>{t.view}</h2>
           <div className="idea-room3d-pills">{(["perspective","top","front","left","right"] as const).map(p=>
             <button key={p} type="button" className={p===view?"active":""} onClick={()=>applyView(p)}>{t[p]}</button>)}</div>
