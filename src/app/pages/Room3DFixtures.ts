@@ -9,7 +9,7 @@ export type FixtureKind =
 export type Wall = "back" | "left" | "right";
 export type PlacedFixture = {
   id: string; kind: FixtureKind; x: number; y: number; z: number;
-  rotation: number; wall?: Wall; color?: string;
+  rotation: number; wall?: Wall; color?: string; scale?: number;
 };
 export type RoomDimensions = { width: number; length: number; height: number };
 export const fixtureKinds: FixtureKind[] = [
@@ -226,9 +226,11 @@ export function fixturePreset(mode:RoomMode):PlacedFixture[] {
 export function positionFixture(group:THREE.Group,fixture:PlacedFixture,dims:RoomDimensions) {
   const {width:w,length:l,height:h}=dims;
   const onWall=fixture.wall;
+  const scale=THREE.MathUtils.clamp(fixture.scale??1,.6,1.5);
+  group.scale.setScalar(scale);
   const wallLength=onWall==="back"?w:l;
   const half=fixture.kind==="window"?.72:fixture.kind==="tv"?.7:fixture.kind==="door"?.55:fixture.kind==="mirror"?.45:.3;
-  const wallMargin=Math.min(wallLength/2,half+.06);
+  const wallMargin=Math.min(wallLength/2,half*scale+.06);
   const horizontal=THREE.MathUtils.clamp(onWall==="back"?fixture.x:fixture.z,-wallLength/2+wallMargin,wallLength/2-wallMargin);
   if(onWall){
     const y=fixture.kind==="door"?Math.min(h/2,1.07):THREE.MathUtils.clamp(fixture.y,.5,h-.45);
@@ -238,7 +240,7 @@ export function positionFixture(group:THREE.Group,fixture:PlacedFixture,dims:Roo
   }else{
     const halfWidth=fixture.kind==="bathtub"?.88:fixture.kind==="sofa"?1:fixture.kind==="coffee-table"?.58:.35;
     const halfDepth=fixture.kind==="bathtub"?.45:fixture.kind==="sofa"?.46:fixture.kind==="coffee-table"?.35:.34;
-    group.position.set(THREE.MathUtils.clamp(fixture.x,-w/2+Math.min(halfWidth,w/2),w/2-Math.min(halfWidth,w/2)),0,THREE.MathUtils.clamp(fixture.z,-l/2+Math.min(halfDepth,l/2),l/2-Math.min(halfDepth,l/2)));
+    group.position.set(THREE.MathUtils.clamp(fixture.x,-w/2+Math.min(halfWidth*scale,w/2),w/2-Math.min(halfWidth*scale,w/2)),0,THREE.MathUtils.clamp(fixture.z,-l/2+Math.min(halfDepth*scale,l/2),l/2-Math.min(halfDepth*scale,l/2)));
     group.rotation.set(0,fixture.rotation*Math.PI/180,0);
   }
 }
