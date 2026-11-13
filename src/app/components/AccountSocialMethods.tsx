@@ -158,23 +158,24 @@ export function AccountSocialMethods({
     } catch (e) { setError(e instanceof Error ? e.message : t("تعذّر إتمام التحقق.", "Verification failed.")); }
     finally { setBusy(false); }
   };
+  const renderProvider = (provider: (typeof PROVIDERS)[number]) => {
+    const isReady = ready.has(provider.id);
+    return <button className="idea-auth-provider" type="button" key={provider.id}
+      onClick={() => start(provider.id)} disabled={!isReady || busy}
+      title={!isReady ? t("غير متصل بخدمة حسابات الموقع حاليًا", "Not yet connected to the site's account service") : undefined}
+      aria-label={provider.label + (isReady ? "" : t(" - غير مفعل", " - unavailable"))}>
+      <BrandMark provider={provider.id}/>
+      <span>{provider.label}</span>
+      {!isReady && <small aria-hidden="true">{t("غير مفعل", "Unavailable")}</small>}
+    </button>;
+  };
   // No public admin social enrollment or OTP-only privilege escalation.
   // Admin uses the existing PHP/MySQL account flow with server-enforced MFA.
   if (audience === "admin") return null;
   return <div className="idea-auth-social" aria-label={t("طرق الدخول الأخرى", "Other sign-in methods")}>
     <p>{t("أو أكمل باستخدام", "Or continue with")}</p>
     <div className="idea-auth-social-grid">
-      {PROVIDERS.map(provider => {
-        const isReady = ready.has(provider.id);
-        return <button className="idea-auth-provider" type="button" key={provider.id}
-          onClick={() => start(provider.id)} disabled={!isReady || busy}
-          title={!isReady ? t("غير متصل بخدمة حسابات الموقع حاليًا", "Not yet connected to the site's account service") : undefined}
-          aria-label={provider.label + (isReady ? "" : t(" - غير مفعل", " - unavailable"))}>
-          <BrandMark provider={provider.id}/>
-          <span>{provider.label}</span>
-          {!isReady && <small aria-hidden="true">{t("غير مفعل", "Unavailable")}</small>}
-        </button>;
-      })}
+      {PROVIDERS.slice(0,3).map(renderProvider)}
       <button type="button" className="idea-auth-provider idea-auth-provider--phone"
         onClick={() => { if (phoneReady) setMessage(t("اكتب رقمك لإرسال كود تحقق.", "Enter your phone to request a code.")); }}
         disabled={!phoneReady || busy} aria-label={t("الدخول برقم الموبايل", "Phone sign in")}>
@@ -184,7 +185,9 @@ export function AccountSocialMethods({
         <span>{t("رقم الموبايل", "Phone")}</span>
         {!phoneReady && <small aria-hidden="true">{t("غير مفعل", "Unavailable")}</small>}
       </button>
+      {PROVIDERS.slice(3).map(renderProvider)}
     </div>
+    {!phoneReady && ready.size === 0 && <p className="idea-auth-social-caption" role="status">{t("طرق التسجيل ظاهرة للمعاينة، لكنها لن تعمل قبل الربط الرسمي والتحقق من السيرفر.", "Sign-in methods are shown for preview; they will not work until official provider setup and server verification.")}</p>}
     {phoneReady && <div className="idea-auth-otp">
       <label htmlFor={"idea-social-phone-" + audience}>{t("رقم الموبايل الدولي", "International phone number")}</label>
       <div className="idea-auth-otp-row">
@@ -201,6 +204,5 @@ export function AccountSocialMethods({
     </div>}
     {message && <p role="status" className="idea-auth-social-message">{message}</p>}
     {error && <p role="alert" className="idea-auth-feedback idea-auth-feedback--error">{error}</p>}
-    {!base && <p className="idea-auth-social-caption">{t("طرق الدخول دي هتتفعل بعد ربط خدمة الحسابات الآمنة بالموقع.", "These methods become available after connecting the site's secure account backend.")}</p>}
   </div>;
 }
