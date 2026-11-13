@@ -36,7 +36,9 @@ test("company registration uses the approved factory photos for both themes, wit
   }
   assert.match(css, /\.idea-auth-scene--business \.idea-auth-photo,[\s\S]*?background-size:contain;/);
   assert.doesNotMatch(css, /background:[^\n]*url\('\/images\/auth\/business-reference\.jpg'\)/);
-  assert.match(css, /url\('\/images\/auth\/admin-reference\.jpg'\)/);
+  assert.doesNotMatch(css, /url\('\/images\/auth\/admin-reference\.jpg'\)/);
+  assert.ok(css.includes("url('/images/auth/admin-day-20261113.webp')"));
+  assert.ok(css.includes("url('/images/auth/admin-night-20261113.webp')"));
 });
 test("company registration form uses true translucent glass while keeping real inputs", () => {
   assert.match(css, /\.idea-auth-scene--business \.idea-auth-panel-wrap::before/);

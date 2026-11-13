@@ -15,6 +15,14 @@ test("admin never layers old Arabic artboard beneath translated text",()=>{
   assert.match(css,/\.idea-auth-scene--admin \.idea-auth-photo\{[\s\S]*?background-size:contain;/);
   assert.match(css,/\.idea-auth-scene--admin \.idea-auth-copy\{display:none\}/);
 });
+test("business account caption follows selected locale and page mode",()=>{
+  assert.doesNotMatch(tsx,/>COMPANY REGISTRATION \(B2B\)<\/small>/);
+  assert.match(tsx,/isRegister\?tr\("تسجيل شركة \(B2B\)","Company registration \(B2B\)"\):tr\("دخول الشركة \(B2B\)","Business sign in \(B2B\)"\)/);
+});
+test("secure same-origin PHP account API URLs are accepted on HTTPS hosts",()=>{
+  assert.match(tsx,/API\.startsWith\("\/"\) && !API\.startsWith\("\/\/"\)/);
+  assert.match(tsx,/window\.location\.protocol==="https:"/);
+});
 test("real localized admin form, authentication actions, and all locale modes remain",()=>{
   assert.match(tsx,/isAdmin\?tr\("دخول لوحة التحكم","Enter control center"\)/);
   assert.match(tsx,/onSubmit=\{e=>void onSubmit\(e\)\}/);
