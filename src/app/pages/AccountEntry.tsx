@@ -100,7 +100,9 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     if(isBusiness)return isRegister?tr("تسجيل حساب شركة","Register a company"):tr("دخول حساب الشركة","Business sign in");
     return isRegister?tr("إنشاء حساب جديد","Create a new account"):tr("تسجيل الدخول","Sign in");
   },[audience,mode,locale]);
-  const openApi=API.startsWith("https://") || (import.meta.env.DEV&&API.startsWith("/"));
+  // Explicitly configured HTTPS backend, or explicit same-origin relative URL.
+  // Never silently send preview credentials to an unconfigured production host.
+  const openApi=API.startsWith("https://") || (/^\/(?!\/)/.test(API) && window.location.protocol==="https:");
   const onSubmit=async(e:FormEvent<HTMLFormElement>)=>{
     e.preventDefault();setError("");setNotice("");
     if(isRegister&&password!==confirmation){setError(tr("كلمتا المرور غير متطابقتين.","Passwords do not match."));return;}
@@ -144,7 +146,9 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
         setNotice(tr("تم استقبال طلبك على الخادم. راجع بريدك لاستكمال إجراءات التفعيل عند توفرها.","Your request has been accepted by the server. Follow any verification instructions."));
       }else{
         // Route selection still requires a role actually returned by the server.
-        const role=data.role;
+        // The existing IDEA PHP/MySQL backend uses buyer/supplier/admin.
+        // Normalize only a role returned by the trusted server, never a URL or form input.
+        const role=data.role==="buyer"?"customer":data.role==="supplier"?"business":data.role;
         if(role!=="admin"&&role!=="business"&&role!=="customer")throw new Error(tr("الخادم لم يؤكد صلاحيات الحساب.","The server did not confirm your account role."));
         navigate(role==="admin"?"/admin":role==="business"?"/business":"/account");
       }
