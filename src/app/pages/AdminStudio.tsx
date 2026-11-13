@@ -4,7 +4,7 @@ import {
   Activity, ArrowRight, ArrowUpRight, BadgeCheck, BarChart3, Boxes, Check,
   ChevronRight, CircleAlert, ClipboardCheck, Database, Download, ExternalLink,
   Eye, EyeOff, Filter, Globe2, Image as ImageIcon, Layers3, LayoutDashboard,
-  LockKeyhole, Menu, Package, RefreshCw, Search, Settings2, ShieldCheck,
+  LockKeyhole, Menu, Megaphone, Package, RefreshCw, Search, Settings2, ShieldCheck,
   SlidersHorizontal, Sparkles, Store, TrendingUp, Truck, X,
 } from "lucide-react";
 import { useBackend } from "../backend/db";
@@ -65,6 +65,11 @@ export function AdminStudioLayout(){
  if(!session||session.role!=="admin")return <div className="ids-denied"><LockKeyhole size={30}/><h2>Restricted workspace</h2><p>This area requires an administrator role verified by the authentication server.</p><Link to="/login">Sign in <ArrowRight size={16}/></Link></div>;
  const links=[
   {to:"/admin",label:"Overview",icon:LayoutDashboard,end:true},
+  {to:"/admin/companies",label:"الشركات والبراندات",icon:Building2,end:false},
+  {to:"/admin/sales",label:"تحليل المبيعات",icon:BarChart3,end:false},
+  {to:"/admin/search",label:"البحث بكود المنتج",icon:Search,end:false},
+  {to:"/admin/announcements",label:"الشريط الإعلاني",icon:Megaphone,end:false},
+  {to:"/admin/advertising",label:"طلبات الإعلانات",icon:TrendingUp,end:false},
   {to:"/admin/catalogue",label:"Products",icon:Package,end:false},
   {to:"/admin/promotions",label:"Private offers",icon:TrendingUp,end:false},
   {to:"/admin/quality",label:"Quality control",icon:ShieldCheck,end:false},

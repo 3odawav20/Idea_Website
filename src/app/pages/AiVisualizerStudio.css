@@ -298,3 +298,58 @@
   background:#f5f5f5;color:#555;border-color:#e3e3e3
 }
 [data-theme="light"] .idea-studio .idea-atlas-card-reference code{color:#262626}
+
+
+/* Visualizer locale typography and overflow safety — 2026-11-03 */
+.idea-studio,
+.idea-studio * { min-width: 0; }
+.idea-studio h1, .idea-studio h2, .idea-studio h3,
+.idea-studio label, .idea-studio p, .idea-studio button,
+.idea-studio .idea-studio-rail-head, .idea-studio .idea-atlas-card-body,
+.idea-studio .idea-studio-commandbar {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+.idea-studio .idea-studio-rail-head h2,
+.idea-studio .idea-studio-material h3 { line-height: 1.4; }
+.idea-studio .idea-studio-control-block .idea-studio-choice button {
+  white-space: normal; padding: 8px 5px;
+  line-height: 1.35; min-height: 42px;
+}
+.idea-studio .idea-atlas-card-body strong,
+.idea-studio .idea-atlas-card-body small {
+  text-overflow: initial; white-space: normal; overflow-wrap: anywhere;
+}
+.idea-studio .idea-atlas-card-body strong { line-height: 1.4; }
+.idea-studio[lang="ar"], .idea-studio[lang="ar"] button,
+.idea-studio[lang="ar"] input, .idea-studio[lang="ar"] select {
+  font-family: var(--idea-font-arabic), system-ui, sans-serif;
+  letter-spacing: normal;
+}
+.idea-studio[lang="ar"] .idea-studio-kicker,
+.idea-studio[lang="ar"] .idea-studio-rail-head small,
+.idea-studio[lang="ar"] .idea-atlas-overline {
+  letter-spacing: 0;
+  text-transform: none;
+  line-height: 1.7;
+}
+.idea-studio[lang="en"], .idea-studio[lang="en"] button,
+.idea-studio[lang="en"] input, .idea-studio[lang="en"] select,
+.idea-studio[lang="fr"], .idea-studio[lang="fr"] button {
+  font-family: var(--idea-font-body), system-ui, sans-serif;
+}
+.idea-studio .idea-studio-swatch-image img { display: block; }
+.idea-studio .idea-atlas-facet select,
+.idea-studio .idea-studio-control-block select { width: 100%; max-width: 100%; }
+@media(max-width: 980px) {
+  .idea-studio .idea-studio-commandbar { flex-wrap: wrap; row-gap: 10px; }
+  .idea-studio .idea-studio-command-status { flex-wrap: wrap; }
+  .idea-studio .idea-studio-library .idea-atlas-facets > * { min-width: 0; }
+}
+@media(max-width: 680px) {
+  .idea-studio .idea-studio-workspace { width: 100%; }
+  .idea-studio .idea-studio-library { max-width: calc(100% - 16px); }
+  .idea-studio .idea-atlas-card-details,
+  .idea-studio .idea-atlas-card-bottom,
+  .idea-studio .idea-studio-consent { line-height: 1.5; }
+}

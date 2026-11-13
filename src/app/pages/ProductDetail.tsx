@@ -15,6 +15,7 @@ import { useBackend } from "../backend/db";
 import { supabase } from "../backend/supabaseClient";
 import type { Product } from "../data/types";
 import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
+import { similarProducts } from "../data/recommendations";
 import { Button, Container } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
 import "./ProductDetail.css";
@@ -155,11 +156,7 @@ export function ProductDetail() {
     [copy({ en: "Colours", ar: "الألوان", fr: "Couleurs" }), product.colors?.join(" · ")],
   ].filter((entry): entry is [string, string] => Boolean(entry[1]));
 
-  const related = products.filter((item) => (
-    item.id !== product.id
-    && item.collection === product.collection
-    && !family.some((member) => member.id === item.id)
-  )).slice(0, 4);
+  const related = similarProducts(product, products.filter(item => !family.some(member => member.id === item.id)), 4);
 
   return (
     <main className="idea-catalogue-detail">

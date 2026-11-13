@@ -164,12 +164,20 @@ interface I18nCtx {
 const Ctx = createContext<I18nCtx | null>(null);
 
 export function I18nProvider({ children }: { children: ReactNode }) {
-  const [locale, setLocale] = useState<Locale>("en");
+  const [locale, setLocale] = useState<Locale>(() => {
+    if (typeof window === "undefined") return "en";
+    try {
+      const stored = window.localStorage.getItem("idea-language");
+      return stored === "ar" || stored === "fr" || stored === "en" ? stored : "en";
+    } catch { return "en"; }
+  });
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   useEffect(() => {
     document.documentElement.dir = dir;
     document.documentElement.lang = locale;
+    document.documentElement.dataset.locale = locale;
+    try { window.localStorage.setItem("idea-language", locale); } catch { /* Storage may be disabled. */ }
   }, [dir, locale]);
 
   const t = (key: string) => T[key]?.[locale] ?? key;
