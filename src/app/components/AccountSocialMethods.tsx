@@ -178,15 +178,20 @@ export function AccountSocialMethods({
       {PROVIDERS.slice(0,3).map(renderProvider)}
       <button type="button" className="idea-auth-provider idea-auth-provider--phone"
         onClick={() => { if (phoneReady) setMessage(t("اكتب رقمك لإرسال كود تحقق.", "Enter your phone to request a code.")); }}
-        disabled={!phoneReady || busy} aria-label={t("الدخول برقم الموبايل", "Phone sign in")}>
+        disabled={!phoneReady || busy}
+        title={!phoneReady ? t("خدمة التحقق من الموبايل غير مفعلة بعد", "Phone verification is not yet configured") : undefined}
+        aria-label={t("الدخول برقم الموبايل", "Phone sign in") + (phoneReady ? "" : t(" - غير مفعل", " - unavailable"))}>
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <rect x="6" y="2" width="12" height="20" rx="2"/><path d="M11 18h2"/>
         </svg>
         <span>{t("رقم الموبايل", "Phone")}</span>
         {!phoneReady && <small aria-hidden="true">{t("غير مفعل", "Unavailable")}</small>}
       </button>
-      {PROVIDERS.slice(3).map(renderProvider)}
     </div>
+    <details className="idea-auth-extra-methods">
+      <summary>{t("وسائل دخول إضافية", "More sign-in methods")}</summary>
+      <div className="idea-auth-social-grid">{PROVIDERS.slice(3).map(renderProvider)}</div>
+    </details>
     {!phoneReady && ready.size === 0 && <p className="idea-auth-social-caption" role="status">{t("طرق التسجيل ظاهرة للمعاينة، لكنها لن تعمل قبل الربط الرسمي والتحقق من السيرفر.", "Sign-in methods are shown for preview; they will not work until official provider setup and server verification.")}</p>}
     {phoneReady && <div className="idea-auth-otp">
       <label htmlFor={"idea-social-phone-" + audience}>{t("رقم الموبايل الدولي", "International phone number")}</label>
