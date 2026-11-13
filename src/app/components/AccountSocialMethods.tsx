@@ -172,7 +172,7 @@ export function AccountSocialMethods({
   // No public admin social enrollment or OTP-only privilege escalation.
   // Admin uses the existing PHP/MySQL account flow with server-enforced MFA.
   if (audience === "admin") return null;
-  return <div className="idea-auth-social" aria-label={t("طرق الدخول الأخرى", "Other sign-in methods")}>
+  const methods = <div className="idea-auth-social" aria-label={t("طرق الدخول الأخرى", "Other sign-in methods")}>
     <p>{t("أو أكمل باستخدام", "Or continue with")}</p>
     <div className="idea-auth-social-grid">
       {PROVIDERS.slice(0,3).map(renderProvider)}
@@ -210,4 +210,14 @@ export function AccountSocialMethods({
     {message && <p role="status" className="idea-auth-social-message">{message}</p>}
     {error && <p role="alert" className="idea-auth-feedback idea-auth-feedback--error">{error}</p>}
   </div>;
+  // Customers see four requested identity choices immediately.
+  // Supplier onboarding has a long verified-data form: retain the same choices
+  // in an accessible expandable section, never silently remove functionality.
+  if (audience === "business") {
+    return <details className="idea-business-social-disclosure">
+      <summary>{t("طرق تسجيل إضافية: Google وApple وFacebook والموبايل", "More sign-in options: Google, Apple, Facebook, Phone")}</summary>
+      {methods}
+    </details>;
+  }
+  return methods;
 }
