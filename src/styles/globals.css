@@ -62,6 +62,10 @@
 
   /* ── Layout and interaction primitives ── */
   --idea-content-max: 1320px;
+  /* Shared rhythm: every storefront route uses the same content edges. */
+  --idea-page-gutter: clamp(16px, 2.2vw, 32px);
+  --idea-section-space: clamp(44px, 5vw, 80px);
+  --idea-grid-gap: clamp(12px, 1.4vw, 24px);
   --idea-control-height: 44px;
   --idea-control-height-compact: 36px;
   --idea-focus-ring: 0 0 0 3px var(--idea-gold-soft);
@@ -466,7 +470,7 @@ html[lang="ar"] input[type="tel"], html[lang="ar"] input[type="number"] {
   html[lang] h1 { font-size: clamp(1.8rem, 7vw, 2.65rem); }
   html[lang] h2 { font-size: clamp(1.45rem, 5vw, 2.1rem); }
   html[lang] p, html[lang] label { line-height: 1.65; }
-  html[lang] .idea-home-section { width: min(100% - 32px, 1280px); }
+  html[lang] .idea-home-section { width: min(calc(100% - 2 * var(--idea-page-gutter)), var(--idea-content-max)); }
 }
 
 html[lang="ar"] body, html[lang="ar"] body * { font-family: "Cairo", Arial, sans-serif !important; }
@@ -517,4 +521,27 @@ html[lang] :where(h1, h2, h3, h4) {
   body :is([disabled], [aria-disabled="true"]) {
     cursor: not-allowed;
   }
+}
+
+/* IDEA shared alignment contract — use one measured inner content edge on all
+   visitor-facing pages. The hero and the three owner-approved account scenes
+   deliberately remain full-bleed, not forced inside a generic max-width. */
+.idea-layout-container {
+  width: min(calc(100% - 2 * var(--idea-page-gutter)), var(--idea-content-max));
+  margin-inline: auto;
+  min-width: 0;
+}
+:where(.idea-container, .idea-home-section, .icc-root, .ids-page) {
+  min-width: 0;
+}
+:where(.idea-container, .idea-home-section, .icc-root, .ids-page) > * {
+  min-width: 0;
+}
+:where(input, select, textarea, button) { max-width: 100%; }
+:where(button, .idea-home-text-link) { overflow-wrap: break-word; }
+@media (max-width: 760px) {
+  :root { --idea-page-gutter: 16px; --idea-section-space: 44px; }
+}
+@media (max-width: 380px) {
+  :root { --idea-page-gutter: 12px; --idea-grid-gap: 10px; }
 }
