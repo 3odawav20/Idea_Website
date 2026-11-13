@@ -176,7 +176,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     <div className="idea-auth-content">
       <div className="idea-auth-visual">
         <div className="idea-auth-photo" role="img" aria-label={isAdmin?tr("مقر إدارة المنصة","IDEA management office"):isBusiness?tr("مصنع وشحنات الرخام والسيراميك","Ceramic and marble factory"):tr("اختيار تشطيبات المنزل","Home finishing selections")}/>
-        <div className="idea-auth-copy">
+        {!isAdmin&&<div className="idea-auth-copy">
           {isAdmin&&<p className="idea-auth-eyebrow">IDEA ADMIN CONTROL</p>}
           <h1>{heroHeading[0]} <span>{heroHeading[1]}</span></h1>
           <p>{isAdmin
@@ -185,7 +185,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
             ? tr("منصة مخصصة لشركات السيراميك والرخام، المصانع، الموردين، ومشتري الجملة حول العالم.","A dedicated network for ceramic and marble companies, factories, suppliers and wholesale buyers.")
             : tr("كل ما تحتاجه لإنهاء وتشطيب منزلك بأجود تصاميم السيراميك والبورسلين والرخام والبلاط.","Explore beautiful ceramics, porcelain, marble and tiles for your home.")
           }</p>
-        </div>
+        </div>}
         <FeatureItems audience={audience} locale={locale}/>
         {isBusiness&&isRegister&&<div className="idea-auth-business-types" aria-label={tr("حساب شركات الصناعة","Industry account types")}>
           {[
