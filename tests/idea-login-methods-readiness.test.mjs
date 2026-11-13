@@ -47,7 +47,13 @@ test("canonical paths do not rely on Apache directory redirects for OAuth/OTP",(
 
 test("phone verification never trusts client role; PHP/MySQL server confirmation required",()=>{
   assert.match(social,/result\.ok !== true/);
-  assert.match(social,/Server did not confirm identity and role/);
+  assert.match(social,/Server did not confirm an eligible account role/);
+  assert.match(social,/result\.role === "buyer" \? "customer"/);
+  assert.match(social,/result\.role === "supplier" \? "business"/);
+  assert.match(social,/\["customer","business"\]\.includes/);
+  assert.match(entry,/data\.role==="buyer"\?"customer"/);
+  assert.match(entry,/data\.role==="supplier"\?"business"/);
+  assert.match(entry,/window\.location\.protocol==="https:"/);
   assert.match(social,/const E164 =/);
   assert.doesNotMatch(social,/supabase\.auth/);
 });
