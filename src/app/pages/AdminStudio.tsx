@@ -279,38 +279,71 @@ export function AdminSettings(){
 }
 
 export function AdminVisualizer(){
- const {session}=useBackend();
- const [state,setState]=useState<"loading"|"configured"|"unavailable">("loading");
- const [detail,setDetail]=useState("Checking the authenticated server adapter…");
- const [quota,setQuota]=useState("—");
- const check=async()=>{
-  setState("loading");setDetail("Checking the authenticated server adapter…");
-  try{
-   const {data}=await requireSupabase().auth.getSession();
-   if(!data.session?.access_token)throw new Error("Administrator session unavailable");
-   const response=await fetch("/api/visualize.php?action=status",{headers:{Authorization:"Bearer "+data.session.access_token},cache:"no-store"});
-   const payload=await response.json().catch(()=>null) as {integration?:string;provider?:string;model?:string;quota?:{unlimited?:boolean;remaining?:number|null;limit?:number|null};error?:string}|null;
-   if(!response.ok||!payload)throw new Error(payload?.error||"Visualizer adapter did not return a valid status");
-   setState("configured");
-   setDetail(payload.integration==="configuration_present_unverified"
-    ?"Runpod credentials are present, but the deployed worker contract and a real generation still require verification."
-    :"The adapter responded without a verified Runpod health state.");
-   setQuota(payload.quota?.unlimited?"Unlimited administrator quota":`${payload.quota?.remaining??"—"} / ${payload.quota?.limit??"—"} remaining`);
-  }catch(error){setState("unavailable");setDetail(error instanceof Error?error.message:String(error))}
- };
- useEffect(()=>{void check();},[]);
- return <>
-  <Heading kicker="IMMUTABLE SCENE ENGINE" title="AI visualizer control room" sub="Observable integration state without exposing endpoint IDs, API keys or customer room images."
-   action={<button className="ids-action-outline" onClick={()=>void check()} disabled={state==="loading"}><RefreshCw size={16}/> Recheck adapter</button>}/>
-  <div className="ids-stats ids-stats-three">
-   <Stat title="Provider" value="Runpod" sub="Server-side adapter" icon={Sparkles} accent/>
-   <Stat title="Application quota" value="Unlimited" sub="Administrator role" icon={ShieldCheck}/>
-   <Stat title="Worker contract" value="v1" sub="Image + verified mask required" icon={Database}/>
-  </div>
-  <div className="ids-dashboard-grid">
-   <div className="ids-panel ids-operations-card"><Activity size={29}/><span className="ids-kicker">INTEGRATION STATUS</span><h3>{state==="configured"?"Configuration present — verification required":state==="loading"?"Checking adapter":"Runpod unavailable"}</h3><p>{detail}</p><Pill ok={state==="configured"}>{state==="configured"?"Not yet health-verified":"No verified connection"}</Pill></div>
-   <div className="ids-panel ids-operations-card"><ShieldCheck size={29}/><span className="ids-kicker">ADMIN QUOTA</span><h3>{quota}</h3><p>{session?.email||session?.name||"Authenticated administrator"} bypasses the five-attempt customer limit. GPU billing, endpoint capacity and abuse controls still apply.</p><Link to="/ai-room-visualizer" className="ids-action-outline">Open test studio <ArrowRight size={16}/></Link></div>
-  </div>
-  <div className="ids-notice"><CircleAlert size={17}/><span>This screen must not show “Connected” until a real authorized worker request proves the deployed input/output schema. Job analytics remain unavailable until durable database-backed telemetry is enabled.</span></div>
- </>;
+  const {session}=useBackend();
+  const {locale}=useI18n();
+  const tr=(ar:string,en:string)=>locale==="ar"?ar:en;
+  const [state,setState]=useState<"loading"|"responded"|"unavailable">("loading");
+  const [detail,setDetail]=useState(tr("جاري فحص خدمة الذكاء الاصطناعي من السيرفر…","Checking the server AI adapter…"));
+  const [quota,setQuota]=useState("—");
+  const [provider,setProvider]=useState("—");
+  const check=async()=>{
+    setState("loading");
+    setDetail(tr("جاري فحص الخدمة…","Checking the server adapter…"));
+    setQuota("—");setProvider("—");
+    if(session?.role!=="admin"){
+      setState("unavailable");
+      setDetail(tr("يلزم الدخول بحساب أدمن موثّق قبل فحص الخدمة.","A verified administrator session is required for the AI check."));
+      return;
+    }
+    try{
+      // The server must validate the HttpOnly PHP/MySQL session. A frontend role
+      // alone never grants access, and Supabase bearer tokens are not accepted.
+      const response=await fetch("/api/visualize.php?action=status",{
+        method:"GET",credentials:"include",headers:{Accept:"application/json"},
+        cache:"no-store",redirect:"error"
+      });
+      if(!(response.headers.get("content-type")||"").includes("application/json"))
+        throw new Error(tr("مسار الـAI لم يُرجع استجابة JSON صالحة.","AI endpoint did not return a valid JSON response."));
+      const payload=await response.json() as {
+        integration?:string;provider?:string;model?:string;
+        quota?:{unlimited?:boolean;remaining?:number|null;limit?:number|null};
+      };
+      if(!response.ok)throw new Error(tr(`فشل فحص الـAI: HTTP ${response.status}`,`AI check failed: HTTP ${response.status}`));
+      if(payload.provider!=="runpod" || payload.quota?.unlimited!==true)
+        throw new Error(tr("السيرفر لم يؤكد تشغيل Runpod بصلاحيات الأدمن المطلوبة.","Server did not confirm Runpod and the required admin quota."));
+      setState("responded");
+      setProvider("Runpod");
+      setQuota(tr("غير محدود حسب السيرفر","Unlimited per server"));
+      setDetail(tr(
+        "الخادم أكّد الإعدادات والحصة، لكن لم يثبت نجاح توليد صورة حقيقية مع القناع. الاتصال غير معتمد للإنتاج بعد.",
+        "Server confirmed configuration and quota, but a real masked-image generation has not been verified. Production AI remains unverified."
+      ));
+    }catch(error){
+      setState("unavailable");
+      setDetail(error instanceof Error?error.message:tr("خدمة الـAI غير متاحة.","AI service is unavailable."));
+    }
+  };
+  useEffect(()=>{void check();},[session?.id,session?.role,locale]);
+  return <>
+    <Heading kicker="IDEA AI" title={tr("مراقبة ذكاء الصور","AI visualizer control room")} sub={tr("تقرير حالة حقيقي من السيرفر، بدون مفاتيح أو صور العملاء.","Server-backed diagnostics without exposing keys or customer imagery.")}
+      action={<button className="ids-action-outline" onClick={()=>void check()} disabled={state==="loading"}><RefreshCw size={16}/>{tr("إعادة الفحص","Recheck adapter")}</button>}/>
+    <div className="ids-stats ids-stats-three">
+      <Stat title={tr("المزوّد","Provider")} value={provider} sub={tr("حسب رد السيرفر","Server response")} icon={Sparkles} accent/>
+      <Stat title={tr("حصة الأدمن","Admin quota")} value={quota} sub={tr("غير مؤكدة حتى يرد السيرفر","Requires server confirmation")} icon={ShieldCheck}/>
+      <Stat title={tr("حالة الاختبار","Worker validation")} value={tr("غير معتمد بعد","Not verified")} sub={tr("يلزم اختبار قناع وتوليد حقيقي","Real masked job required")} icon={Database}/>
+    </div>
+    <div className="ids-dashboard-grid">
+      <div className="ids-panel ids-operations-card">
+        <Activity size={29}/><h3>{state==="loading"?tr("جارٍ الفحص","Checking…"):state==="responded"?tr("الإعدادات موجودة – لم يتم التحقق من التوليد","Configured — output unverified"):tr("الخدمة غير متاحة أو غير موثقة","Service unavailable or not verified")}</h3>
+        <p role="status">{detail}</p>
+        <Pill ok={false}>{tr("لا توجد شهادة توليد حقيقي","No verified generation")}</Pill>
+      </div>
+      <div className="ids-panel ids-operations-card">
+        <ShieldCheck size={29}/><h3>{tr("الصلاحيات وحصص التوليد","Role and generation policy")}</h3>
+        <p>{tr("اليوزر: ٥ محاولات مدى الحياة؛ الشركات: ممنوع؛ الأدمن: غير محدود إذا أكد السيرفر. كل ده يحتاج اختبار MySQL وRunpod الحقيقي.","Customers: 5 lifetime attempts; suppliers: blocked; admin: unlimited only if the server confirms. Live MySQL and Runpod tests are still required.")}</p>
+        <Link to="/ai-room-visualizer" className="ids-action-outline">{tr("فتح استوديو AI","Open AI studio")} <ArrowRight size={16}/></Link>
+      </div>
+    </div>
+    <div className="ids-notice"><CircleAlert size={17}/><span>{tr("ظهور اسم Runpod أو إعداداته لا يثبت نجاح التوليد. لا تُعتبر الخدمة جاهزة إلا بعد اختبار مصرح به لصور أصلية وقناع صحيح وحفظ آمن.","Runpod configuration alone cannot certify a working worker. Authorized end-to-end testing must verify a masked result and private storage before launch.")}</span></div>
+  </>;
 }
