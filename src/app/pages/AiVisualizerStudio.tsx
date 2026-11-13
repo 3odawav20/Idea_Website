@@ -133,6 +133,14 @@ export function AiVisualizerStudio() {
   const requestRef = useRef<AbortController | null>(null);
 
   const selectedFaces = useMemo(() => selectedProduct ? materialFaces(selectedProduct) : [], [selectedProduct]);
+  // Never offer an arbitrary default; only use dimensions recorded for this product variant.
+  const physicalSizes = (selectedProduct?.sizes || []).filter((size) =>
+    Number.isFinite(size.widthMm) && Number.isFinite(size.heightMm) &&
+    Number(size.widthMm) >= 50 && Number(size.heightMm) >= 50 &&
+    Number(size.widthMm) <= 3200 && Number(size.heightMm) <= 3200
+  );
+  const selectedPhysicalSize = physicalSizes.find((size) => size.id === tileSize) || physicalSizes[0] || null;
+
   const selectedFaceImage = selectedFaces[faceIndex] || selectedFaces[0] || null;
   const safePhotoUrl = safeBlobUrl(photoUrl);
   const safeMaterialUrl = safeBlobUrl(materialUrl);
@@ -269,6 +277,7 @@ export function AiVisualizerStudio() {
     setMaterial(null);
     setMaterialUrl(null);
     setFaceIndex(0);
+    setTileSize("");
     setResult(null);
     setQuality(null);
     setError("");
@@ -339,6 +348,11 @@ export function AiVisualizerStudio() {
       setError(tr("اختر منتجًا حقيقيًا من المكتبة.", "Select a real catalogue product."));
       return;
     }
+    if (!selectedPhysicalSize) {
+      setError(tr("مقاس البلاطة غير موثق لهذا المنتج. يجب إضافة المقاس الحقيقي قبل التوليد.",
+                  "This product has no verified physical tile dimensions. Add an actual size before generating."));
+      return;
+    }
     if (quota && !quota.unlimited && quota.remaining === 0) {
       setError(tr("استخدمت المحاولات الخمس المتاحة.", "Your five lifetime attempts have been used."));
       return;
@@ -366,7 +380,10 @@ export function AiVisualizerStudio() {
       form.append("surface", surface);
       form.append("roomKind", roomKind);
       form.append("rotation", String(rotation));
-      form.append("tileSize", selectedProduct.sizes[0]?.label || tileSize);
+      form.append("tileSize", selectedPhysicalSize.label);
+       form.append("tile_width_mm", String(selectedPhysicalSize.widthMm));
+       form.append("tile_height_mm", String(selectedPhysicalSize.heightMm));
+       form.append("variant_id", selectedPhysicalSize.id);
       form.append("grout", grout);
       form.append("idempotencyKey", crypto.randomUUID());
       setStage("validating");
@@ -612,16 +629,22 @@ export function AiVisualizerStudio() {
             <div className="idea-studio-choice">{[0,45,90].map((value) => <button type="button" key={value} className={rotation === value ? "active" : ""} onClick={() => setRotation(value)}>{value}°</button>)}</div>
           </div>
           <div className="idea-studio-control-block">
-            <label>{tr("المقاس المرجعي", "Reference scale")}</label>
-            <select value={selectedProduct?.sizes[0]?.label || tileSize} onChange={(event) => setTileSize(event.target.value)} disabled={Boolean(selectedProduct?.sizes[0]?.label)}>
-              <option>30 × 30 cm</option><option>60 × 60 cm</option><option>60 × 120 cm</option><option>80 × 80 cm</option><option>120 × 120 cm</option>
-            </select>
+            <label>{tr("المقاس الحقيقي للبلاطة", "Actual tile size")}</label>
+            <select value={selectedPhysicalSize?.id || ""} onChange={(event) => setTileSize(event.target.value)} disabled={physicalSizes.length <= 1}>
+               {physicalSizes.length ? physicalSizes.map((size) => (
+                 <option value={size.id} key={size.id}>
+                   {String(Number(size.widthMm) / 10) + " × " + String(Number(size.heightMm) / 10) + " cm"}
+                 </option>
+               )) : <option value="">{tr("المقاس غير متوفر", "Size unavailable")}</option>}
+             </select>
+             <small className="idea-studio-size-note">{tr("المقاس من بيانات المنتج. القياس داخل الغرفة تقريبي دون مرجع معايرة معروف.",
+               "Dimensions come from this product. In-room scale remains approximate without a measured reference.")}</small>
           </div>
           <div className="idea-studio-control-block">
             <label>{tr("لون الفواصل", "Grout tone")}</label>
             <div className="idea-studio-colors">{["#3b3b3b","#ffffff","#ddd8cf","#9b998f"].map((color) => <button type="button" key={color} style={{ background: color }} className={grout === color ? "active" : ""} onClick={() => setGrout(color)} aria-label={color} />)}</div>
           </div>
-          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={busy || !photo || !selectedProduct || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
+          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={busy || !photo || !selectedProduct || !selectedPhysicalSize || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
             <Sparkles size={17} /> {tr("ابدأ التوليد المحمي", "Generate with scene lock")}
           </button>
           <small className="idea-studio-consent">{tr("ببدء التوليد تُرسل الصورتان إلى Runpod للمعالجة المؤقتة وفق سياسة الخصوصية.", "Generation sends the room and material references to Runpod for temporary processing.")}</small>
