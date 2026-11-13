@@ -79,6 +79,24 @@ export function AiVisualizerStudio() {
   const [searchParams, setSearchParams] = useSearchParams();
   const ar = locale === "ar";
   const tr = (arabic: string, english: string, french?: string) => ar ? arabic : locale === "fr" ? (french || english) : english;
+  // Supplier catalogue text is sometimes only populated in one language.
+  // Never display arbitrary Arabic text in English UI (or vice versa).
+  const containsArabic = (value: string) => /[\u0600-\u06FF]/u.test(value);
+  const containsLatin = (value: string) => /[A-Za-z]/.test(value);
+  const localizedValue = (value: string | null | undefined, fallbackAr: string, fallbackEn: string): string => {
+    const original = String(value || "").trim();
+    if (!original) return tr(fallbackAr, fallbackEn);
+    if (ar) return containsArabic(original) || !containsLatin(original) ? original : fallbackAr;
+    return containsArabic(original) ? fallbackEn : original;
+  };
+  const localizedName = (product: Product): string => {
+    const direct = String(product.name[locale] || "").trim();
+    const english = String(product.name.en || "").trim();
+    const arabic = String(product.name.ar || "").trim();
+    const code = product.code || ideaInternalCode(product);
+    if (ar) return containsArabic(direct) ? direct : containsArabic(arabic) ? arabic : "خامة " + code;
+    return direct && !containsArabic(direct) ? direct : english && !containsArabic(english) ? english : "Material " + code;
+  };
   const selectedId = searchParams.get("product");
   const selectedProduct = products.find((product) => product.id === selectedId || product.slug === selectedId) || null;
 
@@ -392,7 +410,7 @@ export function AiVisualizerStudio() {
     }
   }
 
-  const productName = selectedProduct?.name[locale] || tr("اختر خامة", "Select a material");
+  const productName = selectedProduct ? localizedName(selectedProduct) : tr("اختر خامة", "Select a material");
   const stageText: Record<JobStage, string> = {
     idle: tr("جاهز", "Ready"),
     uploading: tr("رفع الملفات الآمن", "Secure upload"),
@@ -406,11 +424,11 @@ export function AiVisualizerStudio() {
   const displaySource = viewMode === "original" ? safePhotoUrl : viewMode === "result" ? result : safePhotoUrl;
 
   return (
-    <main className="idea-studio" dir={ar ? "rtl" : "ltr"}>
+    <main className="idea-studio" lang={locale} dir={ar ? "rtl" : "ltr"}>
       <header className="idea-studio-commandbar">
         <div>
           <span className="idea-studio-brandmark"><Layers3 size={19} /></span>
-          <span><b>IDEA</b><small>IMMUTABLE SCENE ENGINE</small></span>
+          <span><b>IDEA</b><small>{tr("محرك حماية المشهد", "IMMUTABLE SCENE ENGINE")}</small></span>
         </div>
         <div className="idea-studio-command-status">
           <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : ""}`}>
@@ -429,11 +447,11 @@ export function AiVisualizerStudio() {
 
       <section className="idea-studio-intro">
         <div>
-          <span className="idea-studio-kicker"><Sparkles size={14} /> IDEA MATERIAL INTELLIGENCE / 2030</span>
+          <span className="idea-studio-kicker"><Sparkles size={14} /> {tr("IDEA / استوديو الخامات 2030", "IDEA MATERIAL INTELLIGENCE / 2030")}</span>
           <h1>{tr("غيّر السطح.", "Change the surface.")}<em>{tr(" لا تغيّر الغرفة.", " Never the room.")}</em></h1>
           <p>{tr("المشهد الأصلي يظل مرجعًا ثابتًا. لا تُنشر أي نتيجة إلا بعد التحقق من القناع والأبعاد وإعادة تركيب البكسلات المحمية من الصورة الأصلية.", "Your original scene remains immutable. No result is released without mask, dimension and protected-pixel verification.")}</p>
         </div>
-        <div className="idea-studio-trust"><LockKeyhole size={18} /><span><b>PIXEL-SAFE COMPOSITING</b><small>ORIGINAL FRAME · VERIFIED MASK · IDEA WATERMARK</small></span></div>
+        <div className="idea-studio-trust"><LockKeyhole size={18} /><span><b>{tr("تركيب آمن للصورة", "PIXEL-SAFE COMPOSITING")}</b><small>{tr("الصورة الأصلية · قناع معتمد · علامة IDEA", "ORIGINAL FRAME · VERIFIED MASK · IDEA WATERMARK")}</small></span></div>
       </section>
 
       <div className="idea-studio-workspace">
@@ -442,7 +460,7 @@ export function AiVisualizerStudio() {
           <button className="idea-studio-upload" type="button" onClick={() => inputRef.current?.click()}>
             <UploadCloud size={24} />
             <strong>{photo ? tr("تغيير صورة الغرفة", "Replace room image") : tr("ارفع صورة الغرفة", "Upload room image")}</strong>
-            <small>JPG · PNG · WEBP · 12 MB</small>
+            <small dir="ltr">JPG · PNG · WEBP · 12 MB</small>
           </button>
           <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={onRoomFile} capture="environment" />
           {photoMeta && (
@@ -543,7 +561,7 @@ export function AiVisualizerStudio() {
               <i>{quality.protectedPixelsCompositedFromOriginal ? tr("المناطق المحمية من الأصل", "Protected pixels from original") : "—"}</i>
             </div>
           )}
-          {error && <div className="idea-studio-error" role="alert"><CircleAlert size={17} /><span>{error}</span>{!session && <Link to="/login">{tr("تسجيل الدخول", "Sign in")}</Link>}</div>}
+          {error && <div className="idea-studio-error" role="alert"><CircleAlert size={17} /><span>{localizedValue(error, "تعذر إتمام الطلب. يُرجى المحاولة مرة أخرى.", "The request could not be completed. Please try again.")}</span>{!session && <Link to="/login">{tr("تسجيل الدخول", "Sign in")}</Link>}</div>}
         </section>
 
         <aside className="idea-studio-rail idea-studio-material">
@@ -569,10 +587,10 @@ export function AiVisualizerStudio() {
           <h3>{productName}</h3>
           {selectedProduct && (
             <>
-              <p>{selectedProduct.manufacturer || selectedProduct.brand}</p>
+              <p>{localizedValue(selectedProduct.manufacturer || selectedProduct.brand, "الشركة المصنعة غير مترجمة", "Manufacturer name not localized")}</p>
               <dl className="idea-studio-product-specs">
                 <div><dt>{tr("الكود", "Code")}</dt><dd>{selectedProduct.code || "—"}</dd></div>
-                <div><dt>{tr("التشطيب", "Finish")}</dt><dd>{selectedProduct.finish || "—"}</dd></div>
+                <div><dt>{tr("التشطيب", "Finish")}</dt><dd>{localizedValue(selectedProduct.finish, "التشطيب غير محدد", "Finish not specified")}</dd></div>
                 <div><dt>{tr("المقاس", "Dimensions")}</dt><dd>{selectedProduct.sizes[0]?.label || "—"}</dd></div>
               </dl>
               <Link className="idea-studio-product-link" to={`/product/${selectedProduct.slug}`}>{tr("فتح صفحة المنتج", "Open product page")}</Link>
@@ -611,7 +629,7 @@ export function AiVisualizerStudio() {
       </div>
 
       <section className="idea-studio-library" id="idea-material-atlas" aria-labelledby="idea-atlas-heading">
-        <div className="idea-atlas-overline"><span className="idea-studio-kicker">IDEA / MATERIAL ATLAS 2030</span><span>{tr("كتالوج مستورد • يتوسع مع كل مورد جديد", "Source-linked catalogue · expanding with supplier imports")}</span></div>
+        <div className="idea-atlas-overline"><span className="idea-studio-kicker">{tr("IDEA / مكتبة الخامات 2030", "IDEA / MATERIAL ATLAS 2030")}</span><span>{tr("كتالوج مستورد • يتوسع مع كل مورد جديد", "Source-linked catalogue · expanding with supplier imports")}</span></div>
         <div className="idea-studio-library-head">
           <div>
             <h2 id="idea-atlas-heading">{tr("عالم كامل من", "A universe of")} <em>{tr("الخامات المعمارية.", "architectural surfaces.")}</em></h2>
@@ -647,7 +665,7 @@ export function AiVisualizerStudio() {
               <label className="idea-atlas-facet" key={item.key}><span>{item.label}</span>
                 <select value={item.value} onChange={(event) => item.set(event.target.value)}>
                   <option value="">{tr("الكل", "All")}</option>
-                  {item.options.map((value) => <option value={value} key={value}>{value}</option>)}
+                  {item.options.map((value) => <option value={value} key={value}>{localizedValue(value, "بيانات المصدر غير مترجمة", "Source value not localized")}</option>)}
                 </select>
               </label>
             ))}
@@ -666,9 +684,9 @@ export function AiVisualizerStudio() {
                 {selectedProduct?.id === product.id && <i><Check size={13} /></i>}
               </span>
               <span className="idea-atlas-card-body">
-                <strong>{product.name[locale] || product.name.en}</strong>
-                <small>{product.manufacturer ? productMaker(product, locale).value : product.brand + (locale === "ar" ? " · المصنع قيد التوثيق" : " · maker unverified")}</small>
-                <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + product.finish : ""}</span>
+                <strong>{localizedName(product)}</strong>
+                <small>{localizedValue(product.manufacturer ? productMaker(product, locale).value : product.brand, "الشركة غير مترجمة", "Maker name not localized")}{product.manufacturer ? "" : tr(" · المصنع غير مؤكد", " · maker unverified")}</small>
+                <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + localizedValue(product.finish, "تشطيب غير محدد", "Finish not specified") : ""}</span>
                 <span className="idea-atlas-card-reference"><span>{tr("كود IDEA", "IDEA reference")}</span><code dir="ltr">{ideaInternalCode(product)}</code></span>
                 <span className="idea-atlas-card-bottom"><span>{sourceSku(product) ? (tr("كود المورد", "Supplier SKU") + ": " + sourceSku(product)) : tr("كود المورد غير موثّق", "Supplier SKU unverified")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
               </span>
