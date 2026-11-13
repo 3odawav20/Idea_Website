@@ -637,7 +637,9 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 .idea-auth-scene--business.idea-auth-scene--register .idea-auth-visual{
   display:grid;
   grid-template-columns:minmax(0,1fr);
-  grid-template-rows:auto minmax(172px,1fr) minmax(138px,.70fr);
+  /* Fill the full column with the approved factory photograph; never let the
+     shorter natural image ratio leave a dead empty area under the category row. */
+  grid-template-rows:minmax(400px,1fr) auto auto;
   align-content:stretch;
   min-height:calc(100svh - 52px);
 }
@@ -648,11 +650,12 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   grid-row:1;
   display:block;
   width:100%;
-  height:auto;
-  aspect-ratio:1672 / 941;
+  height:100%;
+  min-height:400px;
+  aspect-ratio:auto;
   background-image:var(--idea-business-photo);
-  background-size:contain;
-  background-position:center;
+  background-size:cover;
+  background-position:34% center;
   background-repeat:no-repeat;
   transform:none;
   filter:none;
@@ -873,3 +876,211 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   }
 }
 
+
+/* Shared identity options for buyer and supplier only; existing admin MFA remains separate.
+   Provider buttons are intentionally disabled unless the PHP/MySQL backend
+   advertises a working provider. No fake social-login actions. */
+.idea-auth-social-grid {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.idea-auth-social .idea-auth-provider {
+  position:relative;
+  min-width:0;min-height:48px;
+  display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:7px;
+  color:#fff;
+  border:1px solid rgba(255,255,255,.33);
+  background:rgba(20,19,18,.44);
+  border-radius:9px;
+  font-size:12px;font-weight:600;
+  transition:transform .18s ease,border-color .18s ease,background .18s ease,box-shadow .18s ease;
+}
+.idea-auth-social .idea-auth-provider > svg {flex:0 0 auto}
+.idea-auth-social .idea-auth-provider > span {flex:0 1 auto}
+.idea-auth-social .idea-auth-provider > small {
+  display:block;
+  width:100%;
+  font-size:9px;
+  font-weight:450;
+  line-height:1.1;
+  color:rgba(255,255,255,.58);
+}
+.idea-auth-social .idea-auth-provider:disabled {
+  opacity:.65;
+  cursor:not-allowed;
+}
+.idea-auth-social .idea-auth-provider:hover:not(:disabled),
+.idea-auth-social .idea-auth-provider:focus-visible:not(:disabled) {
+  border-color:var(--idea-auth-orange);
+  background:rgba(253,100,1,.12);
+  box-shadow:0 6px 20px rgba(0,0,0,.14);
+  transform:translateY(-2px);
+}
+.idea-auth-social .idea-auth-otp {
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  gap:8px;
+  padding-top:12px;
+}
+.idea-auth-otp label {
+  font-size:12px;
+  color:#eee;
+}
+.idea-auth-social .idea-auth-otp-row {
+  display:flex;
+  flex-direction:row;
+  gap:8px;
+}
+.idea-auth-otp-row input {
+  display:block;
+  flex:1;
+  width:100%;
+  min-width:0;
+  border:1px solid rgba(255,255,255,.4);
+  background:rgba(0,0,0,.3);
+  color:white;
+  padding:10px;
+  border-radius:7px;
+}
+.idea-auth-otp-row button {
+  min-width:92px;
+  border-color:rgba(253,100,1,.5);
+}
+.idea-auth-social .idea-auth-social-caption,
+.idea-auth-social .idea-auth-social-message {
+  color:rgba(255,255,255,.7);
+  text-align:center;
+  line-height:1.5;
+  font-size:11px;
+}
+
+@media(max-width:390px){
+  .idea-auth-social .idea-auth-provider {font-size:11px;padding:8px 5px}
+  .idea-auth-social-grid {gap:6px}
+  .idea-auth-otp-row button {min-width:75px;font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){.idea-auth-social .idea-auth-provider{transition:none!important}}
+
+/* IDEA COMPACT BUSINESS REGISTRATION 20261113
+   Preserve owner-approved photography and copy. On desktop the old 1fr rows
+   stretched the four feature cards to the full height of the registration
+   panel; this is a rhythm defect, not extra functional content. */
+@media (min-width:801px) {
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-visual {
+    min-height:0;
+    grid-template-rows:minmax(400px,1fr) auto auto;
+    align-content:stretch;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature-list {
+    min-height:112px;
+    gap:clamp(6px,.7vw,12px);
+    padding:10px 3%;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature {
+    min-height:106px;
+    height:auto;
+    padding:10px 7px;
+    justify-content:center;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature svg {
+    width:clamp(22px,2vw,28px);
+    height:clamp(22px,2vw,28px);
+    margin-bottom:2px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types {
+    min-height:82px;
+    padding:10px 3%;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types span {
+    min-height:68px;
+    height:auto;
+    padding:8px 5px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-panel-wrap {
+    align-items:flex-start;
+    justify-content:center;
+    padding:clamp(12px,1.25vw,20px);
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-panel {
+    max-width:440px;
+    min-height:0;
+    height:auto;
+    display:block;
+    padding:clamp(16px,1.3vw,24px);
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-fields {
+    flex:none;
+    align-content:start;
+    row-gap:8px;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-actions {
+    margin-top:14px;
+  }
+}
+/* Five company types form a complete 3+2 arrangement on a 390px screen:
+   the final pair splits the entire second row instead of leaving a blank slot. */
+@media (max-width:480px) {
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types {
+    grid-template-columns:repeat(6,minmax(0,1fr));
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types span {
+    grid-column:span 2;
+  }
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-business-types span:nth-last-child(-n+2) {
+    grid-column:span 3;
+  }
+}
+/* Four primary provider icons stay visible. Additional methods are still
+   accessible without forcing another row into an already long account form. */
+.idea-auth-extra-methods {margin-top:9px;color:rgba(255,255,255,.79);}
+.idea-auth-extra-methods summary {
+  width:max-content;
+  max-width:100%;
+  margin-inline:auto;
+  cursor:pointer;
+  padding:5px 12px;
+  font-size:11px;
+  text-align:center;
+  list-style-position:inside;
+  border-radius:7px;
+}
+.idea-auth-extra-methods summary:focus-visible {
+  outline:2px solid var(--idea-auth-orange);
+  outline-offset:2px;
+}
+.idea-auth-extra-methods[open] > .idea-auth-social-grid {margin-top:9px;}
+
+/* The company identity provider area stays operable in the disclosure but
+   is not allowed to add four tall rows to the essential business fields. */
+.idea-business-social-disclosure{
+  max-width:100%;
+  margin-top:12px;
+  color:var(--idea-auth-foreground);
+  font-size:12px;
+}
+.idea-business-social-disclosure > summary{
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:9px;
+  text-align:center;
+  padding:11px 14px;
+  background:rgba(22,29,36,.28);
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+}
+.idea-business-social-disclosure > summary:focus-visible{
+  outline:2px solid var(--idea-auth-orange);
+  outline-offset:2px;
+}
+.idea-business-social-disclosure[open] > .idea-auth-social{margin-top:12px}
+@media(max-width:800px){
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-photo{
+    height:auto;
+    min-height:0;
+    aspect-ratio:1672 / 941;
+    background-size:contain;
+    background-position:center!important;
+  }
+}

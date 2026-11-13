@@ -1,5 +1,7 @@
-@import '@figma/astraui/styles.css';
+/* External font CSS must be imported before all local CSS declarations. */
+@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Ubuntu:wght@300;400;500;700&display=swap');
 @import './fonts.css';
+@import '@figma/astraui/styles.css';
 @import './tailwind.css';
 @import './theme.css';
 @import './globals.css';
