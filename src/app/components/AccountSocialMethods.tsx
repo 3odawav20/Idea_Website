@@ -150,9 +150,11 @@ export function AccountSocialMethods({
       });
       if (!response.ok || !(response.headers.get("content-type") || "").includes("application/json")) throw new Error(t("فشل تأكيد الرقم.", "Phone verification failed."));
       const result = await response.json() as { ok?: boolean; role?: string };
-      if (result.ok !== true || !["customer","business","admin"].includes(result.role || "")) throw new Error(t("الخادم لم يؤكد الحساب وصلاحياته.", "Server did not confirm identity and role."));
-      // Authenticated session must be issued server-side as a secure cookie.
-      window.location.assign(result.role === "admin" ? "/admin" : result.role === "business" ? "/business" : "/account");
+      // Map ONLY a verified role issued by the existing PHP/MySQL server.
+      const role = result.role === "buyer" ? "customer" : result.role === "supplier" ? "business" : result.role;
+      if (result.ok !== true || !["customer","business"].includes(role || "")) throw new Error(t("الخادم لم يؤكد الحساب وصلاحياته أو يتطلب دخول الإدارة المحمي.", "Server did not confirm an eligible account role; administrators need their protected sign-in."));
+      // Real HttpOnly session cookie and supplier approval MUST be enforced by PHP.
+      window.location.assign(role === "business" ? "/business" : "/account");
     } catch (e) { setError(e instanceof Error ? e.message : t("تعذّر إتمام التحقق.", "Verification failed.")); }
     finally { setBusy(false); }
   };
