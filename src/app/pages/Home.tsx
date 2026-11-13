@@ -40,7 +40,7 @@ export function Home() {
         {icon:FileText,to:"/request-quote/new",title:text("Private quote requests","طلبات عروض أسعار خاصة","Devis privés"),sub:text("Specify your project needs","حدد احتياجات مشروعك","Précisez votre projet")},
         {icon:Users,to:"/register/business",title:text("For professionals","للمحترفين والشركات","Pour les professionnels"),sub:text("Explore business registration","اكتشف تسجيل الشركات","Inscription professionnelle")},
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={22}/><span>{item.title}<small>{item.sub}</small></span></Link>)}</div>
-      <HeroSearchPanel />
+      <div className="idea-home-finder-scene"><HeroSearchPanel /></div>
       <FeaturedCollectionStrip />
       <SponsoredCollectionCards />
       <section className="idea-home-section">

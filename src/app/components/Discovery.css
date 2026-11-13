@@ -1,4 +1,37 @@
 :root{--idea-discovery-accent:#a44800;--idea-discovery-button-text:#17120d}[data-theme="dark"]{--idea-discovery-accent:#ff8a32}
+/* The hero finder sits on a softly veined surface, so real backdrop-blur
+   has actual tonal details to refract rather than a solid white page. */
+.idea-home-finder-scene{
+  position:relative;
+  isolation:isolate;
+  padding:24px 0 42px;
+  background:linear-gradient(118deg,#cbd0d4 0%,#ece9e7 48%,#bac3c9 100%);
+  overflow:visible;
+}
+.idea-home-finder-scene::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:url('/images/featured/marble.webp') center 55% / cover no-repeat;
+  filter:grayscale(.85) contrast(.84);
+  opacity:.24;
+}
+.idea-home-finder-scene::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(ellipse at 12% 13%,rgba(255,255,255,.6),transparent 48%),radial-gradient(ellipse at 90% 75%,rgba(115,127,137,.20),transparent 58%);
+}
+.idea-home-finder-scene > .idea-discovery-search{margin:12px auto 0;transform:none}
+[data-theme="dark"] .idea-home-finder-scene{
+  background:linear-gradient(125deg,#343b40,#1a1e22 55%,#3b3d3b);
+}
+[data-theme="dark"] .idea-home-finder-scene::before{opacity:.15;filter:grayscale(1) brightness(.7)}
+
+/* Smoky liquid glass: deliberately LOW opacity (unlike the prior 91% white).
+   Rim lighting, background refraction and internal specular reflection. */
 .idea-discovery-search{
   width:min(1280px,calc(100% - 64px));
   margin:32px auto;
@@ -7,27 +40,57 @@
   z-index:2;
   isolation:isolate;
   transform:translateY(-8px);
+  overflow:hidden;
   color:var(--idea-text);
-  background:linear-gradient(145deg,rgba(255,255,255,.91),rgba(255,255,255,.76));
-  border:1px solid rgba(253,100,1,.24);
-  border-radius:18px;
-  -webkit-backdrop-filter:blur(20px) saturate(1.2);
-  backdrop-filter:blur(20px) saturate(1.2);
-  box-shadow:0 26px 65px rgba(26,25,24,.16),0 9px 24px rgba(26,25,24,.08),inset 0 1px 0 rgba(255,255,255,.95);
+  border-radius:24px;
+  background:linear-gradient(132deg,rgba(243,245,247,.38) 0%,rgba(137,149,158,.30) 46%,rgba(240,242,244,.34) 100%);
+  border:1px solid rgba(255,255,255,.72);
+  -webkit-backdrop-filter:blur(24px) saturate(1.45) contrast(1.05);
+  backdrop-filter:blur(24px) saturate(1.45) contrast(1.05);
+  box-shadow:0 26px 56px rgba(43,50,57,.25),0 10px 19px rgba(37,42,47,.10),inset 0 2px 1px rgba(255,255,255,.85),inset 1px 0 1px rgba(255,255,255,.40),inset 0 -2px 2px rgba(76,86,96,.10);
 }
 .idea-discovery-search::before{
   content:"";
   position:absolute;
-  inset-inline:28px;
-  top:-1px;
-  height:2px;
-  background:linear-gradient(90deg,transparent,rgba(253,100,1,.84),transparent);
+  inset:0;
+  z-index:0;
   pointer-events:none;
+  background:linear-gradient(157deg,rgba(255,255,255,.44) 0%,transparent 24%,transparent 72%,rgba(255,255,255,.16) 100%);
+}
+.idea-discovery-search::after{
+  content:"";
+  position:absolute;
+  inset:2px;
+  border-radius:22px;
+  z-index:0;
+  pointer-events:none;
+  border:1px solid rgba(255,255,255,.24);
+  box-shadow:inset 0 0 20px rgba(255,255,255,.04);
+}
+.idea-discovery-search > *{position:relative;z-index:1}
+.idea-discovery-search .idea-discovery-form :is(select,input){
+  background:rgba(250,251,252,.48);
+  border-color:rgba(255,255,255,.62);
+  -webkit-backdrop-filter:blur(9px);
+  backdrop-filter:blur(9px);
+  box-shadow:inset 0 1px 2px rgba(66,75,82,.05),0 1px 0 rgba(255,255,255,.20);
 }
 [data-theme="dark"] .idea-discovery-search{
-  background:linear-gradient(145deg,rgba(43,42,41,.79),rgba(20,20,20,.76));
-  border-color:rgba(253,100,1,.27);
-  box-shadow:0 25px 65px rgba(0,0,0,.49),0 8px 22px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.09);
+  background:linear-gradient(128deg,rgba(104,113,123,.36),rgba(39,44,49,.42) 52%,rgba(105,108,109,.27));
+  border-color:rgba(235,241,245,.27);
+  box-shadow:0 26px 64px rgba(0,0,0,.57),0 7px 24px rgba(0,0,0,.24),inset 0 1px 1px rgba(255,255,255,.28),inset 0 -2px 2px rgba(0,0,0,.23);
+}
+[data-theme="dark"] .idea-discovery-search::before{
+  background:linear-gradient(145deg,rgba(255,255,255,.18),transparent 29%,transparent 78%,rgba(255,255,255,.055));
+}
+[data-theme="dark"] .idea-discovery-search::after{border-color:rgba(255,255,255,.12)}
+[data-theme="dark"] .idea-discovery-search .idea-discovery-form :is(select,input){
+  background:rgba(26,30,33,.52);
+  border-color:rgba(218,226,231,.20);
+}
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
+  .idea-discovery-search{background:rgba(220,224,228,.87)}
+  [data-theme="dark"] .idea-discovery-search{background:rgba(40,44,48,.94)}
 }
 .idea-discovery-search h2,.idea-resource h1{font-family:var(--idea-font-body);font-size:clamp(28px,3vw,40px);font-weight:400;margin:0 0 24px}
 .idea-discovery-tabs{display:flex;justify-content:center;gap:28px;margin-bottom:24px}.idea-discovery-tabs button{display:flex;align-items:center;gap:8px;padding:10px 0;border:0;border-bottom:2px solid transparent;background:none;color:var(--idea-text-muted);cursor:pointer;font:inherit;font-size:14px}.idea-discovery-tabs button[aria-selected=true]{color:var(--idea-discovery-accent);border-bottom-color:var(--idea-gold)}
