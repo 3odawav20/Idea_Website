@@ -100,7 +100,9 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     if(isBusiness)return isRegister?tr("تسجيل حساب شركة","Register a company"):tr("دخول حساب الشركة","Business sign in");
     return isRegister?tr("إنشاء حساب جديد","Create a new account"):tr("تسجيل الدخول","Sign in");
   },[audience,mode,locale]);
-  const openApi=API.startsWith("https://") || (import.meta.env.DEV&&API.startsWith("/"));
+  // Same-origin PHP endpoints work on secure production hosts as well as in development.
+  // Reject protocol-relative URLs to avoid sending credentials to another origin.
+  const openApi=API.startsWith("https://") || (API.startsWith("/") && !API.startsWith("//") && (window.location.protocol==="https:" || import.meta.env.DEV));
   const onSubmit=async(e:FormEvent<HTMLFormElement>)=>{
     e.preventDefault();setError("");setNotice("");
     if(isRegister&&password!==confirmation){setError(tr("كلمتا المرور غير متطابقتين.","Passwords do not match."));return;}
@@ -204,7 +206,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
             {!isAdmin&&<span className="idea-auth-header-icon">{isBusiness?<Building2 size={31}/>:<Home size={34}/>}</span>}
             <h2>{selectedTitle}</h2>
             {isAdmin&&<small className="idea-auth-capline">{content(msg("دخول الإدارة","ADMIN ACCESS","ACCÈS ADMIN"),locale)}</small>}
-            {isBusiness&&<small className="idea-auth-capline">COMPANY REGISTRATION (B2B)</small>}
+            {isBusiness&&<small className="idea-auth-capline">{isRegister?tr("تسجيل شركة (B2B)","Company registration (B2B)"):tr("دخول الشركة (B2B)","Business sign in (B2B)")}</small>}
             <p>{isAdmin?tr("منطقة آمنة ومخصصة لإدارة منصة IDEA","A secure area reserved for IDEA administrators")
               :isBusiness?tr("أنشئ حساب شركتك للوصول إلى الأسعار التجارية وإرسال طلبات عروض الأسعار والتعاون مع شبكة IDEA.","Register your company to access business enquiries and the IDEA partner network.")
               :isRegister?tr("سجّل الآن للاستمتاع بتجربة مخصصة لاختيار وتشطيب شقتك أو منزلك.","Create your account for a personalized home finishing experience.")
