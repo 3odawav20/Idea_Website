@@ -85,7 +85,7 @@ export function AccountSocialMethods({
     setReady(new Set());
     setPhoneReady(false);
     if (!base) return () => controller.abort();
-    const statusUrl = new URL(base.href.replace(/\/$/, "") + "/auth/providers");
+    const statusUrl = new URL(base.href.replace(/\/$/, "") + "/auth/providers/");
     void fetch(statusUrl.href, {
       method: "GET", credentials: "include", redirect: "error",
       headers: { Accept: "application/json" }, signal: controller.signal,
@@ -108,7 +108,7 @@ export function AccountSocialMethods({
       setError(t("لازم توافق على الشروط وسياسة الخصوصية أولًا.", "Please accept the terms and privacy policy first."));
       return;
     }
-    const url = new URL(base.href.replace(/\/$/, "") + "/oauth/" + provider);
+    const url = new URL(base.href.replace(/\/$/, "") + "/oauth/" + provider + "/");
     url.searchParams.set("audience", audience);
     url.searchParams.set("intent", mode);
     // Server MUST create/validate state, nonce, PKCE and account role.
@@ -126,7 +126,7 @@ export function AccountSocialMethods({
     }
     setBusy(true); setError(""); setMessage("");
     try {
-      const response = await fetch(new URL(base.href.replace(/\/$/, "") + "/auth/phone/start").href, {
+      const response = await fetch(new URL(base.href.replace(/\/$/, "") + "/auth/phone/start/").href, {
         method: "POST", credentials: "include", redirect: "error",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ phone, audience, intent: mode }),
@@ -143,7 +143,7 @@ export function AccountSocialMethods({
     if (!base || !phoneReady || busy || !/^\d{4,8}$/.test(code)) return;
     setBusy(true); setError(""); setMessage("");
     try {
-      const response = await fetch(new URL(base.href.replace(/\/$/, "") + "/auth/phone/verify").href, {
+      const response = await fetch(new URL(base.href.replace(/\/$/, "") + "/auth/phone/verify/").href, {
         method: "POST", credentials: "include", redirect: "error",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({ phone, code, audience, intent: mode }),
