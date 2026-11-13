@@ -15,21 +15,40 @@ export function RequestQuote() {
   const { api, session } = useBackend();
   const nav = useNavigate();
   const [d, setD] = useState({ governorate: "Cairo", destination: "", deliveryDate: "", projectType: "Residential", phased: false, notes: "", hours: 24 });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const rows = quote.map((q) => ({ item: q, product: products.find((p) => p.id === q.productId)! })).filter((r) => r.product);
 
-  const submit = () => {
+  const submit = async () => {
     if (!session) { nav("/login"); return; }
-    rows.forEach(({ item, product }) => {
-      api.createRequest({
-        productId: product.id, variantLabel: product.sizes[0]?.label || product.variant || "",
-        quantity: item.quantity, unit: item.unit,
-        governorate: d.governorate, destination: d.destination, deliveryDate: d.deliveryDate,
-        projectType: d.projectType, phased: d.phased, notes: d.notes,
-      }, d.hours);
-    });
-    clearQuote();
-    nav("/account/requests");
+    if (submitting || rows.length === 0) return;
+    setSubmitting(true);
+    setSubmitError("");
+    let completed = 0;
+    try {
+      for (const { item, product } of rows) {
+        await api.createRequest({
+          productId: product.id, variantLabel: product.sizes[0]?.label || product.variant || "",
+          quantity: item.quantity, unit: item.unit,
+          governorate: d.governorate, destination: d.destination, deliveryDate: d.deliveryDate,
+          projectType: d.projectType, phased: d.phased, notes: d.notes,
+        }, d.hours);
+        // Remove only rows with a confirmed server-issued request ID. If a later
+        // item fails, the remaining items stay in the quote basket for retry.
+        removeFromQuote(item.productId);
+        completed++;
+      }
+      nav("/account/requests");
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      const prefix = completed
+        ? (locale === "ar" ? "تم حفظ بعض الطلبات؛ العناصر غير المحفوظة ما زالت موجودة." : "Some requests were saved; unsent items remain in your basket.")
+        : (locale === "ar" ? "تعذر إرسال الطلب. لم يتم حذف المنتجات من طلبك." : "Request failed. Your selected products were not removed.");
+      setSubmitError(prefix + " " + reason);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -90,9 +109,10 @@ export function RequestQuote() {
                 </label>
               </div>
               <div style={{ display: "flex", gap: "var(--idea-space-3)", flexWrap: "wrap" }}>
-                <Button size="lg" onClick={submit}>{t("quote.submit")}</Button>
+                <Button size="lg" disabled={submitting} onClick={() => void submit()}>{submitting ? (locale === "ar" ? "جارٍ تأكيد الطلب…" : "Confirming request…") : t("quote.submit")}</Button>
                 <Button variant="ghost" onClick={clearQuote}>{t("filters.clear")}</Button>
               </div>
+              {submitError && <p role="alert" style={{ marginTop: 12, color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{submitError}</p>}
               {!session && <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: 10 }}>You'll be asked to sign in to submit and receive private offers.</p>}
             </div>
           </>

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams, Link } from "react-router";
 import { Inbox, Package, FileText, Heart, GitCompare, CreditCard, Home as HomeIcon } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
@@ -121,9 +121,11 @@ export function AccountRequestOffers() {
   const { locale } = useI18n();
   const nav = useNavigate();
   const req = db.requests.find((r) => r.id === requestId);
-  const offers = db.offers.filter((o) => o.requestId === requestId);
+  const offers = db.offers.filter((o) => o.requestId === requestId)
+    .sort((a, b) => (a.unitPrice * a.quantity + a.shipping) - (b.unitPrice * b.quantity + b.shipping));
   const products = useStore().products;
-  if (!req) return <EmptyState title="Request not found" />;
+  const [selectionError, setSelectionError] = useState("");
+  if (!req || req.customerId !== session?.id) return <EmptyState title="Request not found" />;
   const product = products.find((p) => p.id === req.productId);
   return (
     <>
@@ -138,7 +140,7 @@ export function AccountRequestOffers() {
           {offers.map((o) => {
             const biz = db.businesses.find((b) => b.id === o.businessId);
             const subtotal = o.unitPrice * o.quantity;
-            const total = subtotal + subtotal * o.taxRate + o.shipping;
+            // Current backend has no verified delivery/tax totals; compare only the confirmed item price.
             const selected = req.acceptedOfferId === o.id;
             return (
               <Panel key={o.id} style={{ border: selected ? "1px solid var(--idea-gold)" : undefined, opacity: o.status === "not-selected" ? 0.55 : 1 }}>
@@ -148,8 +150,8 @@ export function AccountRequestOffers() {
                     <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", marginTop: 2 }}>★ {biz?.rating.toFixed(1)} · {o.exactProduct ? "Exact product" : "Approved equivalent"} · {o.availability}</div>
                   </div>
                   <div style={{ textAlign: "end" }}>
-                    <div className="idea-display" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-xl)" }}>{total.toLocaleString()} EGP</div>
-                    <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{o.unitPrice} EGP/{o.unit} · {o.quantity} {o.unit} · +{o.shipping} shipping · {(o.taxRate * 100).toFixed(0)}% tax</div>
+                    <div className="idea-display" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-xl)" }}>{subtotal.toLocaleString()} EGP</div>
+                    <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{o.unitPrice} EGP/{o.unit} · {o.quantity} {o.unit} · {locale === "ar" ? "الإجمالي قبل الشحن والضريبة؛ التكاليف النهائية غير مؤكدة" : "Product subtotal only; shipping and tax are not confirmed"}</div>
                   </div>
                 </div>
                 <div style={{ display: "flex", gap: 16, marginTop: 10, color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", flexWrap: "wrap" }}>
@@ -157,12 +159,20 @@ export function AccountRequestOffers() {
                   <span>Expires {new Date(o.expiresAt).toLocaleDateString()}</span>
                 </div>
                 {!req.acceptedOfferId && (
-                  <Button size="sm" style={{ marginTop: 12 }} onClick={() => { const ord = api.acceptOffer(o.id); if (ord) nav("/checkout?order=" + ord.id); }}>Accept & continue to payment</Button>
+                  <Button size="sm" style={{ marginTop: 12 }} onClick={() => {
+                    try {
+                      const order = api.acceptOffer(o.id);
+                      if (order) nav("/checkout?order=" + order.id);
+                    } catch {
+                      setSelectionError("Offer acceptance is not connected to the production checkout yet. No order or payment was created.");
+                    }
+                  }}>Choose this supplier</Button>
                 )}
                 {selected && <div style={{ marginTop: 10 }}><StatusBadge text="Accepted" tone="green" /></div>}
               </Panel>
             );
           })}
+          {selectionError && <p role="alert" style={{ color: "var(--idea-danger)" }}>{selectionError}</p>}
           <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>Offers are private. Suppliers cannot see each other's offers. The lowest price is not automatically the best offer — compare delivery, terms and rating. <span style={{ display: "none" }}>{session?.id}</span></p>
         </div>
       )}
