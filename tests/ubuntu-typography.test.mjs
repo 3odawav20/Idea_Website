@@ -2,13 +2,19 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 const fonts = readFileSync("src/styles/fonts.css", "utf8");
+const stylesheet = readFileSync("src/styles/index.css", "utf8");
 const styles = readFileSync("src/styles/globals.css", "utf8");
 const header = readFileSync("src/app/components/Header.css", "utf8");
 const film = readFileSync("src/app/components/HeroBrandFilm.tsx", "utf8");
 
 test("Google Ubuntu is the requested Latin font; Arabic Cairo stays supported", () => {
-  assert.match(fonts, /fonts\.googleapis\.com\/css2\?family=(?:Audiowide&family=)?Ubuntu/);
-  assert.match(fonts, /family=Audiowide/);
+  // A remote font stylesheet must be first in the root import chain, before
+  // AstraUI and local CSS. Importing it inside fonts.css can trigger PostCSS
+  // '@import must precede other statements' after Vite flattens imports.
+  assert.match(stylesheet, /fonts\.googleapis\.com\/css2\?family=(?:Audiowide&family=)?Ubuntu/);
+  assert.match(stylesheet, /family=Audiowide/);
+  assert.ok(stylesheet.indexOf("fonts.googleapis.com") < stylesheet.indexOf("@figma/astraui"));
+  assert.doesNotMatch(fonts, /fonts\.googleapis\.com/);
   assert.match(fonts, /import '\.\/cairo\.css'/);
   assert.match(styles, /--idea-font-display: 'Ubuntu'/);
   assert.match(styles, /--idea-font-body: 'Ubuntu'/);
