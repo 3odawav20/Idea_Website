@@ -15,7 +15,11 @@ test("customer and supplier pages share actual server-checked methods; admin has
 
 test("Google, Facebook and phone OTP are explicit, fail-closed until PHP backend verifies readiness",()=>{
   assert.match(social,/id: "google"/);
+  assert.match(social,/id: "apple"/);
   assert.match(social,/id: "facebook"/);
+  assert.match(social,/PROVIDERS\.slice\(0,3\)\.map\(renderProvider\)/);
+  assert.match(social,/PROVIDERS\.slice\(3\)\.map\(renderProvider\)/);
+  assert.match(social,/will not work until official provider setup/);
   assert.match(social,/phoneReady/);
   assert.match(social,/setReady\(new Set\(\)\)/);
   assert.match(social,/setPhoneReady\(false\)/);
