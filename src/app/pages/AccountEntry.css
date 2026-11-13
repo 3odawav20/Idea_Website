@@ -355,17 +355,8 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 }
 
 
-/* Keep legacy approved admin artboard alone. Business registration uses the
-   supplied DAY/NIGHT photography plus real translated HTML copy in all locales. */
-@media (min-width:801px) {
-  html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual {
-    background:#10100f url('/images/auth/admin-reference.jpg') top center / 100% 100% no-repeat;
-  }
-  html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual :is(
-    .idea-auth-photo,.idea-auth-copy,.idea-auth-feature-list,.idea-auth-business-types
-  ) { display:none; }
-  html[lang="ar"] .idea-auth-scene--admin .idea-auth-visual::before { display:none; }
-}
+/* Admin visual is now clean, text-free office photography in all locales.
+   Never render the previous screenshot artboard: it contained baked-in copy. */
 
 /* Customer image alignment: keep both people proportionate across iPhone,
    tablet and desktop without distorting the photo or covering the CTAs. */
@@ -1113,4 +1104,73 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 }
 .idea-auth-scene.idea-auth-scene--light .idea-auth-panel {
   background:linear-gradient(130deg,rgba(255,255,255,.18),rgba(30,34,38,.26) 38%,rgba(30,30,33,.28));
+}
+
+/* ADMIN OFFICE DAY/NIGHT — authentic owner-provided photo, never a screenshot.
+   Keep the entire 2048 × 1152 (16:9) composition visible without any zoom.
+   The real form is still interactive and independently localized. */
+.idea-auth-scene--admin {
+  --idea-admin-photo:url('/images/auth/admin-night-20261113.webp');
+  --idea-glass-photo:var(--idea-admin-photo);
+}
+.idea-auth-scene--admin.idea-auth-scene--light {
+  --idea-admin-photo:url('/images/auth/admin-day-20261113.webp');
+  --idea-glass-photo:var(--idea-admin-photo);
+}
+.idea-auth-scene--admin .idea-auth-visual{
+  isolation:isolate;
+  background:#191510;
+}
+.idea-auth-scene--admin.idea-auth-scene--light .idea-auth-visual{
+  background:#bcb5a8;
+}
+/* Blurred continuation of the SAME original photo fills aspect-ratio gaps. */
+.idea-auth-scene--admin .idea-auth-visual::before{
+  content:"";
+  position:absolute;
+  inset:-34px;
+  z-index:0;
+  pointer-events:none;
+  background:var(--idea-admin-photo) center/cover no-repeat;
+  opacity:.72;
+  filter:blur(25px) brightness(.82) saturate(.97);
+}
+.idea-auth-scene--admin.idea-auth-scene--light .idea-auth-visual::before{
+  opacity:.81;
+  filter:blur(25px) brightness(1.03) saturate(.96);
+}
+.idea-auth-scene--admin .idea-auth-photo{
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background-color:transparent;
+  background-image:var(--idea-admin-photo);
+  background-position:center top;
+  background-size:contain;
+  background-repeat:no-repeat;
+  opacity:1;
+  transform:none;
+  filter:none;
+}
+.idea-auth-scene--admin .idea-auth-visual::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:linear-gradient(0deg,rgba(7,8,11,.47),transparent 23%),linear-gradient(90deg,rgba(0,0,0,.07),transparent 50%);
+}
+.idea-auth-scene--admin.idea-auth-scene--light .idea-auth-visual::after{
+  background:linear-gradient(0deg,rgba(17,22,29,.36),transparent 26%);
+}
+/* Do not overlay live English/Arabic title on the office photo;
+   the accessible, translated Admin access title remains in the form. */
+.idea-auth-scene--admin .idea-auth-copy{display:none}
+.idea-auth-scene--admin .idea-auth-feature-list{z-index:3}
+@media(max-width:800px){
+  .idea-auth-scene--admin .idea-auth-photo{
+    background-position:center top!important;
+    background-size:contain;
+    opacity:1;
+  }
 }
