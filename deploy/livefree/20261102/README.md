@@ -9,3 +9,11 @@ Verified from the public website UI using a real uploaded bathroom image: jobs `
 Operational limitation: synchronous requests have exhibited an InMotion 504 gateway timeout in another test. Asynchronous provider submission/status polling is still required for robust long-running work. The existing manual polygon compositor re-encodes JPEG; it does not provide pixel-exact preservation. Automatic segmentation and strict lossless composition are not implemented by this change.
 
 Verified server rollback copy, outside the web root: `/home/lsenet5/idea-deploy-backups/idea-accounts-platform-ai.php.before-20261102`. It contains the prior runtime, with its original quotas and Qwen endpoint. Restore only this file to roll back the model adapter; do not overwrite private configuration or databases.
+
+
+**Retired for new IDEA deploys (2026-11-03):** The PHP file in this historical
+directory is now an inert 503 stub. The historical field-test observations
+above remain retained for audit. Do not use this old adapter for `idea-dh.com`.
+The reviewed Qwen/Runpod-only **MySQL candidate** lives at
+`server/cpanel/idea-accounts-api/platform-ai.php` and requires separate
+live worker, database, and user-account verification before release.
