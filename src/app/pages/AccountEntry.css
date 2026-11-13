@@ -637,7 +637,9 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 .idea-auth-scene--business.idea-auth-scene--register .idea-auth-visual{
   display:grid;
   grid-template-columns:minmax(0,1fr);
-  grid-template-rows:auto minmax(172px,1fr) minmax(138px,.70fr);
+  /* Fill the full column with the approved factory photograph; never let the
+     shorter natural image ratio leave a dead empty area under the category row. */
+  grid-template-rows:minmax(400px,1fr) auto auto;
   align-content:stretch;
   min-height:calc(100svh - 52px);
 }
@@ -648,11 +650,12 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   grid-row:1;
   display:block;
   width:100%;
-  height:auto;
-  aspect-ratio:1672 / 941;
+  height:100%;
+  min-height:400px;
+  aspect-ratio:auto;
   background-image:var(--idea-business-photo);
-  background-size:contain;
-  background-position:center;
+  background-size:cover;
+  background-position:34% center;
   background-repeat:no-repeat;
   transform:none;
   filter:none;
@@ -967,8 +970,8 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 @media (min-width:801px) {
   .idea-auth-scene--business.idea-auth-scene--register .idea-auth-visual {
     min-height:0;
-    grid-template-rows:auto auto auto;
-    align-content:start;
+    grid-template-rows:minmax(400px,1fr) auto auto;
+    align-content:stretch;
   }
   .idea-auth-scene--business.idea-auth-scene--register .idea-auth-feature-list {
     min-height:112px;
@@ -1001,7 +1004,7 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
     padding:clamp(12px,1.25vw,20px);
   }
   .idea-auth-scene--business.idea-auth-scene--register .idea-auth-panel {
-    max-width:460px;
+    max-width:440px;
     min-height:0;
     height:auto;
     display:block;
@@ -1048,3 +1051,36 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   outline-offset:2px;
 }
 .idea-auth-extra-methods[open] > .idea-auth-social-grid {margin-top:9px;}
+
+/* The company identity provider area stays operable in the disclosure but
+   is not allowed to add four tall rows to the essential business fields. */
+.idea-business-social-disclosure{
+  max-width:100%;
+  margin-top:12px;
+  color:var(--idea-auth-foreground);
+  font-size:12px;
+}
+.idea-business-social-disclosure > summary{
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.25);
+  border-radius:9px;
+  text-align:center;
+  padding:11px 14px;
+  background:rgba(22,29,36,.28);
+  -webkit-backdrop-filter:blur(8px);
+  backdrop-filter:blur(8px);
+}
+.idea-business-social-disclosure > summary:focus-visible{
+  outline:2px solid var(--idea-auth-orange);
+  outline-offset:2px;
+}
+.idea-business-social-disclosure[open] > .idea-auth-social{margin-top:12px}
+@media(max-width:800px){
+  .idea-auth-scene--business.idea-auth-scene--register .idea-auth-photo{
+    height:auto;
+    min-height:0;
+    aspect-ratio:1672 / 941;
+    background-size:contain;
+    background-position:center!important;
+  }
+}
