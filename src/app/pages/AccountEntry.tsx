@@ -10,6 +10,7 @@ import {
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import "./AccountEntry.css";
+import { AccountSocialMethods } from "../components/AccountSocialMethods";
 
 type Audience = "customer" | "business" | "admin";
 type Mode = "register" | "login";
@@ -44,7 +45,6 @@ const ADMIN_FEATURES = [
 ];
 
 const API = String(import.meta.env.VITE_IDEA_ACCOUNT_API || "").trim();
-const socialProviders = new Set(String(import.meta.env.VITE_IDEA_AUTH_PROVIDERS || "").split(",").map(v=>v.trim().toLowerCase()).filter(Boolean));
 
 function FeatureItems({ audience,locale }: {audience:Audience;locale:"ar"|"en"|"fr"}) {
   const features=audience==="customer"?CUSTOMER_FEATURES:audience==="business"?BUSINESS_FEATURES:ADMIN_FEATURES;
@@ -156,14 +156,6 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     const valid=list.every(f=>f.size<=10*1024*1024&&/^(application\/pdf|image\/jpeg|image\/png)$/i.test(f.type));
     if(!valid){setError(tr("PDF أو JPG أو PNG فقط، وبحد أقصى 10 ميجابايت لكل ملف.","PDF, JPG or PNG only; 10 MB maximum per file."));return;}
     setError("");setDocs(list.slice(0,5));
-  };
-  const showSocial=(provider:"google"|"apple")=>{
-    if(!socialProviders.has(provider)){setError(tr("تسجيل الدخول عبر "+(provider==="google"?"Google":"Apple")+" لم يُربط بمزوّد هوية معتمد بعد.","Real "+(provider==="google"?"Google":"Apple")+" sign-in is not configured yet."));return;}
-    if(!openApi){setError(tr("يلزم اتصال PHP/MySQL أولًا لتفعيل طريقة الدخول.","Account backend configuration is required."));return;}
-    const url=API.replace(/\/$/,"")+"/oauth/"+provider;
-    const validUrl=new URL(url,window.location.origin);
-    if(validUrl.protocol!=="https:"){setError(tr("رابط تسجيل الدخول غير آمن.","Insecure authentication endpoint."));return;}
-    window.location.assign(validUrl.href);
   };
   const goto=isAdmin?"/admin/login":isBusiness?"/register/business":"/register/customer";
   const heroHeading = isAdmin
@@ -290,11 +282,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
               {isRegister?tr("لديك حساب بالفعل؟","Already have an account?"):tr("ليس لديك حساب؟","Need an account?")}
               {" "}<Link to={isRegister?isBusiness?"/business/login":"/login":goto}>{isRegister?tr("تسجيل الدخول","Sign in"):tr("إنشاء حساب جديد","Create an account")}</Link>
             </p>}
-            {isCustomer&&<div className="idea-auth-social">
-              <p>{tr("أو سجّل عبر","Or continue with")}</p>
-              <div><button type="button" onClick={()=>showSocial("apple")} aria-label="Apple"><span className="idea-apple-mark">●</span> Apple</button>
-                <button type="button" onClick={()=>showSocial("google")} aria-label="Google"><strong className="idea-google-mark">G</strong> Google</button></div>
-            </div>}
+            {!isAdmin && <AccountSocialMethods audience={audience} mode={mode} api={API} consent={consent} locale={locale} />}
           </div>
         </form>
       </div>
