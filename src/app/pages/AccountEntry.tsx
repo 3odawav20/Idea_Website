@@ -203,7 +203,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
             {isAdmin&&<ShieldCheck className="idea-auth-admin-symbol" size={55} strokeWidth={1.3}/>}
             {!isAdmin&&<span className="idea-auth-header-icon">{isBusiness?<Building2 size={31}/>:<Home size={34}/>}</span>}
             <h2>{selectedTitle}</h2>
-            {isAdmin&&<small className="idea-auth-capline">ADMIN ACCESS</small>}
+            {isAdmin&&<small className="idea-auth-capline">{content(msg("دخول الإدارة","ADMIN ACCESS","ACCÈS ADMIN"),locale)}</small>}
             {isBusiness&&<small className="idea-auth-capline">COMPANY REGISTRATION (B2B)</small>}
             <p>{isAdmin?tr("منطقة آمنة ومخصصة لإدارة منصة IDEA","A secure area reserved for IDEA administrators")
               :isBusiness?tr("أنشئ حساب شركتك للوصول إلى الأسعار التجارية وإرسال طلبات عروض الأسعار والتعاون مع شبكة IDEA.","Register your company to access business enquiries and the IDEA partner network.")
