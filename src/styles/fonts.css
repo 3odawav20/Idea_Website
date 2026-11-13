@@ -1,3 +1,2 @@
 /* Ubuntu for Latin text; Cairo remains the fully supported Arabic fallback. */
-@import url('https://fonts.googleapis.com/css2?family=Audiowide&family=Ubuntu:wght@300;400;500;700&display=swap');
 @import './cairo.css';
