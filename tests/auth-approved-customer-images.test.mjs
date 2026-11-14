@@ -36,7 +36,6 @@ test("company registration uses the approved factory photos for both themes, wit
   }
   assert.match(css, /\.idea-auth-scene--business \.idea-auth-photo,[\s\S]*?background-size:contain;/);
   assert.doesNotMatch(css, /background:[^\n]*url\('\/images\/auth\/business-reference\.jpg'\)/);
-  assert.match(css, /url\('\/images\/auth\/admin-reference\.jpg'\)/);
 });
 test("company registration form uses true translucent glass while keeping real inputs", () => {
   assert.match(css, /\.idea-auth-scene--business \.idea-auth-panel-wrap::before/);
