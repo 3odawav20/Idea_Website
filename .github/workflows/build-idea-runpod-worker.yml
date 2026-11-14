@@ -33,7 +33,7 @@ jobs:
           context: ./runpod/idea-mask-worker
           push: true
           platforms: linux/amd64
-          tags: ghcr.io/3odawav20/idea-dh-qwen-mask:20261115
+          tags: ghcr.io/3odawav20/idea-dh-qwen-mask:20261115-v2
           labels: |
             org.opencontainers.image.source=https://github.com/3odawav20/Idea_Website
             org.opencontainers.image.description=IDEA Qwen tile mask worker candidate
