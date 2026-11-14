@@ -5,5 +5,6 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 \
     HF_HUB_DISABLE_TELEMETRY=1
 COPY requirements.txt .
 RUN python -m pip install --no-cache-dir -r requirements.txt
+RUN python -c "from transformers import AutoImageProcessor, UperNetForSemanticSegmentation; from diffusers import QwenImageEditPlusPipeline; print('WORKER_IMPORTS_OK')"
 COPY handler.py .
 CMD ["python", "-u", "handler.py"]
