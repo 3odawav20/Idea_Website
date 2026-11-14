@@ -149,7 +149,8 @@ def process(payload):
     try:
         editor = load_image_editor()
     except Exception as exc:
-        raise ContractError('QWEN_MODEL_LOAD_FAILED_' + type(exc).__name__) from None
+        detail = re.sub(r'[^A-Za-z0-9_ .:/()-]', '_', str(exc).splitlines()[0])[:170]
+        raise ContractError('QWEN_MODEL_LOAD_FAILED_' + type(exc).__name__ + '_' + detail) from None
     import torch
 
     normalized_room = scale_input(room)
