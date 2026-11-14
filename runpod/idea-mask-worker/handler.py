@@ -142,22 +142,31 @@ def process(payload):
 
     # Segment the original photograph BEFORE editing. Segmentation must never
     # be inferred from the generated image because it could reclassify objects.
-    mask = infer_mask(room, target)
-    editor = load_image_editor()
+    try:
+        mask = infer_mask(room, target)
+    except Exception as exc:
+        raise ContractError('SEGMENTATION_FAILED_' + type(exc).__name__) from None
+    try:
+        editor = load_image_editor()
+    except Exception as exc:
+        raise ContractError('QWEN_MODEL_LOAD_FAILED_' + type(exc).__name__) from None
     import torch
 
     normalized_room = scale_input(room)
     normalized_material = scale_input(material)
-    with torch.inference_mode():
-        result = editor(
-            image=[normalized_room, normalized_material],
-            prompt=prompt,
-            negative_prompt=" ",
-            true_cfg_scale=4.0,
-            guidance_scale=1.0,
-            num_inference_steps=28,
-            num_images_per_prompt=1,
-        ).images[0].convert("RGB")
+    try:
+        with torch.inference_mode():
+            result = editor(
+                image=[normalized_room, normalized_material],
+                prompt=prompt,
+                negative_prompt=" ",
+                true_cfg_scale=4.0,
+                guidance_scale=1.0,
+                num_inference_steps=28,
+                num_images_per_prompt=1,
+            ).images[0].convert("RGB")
+    except Exception as exc:
+        raise ContractError('QWEN_INFERENCE_FAILED_' + type(exc).__name__) from None
     if result.size != room.size:
         result = result.resize(room.size, Image.Resampling.LANCZOS)
 
@@ -182,9 +191,9 @@ def handler(job):
             return process(payload)
         except ContractError as exc:
             return {"error": str(exc), "contract": CONTRACT}
-        except Exception:
-            # Don't return tracebacks, URLs or secrets to the client.
-            return {"error": "WORKER_INFERENCE_FAILED", "contract": CONTRACT}
+        except Exception as exc:
+            # Only sanitized failure type; never expose provider tracebacks or secrets.
+            return {"error": "WORKER_INFERENCE_FAILED_" + type(exc).__name__, "contract": CONTRACT}
 
 
 if __name__ == "__main__":
