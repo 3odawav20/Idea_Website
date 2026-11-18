@@ -1,122 +1,95 @@
-import { useState } from "react";
-import { useNavigate } from "react-router";
-import {
-  auth,
-  googleProvider,
-  facebookProvider,
-  appleProvider,
-  signInWithPopup,
-} from "../../lib/firebase";
-import { useBackend } from "../backend/db";
-import { resolvePostAuthRoute } from "../backend/authValidation";
+import { useEffect, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import {
-  AppleBrandIcon,
-  FacebookBrandIcon,
-  GoogleBrandIcon,
-  WhatsAppBrandIcon,
+  SOCIAL_AUTH_API,
+  socialProviderStatus,
+  type PhpSocialProvider,
+  type PhpSocialProviderStatus,
+} from "../backend/phpAccounts";
+import {
+  AppleBrandIcon, FacebookBrandIcon, GoogleBrandIcon, WhatsAppBrandIcon,
 } from "./SocialAuthIcons";
 
-export function SocialAuth({ redirectTo = "/account" }: { redirectTo?: string }) {
-  const { locale } = useI18n();
-  const { refresh } = useBackend();
-  const nav = useNavigate();
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const tr = (ar: string, en: string, fr = en) =>
-    locale === "ar" ? ar : locale === "fr" ? fr : en;
+const PROVIDERS: { id: PhpSocialProvider; label: string }[] = [
+  { id: "google", label: "Google" },
+  { id: "facebook", label: "Facebook" },
+  { id: "apple", label: "Apple" },
+  { id: "x", label: "X" },
+  { id: "microsoft", label: "Microsoft" },
+  { id: "whatsapp", label: "WhatsApp" },
+];
 
-  const runPopup = async (providerKey: "google" | "apple" | "facebook") => {
-    if (busy) return;
-    setBusy(true);
-    setError("");
-    try {
-      const provider =
-        providerKey === "google"
-          ? googleProvider
-          : providerKey === "apple"
-            ? appleProvider
-            : facebookProvider;
-      await signInWithPopup(auth, provider);
-      const user = await refresh({ authMethod: providerKey });
-      nav(user ? resolvePostAuthRoute(user.role) : redirectTo);
-    } catch (e: unknown) {
-      const code = typeof e === "object" && e && "code" in e ? String((e as { code: string }).code) : "";
-      if (code === "auth/operation-not-allowed") {
-        setError(
-          tr(
-            `مزوّد ${providerKey} غير مفعّل بعد في Firebase Authentication لهذا المشروع.`,
-            `${providerKey} sign-in is not yet enabled in Firebase Authentication for this project.`
-          )
-        );
-      } else if (code !== "auth/popup-closed-by-user") {
-        setError(e instanceof Error ? e.message : tr("تعذّر تسجيل الدخول.", "Sign-in failed."));
-      }
-    } finally {
-      setBusy(false);
+// Authentication stays on the production PHP/MySQL identity system.
+// OAuth buttons are disabled unless /api/social-auth.php confirms readiness.
+// WhatsApp requires a verified OTP flow; never redirect it to an unrelated login.
+export function SocialAuth(_props: { redirectTo?: string }) {
+  const { locale } = useI18n();
+  const tr = (ar: string, en: string) => locale === "ar" ? ar : en;
+  const [providerReady, setProviderReady] = useState<PhpSocialProviderStatus | null>(null);
+  const [pending, setPending] = useState<PhpSocialProvider | null>(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    let active = true;
+    socialProviderStatus()
+      .then(flags => { if (active) setProviderReady(flags); })
+      .catch(() => { if (active) setProviderReady(null); });
+    return () => { active = false; };
+  }, []);
+
+  const start = (provider: PhpSocialProvider) => {
+    if (pending) return;
+    // WhatsApp needs an actual verification send/check screen, not an OAuth URL.
+    if (provider === "whatsapp" || providerReady?.[provider] !== true) {
+      setError(tr("وسيلة الدخول دي لسه مش مفعّلة على السيرفر.", "This sign-in method is not configured on the server."));
+      return;
     }
+    setError("");
+    setPending(provider);
+    window.location.assign(SOCIAL_AUTH_API + "?action=start&provider=" + encodeURIComponent(provider));
   };
 
   return (
     <section aria-label="Social sign-in" style={{ marginTop: 18, display: "grid", gap: 10 }}>
       <div style={{ fontSize: 12, color: "var(--idea-text-muted)", textAlign: "center" }}>
-        {tr("أو تابع بسرعة باستخدام", "Or continue with")}
+        {tr("أو تابع بحسابك", "Or continue with")}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void runPopup("google")}
-          style={btnStyle}
-        >
-          <GoogleBrandIcon /> <span>Google</span>
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void runPopup("apple")}
-          style={btnStyle}
-        >
-          <AppleBrandIcon /> <span>Apple</span>
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => void runPopup("facebook")}
-          style={btnStyle}
-        >
-          <FacebookBrandIcon /> <span>Facebook</span>
-        </button>
-        <button
-          type="button"
-          disabled={busy}
-          onClick={() => nav("/login?channel=whatsapp")}
-          style={btnStyle}
-        >
-          <WhatsAppBrandIcon /> <span>{tr("واتساب / هاتف", "WhatsApp")}</span>
-        </button>
+        {PROVIDERS.map(item => {
+          const enabled = item.id !== "whatsapp" && providerReady?.[item.id] === true;
+          return (
+            <button key={item.id} type="button"
+              disabled={!enabled || pending !== null}
+              aria-label={item.label}
+              aria-disabled={!enabled}
+              title={!enabled ? tr("غير مفعّل حاليًا", "Not configured yet") : item.label}
+              onClick={() => start(item.id)}
+              style={{ ...btnStyle, opacity: enabled ? 1 : 0.5, cursor: enabled ? "pointer" : "not-allowed" }}
+            >
+              {item.id === "google" ? <GoogleBrandIcon /> :
+                item.id === "facebook" ? <FacebookBrandIcon /> :
+                item.id === "apple" ? <AppleBrandIcon /> :
+                item.id === "whatsapp" ? <WhatsAppBrandIcon /> :
+                <span aria-hidden="true">{item.id === "x" ? "𝕏" : "M"}</span>}
+              <span>{item.label}</span>
+            </button>
+          );
+        })}
       </div>
-      {error && (
-        <p role="alert" style={{ color: "var(--idea-danger)", fontSize: 12 }}>
-          {error}
+      {!providerReady && (
+        <p style={{ fontSize: 12, textAlign: "center", color: "var(--idea-text-muted)" }}>
+          {tr("تسجيل الدخول بالبريد الإلكتروني متاح من النموذج الأساسي.", "Use the standard email sign-in form while providers are unavailable.")}
         </p>
       )}
+      {error && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: 12 }}>{error}</p>}
     </section>
   );
 }
 
-const btnStyle: React.CSSProperties = {
-  display: "inline-flex",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: 8,
-  minHeight: 44,
-  border: "var(--idea-hairline)",
-  borderRadius: 8,
-  padding: "8px 10px",
-  cursor: "pointer",
-  background: "var(--idea-surface-2)",
-  color: "var(--idea-text)",
-  fontWeight: 600,
-  fontSize: 13,
-};
+const btnStyle = {
+  display: "inline-flex", alignItems: "center", justifyContent: "center",
+  gap: 8, minHeight: 44, border: "var(--idea-hairline)",
+  borderRadius: 8, padding: "8px 10px",
+  background: "var(--idea-surface-2)", color: "var(--idea-text)",
+  fontWeight: 600, fontSize: 13,
+} as const;
