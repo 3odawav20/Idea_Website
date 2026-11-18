@@ -1,0 +1,44 @@
+name: ask IDEA pull request QA
+on:
+  pull_request:
+    paths:
+      - 'src/app/components/AskIdea*'
+      - 'src/app/components/Layout.tsx'
+      - 'server/cpanel/api/ask-idea.php'
+      - 'scripts/build-cpanel.mjs'
+      - 'tests/ask-idea.test.mjs'
+      - '.github/workflows/ask-idea-qa.yml'
+  push:
+    branches:
+      - 'feat/ask-idea-grounded-assistant-20261118'
+permissions:
+  contents: read
+jobs:
+  assistant-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - name: Install pinned project dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Run assistant security and UI contract checks
+        run: node --test tests/ask-idea.test.mjs
+      - name: PHP syntax
+        run: php -l server/cpanel/api/ask-idea.php
+      - name: Production TypeScript/Vite bundle
+        run: npm run build
+      - name: Build and inspect cPanel package
+        run: |
+          npm run build:cpanel
+          test -s dist/index.html
+          test -s dist/api/ask-idea.php
+          test -s dist/data/idea-catalogue.json
+          test -s dist/api/visualize.php
+          php -l dist/api/ask-idea.php
