@@ -132,7 +132,7 @@ export function HeroBrandFilm() {
   return (
     <section ref={heroRef} className="idea-editorial-hero idea-film-ready" aria-label={ariaLabel}>
       <div className={"idea-film-shell" + (playing && activeSlide === 0 ? " idea-film-is-playing" : "")} data-idea-brand-film={mode} data-active-slide={activeSlide}>
-        {sources.poster && activeSlide === 0 && <img className="idea-film-poster" src={sources.poster} alt="" fetchPriority="high" decoding="async" />}
+        {sources.poster && activeSlide === 0 && <img className="idea-film-poster" src={sources.poster} alt="" loading="eager" decoding="async" />}
         {sources.images.map((src, index) => <img key={src} className={`idea-film-still${activeSlide === index + 1 ? " is-active" : ""}`} src={src} alt="" decoding="async" aria-hidden="true" />)}
         <video
           key={mode}

@@ -1,93 +1,506 @@
-import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { backendConfigurationError, requireSupabase } from "./supabaseClient";
-import { getPhpSession, signOutPhp } from "./phpAccounts";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { auth, firebaseSignOut, onAuthStateChanged } from "../../lib/firebase";
+import { apiFetch } from "./apiClient";
 
 export type Role = "customer" | "business" | "designer" | "contractor" | "admin";
 export type Unit = "sqm" | "pieces";
-export interface User { id: string; name: string; email?: string; phone?: string; role: Role; provider: string; createdAt: number; }
+export interface User {
+  id: string;
+  name: string;
+  email?: string;
+  phone?: string;
+  role: Role;
+  provider: string;
+  authMethod?: string;
+  createdAt: number;
+}
 export type BusinessStatus = "Draft" | "Submitted" | "Under Review" | "More Information Required" | "Verified" | "Rejected" | "Suspended";
-export interface Business { id: string; ownerId: string; legalName: string; publicName: string; representative: string; email: string; phone: string; governorate: string; serviceAreas: string[]; companyType: string; crNumber: string; taxNumber: string; brands: string[]; categories: string[]; productIds: string[]; deliveryCapacityM2: number; minOrderM2: number; status: BusinessStatus; rating: number; createdAt: number; }
+export interface Business {
+  id: string;
+  ownerId: string;
+  legalName: string;
+  publicName: string;
+  representative: string;
+  email: string;
+  phone: string;
+  governorate: string;
+  serviceAreas: string[];
+  companyType: string;
+  crNumber: string;
+  taxNumber: string;
+  brands: string[];
+  categories: string[];
+  productIds: string[];
+  deliveryCapacityM2: number;
+  minOrderM2: number;
+  status: BusinessStatus;
+  rating: number;
+  createdAt: number;
+}
 export type RequestStatus = "Request Submitted" | "Matching Suppliers" | "Awaiting Offers" | "Offers Received" | "Offer Selected" | "Deadline Reached" | "No Offers Received" | "Admin Assistance Required";
-export interface QuoteRequest { id: string; customerId: string; productId: string; variantLabel: string; quantity: number; unit: Unit; governorate: string; destination: string; deliveryDate: string; projectType: string; phased: boolean; notes: string; status: RequestStatus; createdAt: number; deadlineAt: number; matchedBusinessIds: string[]; acceptedOfferId?: string; requestItemId?: string; }
-export interface Offer { id: string; requestId: string; businessId: string; exactProduct: boolean; quantity: number; unit: Unit; unitPrice: number; shipping: number; taxRate: number; availability: string; prepDays: number; deliveryDays: number; paymentTerms: string; notes: string; expiresAt: number; status: "submitted" | "accepted" | "not-selected" | "expired"; createdAt: number; }
-export interface Order { id: string; requestId: string; offerId: string; customerId: string; businessId: string; total: number; status: "Pending Payment" | "Paid" | "Preparing" | "Shipped" | "Delivered" | "Cancelled"; paymentStatus: "None" | "Sandbox Authorized" | "Sandbox Failed"; createdAt: number; }
-export interface Message { id: string; to: string; scope: "customer" | "business" | "admin"; kind: string; title: string; body: string; requestId?: string; orderId?: string; read: boolean; createdAt: number; }
-export interface Plan { id: string; audience: "customer" | "business"; name: string; monthly: number; annual: number; trialDays: number; features: string[]; activeRequests: number; offerLimit: number; hdRenders: number; teamMembers: number; featuredEligible: boolean; }
-export interface Subscription { userId: string; planId: string; interval: "monthly" | "annual"; status: "active" | "cancelled" | "payment-failed"; startedAt: number; renewsAt: number; }
+export interface QuoteRequest {
+  id: string;
+  customerId: string;
+  productId: string;
+  variantLabel: string;
+  quantity: number;
+  unit: Unit;
+  governorate: string;
+  destination: string;
+  deliveryDate: string;
+  projectType: string;
+  phased: boolean;
+  notes: string;
+  status: RequestStatus;
+  createdAt: number;
+  deadlineAt: number;
+  matchedBusinessIds: string[];
+  acceptedOfferId?: string;
+  requestItemId?: string;
+}
+export interface Offer {
+  id: string;
+  requestId: string;
+  businessId: string;
+  exactProduct: boolean;
+  quantity: number;
+  unit: Unit;
+  unitPrice: number;
+  shipping: number;
+  taxRate: number;
+  availability: string;
+  prepDays: number;
+  deliveryDays: number;
+  paymentTerms: string;
+  notes: string;
+  expiresAt: number;
+  status: "submitted" | "accepted" | "not-selected" | "expired";
+  createdAt: number;
+}
+export interface Order {
+  id: string;
+  requestId: string;
+  offerId: string;
+  customerId: string;
+  businessId: string;
+  total: number;
+  status: "Pending Payment" | "Paid" | "Preparing" | "Shipped" | "Delivered" | "Cancelled";
+  paymentStatus: "None" | "Sandbox Authorized" | "Sandbox Failed";
+  createdAt: number;
+}
+export interface Message {
+  id: string;
+  to: string;
+  scope: "customer" | "business" | "admin";
+  kind: string;
+  title: string;
+  body: string;
+  requestId?: string;
+  orderId?: string;
+  read: boolean;
+  createdAt: number;
+}
+export interface Plan {
+  id: string;
+  audience: "customer" | "business";
+  name: string;
+  monthly: number;
+  annual: number;
+  trialDays: number;
+  features: string[];
+  activeRequests: number;
+  offerLimit: number;
+  hdRenders: number;
+  teamMembers: number;
+  featuredEligible: boolean;
+}
+export interface Subscription {
+  userId: string;
+  planId: string;
+  interval: "monthly" | "annual";
+  status: "active" | "cancelled" | "payment-failed";
+  startedAt: number;
+  renewsAt: number;
+}
 export type PaymentMethodKey = "card" | "fawry" | "wallet" | "applepay" | "bank";
-export interface PaymentMethodConfig { key: PaymentMethodKey; provider: string; enabled: boolean; mode: "sandbox" | "production"; merchantConfigured: boolean; webhookOk: boolean; lastTest: string | null; lastFailure: string | null; currency: "EGP"; }
-export interface RoomProject { id: string; userId: string; name: string; createdAt: number; photo: string | null; dims: { length: number; width: number; height: number; unit: "m" | "cm" | "mm" }; surfaces: { id: string; label: string; productId: string | null; estM2: number }[]; }
-export interface AuditEntry { id: string; at: number; actor: string; action: string; detail: string; }
-interface DB { users: User[]; businesses: Business[]; requests: QuoteRequest[]; offers: Offer[]; orders: Order[]; messages: Message[]; plans: Plan[]; subscriptions: Subscription[]; payments: PaymentMethodConfig[]; roomProjects: RoomProject[]; audit: AuditEntry[]; sessionUserId: string | null; }
-const emptyDb = (): DB => ({ users: [], businesses: [], requests: [], offers: [], orders: [], messages: [], plans: [], subscriptions: [], payments: [], roomProjects: [], audit: [], sessionUserId: null });
-interface BackendCtx { db: DB; session: User | null; api: Api; refreshPhpSession: () => Promise<void>; }
+export interface PaymentMethodConfig {
+  key: PaymentMethodKey;
+  provider: string;
+  enabled: boolean;
+  mode: "sandbox" | "production";
+  merchantConfigured: boolean;
+  webhookOk: boolean;
+  lastTest: string | null;
+  lastFailure: string | null;
+  currency: "EGP";
+}
+export interface RoomProject {
+  id: string;
+  userId: string;
+  name: string;
+  createdAt: number;
+  photo: string | null;
+  dims: { length: number; width: number; height: number; unit: "m" | "cm" | "mm" };
+  surfaces: { id: string; label: string; productId: string | null; estM2: number }[];
+}
+export interface AuditEntry {
+  id: string;
+  at: number;
+  actor: string;
+  action: string;
+  detail: string;
+}
+interface DB {
+  users: User[];
+  businesses: Business[];
+  requests: QuoteRequest[];
+  offers: Offer[];
+  orders: Order[];
+  messages: Message[];
+  plans: Plan[];
+  subscriptions: Subscription[];
+  payments: PaymentMethodConfig[];
+  roomProjects: RoomProject[];
+  audit: AuditEntry[];
+  sessionUserId: string | null;
+}
+
+const emptyDb = (): DB => ({
+  users: [],
+  businesses: [],
+  requests: [],
+  offers: [],
+  orders: [],
+  messages: [],
+  plans: [],
+  subscriptions: [],
+  payments: [],
+  roomProjects: [],
+  audit: [],
+  sessionUserId: null,
+});
+
+interface SessionResponse {
+  user: User;
+  businesses: Business[];
+  requests: QuoteRequest[];
+  offers: Offer[];
+  orders: Order[];
+  messages: Message[];
+  plans: Plan[];
+  subscriptions: Subscription[];
+  payments: PaymentMethodConfig[];
+  roomProjects: RoomProject[];
+  audit: AuditEntry[];
+  favorites: string[];
+}
+
+interface BackendCtx {
+  db: DB;
+  session: User | null;
+  loading: boolean;
+  refresh: (opts?: { name?: string; phone?: string; authMethod?: string; requestedRole?: string }) => Promise<User | null>;
+  api: Api;
+}
+
 const Ctx = createContext<BackendCtx | null>(null);
+
 export interface Api {
   signIn: (provider: string, role: Role, info?: { name?: string; email?: string; phone?: string }) => User;
-  signOut: () => void; setRole: (role: Role) => void; createBusiness: (b: Partial<Business>) => Business; updateBusinessStatus: (id: string, status: BusinessStatus) => void; connectProduct: (bizId: string, productId: string) => void;
-  createRequest: (r: Omit<QuoteRequest, "id" | "createdAt" | "status" | "deadlineAt" | "matchedBusinessIds" | "customerId">, hours: number) => QuoteRequest; submitOffer: (o: Omit<Offer, "id" | "createdAt" | "status">) => Offer; acceptOffer: (offerId: string) => Order | null;
-  sandboxPay: (orderId: string, ok: boolean) => void; subscribe: (planId: string, interval: "monthly" | "annual", paid: boolean) => Subscription | null; cancelSubscription: (userId: string) => void; updatePlan: (plan: Plan) => void; updatePayment: (cfg: PaymentMethodConfig) => void; testPayment: (key: PaymentMethodKey) => void; markRead: (id: string) => void; saveRoomProject: (p: RoomProject) => void; deleteRoomProject: (id: string) => void; reset: () => void;
+  signOut: () => void;
+  setRole: (role: Role) => void;
+  createBusiness: (b: Partial<Business>) => Business;
+  updateBusinessStatus: (id: string, status: BusinessStatus) => void;
+  connectProduct: (bizId: string, productId: string) => void;
+  createRequest: (r: Omit<QuoteRequest, "id" | "createdAt" | "status" | "deadlineAt" | "matchedBusinessIds" | "customerId">, hours: number) => QuoteRequest;
+  submitOffer: (o: Omit<Offer, "id" | "createdAt" | "status">) => Offer;
+  acceptOffer: (offerId: string) => Order | null;
+  sandboxPay: (orderId: string, ok: boolean) => void;
+  subscribe: (planId: string, interval: "monthly" | "annual", paid: boolean) => Subscription | null;
+  cancelSubscription: (userId: string) => void;
+  updatePlan: (plan: Plan) => void;
+  updatePayment: (cfg: PaymentMethodConfig) => void;
+  testPayment: (key: PaymentMethodKey) => void;
+  markRead: (id: string) => void;
+  saveRoomProject: (p: RoomProject) => void;
+  deleteRoomProject: (id: string) => void;
+  reset: () => void;
 }
-function dbRole(role: "buyer" | "supplier" | "admin"): Role { return role === "buyer" ? "customer" : role === "supplier" ? "business" : "admin"; }
 
 export function BackendProvider({ children }: { children: ReactNode }) {
-  const [db, setDb] = useState<DB>(emptyDb); const [session, setSession] = useState<User | null>(null);
-  const refreshPhpSession = async (): Promise<void> => {
-    const snapshot = await getPhpSession();
-    if (!snapshot.user) { setSession(null); setDb(emptyDb()); return; }
-    const p = snapshot.user;
-    if (!["buyer","supplier","admin"].includes(p.role)) throw new Error("ACCOUNT_ROLE_NOT_CONFIRMED");
-    const current: User = {
-      id:p.id, name:p.name, email:p.email, phone:p.phone||undefined,
-      role:dbRole(p.role), provider:"php-mysql", createdAt:Number(p.created_at)||Date.now()
-    };
-    const c=snapshot.company;
-    const details=c?.business_details||{};
-    const companies:Business[]=c?[{
-      id:c.id,ownerId:c.owner_id||p.id,legalName:c.legal_name||"",publicName:c.public_name||"",
-      representative:p.name,email:c.email||p.email,phone:c.phone||"",
-      governorate:typeof details.governorate==="string"?details.governorate:"",
-      serviceAreas:typeof details.service_areas==="string"?[details.service_areas]:[],
-      companyType:typeof details.company_type==="string"?details.company_type:"",
-      crNumber:typeof details.commercial_registration==="string"?details.commercial_registration:"",
-      taxNumber:typeof details.tax_number==="string"?details.tax_number:"",
-      brands:[],categories:Array.isArray(details.categories)?details.categories.filter((v):v is string=>typeof v==="string"):[],
-      productIds:[],deliveryCapacityM2:0,minOrderM2:0,
-      status:c.status==="verified"?"Verified":"Submitted",rating:0,createdAt:Number(c.created_at)||Date.now()
-    }]:[];
-    setSession(current);
-    setDb({...emptyDb(),users:[current],businesses:companies,sessionUserId:current.id});
-  };
+  const [db, setDb] = useState<DB>(emptyDb);
+  const [session, setSession] = useState<User | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
-  const refresh = async () => {
-    const client = requireSupabase(); const { data: { session: restoredSession } } = await client.auth.getSession();
-    // A missing session is the expected public/visitor state, not an error.
-    if (!restoredSession) { setSession(null); setDb(emptyDb()); return; }
-    const { data: { user }, error: authError } = await client.auth.getUser();
-    if (authError?.name === "AuthSessionMissingError") { setSession(null); setDb(emptyDb()); return; }
-    if (authError) throw authError;
-    if (!user) { setSession(null); setDb(emptyDb()); return; }
-    const [{ data: profile, error: profileError }, { data: roleRow, error: roleError }, { data: members, error: memberError }, { data: notices, error: noticeError }, { data: requests, error: requestError }, { data: quotes, error: quoteError }] = await Promise.all([
-      client.from("profiles").select("display_name, phone, created_at").eq("id", user.id).single(), client.from("user_roles").select("role").eq("user_id", user.id).single(), client.from("company_members").select("company_id, companies(*)").eq("user_id", user.id), client.from("notifications").select("id, type, title, body, reference_id, read_at, created_at").eq("profile_id", user.id).order("created_at", { ascending: false }), client.from("buyer_requests").select("*, buyer_request_items(*) , request_recipients(company_id)").order("created_at", { ascending: false }), client.from("supplier_quotes").select("*, supplier_quote_items(*)").order("created_at", { ascending: false }),
-    ]);
-    if (profileError || roleError || memberError || noticeError || requestError || quoteError) throw profileError || roleError || memberError || noticeError || requestError || quoteError;
-    const actualRole = (roleRow?.role || "buyer") as "buyer" | "supplier" | "admin";
-    const current: User = { id: user.id, name: profile?.display_name || user.email || "IDEA Member", email: user.email, phone: profile?.phone || undefined, role: dbRole(actualRole), provider: "supabase", createdAt: Date.parse(profile?.created_at || user.created_at) };
-    const businesses = (members || []).map((row: any): Business => { const c = Array.isArray(row.companies) ? row.companies[0] : row.companies; return { id: row.company_id, ownerId: user.id, legalName: c?.legal_name || "", publicName: c?.public_name || "", representative: "", email: c?.email || "", phone: c?.phone || "", governorate: "", serviceAreas: [], companyType: "Supplier", crNumber: "", taxNumber: "", brands: [], categories: [], productIds: [], deliveryCapacityM2: 0, minOrderM2: 0, status: c?.status === "verified" ? "Verified" : "Submitted", rating: 0, createdAt: Date.parse(c?.created_at || user.created_at) }; });
-    const requestModels: QuoteRequest[] = (requests || []).flatMap((request: any) => (request.buyer_request_items || []).map((item: any) => ({ id: request.id, requestItemId: item.id, customerId: request.buyer_id, productId: item.catalog_product_id || "", variantLabel: item.variant_label || "", quantity: Number(item.requested_quantity), unit: item.unit, governorate: request.governorate, destination: request.destination || "", deliveryDate: request.delivery_date || "", projectType: request.project_type || "", phased: false, notes: request.notes || "", status: request.status === "quotes_received" ? "Offers Received" : request.status === "awaiting_quotes" ? "Awaiting Offers" : "Request Submitted", createdAt: Date.parse(request.created_at), deadlineAt: 0, matchedBusinessIds: (request.request_recipients || []).map((recipient: any) => recipient.company_id) })));
-    const offerModels: Offer[] = (quotes || []).map((quote: any) => { const item = quote.supplier_quote_items?.[0]; return { id: quote.id, requestId: quote.request_id, businessId: quote.company_id, exactProduct: true, quantity: Number(item?.quoted_quantity || 0), unit: "pieces", unitPrice: Number(item?.unit_price || 0), shipping: 0, taxRate: 0, availability: quote.availability || "", prepDays: quote.lead_time_days || 0, deliveryDays: 0, paymentTerms: "", notes: quote.notes || "", expiresAt: Date.parse(quote.expires_at || quote.created_at), status: quote.status, createdAt: Date.parse(quote.created_at) }; });
-    setSession(current); setDb((old) => ({ ...old, users: [current], businesses, requests: requestModels, offers: offerModels, sessionUserId: user.id, messages: (notices || []).map((n) => ({ id: n.id, to: user.id, scope: "customer", kind: n.type, title: n.title, body: n.body, requestId: n.reference_id || undefined, read: Boolean(n.read_at), createdAt: Date.parse(n.created_at) })) }));
-  };
+  const loadPublicRef = useCallback(async () => {
+    try {
+      const [plansData, paymentsData] = await Promise.all([
+        apiFetch<Plan[]>("/api/plans"),
+        apiFetch<PaymentMethodConfig[]>("/api/payments/public"),
+      ]);
+      setDb((old) => ({
+        ...old,
+        plans: Array.isArray(plansData) ? plansData : old.plans,
+        payments: Array.isArray(paymentsData) ? paymentsData : old.payments,
+      }));
+    } catch {
+      // Keep UI functional even if backend reference fetch fails momentarily
+    }
+  }, []);
+
+  const refresh = useCallback(
+    async (opts?: { name?: string; phone?: string; authMethod?: string; requestedRole?: string }): Promise<User | null> => {
+      if (!auth.currentUser) {
+        setSession(null);
+        await loadPublicRef();
+        return null;
+      }
+      try {
+        const data = await apiFetch<SessionResponse>("/api/auth/session", {
+          method: "POST",
+          body: opts || {},
+          authRequired: true,
+        });
+        setSession(data.user);
+        setDb({
+          users: [data.user],
+          businesses: data.businesses || [],
+          requests: data.requests || [],
+          offers: data.offers || [],
+          orders: data.orders || [],
+          messages: data.messages || [],
+          plans: data.plans || [],
+          subscriptions: data.subscriptions || [],
+          payments: data.payments || [],
+          roomProjects: data.roomProjects || [],
+          audit: data.audit || [],
+          sessionUserId: data.user.id,
+        });
+        return data.user;
+      } catch (error) {
+        console.error("IDEA session sync failed:", error);
+        return null;
+      }
+    },
+    [loadPublicRef]
+  );
+
   useEffect(() => {
-    void refreshPhpSession().catch(error=>console.error("IDEA PHP session restore failed",error));
-  },[]);
-  const unavailable = (): never => { throw new Error(backendConfigurationError); };
-  const api = useMemo<Api>(() => ({
-    signIn: unavailable, signOut: () => { void signOutPhp().then(refreshPhpSession).catch(error=>console.error("IDEA logout failed",error)); }, setRole: unavailable, createBusiness: unavailable, updateBusinessStatus: unavailable, connectProduct: unavailable,
-    createRequest: (r) => { if (!session) return unavailable(); const pending: QuoteRequest = { ...r, id: "pending", customerId: session.id, status: "Request Submitted", createdAt: Date.now(), deadlineAt: Date.now(), matchedBusinessIds: [] }; void requireSupabase().rpc("create_buyer_request", { p_governorate: r.governorate, p_destination: r.destination || null, p_delivery_date: r.deliveryDate || null, p_project_type: r.projectType || null, p_notes: r.notes || null, p_items: [{ productId: r.productId, quantity: r.quantity, unit: r.unit, variantLabel: r.variantLabel || null }] }).then(({ error }) => { if (error) console.error("IDEA RFQ creation failed", error); else void refresh(); }); return pending; },
-    submitOffer: (offer) => { const request = db.requests.find((entry) => entry.id === offer.requestId); if (!request?.requestItemId) return unavailable(); const pending: Offer = { ...offer, id: "pending", status: "submitted", createdAt: Date.now() }; void requireSupabase().rpc("submit_supplier_quote", { p_request_id: offer.requestId, p_availability: offer.availability || null, p_lead_time_days: offer.prepDays || null, p_minimum_order_quantity: null, p_notes: offer.notes || null, p_expires_at: new Date(offer.expiresAt).toISOString(), p_items: [{ requestItemId: request.requestItemId, quantity: offer.quantity, unitPrice: offer.unitPrice }] }).then(({ error }) => { if (error) console.error("IDEA quote submission failed", error); else void refresh(); }); return pending; }, acceptOffer: unavailable, sandboxPay: unavailable, subscribe: unavailable, cancelSubscription: unavailable, updatePlan: unavailable, updatePayment: unavailable, testPayment: unavailable,
-    markRead: (id) => { void requireSupabase().from("notifications").update({ read_at: new Date().toISOString() }).eq("id", id).then(({ error }) => { if (error) console.error("IDEA notification update failed", error); else void refresh(); }); }, saveRoomProject: unavailable, deleteRoomProject: unavailable, reset: unavailable,
-  }), [db.requests, session]);
-  return <Ctx.Provider value={{ db, session, api, refreshPhpSession }}>{children}</Ctx.Provider>;
+    void loadPublicRef();
+    const unsub = onAuthStateChanged(auth, (fbUser) => {
+      if (!fbUser) {
+        setSession(null);
+        setDb((old) => ({ ...emptyDb(), plans: old.plans, payments: old.payments }));
+        setLoading(false);
+        return;
+      }
+      void refresh().finally(() => setLoading(false));
+    });
+    return () => unsub();
+  }, [loadPublicRef, refresh]);
+
+  const api = useMemo<Api>(
+    () => ({
+      signIn: (_provider, role, info) => {
+        // Optimistic placeholder only when invoked synchronously; primary login uses Firebase + refresh()
+        const user: User = {
+          id: session?.id || "pending",
+          name: info?.name || session?.name || "IDEA Member",
+          email: info?.email || session?.email,
+          phone: info?.phone || session?.phone,
+          role,
+          provider: "firebase",
+          createdAt: Date.now(),
+        };
+        return user;
+      },
+      signOut: () => {
+        void firebaseSignOut(auth).then(() => {
+          setSession(null);
+          setDb((old) => ({ ...emptyDb(), plans: old.plans, payments: old.payments }));
+        });
+      },
+      setRole: (role) => {
+        void apiFetch("/api/auth/profile", {
+          method: "POST",
+          body: { role },
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      createBusiness: (b) => {
+        const pending: Business = {
+          id: "pending",
+          ownerId: session?.id || "",
+          legalName: b.legalName || "",
+          publicName: b.publicName || "",
+          representative: b.representative || "",
+          email: b.email || "",
+          phone: b.phone || "",
+          governorate: b.governorate || "Cairo",
+          serviceAreas: b.serviceAreas || [],
+          companyType: b.companyType || "Supplier",
+          crNumber: b.crNumber || "",
+          taxNumber: b.taxNumber || "",
+          brands: b.brands || [],
+          categories: b.categories || [],
+          productIds: [],
+          deliveryCapacityM2: 1000,
+          minOrderM2: 20,
+          status: "Submitted",
+          rating: 0,
+          createdAt: Date.now(),
+        };
+        void apiFetch("/api/companies/apply", {
+          method: "POST",
+          body: b,
+          authRequired: true,
+        }).then(() => refresh());
+        return pending;
+      },
+      updateBusinessStatus: (id, status) => {
+        const mapped = status.toLowerCase();
+        void apiFetch(`/api/companies/${encodeURIComponent(id)}/status`, {
+          method: "PATCH",
+          body: { status: mapped },
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      connectProduct: (bizId, productId) => {
+        void apiFetch(`/api/companies/${encodeURIComponent(bizId)}/connect-product`, {
+          method: "POST",
+          body: { productId },
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      createRequest: (r, hours) => {
+        const pending: QuoteRequest = {
+          ...r,
+          id: "pending",
+          customerId: session?.id || "",
+          status: "Request Submitted",
+          createdAt: Date.now(),
+          deadlineAt: Date.now() + hours * 3600_000,
+          matchedBusinessIds: [],
+        };
+        void apiFetch("/api/requests", {
+          method: "POST",
+          body: { ...r, hours },
+          authRequired: true,
+        }).then(() => refresh());
+        return pending;
+      },
+      submitOffer: (offer) => {
+        const pending: Offer = { ...offer, id: "pending", status: "submitted", createdAt: Date.now() };
+        void apiFetch("/api/offers", {
+          method: "POST",
+          body: offer,
+          authRequired: true,
+        }).then(() => refresh());
+        return pending;
+      },
+      acceptOffer: (offerId) => {
+        const offer = db.offers.find((o) => o.id === offerId);
+        if (!offer) return null;
+        const subtotal = offer.unitPrice * offer.quantity;
+        const total = subtotal + subtotal * offer.taxRate + offer.shipping;
+        const pending: Order = {
+          id: "pending",
+          requestId: offer.requestId,
+          offerId,
+          customerId: session?.id || "",
+          businessId: offer.businessId,
+          total,
+          status: "Pending Payment",
+          paymentStatus: "None",
+          createdAt: Date.now(),
+        };
+        void apiFetch(`/api/offers/${encodeURIComponent(offerId)}/accept`, {
+          method: "POST",
+          authRequired: true,
+        }).then(() => refresh());
+        return pending;
+      },
+      sandboxPay: (orderId, ok) => {
+        void apiFetch(`/api/orders/${encodeURIComponent(orderId)}/pay`, {
+          method: "POST",
+          body: { ok },
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      subscribe: (planId, interval, paid) => {
+        const sub: Subscription = {
+          userId: session?.id || "",
+          planId,
+          interval,
+          status: paid ? "active" : "payment-failed",
+          startedAt: Date.now(),
+          renewsAt: Date.now() + (interval === "annual" ? 365 : 30) * 86400_000,
+        };
+        void apiFetch("/api/subscriptions", {
+          method: "POST",
+          body: { planId, interval, paid },
+          authRequired: true,
+        }).then(() => refresh());
+        return sub;
+      },
+      cancelSubscription: () => {
+        void apiFetch("/api/subscriptions/cancel", {
+          method: "POST",
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      updatePlan: (plan) => {
+        void apiFetch(`/api/admin/plans/${encodeURIComponent(plan.id)}`, {
+          method: "PATCH",
+          body: { monthly: plan.monthly, annual: plan.annual, trialDays: plan.trialDays },
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      updatePayment: (cfg) => {
+        void apiFetch(`/api/admin/payments/${encodeURIComponent(cfg.key)}`, {
+          method: "PATCH",
+          body: cfg,
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      testPayment: (key) => {
+        void apiFetch(`/api/admin/payments/${encodeURIComponent(key)}/test`, {
+          method: "POST",
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      markRead: (id) => {
+        void apiFetch(`/api/notifications/${encodeURIComponent(id)}/read`, {
+          method: "PATCH",
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      saveRoomProject: (p) => {
+        void apiFetch("/api/room-projects", {
+          method: "POST",
+          body: p,
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      deleteRoomProject: (id) => {
+        void apiFetch(`/api/room-projects/${encodeURIComponent(id)}`, {
+          method: "DELETE",
+          authRequired: true,
+        }).then(() => refresh());
+      },
+      reset: () => {
+        setSession(null);
+        setDb(emptyDb());
+      },
+    }),
+    [db.offers, refresh, session]
+  );
+
+  return <Ctx.Provider value={{ db, session, loading, refresh, api }}>{children}</Ctx.Provider>;
 }
-export function useBackend() { const context = useContext(Ctx); if (!context) throw new Error("useBackend must be used within BackendProvider"); return context; }
+
+export function useBackend() {
+  const context = useContext(Ctx);
+  if (!context) throw new Error("useBackend must be used within BackendProvider");
+  return context;
+}

@@ -3,8 +3,7 @@ import type { Product } from "../data/types";
 import { ART_CERAMIC_PRODUCTS } from "../data/artceramicImport";
 import { fetchAbaElMozahemProducts } from "../data/abaElMozahemImport";
 import { useBackend } from "../backend/db";
-import { requireSupabase } from "../backend/supabaseClient";
-import { supabase } from "../backend/supabaseClient";
+import { apiFetch } from "../backend/apiClient";
 import { applyAdminOverride, normalizeAdminOverride, type AdminOverride } from "../data/catalogueOverrides";
 
 export interface QuoteItem {
@@ -50,28 +49,32 @@ function usePersisted<T>(key: string, initial: T): [T, React.Dispatch<React.SetS
 }
 
 export function StoreProvider({ children }: { children: ReactNode }) {
-  // Products imported from the source export. Unconfirmed fields stay empty.
   const [rawProducts, setRawProducts] = useState<Product[]>(() => ART_CERAMIC_PRODUCTS);
   const [overrides, setOverrides] = useState<Map<string, AdminOverride>>(new Map());
+
   useEffect(() => {
     fetchAbaElMozahemProducts()
-      .then((incoming) => setRawProducts((current) => [...current, ...incoming.filter((product) => !current.some((existing) => existing.id === product.id))]))
-      .catch(() => { /* Imports stay staged; no public approval is implied. */ });
+      .then((incoming) =>
+        setRawProducts((current) => [
+          ...current,
+          ...incoming.filter((product) => !current.some((existing) => existing.id === product.id)),
+        ])
+      )
+      .catch(() => {
+        /* Imports stay staged */
+      });
   }, []);
+
   useEffect(() => {
-    if (!supabase) return;
     let active = true;
     const fetchOverrides = async () => {
-      const { data, error } = await supabase.from("catalogue_admin_overrides")
-        .select("product_id,visible,name_en,brand,manufacturer,model,code,collection,image_url,source_proof_url,updated_at");
-      if (!active) return;
-      if (error) {
-        // The dashboard reports missing schema; the public site keeps its static,
-        // approved catalogue instead of failing or inventing data.
-        console.warn("IDEA admin overrides unavailable:", error.message);
-        return;
+      try {
+        const data = await apiFetch<any[]>("/api/catalogue/overrides");
+        if (!active || !Array.isArray(data)) return;
+        setOverrides(new Map(data.map((row) => [row.product_id, normalizeAdminOverride(row)])));
+      } catch {
+        // Public site continues seamlessly with static approved catalogue
       }
-      setOverrides(new Map((data || []).map(row => [row.product_id, normalizeAdminOverride(row)])));
     };
     void fetchOverrides();
     window.addEventListener("idea:catalogue-updated", fetchOverrides);
@@ -80,21 +83,39 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       window.removeEventListener("idea:catalogue-updated", fetchOverrides);
     };
   }, []);
-  const adminProducts = useMemo(() => rawProducts.map(product => {
-    const correction = overrides.get(product.id);
-    return correction ? applyAdminOverride(product, correction) : product;
-  }), [rawProducts, overrides]);
-  // Static approval cannot be granted through a cosmetic admin override.
-  const products = useMemo(() => adminProducts.filter(product =>
-    product.approved && overrides.get(product.id)?.visible !== false
-  ), [adminProducts, overrides]);
+
+  const adminProducts = useMemo(
+    () =>
+      rawProducts.map((product) => {
+        const correction = overrides.get(product.id);
+        return correction ? applyAdminOverride(product, correction) : product;
+      }),
+    [rawProducts, overrides]
+  );
+
+  const products = useMemo(
+    () =>
+      adminProducts.filter(
+        (product) => product.approved && overrides.get(product.id)?.visible !== false
+      ),
+    [adminProducts, overrides]
+  );
+
   const { session } = useBackend();
   const [favorites, setFavorites] = useState<string[]>([]);
+
   useEffect(() => {
-    if (!session) { setFavorites([]); return; }
-    void requireSupabase().from("favorites").select("catalog_product_id").eq("profile_id", session.id)
-      .then(({ data, error }) => { if (error) console.error("IDEA favorites load failed", error); else setFavorites((data || []).map((row) => row.catalog_product_id)); });
+    if (!session) {
+      setFavorites([]);
+      return;
+    }
+    void apiFetch<string[]>("/api/favorites", { authRequired: true })
+      .then((data) => {
+        if (Array.isArray(data)) setFavorites(data);
+      })
+      .catch((error) => console.error("IDEA favorites load failed:", error));
   }, [session?.id]);
+
   const [quote, setQuote] = usePersisted<QuoteItem[]>("idea.quote", []);
   const [compare, setCompare] = usePersisted<string[]>("idea.compare", []);
 
@@ -109,10 +130,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       toggleFavorite: (id) => {
         if (!session) throw new Error("Sign in to save favorites.");
         const wasFavorite = favorites.includes(id);
-        setFavorites((current) => wasFavorite ? current.filter((value) => value !== id) : [...current, id]);
-        const query = requireSupabase().from("favorites");
-        void (wasFavorite ? query.delete().eq("profile_id", session.id).eq("catalog_product_id", id) : query.insert({ profile_id: session.id, catalog_product_id: id }))
-          .then(({ error }) => { if (error) { console.error("IDEA favorite update failed", error); void requireSupabase().from("favorites").select("catalog_product_id").eq("profile_id", session.id).then(({ data }) => setFavorites((data || []).map((row) => row.catalog_product_id))); } });
+        setFavorites((current) =>
+          wasFavorite ? current.filter((value) => value !== id) : [...current, id]
+        );
+        const req = wasFavorite
+          ? apiFetch(`/api/favorites/${encodeURIComponent(id)}`, {
+              method: "DELETE",
+              authRequired: true,
+            })
+          : apiFetch("/api/favorites", {
+              method: "POST",
+              body: { productId: id },
+              authRequired: true,
+            });
+        void req.catch(() => {
+          void apiFetch<string[]>("/api/favorites", { authRequired: true })
+            .then((data) => setFavorites(Array.isArray(data) ? data : []))
+            .catch(() => {});
+        });
       },
       toggleCompare: (id) =>
         setCompare((c) => (c.includes(id) ? c.filter((x) => x !== id) : [...c, id].slice(-4))),
@@ -123,7 +158,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
             : [...q, { productId: id, quantity: unit === "sqm" ? 10 : 1, unit }]
         ),
       updateQuoteQty: (id, qty) =>
-        setQuote((q) => q.map((i) => (i.productId === id ? { ...i, quantity: Math.max(1, qty) } : i))),
+        setQuote((q) =>
+          q.map((i) => (i.productId === id ? { ...i, quantity: Math.max(1, qty) } : i))
+        ),
       removeFromQuote: (id) => setQuote((q) => q.filter((i) => i.productId !== id)),
       clearQuote: () => setQuote([]),
     }),
