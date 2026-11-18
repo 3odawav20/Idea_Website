@@ -94,14 +94,18 @@ test("code and brand search preserves admin-only prices, similar items never inv
   assert.match(read("src/app/pages/ProductDetail.tsx"),/similarProducts/);
   assert.match(read("src/app/data/recommendations.ts"),/not visual AI or unverified price matching/);
 });
-test("social login requires configured provider, not fake working buttons",()=>{
-  for(const provider of ["google","facebook","apple","twitter","azure"])
-    assert.ok(auth.includes('id:"'+provider+'"'));
-  assert.match(auth,/VITE_AUTH_PROVIDERS/);
-  assert.match(auth,/signInWithOAuth/);
-  assert.match(auth,/signInWithOtp/);
-  assert.match(auth,/verifyOtp/);
-  assert.doesNotMatch(auth,/whatsapp/);
+test("social login requires server-configured PHP providers; unconfigured buttons stay disabled",()=>{
+  for(const provider of ["google","facebook","apple","x","microsoft","whatsapp"])
+    assert.ok(auth.includes('id: "'+provider+'"'));
+  assert.match(auth,/socialProviderStatus\(\)/);
+  assert.match(auth,/providerReady\?\.\[item\.id\] === true/);
+  assert.match(auth,/disabled=\{!enabled \|\| pending !== null\}/);
+  assert.match(auth,/SOCIAL_AUTH_API \+ "\?action=start&provider="/);
+  assert.match(auth,/provider === "whatsapp"/); // no fake OAuth for unimplemented WhatsApp OTP
+  assert.doesNotMatch(auth,/signInWithPopup|signInWithOAuth|signInWithOtp/);
+  const php=read("src/app/backend/phpAccounts.ts");
+  assert.match(php,/\?action=providers/);
+  assert.match(php,/credentials: "same-origin"/);
 });
 
 

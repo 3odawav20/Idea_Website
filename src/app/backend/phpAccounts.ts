@@ -72,11 +72,22 @@ export async function uploadBusinessDocument(file:File,kind:string):Promise<void
   });
   await parseAccountResponse(response);
 }
-export async function socialProviderStatus():Promise<{google:boolean;apple:boolean}> {
-  const response=await fetch(SOCIAL_AUTH_API+"?action=providers", {
-    credentials:"same-origin",cache:"no-store",headers:{Accept:"application/json"}
+export type PhpSocialProvider = "google" | "facebook" | "apple" | "x" | "microsoft" | "whatsapp";
+export type PhpSocialProviderStatus = Record<PhpSocialProvider, boolean>;
+
+export async function socialProviderStatus(): Promise<PhpSocialProviderStatus> {
+  const response = await fetch(SOCIAL_AUTH_API + "?action=providers", {
+    credentials: "same-origin", cache: "no-store", headers: { Accept: "application/json" }
   });
-  const data=await parseAccountResponse(response);
-  const flags = data.providers as Record<string,unknown> | undefined;
-  return {google:flags?.google===true,apple:flags?.apple===true};
+  const data = await parseAccountResponse(response);
+  const flags = data.providers as Record<string, unknown> | undefined;
+  // Only server-confirmed providers may be enabled. Missing values remain false.
+  return {
+    google: flags?.google === true,
+    facebook: flags?.facebook === true,
+    apple: flags?.apple === true,
+    x: flags?.x === true,
+    microsoft: flags?.microsoft === true,
+    whatsapp: flags?.whatsapp === true
+  };
 }
