@@ -179,5 +179,3 @@ $answer = $parsedResponse['choices'][0]['message']['content'] ?? '';
 if (is_string($answer)) $answer = preg_replace('#<think>.*?</think>#s', '', $answer) ?? $answer;
 if (!is_string($answer) || trim($answer) === '' || str_contains($answer, '<think>')) ideaReply(502, ['error'=>'ASSISTANT_EMPTY_RESPONSE','products'=>$matches]);
 ideaReply(200, ['answer'=>substr(strip_tags($answer), 0, 4000),'products'=>$matches]);
-
-[executed on device: Samsung4 (a0e6f17d-7f0c-4cce-a8ac-670c6351abbc)]
