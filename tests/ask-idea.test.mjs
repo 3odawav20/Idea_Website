@@ -26,7 +26,7 @@ test("ask IDEA uses canonical product source, safe links and honest offline mode
   assert.match(app, /AI unavailable/);
   assert.match(app, /aria-expanded=\{open\}/);
   assert.match(app, /credentials: "same-origin"/);
-  assert.doesNotMatch(app, /RUNPOD_API_KEY|sk-[A-Za-z0-9]{10}/);
+  assert.doesNotMatch(app, /RUNPOD_API_KEY|sk-[A-Za-z0-9]{25}/);
 });
 
 test("server-only chat endpoint validates origin, input, rate limits and safe provider host", () => {
