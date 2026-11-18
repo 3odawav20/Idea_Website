@@ -43,3 +43,16 @@ test("cPanel packaging includes assistant endpoint and canonical product catalog
   assert.match(build, /api\/ask-idea\.php/);
   assert.match(build, /data\/idea-catalogue\.json/);
 });
+
+test("catalogue search gives named Manila products priority over generic question words", () => {
+  assert.match(php, /Remove generic question words before ranking actual catalogue titles/);
+  assert.match(php, /'verified','tile','tiles','size','sizes'/);
+  assert.match(php, /\$expanded = array_values\(array_filter\(\$expanded,/);
+  const manila = catalogue.filter(product => String(product.name).toLowerCase().startsWith("manila"));
+  assert.ok(manila.length >= 3);
+  assert.ok(manila.some(product => String(product.size).toLowerCase() === "60x120"));
+  assert.ok(manila.some(product => String(product.size).toLowerCase() === "61x61"));
+  assert.match(php, /not guaranteed wet-area suitability/);
+  assert.match(php, /idea-ask-private\.php/);
+  assert.doesNotMatch(php, /BEGIN PRIVATE KEY|sk-proj-/);
+});

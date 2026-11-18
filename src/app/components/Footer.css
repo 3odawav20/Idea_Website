@@ -14,6 +14,9 @@
 [dir="rtl"] .idea-footer-promo-image:before{transform:scaleX(-1)}
 .idea-footer-body{width:min(1260px,calc(100% - 80px));margin:0 auto;padding:75px 0 80px;display:grid;grid-template-columns:255px minmax(0,1fr);gap:clamp(35px,5vw,90px)}
 .idea-footer-brand .idea-official-logo{max-width:225px}
+/* Subtle black shadow makes the approved cream-and-orange footer logo readable on light backgrounds. */
+.idea-footer-brand .idea-official-logo > img {filter:drop-shadow(0 1.5px 1.5px rgba(0,0,0,.52)) drop-shadow(0 0 1px rgba(0,0,0,.36))}
+.idea-footer-brand .idea-official-logo-fallback {text-shadow:0 1px 2px rgba(0,0,0,.52)}
 .idea-footer-brand>p{color:var(--idea-text-muted);font-size:13px;line-height:1.8;margin:16px 0 24px;max-width:250px}
 .idea-footer-mini-links{display:flex;flex-direction:column;gap:13px}
 .idea-footer-mini-links a{color:var(--idea-text);display:flex;align-items:center;gap:9px;text-decoration:none;font-size:12px}
