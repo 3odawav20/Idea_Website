@@ -4,7 +4,7 @@ import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from "react";
 
 export function Container({ children, style, className }: { children: ReactNode; style?: CSSProperties; className?: string }) {
   return (
-    <div className={["idea-container", className].filter(Boolean).join(" ")} style={{ width: "100%", maxWidth: "var(--idea-content-max)", margin: "0 auto", paddingInline: "var(--idea-space-5)", ...style }}>
+    <div className={["idea-container", className].filter(Boolean).join(" ")} style={{ width: "100%", maxWidth: "calc(var(--idea-content-max) + 2 * var(--idea-page-gutter))", margin: "0 auto", paddingInline: "var(--idea-page-gutter)", ...style }}>
       {children}
     </div>
   );
@@ -12,7 +12,7 @@ export function Container({ children, style, className }: { children: ReactNode;
 
 export function Section({ children, style, alt }: { children: ReactNode; style?: CSSProperties; alt?: boolean }) {
   return (
-    <section style={{ padding: "var(--idea-space-9) 0", background: alt ? "var(--idea-bg-2)" : "transparent", ...style }}>
+    <section style={{ padding: "var(--idea-section-space) 0", background: alt ? "var(--idea-bg-2)" : "transparent", ...style }}>
       {children}
     </section>
   );
@@ -49,7 +49,7 @@ export function Button({ variant = "gold", size = "md", style, children, ...rest
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "var(--idea-space-2)",
     padding: pad, fontFamily: "var(--idea-font-body)", fontSize: font, fontWeight: 500,
     letterSpacing: "0.04em", textTransform: "uppercase", borderRadius: "var(--idea-radius-full)",
-    cursor: "pointer", transition: "color .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease, transform .25s ease", border: "1px solid transparent", whiteSpace: "nowrap", minHeight: "var(--idea-control-height)",
+    cursor: "pointer", transition: "color .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease, transform .25s ease", border: "1px solid transparent", whiteSpace: "normal", overflowWrap: "anywhere", textAlign: "center", minHeight: "var(--idea-control-height)",
   };
   const variants: Record<Variant, CSSProperties> = {
     gold: { background: "linear-gradient(135deg, var(--idea-gold-bright), var(--idea-gold))", color: "var(--idea-on-gold)", boxShadow: "var(--idea-shadow-gold)" },
