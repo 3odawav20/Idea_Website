@@ -4,6 +4,15 @@ Target host: `idea-dh.com`; cPanel document root: `/home/lsenet5/idea-dh.com`.
 
 **Status: LOCAL CANDIDATE ONLY — NOT LIVE OR GENERATION-VERIFIED.**
 
+## MySQL staging discovery — 2026-11-20
+
+- A separate MySQL staging database is **not verified**. No database connection was attempted, and no credentials were requested or exposed.
+- `idea-accounts-config.php` and the required `platform-core.php` are not present in this repository. The development environment contains no MySQL connection-variable names; this does not establish whether cPanel has a staging database.
+- PHP, MySQL/MariaDB clients, and a SQL validator are unavailable in this workspace, so PHP execution and MySQL syntax/integration tests cannot run here.
+- The existing marketplace migration remains a local SQL file and has **not** been applied. `tests/mysql-migration-safety.test.mjs` provides an offline guard that checks for additive sidecar tables, rejects destructive or updating statements, and confirms all seeded ad packages remain unpublished. This is a source-level safety check, not proof of MySQL compatibility.
+- No database was created or changed; existing IDEA accounts, companies, products, quotations, and records were not accessed or modified.
+- Before database-backed implementation or migration, verify an isolated staging database and recover the actual account-platform contract/schema. Apply and test there only; do not substitute any production database for staging.
+
 ## Which backend is which
 
 - `server/cpanel/api/visualize.php` — previous React visualizer route, authenticates via **Supabase**. Its successful build is not proof it can authenticate users in the new MySQL installation.
