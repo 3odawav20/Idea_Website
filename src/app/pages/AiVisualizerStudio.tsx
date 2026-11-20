@@ -462,7 +462,7 @@ export function AiVisualizerStudio() {
         </div>
         <div className="idea-studio-command-status">
           <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : ""}`}>
-            <i /> {integration === "configuration_present_unverified" ? tr("Runpod جاهز للاختبار", "Runpod configuration unverified") : tr("حالة Runpod غير مؤكدة", "Runpod status unavailable")}
+            <i /> {integration === "configuration_present_unverified" ? tr("عامل Runpod غير متحقق", "Runpod worker is unverified") : tr("حالة Runpod غير متاحة", "Runpod status unavailable")}
           </span>
           <span className="idea-studio-quota">
             <ShieldCheck size={15} />

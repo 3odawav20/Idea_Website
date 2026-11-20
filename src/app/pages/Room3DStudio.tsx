@@ -92,7 +92,7 @@ function syncRoomFixtures(scene:THREE.Scene,groups:Map<string,THREE.Group>,items
     setFixtureColor(group,fixture.color);
   }
 }
-export function Room3DStudio() {
+export function Room3DStudio({tileOnly=false}:{tileOnly?:boolean}) {
   const mount=useRef<HTMLDivElement>(null);
   const sceneRef=useRef<{
     camera:THREE.PerspectiveCamera;controls:OrbitControls;renderer:THREE.WebGLRenderer;
@@ -101,6 +101,12 @@ export function Room3DStudio() {
   const lastCamera=useRef<{pos:THREE.Vector3;target:THREE.Vector3}|null>(null);
   const {products}=useStore();const {locale}=useI18n();
   const lang=locale==="ar"||locale==="fr"?locale:"en";const t=labels[lang];
+  const pageTitle=tileOnly
+    ?lang==="ar"?"IDEA · استوديو خامات البلاط ثلاثي الأبعاد":lang==="fr"?"IDEA · Studio 3D de matériaux":"IDEA · 3D Tile Material Studio"
+    :t.title;
+  const pageSubtitle=tileOnly
+    ?lang==="ar"?"اختار خامة بلاط أصلية وطبّقها على الحائط أو الأرضية بمقاسها المسجل.":lang==="fr"?"Choisissez un matériau réel et appliquez son format vérifié au sol ou au mur.":"Choose a real tile face and apply its verified physical size to a wall or floor."
+    :t.sub;
   const [dims,setDims]=useState({width:4,length:4,height:2.8});
   const [ceiling,setCeiling]=useState(false);
   const [roomMode,setRoomMode]=useState<RoomMode>("empty");
@@ -119,7 +125,7 @@ export function Room3DStudio() {
   fixturesRef.current=fixtures;
 
   const tiles=useMemo(()=>products.filter(p=>
-    ["ceramics","porcelain","marble"].includes(p.collection) && !!materialSize(p) && !!materialFace(p)),[products]);
+    ["ceramics","porcelain","marble","tiles"].includes(p.collection) && !!materialSize(p) && !!materialFace(p)),[products]);
   const byId=useMemo(()=>new Map(products.map(p=>[p.id,p])),[products]);
   const changeSceneMode=(next:RoomMode)=>{
     if(next===roomMode)return;
@@ -232,9 +238,9 @@ export function Room3DStudio() {
         new THREE.MeshStandardMaterial({color:0xe1ded6,transparent:true,opacity:.32,side:THREE.DoubleSide,depthWrite:false}));
       roof.rotation.x=Math.PI/2;roof.position.y=h;scene.add(roof);
     }
-    if(roomMode==="kitchen")addKitchenPreview(scene,w,l,h);
+    if(!tileOnly&&roomMode==="kitchen")addKitchenPreview(scene,w,l,h);
     const fixtureGroups=new Map<string,THREE.Group>();
-    syncRoomFixtures(scene,fixtureGroups,fixturesRef.current,dims);
+    if(!tileOnly)syncRoomFixtures(scene,fixtureGroups,fixturesRef.current,dims);
     sceneRef.current={camera,controls,renderer,scene,surfaces:surfaceList,lightingRig,fixtureGroups};
     // Pick and drag real 3D objects on their floor or selected wall plane.
     const ray=new THREE.Raycaster(),ndc=new THREE.Vector2();
@@ -350,7 +356,7 @@ export function Room3DStudio() {
   // Swapping and editing fixtures updates only their meshes, not the full renderer.
   useEffect(()=>{
     const state=sceneRef.current;
-    if(state)syncRoomFixtures(state.scene,state.fixtureGroups,fixtures,dims);
+    if(!tileOnly&&state)syncRoomFixtures(state.scene,state.fixtureGroups,fixtures,dims);
   },[fixtures,roomMode,dims.width,dims.length,dims.height]);
 
   // Sliders update the live light rig; they do not rebuild the WebGL scene.
@@ -359,7 +365,7 @@ export function Room3DStudio() {
     if(state)updateLightRig(state.lightingRig,lighting,dims,state.renderer,state.scene);
   },[lighting,roomMode,dims.width,dims.length,dims.height]);
 
-  const serialized=()=>JSON.stringify({version:4,dimensions:dims,ceiling,tileChoice,sizeChoice,roomMode,lighting,fixtures},null,2);
+  const serialized=()=>JSON.stringify({version:4,dimensions:dims,ceiling,tileChoice,sizeChoice,roomMode,lighting,fixtures:tileOnly?[]:fixtures},null,2);
   const download=()=>{
     const blob=new Blob([serialized()],{type:"application/json"});const url=URL.createObjectURL(blob);
     const a=document.createElement("a");a.href=url;a.download="idea-room-3d-materials.json";a.click();URL.revokeObjectURL(url);
@@ -367,10 +373,10 @@ export function Room3DStudio() {
   const reset=()=>{setTileChoice({floor:"",back:"",left:"",right:""});setSizeChoice({floor:"",back:"",left:"",right:""});setFixtures([]);setSelectedFixture(null);setNotice("");};
 
   return (
-    <main className="idea-room3d" dir={lang==="ar"?"rtl":"ltr"}>
+    <main className="idea-room3d" data-mode={tileOnly?"materials-only":"full-room"} dir={lang==="ar"?"rtl":"ltr"}>
       <header className="idea-room3d-heading">
         <Link to="/"><ArrowLeft size={17}/>{lang === "ar" ? "الرئيسية" : lang === "fr" ? "Accueil" : "Home"}</Link>
-        <div><span>IDEA / 3D SPACE STUDIO</span><h1><strong className="idea-room3d-heading-brand">IDEA</strong> <span className="idea-room3d-heading-title">{t.title.replace(/^IDEA\s*·\s*/,"")}</span></h1><p>{t.sub}</p></div>
+        <div><span>{tileOnly?lang==="ar"?"IDEA / مكتبة الخامات":lang==="fr"?"IDEA / MATÉRIAUX":"IDEA / TILE MATERIALS":"IDEA / 3D SPACE STUDIO"}</span><h1><strong className="idea-room3d-heading-brand">IDEA</strong> <span className="idea-room3d-heading-title">{pageTitle.replace(/^IDEA\s*·\s*/,"")}</span></h1><p>{pageSubtitle}</p></div>
       </header>
       <div className="idea-room3d-workspace">
         <aside className="idea-room3d-side">
@@ -381,8 +387,8 @@ export function Room3DStudio() {
             </label>)}
           </div>
           <Room3DLighting locale={lang} mode={roomMode} onModeChange={changeSceneMode}
-            settings={lighting} onSettingsChange={setLighting} />
-          <section className="idea-room3d-fixture-editor" aria-label={lang==="ar"?"عناصر الغرفة":"Room fixtures"}>
+            settings={lighting} onSettingsChange={setLighting} showSceneModes={!tileOnly} />
+          {!tileOnly&&<section className="idea-room3d-fixture-editor" aria-label={lang==="ar"?"عناصر الغرفة":"Room fixtures"}>
             <h2>{lang==="ar"?"الأثاث والتجهيزات القابلة للتعديل":lang==="fr"?"Éléments modifiables":"Editable furniture & fixtures"}</h2>
             <p className="idea-room3d-disclaimer">{lang==="ar"?"اختار عنصر واضغط إضافة. اسحبه جوه المشهد أو عدّل مكانه من هنا. الأشكال للتخطيط وليست موديلات مورّد موثقة.":lang==="fr"?"Ajoutez et déplacez des éléments génériques dans la pièce.": "Add and drag generic planning objects, then adjust position and rotation below. Not exact supplier models."}</p>
             <select aria-label={lang==="ar"?"اختار التجهيز":"Choose fixture"} value={addKind} onChange={e=>setAddKind(e.target.value as FixtureKind)}>
@@ -450,7 +456,7 @@ export function Room3DStudio() {
                 <button type="button" onClick={deleteFixture}><Trash2 size={14}/>{lang==="ar"?"حذف":"Remove"}</button>
               </div>
             </div>}
-          </section>
+          </section>}
           <h2>{t.view}</h2>
           <div className="idea-room3d-pills">{(["perspective","top","front","left","right"] as const).map(p=>
             <button key={p} type="button" className={p===view?"active":""} onClick={()=>applyView(p)}>{t[p]}</button>)}</div>

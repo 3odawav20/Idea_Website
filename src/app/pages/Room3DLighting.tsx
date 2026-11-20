@@ -54,8 +54,9 @@ type Props = {
   onModeChange: (mode: RoomMode) => void;
   settings: RoomLightSettings;
   onSettingsChange: (next: RoomLightSettings) => void;
+  showSceneModes?: boolean;
 };
-export function Room3DLighting({locale,mode,onModeChange,settings,onSettingsChange}:Props) {
+export function Room3DLighting({locale,mode,onModeChange,settings,onSettingsChange,showSceneModes=true}:Props) {
   const t=texts[locale];
   const patch=(delta:Partial<RoomLightSettings>)=>onSettingsChange({...settings,...delta});
   const slider=(field:"power"|"ambient"|"daylightPower"|"exposure"|"x"|"z"|"height",name:string,min:number,max:number,step:number)=>(
@@ -67,13 +68,15 @@ export function Room3DLighting({locale,mode,onModeChange,settings,onSettingsChan
   );
   return (
     <section className="idea-lighting" aria-label={t.panel}>
-      <h2><Sparkles size={16}/>{t.mode}</h2>
-      <div className="idea-lighting-segments" role="group" aria-label={t.mode}>
-        {(["empty","kitchen","bathroom","living"] as const).map(value=>(
-          <button key={value} type="button" className={mode===value?"active":""}
-            aria-pressed={mode===value} onClick={()=>onModeChange(value)}>{t[value]}</button>
-        ))}
-      </div>
+      {showSceneModes&&<>
+        <h2><Sparkles size={16}/>{t.mode}</h2>
+        <div className="idea-lighting-segments" role="group" aria-label={t.mode}>
+          {(["empty","kitchen","bathroom","living"] as const).map(value=>(
+            <button key={value} type="button" className={mode===value?"active":""}
+              aria-pressed={mode===value} onClick={()=>onModeChange(value)}>{t[value]}</button>
+          ))}
+        </div>
+      </>}
       <div className="idea-lighting-heading">
         <h2><Lightbulb size={16}/>{t.panel}</h2><p>{t.subtitle}</p>
       </div>

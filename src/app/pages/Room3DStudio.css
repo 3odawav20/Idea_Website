@@ -51,7 +51,7 @@
 .idea-room3d-placed button.active{border-color:var(--idea-gold,#b68c5a)}
 .idea-room3d-delete{display:flex;align-items:center;gap:6px;border:1px solid #9d5555;color:#ad5a5a;background:transparent;border-radius:7px;padding:11px;font-size:11px}
 @media(max-width:1180px){.idea-room3d-workspace{grid-template-columns:215px minmax(0,1fr)}.idea-room3d-catalog{grid-column:1/-1;max-height:none}.idea-room3d-demo-list{grid-template-columns:repeat(4,minmax(0,1fr))}}
-@media(max-width:760px){.idea-room3d{padding:11px}.idea-room3d-workspace{display:flex;flex-direction:column;gap:10px}.idea-room3d-workspace>*{width:100%}.idea-room3d-side{max-height:none;padding:13px}.idea-room3d-stage{height:410px;min-height:340px}.idea-room3d-catalog{max-height:none}.idea-room3d-overlay{top:7px;inset-inline-start:7px}.idea-room3d-bottom{padding:10px}.idea-room3d-heading{gap:8px;padding:4px 0 13px}.idea-room3d-demo-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.idea-room3d{padding:11px}.idea-room3d-workspace{display:flex;flex-direction:column;gap:10px}.idea-room3d-workspace>*{width:100%}.idea-room3d[data-mode="materials-only"] .idea-room3d-material-catalog{order:-2}.idea-room3d[data-mode="materials-only"] .idea-room3d-main{order:-1}.idea-room3d-side{max-height:none;padding:13px}.idea-room3d-stage{height:410px;min-height:340px}.idea-room3d-catalog{max-height:none}.idea-room3d-overlay{top:7px;inset-inline-start:7px}.idea-room3d-bottom{padding:10px}.idea-room3d-heading{gap:8px;padding:4px 0 13px}.idea-room3d-demo-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 
 /* IDEA identity: true brand orange and white with grounded depth on charcoal. */
