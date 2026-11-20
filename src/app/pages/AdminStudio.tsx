@@ -121,7 +121,7 @@ export function AdminStudioHome(){
   <div className="ids-dashboard-grid">
     <div className="ids-panel"><div className="ids-panel-head"><div><span className="ids-kicker">CATALOGUE STATUS</span><h3>Material distribution</h3></div><Link to="/admin/catalogue" className="ids-text-link">Explore <ArrowRight size={15}/></Link></div>
       <div className="ids-material-list">{MATERIALS.map((m,i)=><div className="ids-material" key={m}><span className={"ids-material-icon m"+i}><Layers3 size={17}/></span><div className="ids-material-info"><div><b>{materialName(m)}</b><span>{format(counts[m])} / {format(MIN_PER_MATERIAL)}</span></div><div className="ids-progress"><span style={{width:(Math.min(100,counts[m]/MIN_PER_MATERIAL*100))+"%"}}/></div></div><span className="ids-material-percent">{Math.floor(counts[m]/MIN_PER_MATERIAL*100)}%</span></div>)}</div>
-      <div className="ids-panel-note"><CircleAlert size={16}/> Minimum release requirement: 1,500 verified unique SKUs in each category (6,000 total). Visible counts alone do not certify readiness.</div>
+      <div className="ids-panel-note"><CircleAlert size={16}/> Minimum release target: 2,000 verified unique SKUs in each category (8,000 total). Loaded counts alone do not certify readiness.</div>
     </div>
     <div className="ids-panel ids-standards"><div className="ids-panel-head"><div><span className="ids-kicker">QUALITY FRAMEWORK</span><h3>Publishing standards</h3></div><ShieldCheck size={20}/></div>
       <div className="ids-standard-total">{MATERIALS.filter(m=>counts[m]>=MIN_PER_MATERIAL).length}<small>/ 4</small></div><p>Categories meeting minimum numeric volume</p><div className="ids-standard-lines"><div><span><Check size={16}/> Distinct category targets</span><b>{format(MIN_PER_MATERIAL)}+ / each</b></div><div><span><ImageIcon size={16}/> High-quality product imagery</span><b>QA required</b></div><div><span><Database size={16}/> Source provenance</span><b>QA required</b></div><div><span><ShieldCheck size={16}/> Publication approval</span><b>Manual review</b></div></div><Link to="/admin/quality" className="ids-action-outline">Open quality control <ArrowRight size={16}/></Link>
@@ -187,8 +187,20 @@ function ProductEditor({product,override,ready,onClose,onSaved}:{product:Product
  const [image,setImage]=useState(override?.image_url||product.image);
  const [visible,setVisible]=useState(override?.visible!==false);
  const [proof,setProof]=useState(override?.source_proof_url||sourceLink(product));
- const [working,setWorking]=useState(false);const [error,setError]=useState("");
- useEffect(()=>{void requireSupabase().from("catalogue_admin_prices").select("price").eq("product_id",product.id).maybeSingle().then(({data})=>{if(data)setPrice(String(data.price));});},[product.id]);
+ const [working,setWorking]=useState(false);const [error,setError]=useState("");const [priceLoaded,setPriceLoaded]=useState(false);
+ useEffect(()=>{
+  if(!ready){setPriceLoaded(false);return}
+  let active=true;
+  setPrice("");setPriceLoaded(false);setError("");
+  void (async()=>{
+   try{
+    const {data,error:priceError}=await requireSupabase().from("catalogue_admin_prices").select("price").eq("product_id",product.id).maybeSingle();
+    if(priceError)throw priceError;
+    if(active){if(data)setPrice(String(data.price));setPriceLoaded(true)}
+   }catch(cause){if(active)setError(cause instanceof Error?cause.message:String(cause))}
+  })();
+  return ()=>{active=false};
+ },[product.id,ready]);
  const onSave=async()=>{
   const normalizedPrice=price.trim()===""?null:Number(price);
   if(!title.trim()||!brand.trim()||!MATERIALS.includes(material)||!isValidProductImage(image)||!/^https:\/\//.test(proof)||normalizedPrice!==null&&(!Number.isFinite(normalizedPrice)||normalizedPrice<0)){setError("Valid title, brand, material, image, HTTPS evidence URL and non-negative price are required.");return}
@@ -220,7 +232,7 @@ function ProductEditor({product,override,ready,onClose,onSaved}:{product:Product
  <p className="ids-editor-warning"><CircleAlert size={15}/> Editing metadata does not certify dimensions, rights or technical suitability. Unapproved staged imports cannot be published here.</p>
  {error&&<p className="ids-form-error" role="alert">{error}</p>}
  {!ready&&<p className="ids-form-error">Database migration / connection required before editing. Nothing will be saved locally.</p>}
- </div><div className="ids-modal-actions"><button onClick={onClose} className="ids-action-outline">Cancel</button><button onClick={()=>void onSave()} className="ids-primary" disabled={!ready||working}>{working?"Saving...":"Save to database"} <ArrowRight size={15}/></button></div>
+ </div><div className="ids-modal-actions"><button onClick={onClose} className="ids-action-outline">Cancel</button><button onClick={()=>void onSave()} className="ids-primary" disabled={!ready||working||!priceLoaded}>{working?"Saving...":"Save to database"} <ArrowRight size={15}/></button></div>
  </section></div>;
 }
 export function AdminQuality(){
@@ -283,38 +295,18 @@ export function AdminSettings(){
 
 export function AdminVisualizer(){
  const {session}=useBackend();
- const [state,setState]=useState<"loading"|"configured"|"unavailable">("loading");
- const [detail,setDetail]=useState("Checking the authenticated server adapter…");
- const [quota,setQuota]=useState("—");
-  const check=async()=>{
-   setState("unavailable");setDetail("BLOCKED: the visualizer status endpoint uses the retired Supabase token contract and is not verified against PHP/MySQL.");
-   try{
-    if(!supabase)throw new Error("BLOCKED: no verified PHP/MySQL visualizer status action is available.");
-    const {data}=await requireSupabase().auth.getSession();
-   if(!data.session?.access_token)throw new Error("Administrator session unavailable");
-   const response=await fetch("/api/visualize.php?action=status",{headers:{Authorization:"Bearer "+data.session.access_token},cache:"no-store"});
-   const payload=await response.json().catch(()=>null) as {integration?:string;provider?:string;model?:string;quota?:{unlimited?:boolean;remaining?:number|null;limit?:number|null};error?:string}|null;
-   if(!response.ok||!payload)throw new Error(payload?.error||"Visualizer adapter did not return a valid status");
-   setState("configured");
-   setDetail(payload.integration==="configuration_present_unverified"
-    ?"Runpod credentials are present, but the deployed worker contract and a real generation still require verification."
-    :"The adapter responded without a verified Runpod health state.");
-   setQuota(payload.quota?.unlimited?"Unlimited administrator quota":`${payload.quota?.remaining??"—"} / ${payload.quota?.limit??"—"} remaining`);
-  }catch(error){setState("unavailable");setDetail(error instanceof Error?error.message:String(error))}
- };
- useEffect(()=>{void check();},[]);
+ const detail="BLOCKED: no verified PHP/MySQL visualizer status action or deployed worker contract is available in this checkout.";
  return <>
-  <Heading kicker="IMMUTABLE SCENE ENGINE" title="AI visualizer control room" sub="Observable integration state without exposing endpoint IDs, API keys or customer room images."
-   action={<button className="ids-action-outline" onClick={()=>void check()} disabled={state==="loading"}><RefreshCw size={16}/> Recheck adapter</button>}/>
+  <Heading kicker="IMMUTABLE SCENE ENGINE" title="AI visualizer control room" sub="Integration, quota and worker status stay unverified until the authenticated PHP/MySQL contract is confirmed."/>
   <div className="ids-stats ids-stats-three">
-   <Stat title="Provider" value="Runpod" sub="Server-side adapter" icon={Sparkles} accent/>
-   <Stat title="Application quota" value="Unlimited" sub="Administrator role" icon={ShieldCheck}/>
-   <Stat title="Worker contract" value="v1" sub="Image + verified mask required" icon={Database}/>
+   <Stat title="Intended provider" value="Runpod" sub="Connection not verified" icon={Sparkles} accent/>
+   <Stat title="Application quota" value="—" sub="No verified admin quota policy" icon={ShieldCheck}/>
+   <Stat title="Worker contract" value="Unverified" sub="No deployed schema verified" icon={Database}/>
   </div>
   <div className="ids-dashboard-grid">
-   <div className="ids-panel ids-operations-card"><Activity size={29}/><span className="ids-kicker">INTEGRATION STATUS</span><h3>{state==="configured"?"Configuration present — verification required":state==="loading"?"Checking adapter":"Runpod unavailable"}</h3><p>{detail}</p><Pill ok={state==="configured"}>{state==="configured"?"Not yet health-verified":"No verified connection"}</Pill></div>
-   <div className="ids-panel ids-operations-card"><ShieldCheck size={29}/><span className="ids-kicker">ADMIN QUOTA</span><h3>{quota}</h3><p>{session?.email||session?.name||"Authenticated administrator"} bypasses the five-attempt customer limit. GPU billing, endpoint capacity and abuse controls still apply.</p><Link to="/ai-room-visualizer" className="ids-action-outline">Open test studio <ArrowRight size={16}/></Link></div>
+   <div className="ids-panel ids-operations-card"><Activity size={29}/><span className="ids-kicker">INTEGRATION STATUS</span><h3>Worker status not verified</h3><p>{detail}</p><Pill ok={false}>No verified connection</Pill></div>
+   <div className="ids-panel ids-operations-card"><ShieldCheck size={29}/><span className="ids-kicker">ADMIN QUOTA</span><h3>Policy unavailable</h3><p>{session?.email||session?.name||"Authenticated administrator"}: no admin bypass is assumed until a server-side quota policy is verified. GPU billing, endpoint capacity and abuse controls also remain unverified.</p><Link to="/ai-room-visualizer" className="ids-action-outline">Open test studio <ArrowRight size={16}/></Link></div>
   </div>
-  <div className="ids-notice"><CircleAlert size={17}/><span>This screen must not show “Connected” until a real authorized worker request proves the deployed input/output schema. Job analytics remain unavailable until durable database-backed telemetry is enabled.</span></div>
+  <div className="ids-notice"><CircleAlert size={17}/><span>This screen must not show “Connected” until an authorized worker request proves the deployed input/output schema. Job analytics remain unavailable until durable database-backed telemetry is enabled.</span></div>
  </>;
 }

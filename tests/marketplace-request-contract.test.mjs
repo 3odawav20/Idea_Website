@@ -57,6 +57,25 @@ test('admin overview does not present unverified API records as live RFQ totals'
   assert.doesNotMatch(adminStudio, /db\.requests\.length/)
 })
 
+test('admin quality thresholds are consistent and counts are not treated as verified records', () => {
+  assert.match(adminStudio, /Minimum release target: 2,000 verified unique SKUs in each category \(8,000 total\)/)
+  assert.doesNotMatch(adminStudio, /1,500 verified unique SKUs/)
+  assert.match(adminStudio, /Loaded counts alone do not certify readiness/)
+})
+
+test('visualizer dashboard does not claim an unverified worker, quota, or connection', () => {
+  assert.match(adminStudio, /No verified admin quota policy/)
+  assert.match(adminStudio, /Worker contract" value="Unverified"/)
+  assert.match(adminStudio, /No verified connection/)
+  assert.doesNotMatch(adminStudio, /value="Unlimited"|value="v1"|bypasses the five-attempt customer limit/)
+})
+
+test('catalogue editor guards price reads and saves until protected price state is available', () => {
+  assert.match(adminStudio, /if\(!ready\)\{setPriceLoaded\(false\);return\}/)
+  assert.match(adminStudio, /catch\(cause\)\{if\(active\)setError/)
+  assert.match(adminStudio, /disabled=\{!ready\|\|working\|\|!priceLoaded\}/)
+})
+
 test('API client rejects empty and null success responses and never uses Firebase bearer tokens', () => {
   assert.match(apiClient, /response\.status === 204/)
   assert.match(apiClient, /payload === null/)
