@@ -40,7 +40,18 @@ export async function apiFetch<T = unknown>(
     cache: "no-store",
   });
 
-  const payload = await response.json().catch(() => null);
+  if (response.status === 204) return undefined as T;
+
+  const responseText = await response.text();
+  let payload: unknown = null;
+  if (responseText.trim()) {
+    try {
+      payload = JSON.parse(responseText) as unknown;
+    } catch {
+      if (response.ok) throw new ApiError("Unexpected non-JSON API response.", 502);
+    }
+  }
+
   if (!response.ok) {
     const message =
       (payload && typeof payload === "object" && ("error" in payload ? String(payload.error) : "message" in payload ? String(payload.message) : "")) ||

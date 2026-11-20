@@ -36,7 +36,9 @@ test("material library preserves source-backed material data and user pan",()=>{
   assert.match(gallery,/setLimit\(prev=>Math\.min\(filtered\.length,prev\+48\)\)/);
   assert.match(gallery,/scrollLeft/);
   assert.match(gallery,/scrollTop/);
-  assert.match(gallery,/createPortal\(gallery,document\.body\)/);
+  assert.match(gallery,/return expanded\?createPortal\(/);
+  assert.match(gallery,/idea-room3d-material-backdrop/);
+  assert.match(gallery,/document\.body/);
   assert.match(css,/overflow-x:auto;overflow-y:auto/);
   assert.match(css,/grid-template-columns:repeat\(7/);
 });

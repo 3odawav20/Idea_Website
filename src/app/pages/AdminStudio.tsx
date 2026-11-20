@@ -102,7 +102,7 @@ export function AdminStudioLayout(){
 }
 
 export function AdminStudioHome(){
- const {db}=useBackend();const {products}=useStore();
+ const {products}=useStore();
  const flags=useMemo(()=>products.reduce((n,p)=>n+(qualityFlags(p).length?1:0),0),[products]);
  const counts=useMemo(()=>Object.fromEntries(MATERIALS.map(m=>[m,products.filter(p=>p.collection===m).length])) as Record<Material,number>,[products]);
  const total=Object.values(counts).reduce((s,n)=>s+n,0);
@@ -113,7 +113,7 @@ export function AdminStudioHome(){
     <Stat title="Storefront products" value={products.length} sub="Loaded in this session" icon={Package} accent/>
     <Stat title="Material catalogue" value={total} sub="Across four core categories" icon={Layers3}/>
     <Stat title="Quality flags" value={flags} sub="Static-field review · not image certification" icon={ShieldCheck}/>
-    <Stat title="Quote requests" value={db.requests.length} sub="Returned by connected backend" icon={Activity}/>
+    <Stat title="RFQ records" value="—" sub="Awaiting verified cPanel MySQL API" icon={Activity}/>
   </div>
   <div className="ids-dashboard-grid">
     <div className="ids-panel"><div className="ids-panel-head"><div><span className="ids-kicker">CATALOGUE STATUS</span><h3>Material distribution</h3></div><Link to="/admin/catalogue" className="ids-text-link">Explore <ArrowRight size={15}/></Link></div>

@@ -22,6 +22,11 @@ function mpNeedCompany(array $u,string $companyId,bool $ownerOnly=false): string
  if(!$role||($ownerOnly&&!in_array($role,['owner','admin'],true)))accountError(403,'COMPANY_ACCESS_DENIED');
  return $role;
 }
+function mpNeedCompanyEditor(array $u,string $companyId): string {
+ $role=mpNeedCompany($u,$companyId);
+ if(!in_array($role,['admin','owner','manager'],true))accountError(403,'COMPANY_ROLE_READ_ONLY');
+ return $role;
+}
 function mpStr(array $d,string $k,int $n,bool $req=false):string {return accountString($d,$k,$n,$req);}
 function mpValue(array $d,string $k,float $min,float $max):float {
  $x=$d[$k]??null;
@@ -55,9 +60,12 @@ function mpCatalogueRows(?array $u,string $q='',string $company='',bool $private
      LEFT JOIN idea_marketplace_product_meta m ON m.product_id=p.id
      WHERE ".implode(' AND ',$criteria)." ORDER BY p.created_at DESC LIMIT ".(int)$limit;
  $rows=accountQuery($sql,$args)->fetchAll();
+ $isAdmin=$u&&$u['role']==='admin';
+ $companyRole=$private&&$company!==''&&$u?mpRole($u,$company):'';
+ $canViewPrivatePrices=$isAdmin||in_array($companyRole,['owner','manager'],true);
  foreach($rows as &$r){
-  $isAdmin=$u&&$u['role']==='admin';
-  if(!$isAdmin)unset($r['company_name'],$r['company_status'],$r['private_price_cents'],$r['currency'],$r['admin_notes']);
+  if(!$isAdmin)unset($r['company_name'],$r['company_status'],$r['admin_notes']);
+  if(!$canViewPrivatePrices)unset($r['private_price_cents'],$r['currency']);
   $r['active']=(bool)$r['active'];
   $r['approved_for_storefront']=(bool)($r['approved_for_storefront']??false);
  }unset($r);
@@ -69,7 +77,7 @@ function mpSales(string $month,array $u,string $company=''):array {
  $from=new DateTimeImmutable($month.'-01 00:00:00',$zone);
  $to=$from->modify('+1 month');
  $start=$from->getTimestamp()*1000;$end=$to->getTimestamp()*1000;
- if($company!=='')mpNeedCompany($u,$company);
+ if($company!=='')mpNeedCompanyEditor($u,$company);
  elseif($u['role']!=='admin')accountError(403,'ADMIN_REQUIRED');
  $where=$company!==''?' AND oi.company_id=?':'';
  $params=[$start,$end];if($company!=='')$params[]=$company;
@@ -149,7 +157,7 @@ try{
  if(!is_array($data))accountError(400,'INVALID_JSON');
  $company=mpStr($data,'company_id',32);
  if($action==='product-save'){
-  mpNeedCompany($u,$company);
+  mpNeedCompanyEditor($u,$company);
   $c=accountQuery('SELECT id,status FROM idea_companies WHERE id=?',[$company])->fetch();
   if(!$c)accountError(404,'COMPANY_NOT_FOUND');
   $id=mpStr($data,'id',32);
@@ -207,7 +215,7 @@ try{
   mpOut(['saved'=>true]);
  }
  if($action==='product-active'){
-  mpNeedCompany($u,$company);
+  mpNeedCompanyEditor($u,$company);
   $id=mpStr($data,'id',32,true);$active=$data['active']??null;
   if(!is_bool($active))accountError(422,'INVALID_STATE');
   $row=accountQuery('SELECT p.id,c.status,m.approved_for_storefront FROM idea_supplier_products p JOIN idea_companies c ON c.id=p.company_id JOIN idea_marketplace_product_meta m ON m.product_id=p.id WHERE p.id=? AND p.company_id=?',[$id,$company])->fetch();
@@ -274,7 +282,7 @@ try{
   mpOut(['saved'=>true]);
  }
  if($action==='ad-request'){
-  mpNeedCompany($u,$company);
+  mpNeedCompanyEditor($u,$company);
   $pack=mpStr($data,'package_id',40,true);
   $title=mpStr($data,'title',160,true);$msg=mpStr($data,'message',4000,true);
   $kind=mpStr($data,'media_kind',20,true);

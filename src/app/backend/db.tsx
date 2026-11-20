@@ -212,7 +212,7 @@ export interface Api {
   createBusiness: (b: Partial<Business>) => Business;
   updateBusinessStatus: (id: string, status: BusinessStatus) => void;
   connectProduct: (bizId: string, productId: string) => void;
-  createRequest: (r: Omit<QuoteRequest, "id" | "createdAt" | "status" | "deadlineAt" | "matchedBusinessIds" | "customerId">, hours: number) => QuoteRequest;
+  createRequest: (r: Omit<QuoteRequest, "id" | "createdAt" | "status" | "deadlineAt" | "matchedBusinessIds" | "customerId">, hours: number) => Promise<void>;
   submitOffer: (o: Omit<Offer, "id" | "createdAt" | "status">) => Offer;
   acceptOffer: (offerId: string) => Order | null;
   sandboxPay: (orderId: string, ok: boolean) => void;
@@ -372,22 +372,12 @@ export function BackendProvider({ children }: { children: ReactNode }) {
           authRequired: true,
         }).then(() => refresh());
       },
-      createRequest: (r, hours) => {
-        const pending: QuoteRequest = {
-          ...r,
-          id: "pending",
-          customerId: session?.id || "",
-          status: "Request Submitted",
-          createdAt: Date.now(),
-          deadlineAt: Date.now() + hours * 3600_000,
-          matchedBusinessIds: [],
-        };
-        void apiFetch("/api/requests", {
+      createRequest: async (r, hours) => {
+        await apiFetch("/api/requests", {
           method: "POST",
           body: { ...r, hours },
           authRequired: true,
-        }).then(() => refresh());
-        return pending;
+        });
       },
       submitOffer: (offer) => {
         const pending: Offer = { ...offer, id: "pending", status: "submitted", createdAt: Date.now() };
