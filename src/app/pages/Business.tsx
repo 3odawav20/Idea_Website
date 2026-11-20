@@ -8,17 +8,17 @@ import { DashLayout, Panel, StatusBadge, EmptyState, Field, inputStyle } from ".
 import { BusinessSubscription } from "./Subscriptions";
 
 function useBiz() {
-  const { session, db } = useBackend();
-  return db.businesses.find((b) => b.ownerId === session?.id) || null;
+  const { db } = useBackend();
+  return db.businesses.find((business) => ["owner", "manager"].includes(business.membershipRole || "")) || db.businesses[0] || null;
 }
 
 export function BusinessLayout() {
   const { t, locale } = useI18n();
-  const { session, db } = useBackend();
+  const { session, db, capabilities } = useBackend();
   const nav = useNavigate();
   useEffect(() => { if (!session) nav("/login"); }, [session, nav]);
   if (!session) return null;
-  const biz = db.businesses.find((b) => b.ownerId === session.id);
+  const biz = db.businesses.find((business) => ["owner", "manager"].includes(business.membershipRole || "")) || db.businesses[0];
   const unread = biz ? db.messages.filter((m) => m.to === biz.id && !m.read).length : 0;
   const links = [
     { to: "/business", label: t("biz.title") },
@@ -34,20 +34,28 @@ export function BusinessLayout() {
     { to: "/business/reports", label: t("biz.reports") },
     { to: "/business/settings", label: t("acct.settings") },
   ];
-  return <DashLayout title={t("biz.title")} links={links}><div lang={locale}><Outlet /></div></DashLayout>;
+  return <DashLayout title={t("biz.title")} links={links}>
+    {!capabilities.offers && <p role="status" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", marginBottom: "var(--idea-space-4)" }}>BLOCKED: supplier RFQ distribution, offers, active subscriptions, orders, and payment records are not available from the verified PHP/MySQL contract.</p>}
+    <div lang={locale}><Outlet /></div>
+  </DashLayout>;
 }
 
 export function BusinessOnboarding() {
   const { session, api } = useBackend();
   const { t } = useI18n();
   const nav = useNavigate();
+  const [error, setError] = useState("");
   const [f, setF] = useState({ legalName: "", publicName: "", representative: "", email: session?.email || "", phone: session?.phone || "", governorate: "Cairo", companyType: "Supplier", crNumber: "", taxNumber: "" });
   const set = (k: string, v: string) => setF((s) => ({ ...s, [k]: v }));
   const govs = ["Cairo", "Giza", "Alexandria", "Qalyubia", "Dakahlia", "Sharqia"];
-  const submit = () => {
-    api.createBusiness({ ...f, ownerId: session?.id, serviceAreas: govs, brands: ["Ceramica Art"], categories: ["Ceramic", "Porcelain"] });
-    api.setRole("business");
-    nav("/business/verification");
+  const submit = async () => {
+    setError("");
+    try {
+      await api.createBusiness({ ...f, ownerId: session?.id, serviceAreas: govs });
+      nav("/business/verification");
+    } catch {
+      setError("BLOCKED: PHP/MySQL company-application persistence is not available. Your role and company status were not changed.");
+    }
   };
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
@@ -72,7 +80,8 @@ export function BusinessOnboarding() {
           <Field label="Business documents (CR / tax card)">
             <input type="file" multiple style={{ ...inputStyle, padding: 8 }} />
           </Field>
-          <Button onClick={submit} disabled={!f.legalName || !f.publicName}>Submit for verification</Button>
+          {error && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{error}</p>}
+          <Button onClick={() => void submit()} disabled={!f.legalName || !f.publicName}>Submit for verification</Button>
         </Panel>
       </Container>
     </Section>
@@ -165,11 +174,17 @@ export function BusinessRequestDetail() {
   const nav = useNavigate();
   const req = db.requests.find((r) => r.id === requestId);
   const [o, setO] = useState({ unitPrice: 180, shipping: 4000, prepDays: 3, deliveryDays: 7, quantity: req?.quantity || 0, exact: true, paymentTerms: "50% deposit", notes: "" });
+  const [error, setError] = useState("");
   if (!biz || !req) return <EmptyState title="Request not available" />;
   const product = products.find((p) => p.id === req.productId);
-  const submit = () => {
-    api.submitOffer({ requestId: req.id, businessId: biz.id, exactProduct: o.exact, quantity: o.quantity, unit: req.unit, unitPrice: o.unitPrice, shipping: o.shipping, taxRate: 0.14, availability: "In stock", prepDays: o.prepDays, deliveryDays: o.deliveryDays, paymentTerms: o.paymentTerms, notes: o.notes, expiresAt: Date.now() + 72 * 3600_000 });
-    nav("/business/offers");
+  const submit = async () => {
+    setError("");
+    try {
+      await api.submitOffer({ requestId: req.id, businessId: biz.id, exactProduct: o.exact, quantity: o.quantity, unit: req.unit, unitPrice: o.unitPrice, shipping: o.shipping, taxRate: 0.14, availability: "In stock", prepDays: o.prepDays, deliveryDays: o.deliveryDays, paymentTerms: o.paymentTerms, notes: o.notes, expiresAt: Date.now() + 72 * 3600_000 });
+      nav("/business/offers");
+    } catch {
+      setError("BLOCKED: the PHP/MySQL API does not expose supplier RFQ offers. No offer was created.");
+    }
   };
   const num = (k: keyof typeof o) => (e: React.ChangeEvent<HTMLInputElement>) => setO((s) => ({ ...s, [k]: Number(e.target.value) }));
   return (
@@ -192,7 +207,8 @@ export function BusinessRequestDetail() {
         <label style={{ display: "flex", gap: 8, color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", marginBottom: 12 }}>
           <input type="checkbox" checked={o.exact} onChange={(e) => setO((s) => ({ ...s, exact: e.target.checked }))} /> Exact product (uncheck for approved equivalent)
         </label>
-        <Button onClick={submit}>Submit private offer</Button>
+        {error && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{error}</p>}
+        <Button onClick={() => void submit()}>Submit private offer</Button>
       </Panel>
     </>
   );

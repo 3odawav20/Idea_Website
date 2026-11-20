@@ -3,17 +3,18 @@ import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
 const sql=read("supabase/migrations/20261103130000_company_control_center.sql");
+const marketplace=read("server/cpanel/api/marketplace.php");
+const pricePolicy=read("server/cpanel/api/marketplace-price-policy.php");
 const app=read("src/app/App.tsx");
 const center=read("src/app/pages/CompanyControlCenter.tsx");
 const growth=read("src/app/pages/BusinessGrowth.tsx");
-const ticker=read("src/app/components/AnnouncementBar.tsx");
 const banner=read("src/app/components/SponsoredHeroVideo.tsx");
 const auth=read("src/app/components/SocialAuth.tsx");
 const search=read("src/app/pages/AdminCodeLookup.tsx");
 
 test("business company and admin routes are separate, role-guarded and navigable",()=>{
   assert.match(app, /ProtectedRoute roles=\{\["admin"\]\}/);
-  assert.match(app, /ProtectedRoute roles=\{\["business"\]\}/);
+  assert.match(app, /ProtectedRoute roles=\{\["supplier"\]\}/);
   for(const route of [
     'path="companies" element={<CompanyControlCenter mode="admin" />}',
     'path="products" element={<CompanyControlCenter mode="supplier" />}',
@@ -25,54 +26,61 @@ test("business company and admin routes are separate, role-guarded and navigable
     'path="search" element={<AdminCodeLookup />}',
     'path="/business/apply" element={<CompanyApplication />}'
   ])assert.ok(app.includes(route),route);
-  assert.match(center,/session\.role!=="business"/);
-  assert.match(center,/apply_for_idea_company/);
+  assert.match(center,/session\.role!=="supplier"/);
+  assert.match(center,/BLOCKED: this company workspace still depends on Supabase/);
 });
-test("company owner cannot grant platform admin or suspend another company",()=>{
-  assert.match(sql,/public\.company_is_owner\(p_company\)/);
-  assert.match(sql,/member_role in \('owner','manager'\)/);
-  assert.match(sql,/if not public\.is_admin\(\)/);
-  assert.match(sql,/admin_set_idea_company_status/);
-  assert.match(sql,/set revoked_at=case when p_enabled then null else now\(\) end/);
-  assert.match(sql,/drop policy if exists "companies: members update"/);
-  assert.match(sql,/create policy "companies: platform admin update"/);
-  assert.match(sql,/role=case when public\.user_roles\.role='admin' then 'admin'/);
-  assert.match(sql,/status='verified'/);
+test("PHP company authorization scopes owner, manager, and platform-admin actions",()=>{
+  assert.match(marketplace,/function mpRole\(array \$u,string \$companyId\): string/);
+  assert.match(marketplace,/SELECT id FROM idea_companies WHERE id=\? AND owner_id=\?/);
+  assert.match(marketplace,/SELECT role FROM idea_company_staff WHERE company_id=\? AND user_id=\? AND active=1/);
+  assert.match(marketplace,/\['admin','owner','manager'\]/);
+  assert.match(marketplace,/if\(\$action==='company-suspend'\|\|\$action==='company-status'\)\{\s*if\(!\$admin\)accountError\(403,'ADMIN_REQUIRED'\)/);
+  assert.match(marketplace,/if\(\$action==='product-approval'\)\{\s*if\(!\$admin\)accountError\(403,'ADMIN_REQUIRED'\)/);
+  assert.match(marketplace,/\$ownerOnly&&!in_array\(\$role,\['owner','admin'\],true\)/);
 });
-test("listing publication is platform admin-controlled, not merely active flag",()=>{
-  assert.match(sql,/approved_for_storefront boolean not null default false/);
-  assert.match(sql,/guard_idea_supplier_publication/);
-  assert.match(sql,/active and approved_for_storefront/);
-  assert.match(sql,/create policy "listings: manager update"/);
+test("public listing activation requires verified-company and platform-approval state",()=>{
+  assert.match(marketplace,/if\(\$action==='product-approval'\)\{\s*if\(!\$admin\)accountError\(403,'ADMIN_REQUIRED'\)/);
+  assert.match(marketplace,/if\(\$yes&&\$row\['status'\]!=='verified'\)accountError\(409,'COMPANY_NOT_VERIFIED'\)/);
+  assert.match(marketplace,/if\(\$active&&\(\$row\['status'\]!=='verified'\|\|!\(bool\)\$row\['approved_for_storefront'\]\)\)/);
+  assert.match(marketplace,/SET active=0/);
   assert.match(center,/approved_for_storefront/);
 });
-test("private prices and promotions never public; no fabricated sales",()=>{
+test("private prices stay scoped to company owners or managers; sales are captured-payment-only",()=>{
+  assert.match(pricePolicy,/\$companyId !== '' && in_array\(\$companyRole, \['owner', 'manager'\], true\)/);
+  assert.match(pricePolicy,/unset\(\$row\['private_price_cents'\], \$row\['currency'\]\)/);
+  assert.equal((marketplace.match(/mpApplyCataloguePricePolicy\(/g)||[]).length,1);
+  assert.match(marketplace,/mpCatalogueRows\(\$u,\$q,'',\(bool\)\$admin,100\)/);
+  assert.match(marketplace,/if\(\$action==='products'\)/);
+  assert.match(marketplace,/mpNeedCompany\(\$u,\$company\)/);
+  assert.match(marketplace,/mpCatalogueRows\(\$u,'',\$company,true,500\)/);
+  assert.match(growth,/response\.basis!=="captured_payments_only"/);
+  assert.match(growth,/لن نختلق مبيعات/);
+  assert.doesNotMatch(growth,/Math\.random/);
+});
+test("legacy SQL privacy migration is not presented as live; PHP sales count captured payments only",()=>{
   for(const name of ["supplier_listing_private_prices","supplier_listing_private_promotions","idea_confirmed_sales"]){
     assert.ok(sql.includes("alter table public."+name+" enable row level security"));
     assert.ok(sql.includes("alter table public."+name+" force row level security"));
     assert.ok(sql.includes("revoke all on public."+name+" from anon"));
   }
-  assert.match(sql,/unique\(company_id,source_order_id\)/);
-  assert.match(sql,/refund_egp <= gross_egp/);
-  assert.match(growth,/idea_company_sales_summary/);
-  assert.match(sql,/language sql stable security invoker/);
-  assert.match(sql,/revoke all on function public.idea_company_sales_summary\(date\) from public,anon/);
-  assert.match(growth,/لن نختلق مبيعات/);
-  assert.doesNotMatch(growth,/Math\.random/);
+  assert.match(marketplace,/o\.payment_status='paid'/);
+  assert.match(marketplace,/pm\.status='paid'/);
+  assert.match(marketplace,/'basis'=>'captured_payments_only'/);
+  assert.match(growth,/response\.basis!=="captured_payments_only"/);
+  assert.doesNotMatch(growth,/idea_company_sales_summary|Math\.random/);
 });
-test("admin announcement implementation remains staged; live header never reads Supabase",()=>{
-  // The legacy Supabase schema/editor is source-only pending verified PHP/MySQL migration.
-  assert.match(sql,/create policy "idea_announcements_read"/);
-  assert.match(sql,/is_published and \(starts_at is null/);
-  assert.match(growth,/idea_site_announcements/);
-  assert.match(ticker,/idea_site_announcements/);
-  assert.match(ticker,/locale==="ar"\?a\.title_ar/);
+test("admin ticker edits use the PHP contract; the live header does not mount the legacy Supabase ticker",()=>{
+  assert.match(growth,/apiFetch<unknown>\("\/api\/marketplace\.php\?action=ticker-save"/);
+  assert.match(growth,/requireSavedId\(result\)/);
+  assert.doesNotMatch(growth,/idea_site_announcements/);
+  assert.match(marketplace,/if\(\$action==='ticker'&&\$method==='GET'\)/);
+  assert.match(marketplace,/if\(\$action==='ticker-save'\)\{\s*if\(!\$admin\)accountError\(403,'ADMIN_REQUIRED'\)/);
+  assert.match(marketplace,/INSERT INTO idea_marketplace_announcements/);
   const header = read("src/app/components/Header.tsx");
   assert.match(header,/idea-catalogue-announcement/);
   assert.doesNotMatch(header,/<AnnouncementBar\b|supabase/i);
   assert.match(read("src/app/components/Header.css"),/position:sticky/);
   assert.match(read("src/app/components/AnnouncementBar.css"),/prefers-reduced-motion/);
-  assert.match(read("src/app/components/AnnouncementBar.css"),/max-width:640px/);
 });
 test("site media is sanitized; budgets are private and uploads stay private",()=>{
   assert.match(sql,/create table if not exists public\.idea_public_campaign_placements/);
@@ -122,11 +130,16 @@ test("ad package prices are administrator-editable and remain unpublished until 
   assert.match(growth,/updateRate/);
   assert.match(growth,/نشر السعر/);
 });
-test("logins route verified platform admin and supplier to appropriate workspaces",()=>{
-  const content=read("src/app/pages/Auth.tsx");
-  assert.match(content,/from\("user_roles"\)\.select\("role"\)/);
-  assert.match(content,/verifiedRole\?\.role === "admin" \? "\/admin"/);
-  assert.match(content,/verifiedRole\?\.role === "supplier" \? "\/business"/);
+test("login accepts and routes only the PHP-confirmed platform roles",()=>{
+  const content=read("src/app/pages/AccountEntry.tsx");
+  const rolePolicy=read("src/app/backend/authValidation.ts");
+  assert.match(content,/authenticatePhp\("login"/);
+  assert.match(content,/const returnedRole=account\.user\?\.role/);
+  assert.match(content,/const expectedRole=isAdmin\?"admin":isBusiness\?"supplier":"buyer"/);
+  assert.match(content,/const route=resolvePostAuthRoute\(returnedRole\)/);
+  assert.match(rolePolicy,/role === "admin"\) return "\/admin"/);
+  assert.match(rolePolicy,/role === "supplier"\) return "\/business"/);
+  assert.doesNotMatch(content,/from\("user_roles"\)/);
 });
 test("company ad request can never self-authorize public media",()=>{
   assert.match(sql,/media_url is null or public\.is_admin\(\)/);

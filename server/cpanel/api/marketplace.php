@@ -5,6 +5,7 @@ header('Cache-Control: no-store');
 header('X-Content-Type-Options: nosniff');
 require_once __DIR__.'/platform-core.php';
 require_once __DIR__.'/tile-dimensions.php';
+require_once __DIR__.'/marketplace-price-policy.php';
 
 /** IDEA marketplace is same-origin, session-backed and MySQL-only. */
 function mpOut(array $v): never { echo platformJson($v); exit; }
@@ -62,10 +63,9 @@ function mpCatalogueRows(?array $u,string $q='',string $company='',bool $private
  $rows=accountQuery($sql,$args)->fetchAll();
  $isAdmin=$u&&$u['role']==='admin';
  $companyRole=$private&&$company!==''&&$u?mpRole($u,$company):'';
- $canViewPrivatePrices=$isAdmin||in_array($companyRole,['owner','manager'],true);
  foreach($rows as &$r){
   if(!$isAdmin)unset($r['company_name'],$r['company_status'],$r['admin_notes']);
-  if(!$canViewPrivatePrices)unset($r['private_price_cents'],$r['currency']);
+  $r=mpApplyCataloguePricePolicy($r,$company,$companyRole);
   $r['active']=(bool)$r['active'];
   $r['approved_for_storefront']=(bool)($r['approved_for_storefront']??false);
  }unset($r);

@@ -80,7 +80,7 @@ export function AiVisualizerStudio() {
   const { locale } = useI18n();
   const { session } = useBackend();
   // Presentation guard only. PHP/MySQL checks the authenticated role on every AI action.
-  const aiEligible = session?.role === "admin" || session?.role === "customer";
+  const aiEligible = session?.role === "admin" || session?.role === "buyer";
   const { products } = useStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const ar = locale === "ar";

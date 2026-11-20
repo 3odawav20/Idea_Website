@@ -78,7 +78,7 @@ const LegalPage = lazy(() => import("./pages/LegalPages").then(module => ({ defa
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
-  if (!session) return <Navigate to={roles?.includes("admin") ? "/admin/login" : roles?.includes("business") ? "/business/login" : "/login"} replace />;
+  if (!session) return <Navigate to={roles?.includes("admin") ? "/admin/login" : roles?.includes("supplier") ? "/business/login" : "/login"} replace />;
   if (roles && !roles.includes(session.role)) return <Navigate to="/" replace />;
   return <Outlet />;
 }
@@ -144,7 +144,7 @@ export default function App() {
               <Route path="/room-designer/project/:projectId" element={<Navigate to="/account/room-projects" replace />} />
 
               {/* Customer account */}
-              <Route element={<ProtectedRoute roles={["customer", "designer", "contractor"]} />}>
+              <Route element={<ProtectedRoute roles={["buyer"]} />}>
               <Route path="/account" element={<AccountLayout />}>
                 <Route index element={<AccountProfile />} />
                 <Route path="profile" element={<AccountProfile />} />
@@ -165,7 +165,7 @@ export default function App() {
               </Route>
 
               {/* Business */}
-              <Route element={<ProtectedRoute roles={["business"]} />}>
+              <Route element={<ProtectedRoute roles={["supplier"]} />}>
               <Route path="/business/onboarding" element={<Navigate to="/business/apply" replace />} />
               <Route path="/business" element={<BusinessLayout />}>
                 <Route index element={<BusinessOverview />} />

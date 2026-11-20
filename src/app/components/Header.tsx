@@ -39,7 +39,7 @@ export function Header() {
   }, [open]);
   // Navigation via browser history also closes the menu, including on iOS Safari.
   useEffect(() => { setOpen(false); }, [pathname]);
-  const account = session ? session.role === "business" ? "/business" : session.role === "admin" ? "/admin" : "/account" : "/login";
+  const account = session ? session.role === "supplier" ? "/business" : session.role === "admin" ? "/admin" : "/account" : "/login";
   const controls = <>
     <span className="idea-header-languages"><Globe size={15} aria-hidden="true" />
       {(["en", "ar", "fr"] as const).map(code => <button key={code} aria-label={{en:"English",ar:"العربية",fr:"Français"}[code]} aria-pressed={locale === code} onClick={() => setLocale(code)}>{code.toUpperCase()}</button>)}

@@ -4,6 +4,8 @@ import { Trash2, Minus, Plus, Clock } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
+import { requireSavedId } from "../backend/apiClient";
+import { resolveExplicitVariant } from "../backend/rfqContract";
 import { Button, Container, Section, SectionHeader } from "../components/ui";
 import { Field, inputStyle } from "../components/dash";
 
@@ -27,7 +29,7 @@ const PROJECT_TYPES = [
 export function RequestQuote() {
   const { t, locale } = useI18n();
   const { quote, products, updateQuoteQty, removeFromQuote, clearQuote } = useStore();
-  const { api, session, refresh } = useBackend();
+  const { api, session, refresh, capabilities } = useBackend();
   const nav = useNavigate();
   const [d, setD] = useState({ governorate: "Cairo", destination: "", deliveryDate: "", projectType: "Residential", phased: false, notes: "", hours: 24 });
   const [selectedSizes, setSelectedSizes] = useState<Record<string, string>>({});
@@ -40,8 +42,19 @@ export function RequestQuote() {
   const submit = async () => {
     if (busy) return;
     if (!session) { nav("/login"); return; }
-    if (!["customer", "designer", "contractor"].includes(session.role)) {
-      setError(locale === "ar" ? "يتطلب إرسال طلب السعر حساب عميل." : "A customer account is required to submit an RFQ.");
+    if (session.role !== "buyer") {
+      setError(locale === "ar" ? "يتطلب إرسال طلب السعر حساب مشتري معتمدًا." : "A server-confirmed buyer account is required to submit an RFQ.");
+      return;
+    }
+    if (!capabilities.rfq) {
+      setError(locale === "ar" ? "BLOCKED: واجهة طلبات الأسعار في PHP/MySQL غير متاحة في العقد الحالي؛ لم يتم إرسال أي طلب." : "BLOCKED: the verified PHP/MySQL contract has no RFQ endpoint. No request was sent.");
+      return;
+    }
+    const invalidVariant = rows.some(({ product }) =>
+      !resolveExplicitVariant(product.sizes, selectedSizes[product.id])
+    );
+    if (invalidVariant) {
+      setError(locale === "ar" ? "اختر المقاس أو المتغير المحدد لكل منتج." : "Select the exact size or variant for every product.");
       return;
     }
     const invalidQuantity = rows.some(({ item }) => {
@@ -59,15 +72,17 @@ export function RequestQuote() {
     try {
       for (const { item, product } of rows) {
         const quantity = Number(quantityDrafts[item.productId] ?? item.quantity);
-        const sizeId = selectedSizes[product.id] ?? product.sizes[0]?.id;
-        const size = product.sizes.find((entry) => entry.id === sizeId) ?? product.sizes[0];
-        await api.createRequest({
+        const size = resolveExplicitVariant(product.sizes, selectedSizes[product.id]);
+        if (!size) throw new Error(locale === "ar" ? "المقاس المحدد غير متاح." : "The selected variant is no longer available.");
+        const persistedRequest = await api.createRequest({
           productId: product.id,
-          variantLabel: size?.originalSourceValue || size?.label || product.variant || product.model || "",
+          variantId: size.id,
+          variantLabel: size.originalSourceValue || size.normalizedDisplayValue || size.label,
           quantity, unit: item.unit,
           governorate: d.governorate, destination: d.destination, deliveryDate: d.deliveryDate,
           projectType: d.projectType, phased: d.phased, notes: d.notes,
         }, d.hours);
+        requireSavedId(persistedRequest);
         removeFromQuote(product.id);
         submitted += 1;
       }
@@ -101,23 +116,23 @@ export function RequestQuote() {
             {/* Step 1 — items & quantity */}
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--idea-space-3)", marginBottom: "var(--idea-space-6)" }}>
               {rows.map(({ item, product }) => {
-                const selectedSizeId = selectedSizes[product.id] ?? product.sizes[0]?.id ?? "";
-                const selectedSize = product.sizes.find((size) => size.id === selectedSizeId) ?? product.sizes[0];
+                const selectedSizeId = selectedSizes[product.id] ?? "";
+                const selectedSize = product.sizes.find((size) => size.id === selectedSizeId);
                 return (
                   <div key={item.productId} style={{ display: "flex", flexWrap: "wrap", gap: "var(--idea-space-4)", alignItems: "center", background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-3)" }}>
                     <img src={product.image} alt={product.name[locale]} style={{ width: 72, height: 72, objectFit: "cover", borderRadius: "var(--idea-radius-sm)" }} />
                     <div style={{ flex: "1 1 180px" }}>
                       <div className="idea-display" style={{ fontSize: "var(--idea-text-base)", color: "var(--idea-text)" }}>{product.name[locale]}</div>
-                      <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{product.model} · {selectedSize?.label || product.variant || ""}</div>
+                      <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{product.model} · {selectedSize?.originalSourceValue || selectedSize?.label || (locale === "ar" ? "لم يتم اختيار مقاس" : "No variant selected")}</div>
                     </div>
-                    {product.sizes.length > 1 && (
-                      <label style={{ display: "flex", flexDirection: "column", gap: 4, flex: "1 1 150px", color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>
-                        {locale === "ar" ? "المقاس المحدد" : "Selected size"}
-                        <select value={selectedSizeId} onChange={(event) => setSelectedSizes((current) => ({ ...current, [product.id]: event.target.value }))} style={{ ...qtyInputStyle, width: "100%" }}>
-                          {product.sizes.map((size) => <option key={size.id} value={size.id}>{size.label}{size.thicknessMm ? ` · ${size.thicknessMm} mm` : ""}</option>)}
-                        </select>
-                      </label>
-                    )}
+                    <label style={{ display: "flex", flexDirection: "column", gap: 4, flex: "1 1 150px", color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>
+                      {locale === "ar" ? "اختر المقاس المحدد" : "Choose exact size / variant"}
+                      <select required value={selectedSizeId} onChange={(event) => setSelectedSizes((current) => ({ ...current, [product.id]: event.target.value }))} style={{ ...qtyInputStyle, width: "100%" }}>
+                        <option value="" disabled>{locale === "ar" ? "اختر متغيرًا" : "Select a variant"}</option>
+                        {product.sizes.map((size) => <option key={size.id} value={size.id}>{size.originalSourceValue || size.label}{size.thicknessMm ? ` · ${size.thicknessMm} mm` : ""}</option>)}
+                      </select>
+                      {!product.sizes.length && <span role="status">{locale === "ar" ? "لا توجد مقاسات موثقة لهذا المنتج." : "No verified variants are available for this product."}</span>}
+                    </label>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <button type="button" aria-label={locale === "ar" ? "تقليل الكمية" : "Decrease quantity"} disabled={busy} onClick={() => {
                         const current = Number(quantityDrafts[item.productId] ?? item.quantity) || item.quantity;
@@ -173,9 +188,10 @@ export function RequestQuote() {
                   </select>
                 </label>
               </div>
+              {!capabilities.rfq && <p role="status" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", margin: "0 0 var(--idea-space-4)" }}>{locale === "ar" ? "BLOCKED: لم يتم توثيق مسار إنشاء RFQ وتوزيعه في PHP/MySQL؛ لن تُرسل الطلبات أو تُمسح من القائمة." : "BLOCKED: PHP/MySQL RFQ creation and supplier-distribution actions are not verified. Requests will not be sent or cleared."}</p>}
               {error && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", margin: "0 0 var(--idea-space-4)" }}>{error}</p>}
               <div style={{ display: "flex", gap: "var(--idea-space-3)", flexWrap: "wrap" }}>
-                <Button size="lg" onClick={() => void submit()} disabled={busy} aria-busy={busy}>{busy ? (locale === "ar" ? "جارٍ الإرسال…" : "Submitting…") : t("quote.submit")}</Button>
+                <Button size="lg" onClick={() => void submit()} disabled={busy || (!!session && !capabilities.rfq)} aria-busy={busy}>{busy ? (locale === "ar" ? "جارٍ الإرسال…" : "Submitting…") : t("quote.submit")}</Button>
                 <Button variant="ghost" onClick={clearQuote} disabled={busy}>{t("filters.clear")}</Button>
               </div>
               {!session && <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: 10 }}>{locale === "ar" ? "سجّل الدخول لإرسال الطلب واستلام عروض الموردين الخاصة." : "Sign in to submit and receive private supplier offers."}</p>}

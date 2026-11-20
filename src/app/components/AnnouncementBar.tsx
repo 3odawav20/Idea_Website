@@ -2,10 +2,11 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "react-router";
 import { Megaphone } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
-import { supabase } from "../backend/supabaseClient";
+import { apiFetch } from "../backend/apiClient";
 import "./AnnouncementBar.css";
 
 type Announcement={id:string;title_ar:string;title_en:string;title_fr:string|null;target_path:string|null};
+type PhpAnnouncement={id:string;text_ar:string;text_en:string;link_path:string};
 
 /** Only admin-published records pass the server-side read policy.
  * Never claim today's sales or discounts from static/mock data.
@@ -14,33 +15,19 @@ export function AnnouncementBar({fallback = null}: {fallback?: ReactNode}){
   const {locale}=useI18n();
   const [rows,setRows]=useState<Announcement[]>([]);
   useEffect(()=>{
-    if(!supabase)return;
-    let valid=true;
+    let active=true;
     const refresh=async()=>{
-      const [announcements,sponsored]=await Promise.all([
-        supabase.from("idea_site_announcements")
-          .select("id,title_ar,title_en,title_fr,target_path")
-          .eq("is_published",true).order("created_at",{ascending:false}).limit(8),
-        supabase.from("idea_public_campaign_placements")
-          .select("campaign_id,title_ar,title_en,landing_path")
-          .eq("placement","home_topline").order("published_at",{ascending:false}).limit(4),
-      ]);
-      if(valid&&(!announcements.error||!sponsored.error)){
-        const ordinary=((announcements.data||[]) as Announcement[]);
-        const paid=(sponsored.data||[]).map(x=>({
-          id:x.campaign_id,title_ar:"إعلان · "+x.title_ar,
-          title_en:"Sponsored · "+(x.title_en||x.title_ar),
-          title_fr:null,target_path:x.landing_path,
-        }));
-        setRows([...ordinary,...paid]);
+      try{
+        const response=await apiFetch<{announcements:PhpAnnouncement[]}>("/api/marketplace.php?action=ticker");
+        if(active)setRows((response.announcements||[]).map(item=>({
+          id:item.id,title_ar:item.text_ar,title_en:item.text_en,title_fr:null,target_path:item.link_path||null,
+        })));
+      }catch{
+        if(active)setRows([]);
       }
     };
     void refresh();
-    const channel=supabase.channel("idea-announcements-live")
-      .on("postgres_changes",{event:"*",schema:"public",table:"idea_site_announcements"},()=>{void refresh()})
-      .on("postgres_changes",{event:"*",schema:"public",table:"idea_public_campaign_placements"},()=>{void refresh()})
-      .subscribe();
-    return()=>{valid=false;void supabase.removeChannel(channel)};
+    return()=>{active=false};
   },[]);
   if(!rows.length)return fallback;
   const localized=(a:Announcement)=>locale==="ar"?a.title_ar:locale==="fr"?(a.title_fr||a.title_en):a.title_en;
