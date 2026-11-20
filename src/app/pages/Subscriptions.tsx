@@ -6,7 +6,7 @@ import { useBackend, type Plan } from "../backend/db";
 import { Container, Section, SectionHeader, Button } from "../components/ui";
 import { Panel, StatusBadge } from "../components/dash";
 
-function PlanCard({ plan, interval, current, onChoose }: { plan: Plan; interval: "monthly" | "annual"; current: boolean; onChoose: () => void }) {
+function PlanCard({ plan, interval, current, blocked, onChoose }: { plan: Plan; interval: "monthly" | "annual"; current: boolean; blocked: boolean; onChoose: () => void }) {
   const price = interval === "annual" ? plan.annual : plan.monthly;
   return (
     <div style={{
@@ -30,21 +30,27 @@ function PlanCard({ plan, interval, current, onChoose }: { plan: Plan; interval:
           </li>
         ))}
       </ul>
-      <Button variant={current ? "ghost" : "gold"} onClick={onChoose} disabled={current}>{current ? "Active plan" : price === 0 ? "Select" : "Subscribe"}</Button>
+      <Button variant={current ? "ghost" : "gold"} onClick={onChoose} disabled={current || blocked}>{current ? "Active plan" : blocked ? "Unavailable" : price === 0 ? "Select" : "Subscribe"}</Button>
     </div>
   );
 }
 
 function PlanGrid({ audience }: { audience: "customer" | "business" }) {
-  const { db, session, api } = useBackend();
+  const { db, session, api, capabilities } = useBackend();
   const [interval, setInterval] = useState<"monthly" | "annual">("monthly");
+  const [error, setError] = useState("");
   const nav = useNavigate();
   const plans = db.plans.filter((p) => p.audience === audience);
   const sub = db.subscriptions.find((s) => s.userId === session?.id && s.status === "active");
-  const choose = (plan: Plan) => {
+  const choose = async (plan: Plan) => {
     if (!session) { nav("/login"); return; }
-    if (plan.monthly === 0 && plan.annual === 0) { api.subscribe(plan.id, interval, true); nav(audience === "business" ? "/business/subscription" : "/account/subscription"); return; }
-    nav(`/checkout?plan=${plan.id}&interval=${interval}`);
+    setError("");
+    try {
+      await api.subscribe(plan.id, interval);
+      nav(audience === "business" ? "/business/subscription" : "/account/subscription");
+    } catch {
+      setError("BLOCKED: PHP/MySQL subscription persistence and payment confirmation are not available.");
+    }
   };
   return (
     <>
@@ -57,8 +63,10 @@ function PlanGrid({ audience }: { audience: "customer" | "business" }) {
           }}>{x}</button>
         ))}
       </div>
+      {!capabilities.subscriptions && <p role="status" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", marginBottom: "var(--idea-space-4)" }}>BLOCKED: the verified PHP/MySQL contract does not expose subscription or payment operations.</p>}
+      {error && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{error}</p>}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: "var(--idea-space-4)" }}>
-        {plans.map((p) => <PlanCard key={p.id} plan={p} interval={interval} current={sub?.planId === p.id} onChoose={() => choose(p)} />)}
+        {plans.map((p) => <PlanCard key={p.id} plan={p} interval={interval} current={sub?.planId === p.id} blocked={!capabilities.subscriptions} onChoose={() => void choose(p)} />)}
       </div>
     </>
   );
@@ -88,7 +96,8 @@ export function SubscriptionsBusinesses() {
 }
 
 export function SubscriptionPanel({ audience }: { audience: "customer" | "business" }) {
-  const { db, session, api } = useBackend();
+  const { db, session, api, capabilities } = useBackend();
+  const [error, setError] = useState("");
   const sub = db.subscriptions.find((s) => s.userId === session?.id);
   const plan = db.plans.find((p) => p.id === sub?.planId);
   return (
@@ -100,13 +109,19 @@ export function SubscriptionPanel({ audience }: { audience: "customer" | "busine
             <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: "var(--idea-text)", marginTop: 6 }}>{plan.name} <StatusBadge text={sub.status} tone={sub.status === "active" ? "green" : sub.status === "payment-failed" ? "red" : "muted"} /></div>
             <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", marginTop: 4 }}>{sub.interval} · renews {new Date(sub.renewsAt).toLocaleDateString()}</div>
             <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-              {sub.status === "active" && <Button size="sm" variant="ghost" onClick={() => api.cancelSubscription(session!.id)}>Cancel renewal</Button>}
+              {sub.status === "active" && <Button size="sm" variant="ghost" disabled={!capabilities.subscriptions} onClick={async () => {
+                setError("");
+                try { await api.cancelSubscription(session!.id); }
+                catch { setError("BLOCKED: subscription cancellation is not connected to PHP/MySQL."); }
+              }}>Cancel renewal</Button>}
             </div>
           </>
         ) : (
           <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", marginTop: 6 }}>No active subscription.</div>
         )}
       </Panel>
+      {!capabilities.subscriptions && <p role="status" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>BLOCKED: subscription and billing records are not available from the verified PHP/MySQL contract.</p>}
+      {error && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{error}</p>}
       <PlanGrid audience={audience} />
     </>
   );

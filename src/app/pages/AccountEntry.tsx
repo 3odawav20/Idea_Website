@@ -9,6 +9,9 @@ import {
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
+import { useBackend } from "../backend/db";
+import { authenticatePhp } from "../backend/phpAccounts";
+import { resolvePostAuthRoute } from "../backend/authValidation";
 import "./AccountEntry.css";
 
 type Audience = "customer" | "business" | "admin";
@@ -43,9 +46,6 @@ const ADMIN_FEATURES = [
   {icon:ShieldCheck,title:msg("وصول آمن ومحمي","Secure access"),desc:msg("حماية متعددة الطبقات والتحقق الثنائي.","Layered protection and two-factor verification.")}
 ];
 
-const API = String(import.meta.env.VITE_IDEA_ACCOUNT_API || "").trim();
-const socialProviders = new Set(String(import.meta.env.VITE_IDEA_AUTH_PROVIDERS || "").split(",").map(v=>v.trim().toLowerCase()).filter(Boolean));
-
 function FeatureItems({ audience,locale }: {audience:Audience;locale:"ar"|"en"|"fr"}) {
   const features=audience==="customer"?CUSTOMER_FEATURES:audience==="business"?BUSINESS_FEATURES:ADMIN_FEATURES;
   return <div className={"idea-auth-feature-list idea-auth-feature-list--"+audience}>
@@ -71,6 +71,7 @@ function FormField({ id, label,icon:Icon, type="text",value,onChange,autoComplet
 export function AccountEntry({audience, mode="register"}:{audience:Audience;mode?:Mode}) {
   const {locale}=useI18n();
   const {mode:theme}=useTheme();
+  const {refresh}=useBackend();
   const navigate=useNavigate();
   const isAdmin=audience==="admin",isBusiness=audience==="business",isCustomer=audience==="customer";
   const isRegister=mode==="register"&&!isAdmin;
@@ -100,53 +101,39 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     if(isBusiness)return isRegister?tr("تسجيل حساب شركة","Register a company"):tr("دخول حساب الشركة","Business sign in");
     return isRegister?tr("إنشاء حساب جديد","Create a new account"):tr("تسجيل الدخول","Sign in");
   },[audience,mode,locale]);
-  const openApi=API.startsWith("https://") || (import.meta.env.DEV&&API.startsWith("/"));
   const onSubmit=async(e:FormEvent<HTMLFormElement>)=>{
     e.preventDefault();setError("");setNotice("");
     if(isRegister&&password!==confirmation){setError(tr("كلمتا المرور غير متطابقتين.","Passwords do not match."));return;}
     if(password.length<8){setError(tr("كلمة المرور يجب ألا تقل عن 8 أحرف.","Password must be at least 8 characters."));return;}
     if(isRegister&&!consent){setError(tr("يجب الموافقة على الشروط وسياسة الخصوصية.","You must accept the terms and privacy policy."));return;}
     if(isBusiness&&isRegister){
-      if(!company.trim()||!name.trim()||!businessKind||!country||!city.trim()||!license.trim()){
-        setError(tr("أكمل بيانات الشركة المطلوبة.","Complete the required company details."));return;
-      }
-      if(!docs.length){setError(tr("ارفع مستندًا داعمًا واحدًا على الأقل.","Upload at least one supporting document."));return;}
+      setError("BLOCKED: PHP/MySQL company-application and document-upload actions are not verified. No supplier role or company record was created.");
+      return;
     }
-    if(!openApi){setError(tr("معاينة التصميم جاهزة، لكن خدمة حسابات PHP/MySQL لم تُربط بهذه النسخة بعد. لم يتم إنشاء حساب.","This is a working form preview, but the PHP/MySQL account API is not yet connected. No account has been created."));return;}
-    const action=isRegister?"register":"login";
+    if(isRegister&&(!name.trim()||!email.trim())){
+      setError(tr("أكمل البيانات المطلوبة.","Complete the required account details."));return;
+    }
     setBusy(true);
     try{
-      let response:Response;
-      const body=new FormData();
-      body.append("audience",audience);
-      body.append("email",email.trim());
-      body.append("password",password);
       if(isRegister){
-        body.append("name",name.trim());
-        body.append("phone",dial+phone.trim());
-        body.append("consent","true");
-        if(isBusiness){
-          body.append("company_name",company.trim());
-          body.append("company_type",businessKind);
-          body.append("country",country);
-          body.append("city",city.trim());
-          body.append("license_number",license.trim());
-          docs.forEach(file=>body.append("documents[]",file,file.name));
-        }
-      }
-      if(isAdmin){body.append("otp",otp.trim());body.append("remember_device",remember?"1":"0");}
-      response=await fetch(API.replace(/\/$/,"")+"/"+action,{method:"POST",body,credentials:"include",headers:{"Accept":"application/json"},redirect:"error"});
-      const ct=response.headers.get("content-type")||"";
-      if(!ct.includes("application/json"))throw new Error(tr("خدمة الحسابات لم ترجع استجابة JSON صالحة.","Account endpoint returned a non-JSON response."));
-      const data=await response.json() as {ok?:boolean;error?:string;message?:string;role?:string};
-      if(!response.ok||data.ok!==true)throw new Error(data.message||data.error||tr("فشل طلب الحساب.","Account request failed."));
-      if(isRegister){
-        setNotice(tr("تم استقبال طلبك على الخادم. راجع بريدك لاستكمال إجراءات التفعيل عند توفرها.","Your request has been accepted by the server. Follow any verification instructions."));
+        const created=await authenticatePhp("register",{
+          name:name.trim(),email:email.trim(),phone:dial+phone.trim(),password,consent:true,
+        });
+        if(created.user?.role!=="buyer")throw new Error("ACCOUNT_ROLE_NOT_CONFIRMED");
+        setNotice(tr("تم إنشاء حساب المشتري عبر خادم PHP/MySQL. صلاحيات المورد والإدارة لا تُمنح من هذا النموذج.","The PHP/MySQL server created a buyer account. Supplier and admin roles are never assigned by this form."));
       }else{
-        // Route selection still requires a role actually returned by the server.
-        const role=data.role;
-        if(role!=="admin"&&role!=="business"&&role!=="customer")throw new Error(tr("الخادم لم يؤكد صلاحيات الحساب.","The server did not confirm your account role."));
-        navigate(role==="admin"?"/admin":role==="business"?"/business":"/account");
+        const account=await authenticatePhp("login",{
+          email:email.trim(),password,
+          ...(isAdmin?{otp:otp.trim(),remember_device:remember}:{}),
+        });
+        const returnedRole=account.user?.role;
+        const expectedRole=isAdmin?"admin":isBusiness?"supplier":"buyer";
+        if(returnedRole!==expectedRole)throw new Error(tr("الخادم لم يؤكد دور الحساب المطلوب.","The server did not confirm the required account role."));
+        const route=resolvePostAuthRoute(returnedRole);
+        if(!route)throw new Error(tr("الخادم لم يؤكد دور المشتري أو المورد أو الإدارة.","The server did not confirm a buyer, supplier, or admin role."));
+        const confirmedUser=await refresh();
+        if(!confirmedUser||confirmedUser.role!==returnedRole)throw new Error(tr("تعذر تأكيد جلسة PHP/MySQL بعد تسجيل الدخول.","The PHP/MySQL session did not confirm the authenticated role."));
+        navigate(route);
       }
     }catch(err){setError(err instanceof Error?err.message:tr("تعذّر إتمام الطلب.","Request failed."))}
     finally{setBusy(false);}
@@ -158,12 +145,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     setError("");setDocs(list.slice(0,5));
   };
   const showSocial=(provider:"google"|"apple")=>{
-    if(!socialProviders.has(provider)){setError(tr("تسجيل الدخول عبر "+(provider==="google"?"Google":"Apple")+" لم يُربط بمزوّد هوية معتمد بعد.","Real "+(provider==="google"?"Google":"Apple")+" sign-in is not configured yet."));return;}
-    if(!openApi){setError(tr("يلزم اتصال PHP/MySQL أولًا لتفعيل طريقة الدخول.","Account backend configuration is required."));return;}
-    const url=API.replace(/\/$/,"")+"/oauth/"+provider;
-    const validUrl=new URL(url,window.location.origin);
-    if(validUrl.protocol!=="https:"){setError(tr("رابط تسجيل الدخول غير آمن.","Insecure authentication endpoint."));return;}
-    window.location.assign(validUrl.href);
+    setError("BLOCKED: the PHP/MySQL account contract does not confirm an OAuth endpoint for "+provider+". No external sign-in was started.");
   };
   const goto=isAdmin?"/admin/login":isBusiness?"/register/business":"/register/customer";
   const heroHeading = isAdmin
@@ -280,6 +262,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
             {isRegister?<label className="idea-auth-checkbox"><input type="checkbox" checked={consent} onChange={e=>setConsent(e.currentTarget.checked)} required/>
               <span>{tr("أوافق على","I agree to")} <Link to="/terms">{tr("شروط الاستخدام","Terms of use")}</Link> {tr("و","and")} <Link to="/privacy">{tr("سياسة الخصوصية","Privacy policy")}</Link></span></label>:
               isAdmin?<div className="idea-auth-between"><label className="idea-auth-checkbox"><input type="checkbox" checked={remember} onChange={e=>setRemember(e.currentTarget.checked)}/>{tr("تذكرني على هذا الجهاز","Remember this device")}</label><Link to="/contact">{tr("نسيت كلمة المرور؟","Forgot password?")}</Link></div>:null}
+            {isBusiness&&isRegister&&<p role="status" className="idea-auth-feedback idea-auth-feedback--error">BLOCKED: the PHP/MySQL company-application and document-upload actions are not verified. Submitting this form cannot create a supplier role.</p>}
             {error&&<p role="alert" className="idea-auth-feedback idea-auth-feedback--error">{error}</p>}
             {notice&&<p role="status" className="idea-auth-feedback idea-auth-feedback--success"><CheckCircle2 size={17}/>{notice}</p>}
             <button className="idea-auth-submit" type="submit" disabled={busy}>

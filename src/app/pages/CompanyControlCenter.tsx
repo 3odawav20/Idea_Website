@@ -186,7 +186,7 @@ export function CompanyControlCenter({mode}:{mode:"admin"|"supplier"}) {
     });if(x)throw x;
   },enable?"تمت استعادة صلاحيات العضو.":"تم سحب صلاحية العضو فورًا.");
 
-  if(!session||(mode==="supplier"&&session.role!=="business")||(mode==="admin"&&!isAdmin))
+  if(!session||(mode==="supplier"&&session.role!=="supplier")||(mode==="admin"&&!isAdmin))
     return <div role="alert">هذه الصفحة تتطلب صلاحية الشركة أو مسؤول IDEA.</div>;
 
   return <section className="icc-root" dir="rtl">
@@ -195,7 +195,8 @@ export function CompanyControlCenter({mode}:{mode:"admin"|"supplier"}) {
       <p>لكل شركة مساحتها، برانداتها، منتجاتها، أسعارها وعروضها. الأسعار خاصة ولا تظهر لعملاء الموقع.</p></div>
       <button type="button" onClick={()=>void loadCompanies()} disabled={loading||busy}><RefreshCw size={16}/> تحديث</button>
     </header>
-    {error&&<div className="icc-error" role="alert"><CircleAlert size={18}/>{error} — قد تحتاج جداول الشركات لتطبيق الترحيل.</div>}
+    <div className="icc-error" role="status"><CircleAlert size={18}/> BLOCKED: this company workspace still depends on Supabase. The verified PHP/MySQL routes are not connected here; no company/product/price changes are being saved.</div>
+    {error&&<div className="icc-error" role="alert"><CircleAlert size={18}/>{error}</div>}
     {notice&&<div className="icc-notice" role="status"><Check size={18}/>{notice}</div>}
     <div className="icc-body">
       <aside className="icc-side">
@@ -311,15 +312,8 @@ export function CompanyApplication(){
   const [message,setMessage]=useState("");
   const submit=async(e:FormEvent)=>{
     e.preventDefault();if(!session)return;
-    setBusy(true);setError("");setMessage("");
-    try{
-      const {data,error:x}=await requireSupabase().rpc("apply_for_idea_company",{
-        p_legal_name:legal.trim(),p_public_name:name.trim(),p_email:email.trim()||null,
-      });
-      if(x)throw x;
-      setMessage("تم تسجيل طلب الشركة رقم "+String(data).slice(0,8)+". يحتاج اعتماد مسؤول IDEA قبل إدارة المنتجات.");
-    }catch(x){setError(errorText(x))}
-    finally{setBusy(false)}
+    setError("BLOCKED: the verified PHP/MySQL contract has no company-application action. No company record or supplier role was created.");
+    setMessage("");
   };
   return <div className="icc-apply" dir="rtl"><div className="icc-apply-card">
     <span className="icc-eyebrow"><ShieldCheck size={16}/> COMPANY ONBOARDING</span>

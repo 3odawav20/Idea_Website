@@ -2,12 +2,14 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react
 import { Link } from "react-router";
 import { BadgeCheck, CalendarDays, CircleAlert, ExternalLink, Film, Image as ImageIcon, Megaphone, Plus, Search, ShieldCheck, TrendingUp, Video } from "lucide-react";
 import { useBackend } from "../backend/db";
+import { apiFetch, requireSavedId } from "../backend/apiClient";
 import { requireSupabase, supabase } from "../backend/supabaseClient";
 import "./BusinessGrowth.css";
 
-type Sale={company_id:string;order_count:number;gross_egp:number;refund_egp:number};
+type Sale={company_id:string;public_name:string;orders_count:number;gross_cents:number;refund_accounting:string};
+type SalesResponse={month:string;timezone:string;basis:string;rows:Sale[];caveat:string};
 type Company={id:string;public_name:string};
-type Announcement={id:string;title_ar:string;title_en:string;title_fr:string|null;target_path:string|null;is_published:boolean;created_at:string};
+type Announcement={id:string;text_ar:string;text_en:string;link_path:string;state:"draft"|"published"|"archived";updated_at:number|string};
 type Campaign={id:string;company_id:string;placement:string;title_ar:string;title_en:string|null;status:string;media_url:string|null;proposed_budget_egp:number|null;service_fee_percent:number;message:string|null;media_storage_path:string|null};
 type AdRate={placement:string;title_ar:string;title_en:string;base_rate_egp:number;duration_days:number;is_published:boolean};
 const months=(s:string)=>s.slice(0,7);
@@ -22,10 +24,10 @@ const PLACEMENTS=[
 ] as const;
 
 export function CompanyRevenueReport({mode}:{mode:"admin"|"supplier"}){
-  const {session}=useBackend();
+  const {session,db}=useBackend();
   const isAdmin=mode==="admin"&&session?.role==="admin";
-  const [companies,setCompanies]=useState<Company[]>([]);
   const [records,setRecords]=useState<Sale[]>([]);
+  const [caveat,setCaveat]=useState("");
   const [period,setPeriod]=useState(new Date().toISOString().slice(0,7));
   const [error,setError]=useState("");
   const [loading,setLoading]=useState(true);
@@ -33,113 +35,100 @@ export function CompanyRevenueReport({mode}:{mode:"admin"|"supplier"}){
     if(!session)return;
     setLoading(true);setError("");
     try{
-      const db=requireSupabase();
-      // Date-scoped server aggregate avoids silently dropping rows after the first 1,000.
-      const [sales,companiesResponse,ownMembership]=await Promise.all([
-        db.rpc("idea_company_sales_summary",{p_month:period+"-01"}),
-        db.from("companies").select("id,public_name").order("public_name"),
-        db.from("company_members").select("company_id,revoked_at").eq("user_id",session.id)
-      ]);
-      if(sales.error)throw sales.error;if(companiesResponse.error)throw companiesResponse.error;
-      if(ownMembership.error)throw ownMembership.error;
-      const owned=new Set((ownMembership.data||[]).filter(m=>!m.revoked_at).map(m=>m.company_id));
-      setCompanies(((companiesResponse.data||[]) as Company[]).filter(c=>isAdmin||owned.has(c.id)));
-      setRecords((sales.data||[]) as Sale[]);
-    }catch(e){setError(errorText(e));setRecords([])}
+      const company=db.businesses.find(item=>item.ownerId===session.id)||db.businesses[0];
+      if(!isAdmin&&!company)throw new Error("BLOCKED: no server-confirmed company membership is available.");
+      const params=new URLSearchParams({action:"sales",month:period});
+      if(!isAdmin&&company)params.set("company_id",company.id);
+      const response=await apiFetch<SalesResponse>(`/api/marketplace.php?${params.toString()}`,{authRequired:true});
+      if(response.basis!=="captured_payments_only"||!Array.isArray(response.rows))throw new Error("PHP_SALES_RESPONSE_CONTRACT_INVALID");
+      setRecords(response.rows);
+      setCaveat(response.caveat);
+    }catch(e){setError(errorText(e));setRecords([]);setCaveat("")}
     finally{setLoading(false)}
-  },[period,session?.id,isAdmin]);
+  },[db.businesses,isAdmin,period,session]);
   useEffect(()=>{void load()},[load]);
-  useEffect(()=>{
-    if(!supabase)return;
-    const channel=supabase.channel("idea-verified-sales")
-      .on("postgres_changes",{event:"*",schema:"public",table:"idea_confirmed_sales"},()=>{void load()}).subscribe();
-    return()=>{void supabase.removeChannel(channel)};
-  },[load]);
-  const byCompany=useMemo(()=>companies.map(c=>{
-    const own=records.filter(s=>s.company_id===c.id);
-    return {company:c,orders:own.reduce((a,s)=>a+Number(s.order_count),0),gross:own.reduce((a,s)=>a+Number(s.gross_egp),0),
-      refunded:own.reduce((a,s)=>a+Number(s.refund_egp),0)};
-  }),[companies,records]);
-  const total=byCompany.reduce((a,x)=>a+x.gross-x.refunded,0);
-  if(!session)return null;
+  const grossCents=records.reduce((sum,row)=>sum+Number(row.gross_cents),0);
+  const orderCount=records.reduce((sum,row)=>sum+Number(row.orders_count),0);
+  if(!session||mode==="admin"&&!isAdmin)return null;
   return <section className="ibg-root" dir="rtl">
     <header className="ibg-head"><span className="ibg-kicker"><TrendingUp size={18}/> VERIFIED SALES ONLY</span>
       <h1>{isAdmin?"تحليل مبيعات الشركات":"مبيعات شركتك الشهرية"}</h1>
-      <p>التقرير مبني على طلبات **مدفوعة ومُؤكدة** فقط، بعد خصم المرتجعات. عروض الأسعار والـRFQ ليست مبيعات.</p>
+      <p>الأرقام مقيدة من PHP/MySQL لعمليات الدفع المسجلة كمدفوعة. طلبات عروض الأسعار والطلبات غير المدفوعة لا تدخل في الإجمالي.</p>
     </header>
     <div className="ibg-period"><label><CalendarDays size={17}/> الشهر
       <input type="month" value={period} onChange={e=>setPeriod(e.target.value)}/></label>
-      <strong>صافي المبيعات المؤكدة: {currency(total)}</strong>
-      <span>{records.length===1000?"أول 1,000 عملية فقط؛ المراجعة الكاملة تحتاج تصدير بيانات":"عدد العمليات المدفوعة: "+records.length}</span>
+      <strong>إجمالي المدفوعات المسجلة: {currency(grossCents/100)}</strong>
+      <span>{orderCount} طلب مدفوع مسجل عبر الخادم</span>
       <button type="button" onClick={()=>void load()} disabled={loading}>تحديث المبيعات</button>
     </div>
     {error&&<div className="ibg-error" role="alert"><CircleAlert size={16}/>{error}</div>}
     <div className="ibg-sale-list">
-      <div className="ibg-sale-row ibg-sale-label"><span>الشركة</span><span>طلبات مدفوعة</span><span>إجمالي</span><span>مرتجعات</span><span>الصافي</span></div>
-      {byCompany.map(item=><div className="ibg-sale-row" key={item.company.id}>
-        <strong>{item.company.public_name}</strong><span>{item.orders}</span><span>{currency(item.gross)}</span>
-        <span>{currency(item.refunded)}</span><b>{currency(item.gross-item.refunded)}</b>
+      <div className="ibg-sale-row ibg-sale-label"><span>الشركة</span><span>طلبات مدفوعة</span><span>إجمالي مسجل</span><span>المرتجعات</span><span>الصافي</span></div>
+      {records.map(row=><div className="ibg-sale-row" key={row.company_id}>
+        <strong>{row.public_name}</strong><span>{row.orders_count}</span><span>{currency(row.gross_cents/100)}</span>
+        <span>BLOCKED: غير متصالح</span><b>BLOCKED: غير متاح</b>
       </div>)}
-      {!byCompany.length&&!loading&&<p className="ibg-no-data">لا توجد شركات أو سجلات مبيعات مدفوعة في الفترة المحددة. لن نختلق مبيعات من عروض الأسعار.</p>}
+      {!records.length&&!loading&&<p className="ibg-no-data">لا توجد سجلات مدفوعات ملتقطة في PHP/MySQL لهذه الفترة، أو أن مسار التقرير غير متاح. لن نختلق مبيعات.</p>}
     </div>
-    <p className="ibg-note"><ShieldCheck size={16}/> مصدر الأرقام: idea_confirmed_sales؛ تسجيل عملية دفع معتمدة يتم من تكامل دفع/محاسبة موثق، وليس من كروت المنتجات.</p>
+    {caveat&&<p className="ibg-note"><ShieldCheck size={16}/> {caveat} لا يُعرض صافي بعد المرتجعات قبل وجود تسوية موثقة.</p>}
   </section>;
 }
 
 export function AdminAnnouncementEditor(){
   const {session}=useBackend();
   const [rows,setRows]=useState<Announcement[]>([]);
-  const [ar,setAr]=useState("");const [en,setEn]=useState("");const [fr,setFr]=useState("");
+  const [ar,setAr]=useState("");const [en,setEn]=useState("");
   const [path,setPath]=useState("");const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");const [message,setMessage]=useState("");
   const load=useCallback(async()=>{
     if(session?.role!=="admin")return;
-    const {data,error:e}=await requireSupabase().from("idea_site_announcements")
-      .select("id,title_ar,title_en,title_fr,target_path,is_published,created_at")
-      .order("created_at",{ascending:false}).limit(100);
-    if(e)setError(errorText(e));else setRows((data||[]) as Announcement[]);
+    try{
+      const response=await apiFetch<{announcements:Announcement[]}>("/api/marketplace.php?action=bootstrap",{authRequired:true});
+      setRows(response.announcements||[]);setError("");
+    }catch(e){setError(errorText(e));setRows([])}
   },[session?.role]);
   useEffect(()=>{void load()},[load]);
   const add=async(e:FormEvent)=>{
     e.preventDefault();if(session?.role!=="admin")return;
     setBusy(true);setError("");setMessage("");
     try{
-      const {error:x}=await requireSupabase().from("idea_site_announcements").insert({
-        title_ar:ar.trim(),title_en:en.trim(),title_fr:fr.trim()||null,
-        target_path:path.trim()||null,is_published:false
-      });if(x)throw x;setAr("");setEn("");setFr("");setPath("");
-      await load();setMessage("تم حفظ الإعلان كمسودة. شريط الموقع لا يعرضه قبل النشر.");
+      const result=await apiFetch<unknown>("/api/marketplace.php?action=ticker-save",{
+        method:"POST",authRequired:true,body:{text_ar:ar.trim(),text_en:en.trim(),link_path:path.trim(),state:"draft"}
+      });
+      requireSavedId(result);setAr("");setEn("");setPath("");
+      await load();setMessage("تم حفظ الإعلان كمسودة على PHP/MySQL.");
     }catch(x){setError(errorText(x))}
     finally{setBusy(false)}
   };
   const publish=async(row:Announcement)=>{
-    setBusy(true);setError("");
+    if(session?.role!=="admin")return;
+    setBusy(true);setError("");setMessage("");
     try{
-      const {error:x}=await requireSupabase().from("idea_site_announcements")
-        .update({is_published:!row.is_published}).eq("id",row.id);
-      if(x)throw x;await load();
+      const result=await apiFetch<unknown>("/api/marketplace.php?action=ticker-save",{
+        method:"POST",authRequired:true,body:{id:row.id,text_ar:row.text_ar,text_en:row.text_en,link_path:row.link_path,state:row.state==="published"?"draft":"published"}
+      });
+      requireSavedId(result);await load();setMessage("تم تحديث حالة النشر على PHP/MySQL.");
     }catch(x){setError(errorText(x))}
     finally{setBusy(false)}
   };
   if(session?.role!=="admin")return null;
   return <section className="ibg-root" dir="rtl">
     <header className="ibg-head"><span className="ibg-kicker"><Megaphone size={18}/> IDEA HEADER TICKER</span>
-      <h1>الشريط الإعلاني الثابت</h1><p>الشريط مثبت داخل الهيدر، يدعم الموبايل، ويغيّر اللغة تلقائيًا حسب اختيار الزائر. لا توجد رسائل عن تخفيضات أو مبيعات إلا لما تنشرها بنفسك.</p></header>
+      <h1>الشريط الإعلاني الثابت</h1><p>تُحفظ الرسائل وتُنشر عبر PHP/MySQL؛ لا تُعرض تخفيضات أو مبيعات غير مؤكدة.</p></header>
     <form className="ibg-form" onSubmit={e=>void add(e)}>
-      <label>الرسالة بالعربي<input required minLength={3} maxLength={180} value={ar} onChange={e=>setAr(e.target.value)} placeholder="مجموعة جديدة وصلت IDEA…"/></label>
-      <label>English text<input required minLength={3} maxLength={180} value={en} onChange={e=>setEn(e.target.value)} placeholder="New collection now available…"/></label>
-      <label>Français (اختياري)<input value={fr} onChange={e=>setFr(e.target.value)}/></label>
+      <label>الرسالة بالعربي<input required minLength={3} maxLength={500} value={ar} onChange={e=>setAr(e.target.value)} placeholder="مجموعة جديدة وصلت IDEA…"/></label>
+      <label>English text<input required minLength={3} maxLength={500} value={en} onChange={e=>setEn(e.target.value)} placeholder="New collection now available…"/></label>
       <label>رابط داخلي (اختياري)<input value={path} onChange={e=>setPath(e.target.value)} placeholder="/products?category=porcelain"/></label>
       <button disabled={busy} type="submit"><Plus size={15}/> حفظ مسودة</button>
     </form>
     {error&&<div className="ibg-error" role="alert">{error}</div>}
     {message&&<div className="ibg-success" role="status">{message}</div>}
     <div className="ibg-list">{rows.map(row=><div className="ibg-row" key={row.id}>
-      <span><strong>{row.title_ar}</strong><small>{row.title_en}</small></span>
-      <span>{row.is_published?"منشور في الهيدر":"مسودة"}</span>
-      <button disabled={busy} onClick={()=>void publish(row)}>{row.is_published?"إيقاف النشر":"انشر في الهيدر"}</button>
+      <span><strong>{row.text_ar}</strong><small>{row.text_en}</small></span>
+      <span>{row.state==="published"?"منشور في الهيدر":row.state}</span>
+      <button disabled={busy} onClick={()=>void publish(row)}>{row.state==="published"?"إيقاف النشر":"انشر في الهيدر"}</button>
     </div>)}
-    {!rows.length&&<p>لم تضف أي إعلانات بعد.</p>}</div>
+    {!rows.length&&<p>لا توجد رسائل محفوظة على PHP/MySQL.</p>}</div>
   </section>;
 }
 

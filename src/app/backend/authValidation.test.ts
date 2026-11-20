@@ -61,9 +61,12 @@ test("validateBusinessEmailForMethod enforces method-specific rules", () => {
   });
 });
 
-test("resolvePostAuthRoute directs roles to exact dashboards", () => {
+test("resolvePostAuthRoute accepts only server-confirmed PHP/MySQL roles", () => {
   assert.equal(resolvePostAuthRoute("admin"), "/admin");
-  assert.equal(resolvePostAuthRoute("business"), "/business");
-  assert.equal(resolvePostAuthRoute("customer"), "/account");
-  assert.equal(resolvePostAuthRoute(undefined), "/account");
+  assert.equal(resolvePostAuthRoute("supplier"), "/business");
+  assert.equal(resolvePostAuthRoute("buyer"), "/account");
+  assert.equal(resolvePostAuthRoute("business"), null);
+  assert.equal(resolvePostAuthRoute("designer"), null);
+  assert.equal(resolvePostAuthRoute("contractor"), null);
+  assert.equal(resolvePostAuthRoute(undefined), null);
 });

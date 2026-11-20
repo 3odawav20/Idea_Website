@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams, Link } from "react-router";
 import { Inbox, Package, FileText, Heart, GitCompare, CreditCard, Home as HomeIcon } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
@@ -18,7 +18,7 @@ function useGuard() {
 export function AccountLayout() {
   const { t, locale } = useI18n();
   const session = useGuard();
-  const { db } = useBackend();
+  const { db, capabilities } = useBackend();
   if (!session) return null;
   const unread = db.messages.filter((m) => m.to === session.id && m.scope === "customer" && !m.read).length;
   const links = [
@@ -34,7 +34,10 @@ export function AccountLayout() {
     { to: "/account/notifications", label: t("acct.notifications") },
     { to: "/account/settings", label: t("acct.settings") },
   ];
-  return <DashLayout title={t("acct.title")} links={links}><div lang={locale}><Outlet /></div></DashLayout>;
+  return <DashLayout title={t("acct.title")} links={links}>
+    {!capabilities.rfq && <p role="status" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", marginBottom: "var(--idea-space-4)" }}>BLOCKED: customer requests, supplier offers, orders, and payment records are not available from the verified PHP/MySQL contract.</p>}
+    <div lang={locale}><Outlet /></div>
+  </DashLayout>;
 }
 
 export function AccountProfile() {
@@ -120,6 +123,8 @@ export function AccountRequestOffers() {
   const { db, api, session } = useBackend();
   const { locale } = useI18n();
   const nav = useNavigate();
+  const [actionError, setActionError] = useState("");
+  const [acceptingOfferId, setAcceptingOfferId] = useState<string | null>(null);
   const req = db.requests.find((r) => r.id === requestId);
   const offers = db.offers.filter((o) => o.requestId === requestId);
   const products = useStore().products;
@@ -133,6 +138,7 @@ export function AccountRequestOffers() {
         <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>{req.governorate} · {req.destination}</div>
         <div style={{ marginTop: 8 }}><StatusBadge text={req.status} tone={req.acceptedOfferId ? "green" : "gold"} /></div>
       </Panel>
+      {actionError && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{actionError}</p>}
       {!offers.length ? <EmptyState title="Awaiting offers" sub="Verified matching suppliers submit private offers here." /> : (
         <div style={{ display: "grid", gap: 10 }}>
           {offers.map((o) => {
@@ -157,7 +163,18 @@ export function AccountRequestOffers() {
                   <span>Expires {new Date(o.expiresAt).toLocaleDateString()}</span>
                 </div>
                 {!req.acceptedOfferId && (
-                  <Button size="sm" style={{ marginTop: 12 }} onClick={() => { const ord = api.acceptOffer(o.id); if (ord) nav("/checkout?order=" + ord.id); }}>Accept & continue to payment</Button>
+                  <Button size="sm" style={{ marginTop: 12 }} disabled={acceptingOfferId === o.id} onClick={async () => {
+                    setActionError("");
+                    setAcceptingOfferId(o.id);
+                    try {
+                      const order = await api.acceptOffer(o.id);
+                      nav("/checkout?order=" + order.id);
+                    } catch {
+                      setActionError("BLOCKED: the PHP/MySQL API does not provide persistent quote acceptance. No order was created.");
+                    } finally {
+                      setAcceptingOfferId(null);
+                    }
+                  }}>{acceptingOfferId === o.id ? "Checking…" : "Accept & continue to payment"}</Button>
                 )}
                 {selected && <div style={{ marginTop: 10 }}><StatusBadge text="Accepted" tone="green" /></div>}
               </Panel>
@@ -171,7 +188,7 @@ export function AccountRequestOffers() {
 }
 
 export function AccountOrders() {
-  const { session, db, api } = useBackend();
+  const { session, db } = useBackend();
   const orders = db.orders.filter((o) => o.customerId === session?.id);
   if (!orders.length) return <EmptyState title="No orders yet" />;
   return (
@@ -184,9 +201,7 @@ export function AccountOrders() {
               <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{o.total.toLocaleString()} EGP · {new Date(o.createdAt).toLocaleDateString()}</div>
             </div>
             <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <StatusBadge text={o.status} tone={o.status === "Delivered" ? "green" : o.paymentStatus === "Sandbox Failed" ? "red" : "gold"} />
-              {o.paymentStatus === "None" && <Link to={`/checkout?order=${o.id}`}><Button size="sm">Pay</Button></Link>}
-              {o.paymentStatus === "Sandbox Authorized" && o.status === "Preparing" && <Button size="sm" variant="outline" onClick={() => api.sandboxPay(o.id, true)}>Confirm delivery</Button>}
+              <StatusBadge text={o.status} tone={o.status === "Delivered" ? "green" : "gold"} />
             </div>
           </div>
         </Panel>
@@ -197,7 +212,7 @@ export function AccountOrders() {
 
 export function AccountInvoices() {
   const { session, db } = useBackend();
-  const paid = db.orders.filter((o) => o.customerId === session?.id && o.paymentStatus === "Sandbox Authorized");
+  const paid = db.orders.filter((o) => o.customerId === session?.id && o.paymentStatus === "Paid");
   if (!paid.length) return <EmptyState title="No invoices yet" sub="Invoices are generated after a verified payment." />;
   return (
     <div style={{ display: "grid", gap: 10 }}>

@@ -19,10 +19,10 @@ const chip: React.CSSProperties = { background: "var(--idea-surface)", borderRad
 export function Checkout() {
   const [sp] = useSearchParams();
   const { t } = useI18n();
-  const { db, api, session } = useBackend();
+  const { db, session, capabilities } = useBackend();
   const nav = useNavigate();
   const [method, setMethod] = useState<PaymentMethodKey>("card");
-  const [done, setDone] = useState<"ok" | "fail" | null>(null);
+  const [paymentError, setPaymentError] = useState("");
 
   const orderId = sp.get("order");
   const planId = sp.get("plan");
@@ -36,32 +36,8 @@ export function Checkout() {
   if (!order && !plan) return <Section style={{ paddingTop: "var(--idea-space-8)" }}><Container style={{ maxWidth: 560 }}><EmptyState title="Nothing to pay" sub="Accept an offer or choose a subscription plan." /></Container></Section>;
 
   const pay = () => {
-    // Sandbox only: a method must be enabled with configured merchant creds to "authorize".
-    const ok = !!cfg?.merchantConfigured;
-    if (order) api.sandboxPay(order.id, ok);
-    if (plan) api.subscribe(plan.id, interval, ok);
-    setDone(ok ? "ok" : "fail");
+    setPaymentError("BLOCKED: no PHP/MySQL payment endpoint or verified provider webhook is available. No payment or subscription was confirmed.");
   };
-
-  if (done) {
-    return (
-      <Section style={{ paddingTop: "var(--idea-space-8)" }}>
-        <Container style={{ maxWidth: 520, textAlign: "center" }}>
-          <Panel>
-            <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: done === "ok" ? "var(--idea-gold-bright)" : "var(--idea-danger)" }}>
-              {done === "ok" ? "Sandbox payment authorized" : "Payment could not be completed"}
-            </div>
-            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", margin: "10px 0 16px" }}>
-              {done === "ok"
-                ? (order ? "Your order is now preparing and an invoice was generated." : "Your subscription is now active.")
-                : "This payment method has no configured merchant credentials, so it cannot authorize. An administrator must configure and test it in Admin → Payment Settings before it can be used in production."}
-            </p>
-            <Button onClick={() => nav(order ? "/account/orders" : "/account/subscription")}>{order ? "View orders" : "View subscription"}</Button>
-          </Panel>
-        </Container>
-      </Section>
-    );
-  }
 
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
@@ -80,7 +56,7 @@ export function Checkout() {
               const mc = db.payments.find((p) => p.key === m.key);
               const active = method === m.key;
               return (
-                <button key={m.key} onClick={() => setMethod(m.key)} style={{
+                <button key={m.key} onClick={() => setMethod(m.key)} disabled={!capabilities.payments} style={{
                   display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, cursor: "pointer",
                   padding: "12px 14px", borderRadius: "var(--idea-radius-md)", textAlign: "start",
                   border: `1px solid ${active ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
@@ -98,9 +74,11 @@ export function Checkout() {
               );
             })}
           </div>
-          <Button style={{ width: "100%", marginTop: "var(--idea-space-5)" }} onClick={pay}><Lock size={15} /> Pay {amount.toLocaleString()} EGP (sandbox)</Button>
+          {!capabilities.payments && <p role="status" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", marginTop: 12 }}>BLOCKED: payment processing, subscription activation, and confirmation are not connected.</p>}
+          {paymentError && <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)" }}>{paymentError}</p>}
+          <Button style={{ width: "100%", marginTop: "var(--idea-space-5)" }} onClick={pay} disabled={!capabilities.payments}><Lock size={15} /> Payment unavailable</Button>
           <div style={{ display: "flex", alignItems: "center", gap: 6, justifyContent: "center", marginTop: 12, color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>
-            <ShieldCheck size={13} color="var(--idea-gold)" /> Sandbox environment · no real charge · card data is never stored
+            <ShieldCheck size={13} color="var(--idea-gold)" /> No charge is submitted or represented as successful.
           </div>
         </Panel>
       </Container>

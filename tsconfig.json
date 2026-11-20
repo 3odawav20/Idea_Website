@@ -1,16 +1,15 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
+    "target": "ES2021",
     "useDefineForClassFields": true,
     "lib": [
-      "ES2020",
+      "ES2021",
       "DOM",
       "DOM.Iterable"
     ],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
@@ -28,8 +27,15 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src",
+    "src/app",
+    "src/vite-env.d.ts",
+    "src/main.tsx",
     "vite.config.ts",
     "vite.figma.config.ts"
+  ],
+  "exclude": [
+    "src/db",
+    "src/middleware",
+    "src/lib/firebase-admin.ts"
   ]
 }

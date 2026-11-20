@@ -20,6 +20,8 @@ export interface PhpCompany {
   status: string;
   created_at: number | string;
   business_details?: Record<string, unknown>;
+  my_role?: string;
+  products?: number;
 }
 export interface PhpSession {
   user: PhpUser | null;
@@ -27,18 +29,39 @@ export interface PhpSession {
   membership: { audience: string; status: string } | null;
   csrf: string;
 }
+const PHP_ROLES = new Set<PhpUser["role"]>(["buyer", "supplier", "admin"]);
+
 async function parseAccountResponse(response: Response): Promise<Record<string, unknown>> {
-  if (!(response.headers.get("content-type") || "").includes("application/json")) throw new Error("ACCOUNT_API_NON_JSON");
-  const data = await response.json() as Record<string, unknown>;
+  if (response.status === 204) throw new Error("ACCOUNT_API_EMPTY_RESPONSE");
+  const text = await response.text();
+  if (!text.trim() || !(response.headers.get("content-type") || "").includes("application/json")) {
+    throw new Error("ACCOUNT_API_NON_JSON");
+  }
+  let payload: unknown;
+  try {
+    payload = JSON.parse(text);
+  } catch {
+    throw new Error("ACCOUNT_API_INVALID_JSON");
+  }
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) throw new Error("ACCOUNT_API_EMPTY_RESPONSE");
+  const data = payload as Record<string, unknown>;
   if (!response.ok || data.error) throw new Error(typeof data.error === "string" ? data.error : "ACCOUNT_API_UNAVAILABLE");
   return data;
 }
+function assertPhpUser(value: unknown): asserts value is PhpUser {
+  if (
+    !value || typeof value !== "object" ||
+    typeof (value as PhpUser).id !== "string" || !(value as PhpUser).id ||
+    !PHP_ROLES.has((value as PhpUser).role)
+  ) throw new Error("ACCOUNT_ROLE_NOT_CONFIRMED");
+}
 export async function getPhpSession(): Promise<PhpSession> {
   const response = await fetch(PHP_ACCOUNT_API + "?action=session", {
-    credentials:"same-origin", cache:"no-store", headers:{Accept:"application/json"}
+    credentials: "same-origin", cache: "no-store", headers: { Accept: "application/json" }
   });
   const data = await parseAccountResponse(response);
   if (typeof data.csrf !== "string" || data.csrf.length < 20) throw new Error("ACCOUNT_SESSION_MISSING");
+  if (data.user !== null) assertPhpUser(data.user);
   return data as unknown as PhpSession;
 }
 export async function authenticatePhp(action:"register"|"login", payload:Record<string,unknown>):Promise<PhpSession> {
@@ -49,8 +72,8 @@ export async function authenticatePhp(action:"register"|"login", payload:Record<
     body:JSON.stringify(payload)
   });
   const data = await parseAccountResponse(response);
-  const user = data.user as PhpUser | undefined;
-  if (!user?.id || !["buyer","supplier","admin"].includes(user.role)) throw new Error("ACCOUNT_ROLE_NOT_CONFIRMED");
+  assertPhpUser(data.user);
+  if (typeof data.csrf !== "string" || data.csrf.length < 20) throw new Error("ACCOUNT_SESSION_MISSING");
   return data as unknown as PhpSession;
 }
 export async function signOutPhp():Promise<void> {

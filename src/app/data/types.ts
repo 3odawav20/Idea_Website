@@ -9,6 +9,7 @@ export type CollectionSlug =
   | "ceramics"
   | "porcelain"
   | "marble"
+  | "tiles"
   | "sanitary-ware"
   | "faucets"
   | "bathroom-sets"

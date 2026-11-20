@@ -42,7 +42,7 @@ test("brand attribution has auditable provenance and does not expose supplier pr
 test("material-only product cards distinguish actual maker, brand and IDEA references",()=>{
   assert.match(card,/ideaInternalCode\(product\)/);
   assert.match(card,/productMaker\(product, locale\)/);
-  assert.match(card,/maker\.verified \? maker\.value : product\.brand/);
+  assert.match(card,/maker\.verified \? `\$\{maker\.label\}: \$\{maker\.value\}` :/);
   assert.match(card,/idea-material-photo/);
   assert.match(studio,/materialFaces\(product\)\[0\]/);
   assert.match(studio,/ideaInternalCode\(product\)/);
