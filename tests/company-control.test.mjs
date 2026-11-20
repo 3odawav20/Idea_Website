@@ -26,8 +26,9 @@ test("business company and admin routes are separate, role-guarded and navigable
     'path="search" element={<AdminCodeLookup />}',
     'path="/business/apply" element={<CompanyApplication />}'
   ])assert.ok(app.includes(route),route);
-  assert.match(center,/session\.role!=="supplier"/);
-  assert.match(center,/BLOCKED: this company workspace still depends on Supabase/);
+  assert.match(center,/session\.role !== "supplier"/);
+  assert.match(center,/BLOCKED: the verified PHP\/MySQL company API and schema are not available/);
+  assert.doesNotMatch(center,/requireSupabase|supabase/i);
 });
 test("PHP company authorization scopes owner, manager, and platform-admin actions",()=>{
   assert.match(marketplace,/function mpRole\(array \$u,string \$companyId\): string/);
@@ -43,7 +44,7 @@ test("public listing activation requires verified-company and platform-approval 
   assert.match(marketplace,/if\(\$yes&&\$row\['status'\]!=='verified'\)accountError\(409,'COMPANY_NOT_VERIFIED'\)/);
   assert.match(marketplace,/if\(\$active&&\(\$row\['status'\]!=='verified'\|\|!\(bool\)\$row\['approved_for_storefront'\]\)\)/);
   assert.match(marketplace,/SET active=0/);
-  assert.match(center,/approved_for_storefront/);
+  assert.doesNotMatch(center,/approved_for_storefront|\.from\(|\.rpc\(/);
 });
 test("private prices stay scoped to company owners or managers; sales are captured-payment-only",()=>{
   assert.match(pricePolicy,/\$companyId !== '' && in_array\(\$companyRole, \['owner', 'manager'\], true\)/);
