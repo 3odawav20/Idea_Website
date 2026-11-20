@@ -74,6 +74,7 @@ const BusinessAdvertising = lazy(() => import("./pages/BusinessGrowth").then(mod
 const AdminCodeLookup = lazy(() => import("./pages/AdminCodeLookup").then(module => ({ default: module.AdminCodeLookup })));
 const Resources = lazy(() => import("./pages/Resources").then(module => ({ default: module.Resources })));
 const SurfaceStyles = lazy(() => import("./pages/SurfaceStyles").then(module => ({ default: module.SurfaceStyles })));
+const LegalPage = lazy(() => import("./pages/LegalPages").then(module => ({ default: module.LegalPage })));
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
@@ -107,6 +108,8 @@ export default function App() {
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/ai-room-visualizer" element={<AiVisualizerStudio />} />
               <Route path="/surface-styles" element={<SurfaceStyles />} />
+              <Route path="/terms" element={<LegalPage kind="terms" />} />
+              <Route path="/privacy" element={<LegalPage kind="privacy" />} />
 
               {["about", "showrooms", "downloads", "projects", "journal", "videos", "glossary", "contact", "updates"].map(path => <Route key={path} path={`/${path}`} element={<Resources />} />)}
               <Route path="/inspiration/:destination" element={<Resources />} />

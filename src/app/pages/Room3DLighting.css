@@ -32,3 +32,22 @@
 @media(max-width:480px){
  .idea-lighting-swatches{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+.idea-room3d .idea-lighting{
+  padding:clamp(12px,1.3vw,18px);
+  border:1px solid color-mix(in srgb,var(--idea-gold) 18%,transparent);
+  border-radius:var(--idea-radius-lg,18px);
+  background:var(--idea-overlay);
+  -webkit-backdrop-filter:blur(14px) saturate(135%);
+  backdrop-filter:blur(14px) saturate(135%);
+}
+.idea-room3d .idea-lighting h2{font-size:var(--idea-room3d-type-base)}
+.idea-room3d .idea-lighting h3{font-size:var(--idea-room3d-type-small)}
+.idea-room3d .idea-lighting-switch,.idea-room3d .idea-lighting-color{font-size:var(--idea-room3d-type-small)}
+.idea-room3d .idea-lighting-slider>span,.idea-room3d .idea-lighting-footnote{font-size:var(--idea-room3d-type-meta)}
+.idea-room3d .idea-lighting-swatches button small{font-size:var(--idea-room3d-type-meta)}
+.idea-room3d .idea-lighting-swatches button,.idea-room3d .idea-lighting-reset{transition:transform 180ms ease,border-color 180ms ease,background-color 180ms ease}
+@media(hover:hover) and (pointer:fine){
+  .idea-room3d .idea-lighting-swatches button:hover,.idea-room3d .idea-lighting-reset:hover{transform:translateY(-2px)}
+}
+@media(prefers-reduced-motion:reduce){.idea-room3d .idea-lighting *{transition:none!important}}

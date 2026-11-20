@@ -5,7 +5,7 @@ import type { Product } from "../data/types";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Tag } from "./ui";
-import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
+import { ideaInternalCode, productMaker, publicProductBrand, sourceSku } from "../data/ideaProductIdentity";
 import "./ProductCard.css";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -15,6 +15,7 @@ export function ProductCard({ product }: { product: Product }) {
   const inCompare = compare.includes(product.id);
   const [imageFailed, setImageFailed] = useState(false);
   const maker = productMaker(product, locale);
+  const brand = publicProductBrand(product);
   const ideaCode = ideaInternalCode(product);
   const supplierCode = sourceSku(product);
   const surface = ["ceramics", "porcelain", "marble"].includes(product.collection);
@@ -50,8 +51,8 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div style={{ padding: "var(--idea-space-4)", display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
         <div className="idea-material-maker" title={maker.label}>
-          <span>{maker.verified ? maker.value : product.brand}</span>
-          <small>{maker.verified ? maker.label : (locale === "ar" ? "العلامة التجارية · المصنع قيد التوثيق" : locale === "fr" ? "Marque · fabricant à vérifier" : "Brand · maker unverified")}</small>
+          <span>{brand || (locale === "ar" ? "العلامة غير موثقة" : locale === "fr" ? "Marque non vérifiée" : "Brand unverified")}</span>
+          <small>{maker.verified ? `${maker.label}: ${maker.value}` : (locale === "ar" ? "المصنع قيد التوثيق" : locale === "fr" ? "Fabricant à vérifier" : "Manufacturer unverified")}</small>
         </div>
         <Link to={`/product/${product.slug}`} className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", textDecoration: "none" }}>
           {product.name[locale]}

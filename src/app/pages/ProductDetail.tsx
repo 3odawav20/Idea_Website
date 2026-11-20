@@ -15,7 +15,7 @@ import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
 import { supabase } from "../backend/supabaseClient";
 import type { Product } from "../data/types";
-import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
+import { ideaInternalCode, productMaker, publicProductBrand, sourceSku } from "../data/ideaProductIdentity";
 import { similarProducts } from "../data/recommendations";
 import { Button, Container } from "../components/ui";
 import { ProductCard } from "../components/ProductCard";
@@ -162,7 +162,7 @@ export function ProductDetail() {
     [t("label.model"), product.model || sourceFallback],
     [copy({ en: "IDEA reference", ar: "كود IDEA", fr: "Référence IDEA" }), ideaInternalCode(product)],
     [copy({ en: "Supplier SKU", ar: "كود المورد", fr: "Référence fournisseur" }), sourceSku(product) || sourceFallback],
-    [t("label.brand"), product.brand || sourceFallback],
+    [t("label.brand"), publicProductBrand(product) || sourceFallback],
     [t("label.manufacturer"), productMaker(product, locale).value],
   ];
   const specs = [

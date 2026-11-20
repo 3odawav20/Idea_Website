@@ -57,8 +57,7 @@ function mpCatalogueRows(?array $u,string $q='',string $company='',bool $private
  $rows=accountQuery($sql,$args)->fetchAll();
  foreach($rows as &$r){
   $isAdmin=$u&&$u['role']==='admin';
-  $authorized=$u&&($isAdmin||mpRole($u,$r['company_id'])!=='');
-  if(!$authorized){unset($r['private_price_cents'],$r['admin_notes']);}
+  if(!$isAdmin)unset($r['company_name'],$r['company_status'],$r['private_price_cents'],$r['currency'],$r['admin_notes']);
   $r['active']=(bool)$r['active'];
   $r['approved_for_storefront']=(bool)($r['approved_for_storefront']??false);
  }unset($r);

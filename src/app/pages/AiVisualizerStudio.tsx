@@ -7,7 +7,7 @@ import {
   Search, ShieldCheck, Sparkles, UploadCloud, X, ZoomIn, ZoomOut,
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
-import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
+import { ideaInternalCode, productMaker, publicProductBrand, sourceSku } from "../data/ideaProductIdentity";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
 import { supabase } from "../backend/supabaseClient";
@@ -27,6 +27,7 @@ type Quality = {
 };
 type JobResponse = {
   jobId?: string;
+  worker_verified?: boolean;
   state?: string;
   stage?: JobStage;
   image?: string;
@@ -150,6 +151,7 @@ export function AiVisualizerStudio() {
   const safePhotoUrl = safeBlobUrl(photoUrl);
   const safeMaterialUrl = safeBlobUrl(materialUrl);
   const busy = !["idle", "ready", "failed", "verification_failed"].includes(stage);
+  const workerVerified = integration === "worker_verified";
   // Keep product provenance intact: a marble pattern is NOT proof of natural marble.
   const isMarbleLook = (product: (typeof products)[number]) =>
     product.collection !== "marble" && /marble|calacatta|carrara|statuario|onyx|رخام|كالاكاتا|كرارا|أونيكس/i.test([
@@ -163,7 +165,7 @@ export function AiVisualizerStudio() {
     const unique = (values: string[]) => [...new Set(values.map((value) => value.trim()).filter(Boolean))]
       .sort((a, b) => a.localeCompare(b));
     return {
-      brands: unique(materialLibrary.map((product) => product.manufacturer || product.brand)),
+      brands: unique(materialLibrary.map((product) => product.manufacturer || publicProductBrand(product) || "")),
       finishes: unique(materialLibrary.map((product) => product.finish || "")),
       sizes: unique(materialLibrary.flatMap((product) => product.sizes.map((size) => size.label))),
       colors: unique(materialLibrary.flatMap((product) => product.colors || [])),
@@ -184,13 +186,13 @@ export function AiVisualizerStudio() {
       if (atlasGroup === "ceramics" && product.collection !== "ceramics") return false;
       if (atlasGroup === "porcelain" && product.collection !== "porcelain") return false;
       if (atlasGroup === "marble" && product.collection !== "marble") return false;
-      if (atlasBrand && (product.manufacturer || product.brand) !== atlasBrand) return false;
+      if (atlasBrand && (product.manufacturer || publicProductBrand(product) || "") !== atlasBrand) return false;
       if (atlasFinish && product.finish !== atlasFinish) return false;
       if (atlasSize && !product.sizes.some((size) => size.label === atlasSize)) return false;
       if (atlasColor && !product.colors?.includes(atlasColor)) return false;
       if (atlasTexture && (product.texture || product.source?.originalSurface || "") !== atlasTexture) return false;
       return !query || [
-        product.name.en, product.name.ar, product.name.fr, product.brand, product.manufacturer,
+        product.name.en, product.name.ar, product.name.fr, publicProductBrand(product), product.manufacturer,
         product.model, product.code, product.finish, product.collection, product.texture,
         product.type, product.variant, product.source?.originalSurface,
         ...(product.colors || []), ...product.sizes.map((size) => size.label),
@@ -225,7 +227,7 @@ export function AiVisualizerStudio() {
       const data = await response.json().catch(() => null) as (JobResponse & { integration?: string }) | null;
       if (!active || !data) return;
       if (data.quota) setQuota(data.quota);
-      setIntegration(data.integration || (response.ok ? "configuration_present_unverified" : "configuration_required"));
+      setIntegration(data.worker_verified === true ? "worker_verified" : data.integration || (response.ok ? "configuration_present_unverified" : "configuration_required"));
     })().catch(() => { if (active) setIntegration("unavailable"); });
     return () => { active = false; };
   }, [session?.id, aiEligible]);
@@ -352,6 +354,10 @@ export function AiVisualizerStudio() {
       setError(tr("توليد الصور متاح لحسابات العملاء والأدمن فقط. حسابات الشركات غير مؤهلة.", "Image generation is limited to customer and admin accounts; company accounts are ineligible."));
       return;
     }
+    if (!workerVerified) {
+      setError(tr("عامل الذكاء الاصطناعي لم يتم التحقق منه بعد؛ لم نرفع صورك ولم نبدأ مهمة مدفوعة.", "The AI worker is not verified yet. Your images were not uploaded and no paid job was started."));
+      return;
+    }
     if (!photo) {
       setError(tr("ارفع صورة الغرفة أولًا.", "Upload your room photo first."));
       inputRef.current?.click();
@@ -388,7 +394,7 @@ export function AiVisualizerStudio() {
       form.append("material", reference, "material-reference");
       form.append("productId", selectedProduct.id);
       form.append("productName", selectedProduct.name.en);
-      form.append("brand", selectedProduct.brand);
+      form.append("brand", publicProductBrand(selectedProduct) || "");
       form.append("finish", selectedProduct.finish || "");
       form.append("surface", surface);
       form.append("roomKind", roomKind);
@@ -621,7 +627,7 @@ export function AiVisualizerStudio() {
           <h3>{productName}</h3>
           {selectedProduct && (
             <>
-              <p>{localizedValue(selectedProduct.manufacturer || selectedProduct.brand, "الشركة المصنعة غير مترجمة", "Manufacturer name not localized")}</p>
+              <p>{localizedValue(selectedProduct.manufacturer || publicProductBrand(selectedProduct) || "", "الشركة المصنّعة غير موثقة", "Manufacturer or brand unverified")}</p>
               <dl className="idea-studio-product-specs">
                 <div><dt>{tr("الكود", "Code")}</dt><dd>{selectedProduct.code || "—"}</dd></div>
                 <div><dt>{tr("التشطيب", "Finish")}</dt><dd>{localizedValue(selectedProduct.finish, "التشطيب غير محدد", "Finish not specified")}</dd></div>
@@ -663,7 +669,8 @@ export function AiVisualizerStudio() {
           </div>
           {!session && <small role="status"><Link to="/login">{tr("سجّل الدخول بحساب مستخدم لتوليد الصور.", "Sign in with a customer account to generate images.")}</Link></small>}
           {session && !aiEligible && <small role="status">{tr("حسابات الشركات ليس لها صلاحية توليد الصور.", "Company accounts are not eligible for AI generation.")}</small>}
-          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={!aiEligible || busy || !photo || !selectedProduct || !selectedPhysicalSize || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
+          {session && aiEligible && !workerVerified && <small role="status">{tr("عامل الذكاء الاصطناعي لم يتم التحقق منه. لن تُرفع صورك أو تبدأ أي مهمة حتى يكتمل الفحص.", "The AI worker is unverified. Images will not be uploaded and no job will start until verification passes.")}</small>}
+          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={!workerVerified || !aiEligible || busy || !photo || !selectedProduct || !selectedPhysicalSize || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
             <Sparkles size={17} /> {tr("ابدأ التوليد المحمي", "Generate with scene lock")}
           </button>
           <small className="idea-studio-consent">{tr("ببدء التوليد تُرسل الصورتان إلى Runpod للمعالجة المؤقتة وفق سياسة الخصوصية.", "Generation sends the room and material references to Runpod for temporary processing.")}</small>
@@ -728,7 +735,7 @@ export function AiVisualizerStudio() {
               </span>
               <span className="idea-atlas-card-body">
                 <strong>{localizedName(product)}</strong>
-                <small>{localizedValue(product.manufacturer ? productMaker(product, locale).value : product.brand, "الشركة غير مترجمة", "Maker name not localized")}{product.manufacturer ? "" : tr(" · المصنع غير مؤكد", " · maker unverified")}</small>
+                <small>{product.manufacturer ? localizedValue(productMaker(product, locale).value, "الشركة المصنّعة غير موثقة", "Manufacturer unverified") : publicProductBrand(product) ? localizedValue(publicProductBrand(product)!, "العلامة غير موثقة", "Brand unverified") : tr("العلامة والمصنع غير موثقين", "Brand and manufacturer unverified")}{product.manufacturer ? "" : tr(" · المصنع غير مؤكد", " · maker unverified")}</small>
                 <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + localizedValue(product.finish, "تشطيب غير محدد", "Finish not specified") : ""}</span>
                 <span className="idea-atlas-card-reference"><span>{tr("كود IDEA", "IDEA reference")}</span><code dir="ltr">{ideaInternalCode(product)}</code></span>
                 <span className="idea-atlas-card-bottom"><span>{sourceSku(product) ? (tr("كود المورد", "Supplier SKU") + ": " + sourceSku(product)) : tr("كود المورد غير موثّق", "Supplier SKU unverified")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>

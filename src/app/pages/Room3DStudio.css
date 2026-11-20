@@ -125,3 +125,39 @@
 .idea-room3d-fixture-colors button[aria-pressed="true"]{
   outline:2px solid var(--idea-gold);outline-offset:2px;
 }
+
+.idea-room3d{
+  --idea-room3d-type-meta:clamp(.72rem,.69rem + .12vw,.8rem);
+  --idea-room3d-type-small:clamp(.8rem,.76rem + .16vw,.9rem);
+  --idea-room3d-type-base:clamp(.875rem,.84rem + .16vw,1rem);
+  --idea-room3d-type-heading:clamp(1rem,.95rem + .35vw,1.25rem);
+  --idea-room3d-glass-border:color-mix(in srgb,var(--idea-gold) 18%,var(--idea-border));
+}
+.idea-room3d .idea-room3d-side,
+.idea-room3d .idea-lighting{
+  background:var(--idea-overlay);
+  border-color:var(--idea-room3d-glass-border);
+  -webkit-backdrop-filter:blur(14px) saturate(135%);
+  backdrop-filter:blur(14px) saturate(135%);
+}
+.idea-room3d .idea-room3d-side h2,
+.idea-room3d .idea-lighting h2{font-size:var(--idea-room3d-type-base)}
+.idea-room3d .idea-room3d-side h3,
+.idea-room3d .idea-lighting h3{font-size:var(--idea-room3d-type-small)}
+.idea-room3d .idea-room3d-material-caption,
+.idea-room3d .idea-room3d-scrollbar-tools>small,
+.idea-room3d .idea-room3d-material-card>small,
+.idea-room3d .idea-room3d-material-card label{font-size:var(--idea-room3d-type-meta)}
+.idea-room3d .idea-room3d-material-card strong{font-size:var(--idea-room3d-type-small)}
+.idea-room3d .idea-room3d-material-tabs button,
+.idea-room3d .idea-room3d-material-card select,
+.idea-room3d .idea-room3d-material-card>button,
+.idea-room3d .idea-room3d-material-ai{font-size:var(--idea-room3d-type-small)}
+.idea-room3d .idea-room3d-material-tabs button,
+.idea-room3d .idea-room3d-material-card>button,
+.idea-room3d .idea-room3d-material-ai,
+.idea-room3d .idea-room3d-scrollbar-tools button{min-height:44px}
+@media(max-width:760px){
+  .idea-room3d .idea-room3d-side h2,.idea-room3d .idea-lighting h2{font-size:var(--idea-room3d-type-base)}
+  .idea-room3d .idea-room3d-material-card strong{font-size:var(--idea-room3d-type-small)}
+}
