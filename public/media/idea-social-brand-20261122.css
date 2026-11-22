@@ -1,13 +1,15 @@
 .idea-auth-actions .idea-auth-social[hidden]{display:none!important}
-.idea-social-brand{margin-top:10px;padding-top:14px;border-top:1px solid var(--idea-border,#79808a);width:100%}
-.idea-social-brand-heading{text-align:center;margin:0 0 12px;font-size:14px;font-weight:600;color:var(--idea-text,#25272b)}
+.idea-social-brand{margin-top:10px;padding-top:14px;border-top:1px solid rgba(255,255,255,.24);width:100%}
+.idea-social-brand-heading{text-align:center;margin:0 0 12px;font-size:14px;font-weight:600;color:#f7f5f2}
 .idea-social-brand-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-.idea-social-brand-grid button{display:flex;align-items:center;gap:9px;padding:10px;min-height:52px;text-align:start;border:1px solid var(--idea-border,#858c96);border-radius:9px;background:var(--idea-surface-2,#fff);color:var(--idea-text,#21252b);font-family:inherit;font-weight:600;font-size:13px;line-height:1.2;cursor:pointer;min-width:0}
+.idea-social-brand-grid button{display:flex;align-items:center;gap:9px;padding:10px;min-height:52px;text-align:start;border:1px solid rgba(255,255,255,.24);border-radius:9px;background:rgba(255,255,255,.095);color:#f7f5f2;font-family:inherit;font-weight:600;font-size:13px;line-height:1.2;cursor:pointer;min-width:0}
 .idea-social-brand-grid button svg{width:22px;height:22px;flex:0 0 22px;display:block}
 .idea-social-brand-grid button span{min-width:0;display:grid;gap:3px}
-.idea-social-brand-grid button small{font-size:11px;font-weight:500;color:inherit;opacity:.76}
-.idea-social-brand-grid button:disabled{cursor:not-allowed;opacity:.66}
+.idea-social-brand-grid button small{font-size:12px;font-weight:500;color:#d0cbc5}
+.idea-social-brand-grid button:disabled{cursor:not-allowed;opacity:1}
+.idea-social-brand-grid button:not(:disabled){background:#fafafa;color:#202124;border-color:#dadce0}
+.idea-social-brand-grid button:not(:disabled) small{color:#42566f}
 .idea-social-brand-grid button:not(:disabled):hover{border-color:#4285f4;box-shadow:0 0 0 1px #4285f4}
 .idea-social-brand-grid button:focus-visible{outline:3px solid #4285f4;outline-offset:2px}
-.idea-social-brand-note{font-size:13px;color:var(--idea-text,#25272b);line-height:1.4;margin:12px 0 0;text-align:center}
+.idea-social-brand-note{font-size:13px;color:#e2dcd6;line-height:1.5;margin:12px 0 0;text-align:center}
 @media (max-width:340px){.idea-social-brand-grid{grid-template-columns:1fr}}

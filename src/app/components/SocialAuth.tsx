@@ -52,7 +52,7 @@ export function SocialAuth({ business = false }: { redirectTo?: string; business
 
   return (
     <section aria-label="Social sign-in" style={{ marginTop: 18, display: "grid", gap: 10 }}>
-      <div style={{ fontSize: 12, color: "var(--idea-text-muted)", textAlign: "center" }}>
+      <div style={{ fontSize: 14, color: "#f7f5f2", textAlign: "center" }}>
         {tr("أو تابع بحسابك", "Or continue with")}
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 8 }}>
@@ -65,26 +65,26 @@ export function SocialAuth({ business = false }: { redirectTo?: string; business
               aria-disabled={!enabled}
               title={!enabled ? tr("غير مفعّل حاليًا", "Not configured yet") : item.label}
               onClick={() => start(item.id)}
-              style={{ ...btnStyle, opacity: enabled ? 1 : 0.5, cursor: enabled ? "pointer" : "not-allowed" }}
+              style={{ ...btnStyle, ...(enabled ? {background:"#fafafa",color:"#202124",borderColor:"#dadce0"} : {}), cursor: enabled ? "pointer" : "not-allowed" }}
             >
               {item.id === "google" ? <GoogleBrandIcon /> :
                 item.id === "facebook" ? <FacebookBrandIcon /> :
                 item.id === "apple" ? <AppleBrandIcon /> :
                 item.id === "whatsapp" ? <WhatsAppBrandIcon /> :
                 item.id === "microsoft" ? <MicrosoftBrandIcon /> : <span aria-hidden="true">𝕏</span>}
-              <span>{item.label}{!enabled && <small style={{display:"block",fontSize:10}}>{tr("قريبًا", "Coming soon")}</small>}</span>
+              <span>{item.label}{!enabled && <small style={{display:"block",fontSize:12,color:"#d0cbc5"}}>{tr("قريبًا", "Coming soon")}</small>}</span>
             </button>
           );
         })}
         {([{id:"github",label:"GitHub",Icon:GitHubBrandIcon},{id:"linkedin",label:"LinkedIn",Icon:LinkedInBrandIcon}]).map(({id,label,Icon}) => (
-          <button key={id} type="button" disabled title={tr("غير مفعّل حاليًا","Not configured yet")} style={{...btnStyle,opacity:.6,cursor:"not-allowed"}}>
-            <Icon/><span>{label}<small style={{display:"block",fontSize:10}}>{tr("قريبًا","Coming soon")}</small></span>
+          <button key={id} type="button" disabled title={tr("غير مفعّل حاليًا","Not configured yet")} style={{...btnStyle,cursor:"not-allowed"}}>
+            <Icon/><span>{label}<small style={{display:"block",fontSize:12,color:"#d0cbc5"}}>{tr("قريبًا","Coming soon")}</small></span>
           </button>
         ))}
       </div>
-      {business && <p style={{fontSize:12,color:"var(--idea-text-muted)",textAlign:"center"}}>{tr("تسجيل الدخول الاجتماعي يثبت هويتك فقط؛ صلاحيات الشركة تحتاج استكمال الطلب والموافقة.","Social sign-in verifies your identity only. Company access requires a completed and approved application.")}</p>}
+      {business && <p style={{fontSize:13,color:"#e2dcd6",textAlign:"center"}}>{tr("تسجيل الدخول الاجتماعي يثبت هويتك فقط؛ صلاحيات الشركة تحتاج استكمال الطلب والموافقة.","Social sign-in verifies your identity only. Company access requires a completed and approved application.")}</p>}
       {!providerReady && (
-        <p style={{ fontSize: 12, textAlign: "center", color: "var(--idea-text-muted)" }}>
+        <p style={{ fontSize: 13, textAlign: "center", color: "#e2dcd6" }}>
           {tr("تسجيل الدخول بالبريد الإلكتروني متاح من النموذج الأساسي.", "Use the standard email sign-in form while providers are unavailable.")}
         </p>
       )}
@@ -95,8 +95,8 @@ export function SocialAuth({ business = false }: { redirectTo?: string; business
 
 const btnStyle = {
   display: "inline-flex", alignItems: "center", justifyContent: "center",
-  gap: 8, minHeight: 44, border: "var(--idea-hairline)",
+  gap: 8, minHeight: 48, border: "1px solid rgba(255,255,255,.24)",
   borderRadius: 8, padding: "8px 10px",
-  background: "var(--idea-surface-2)", color: "var(--idea-text)",
+  background: "rgba(255,255,255,.095)", color: "#f7f5f2",
   fontWeight: 600, fontSize: 13,
 } as const;
