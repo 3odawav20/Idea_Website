@@ -2,11 +2,6 @@ name: cPanel release package
 
 on:
   workflow_dispatch:
-    inputs:
-      source_commit:
-        description: Full 40-character commit SHA to test and package
-        required: true
-        type: string
 
 permissions:
   contents: read
@@ -17,16 +12,16 @@ jobs:
     permissions:
       contents: read
     steps:
-      - name: Check out the requested commit
+      - name: Check out the workflow-dispatch commit
         uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.source_commit }}
+          ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 1
 
       - name: Verify exact source commit
         env:
-          EXPECTED_COMMIT_SHA: ${{ inputs.source_commit }}
+          EXPECTED_COMMIT_SHA: ${{ github.sha }}
         run: |
           [[ "$EXPECTED_COMMIT_SHA" =~ ^[a-f0-9]{40}$ ]]
           test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT_SHA"
@@ -60,12 +55,12 @@ jobs:
 
       - name: Verify package integrity and readiness label
         env:
-          EXPECTED_COMMIT_SHA: ${{ inputs.source_commit }}
+          EXPECTED_COMMIT_SHA: ${{ github.sha }}
         run: node scripts/verify-cpanel-release.mjs dist "$EXPECTED_COMMIT_SHA"
 
       - name: Create immutable package archive
         env:
-          EXPECTED_COMMIT_SHA: ${{ inputs.source_commit }}
+          EXPECTED_COMMIT_SHA: ${{ github.sha }}
         run: |
           archive="$RUNNER_TEMP/idea-cpanel-${EXPECTED_COMMIT_SHA}.tar.gz"
           tar -C dist -czf "$archive" .
@@ -75,9 +70,9 @@ jobs:
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: idea-cpanel-${{ inputs.source_commit }}
+          name: idea-cpanel-${{ github.sha }}
           path: |
-            ${{ runner.temp }}/idea-cpanel-${{ inputs.source_commit }}.tar.gz
-            ${{ runner.temp }}/idea-cpanel-${{ inputs.source_commit }}.tar.gz.sha256
+            ${{ runner.temp }}/idea-cpanel-${{ github.sha }}.tar.gz
+            ${{ runner.temp }}/idea-cpanel-${{ github.sha }}.tar.gz.sha256
           if-no-files-found: error
           retention-days: 14
