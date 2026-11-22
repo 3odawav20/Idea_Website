@@ -32,11 +32,13 @@ export function Footer() {
     ] },
     { title: text("Connect & plan", "تواصل وخطط", "Contact & conception"), links: [
       ["/contact", text("Contact & appointments", "التواصل والمواعيد", "Contact & rendez-vous")],
-      ["/room-designer/3d", text("Offline 3D Studio", "استوديو 3D بدون AI", "Studio 3D hors ligne")],
+      ["/tile-showroom", text("Offline 3D Studio", "استوديو 3D بدون AI", "Studio 3D hors ligne")],
       ["/ai-room-visualizer", t("nav.visualizer")],
       ["/favorites", t("fav.title")],
       ["/request-quote/new", text("Request a quote", "اطلب عرض سعر", "Demander un devis")],
       ["/updates", text("Email updates", "التحديثات البريدية", "Actualités email")],
+      ["/terms", text("Terms of use", "شروط الاستخدام", "Conditions d’utilisation")],
+      ["/privacy", text("Privacy policy", "سياسة الخصوصية", "Politique de confidentialité")],
     ] },
   ] as const;
 

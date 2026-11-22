@@ -1,39 +1,14 @@
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-
-/**
- * Production authentication MUST be configured with a live Supabase project.
- * Never use a generated/deleted project ID or silently fall back to a stale
- * endpoint. Vite's VITE_* values are PUBLIC and may contain only the
- * publishable/anon key — never a service-role or secret key.
- */
-const url = String(import.meta.env.VITE_SUPABASE_URL || "").trim().replace(/\/+$/, "");
-const anonKey = String(import.meta.env.VITE_SUPABASE_ANON_KEY || "").trim();
-
-function isValidAuthEndpoint(value: string): boolean {
-  try {
-    const parsed = new URL(value);
-    return parsed.protocol === "https:" && Boolean(parsed.hostname) &&
-      !parsed.username && !parsed.password && !parsed.search && !parsed.hash;
-  } catch {
-    return false;
-  }
-}
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 export const backendConfigurationError =
-  "Authentication is temporarily unavailable: this site has no working Supabase project configured. The site administrator must configure VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY for an active project and redeploy.";
+  "BLOCKED: Supabase is not the verified IDEA account or commerce backend. Only server-confirmed PHP/MySQL routes may be used; unsupported operations remain disabled.";
 
-export const isSupabaseConfigured = isValidAuthEndpoint(url) && Boolean(anonKey);
-export const supabase: SupabaseClient | null = isSupabaseConfigured
-  ? createClient(url, anonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-      },
-    })
-  : null;
+export const isSupabaseConfigured = false;
+function getUnavailableSupabaseClient(): SupabaseClient | null {
+  return null;
+}
+export const supabase = getUnavailableSupabaseClient();
 
 export function requireSupabase(): SupabaseClient {
-  if (!supabase) throw new Error(backendConfigurationError);
-  return supabase;
+  throw new Error(backendConfigurationError);
 }

@@ -7,40 +7,78 @@ import { StoreProvider } from "./store/store";
 import { BackendProvider } from "./backend/db";
 import { useBackend, type Role } from "./backend/db";
 import { Layout } from "./components/Layout";
-import { Home } from "./pages/Home";
-import { Products } from "./pages/Products";
-import { Collections, CollectionDetail } from "./pages/Collections";
-import { ProductDetail } from "./pages/ProductDetail";
-import { Favorites } from "./pages/Favorites";
-import { RequestQuote } from "./pages/RequestQuote";
-import { HowItWorks } from "./pages/Static";
-import { AiVisualizerStudio } from "./pages/AiVisualizerStudio";
-import { Login, Register, RegisterCustomer, RegisterBusiness, BusinessLogin, AdminLogin, RoleSelect } from "./pages/Auth";
-import {
-  AccountLayout, AccountProfile, AccountInbox, AccountRequests, AccountRequestOffers,
-  AccountOrders, AccountInvoices, AccountFavorites, AccountCompare, AccountRoomProjects,
-  AccountNotifications, AccountSettings,
-} from "./pages/Account";
-import {
-  BusinessLayout, BusinessOverview, BusinessOnboarding, BusinessVerification, BusinessInbox,
-  BusinessRequests, BusinessRequestDetail, BusinessOffers, BusinessOrders, BusinessProducts,
-  BusinessReports, BusinessSubscriptionPage, BusinessSettings,
-} from "./pages/Business";
-import { SubscriptionsHome, SubscriptionsCustomers, SubscriptionsBusinesses, AccountSubscription } from "./pages/Subscriptions";
-import { AdminLayout, AdminOverview, AdminSubscriptions, AdminPayments } from "./pages/Admin";
-import { AdminStudioLayout, AdminStudioHome, AdminProducts, AdminQuality, AdminOperations, AdminSettings, AdminVisualizer } from "./pages/AdminStudio";
-import { AdminPromotions } from "./pages/AdminPromotions";
-import { Checkout } from "./pages/Checkout";
+const Home = lazy(() => import("./pages/Home").then(module => ({ default: module.Home })));
+const Products = lazy(() => import("./pages/Products").then(module => ({ default: module.Products })));
+const Collections = lazy(() => import("./pages/Collections").then(module => ({ default: module.Collections })));
+const CollectionDetail = lazy(() => import("./pages/Collections").then(module => ({ default: module.CollectionDetail })));
+const ProductDetail = lazy(() => import("./pages/ProductDetail").then(module => ({ default: module.ProductDetail })));
+const Favorites = lazy(() => import("./pages/Favorites").then(module => ({ default: module.Favorites })));
+const RequestQuote = lazy(() => import("./pages/RequestQuote").then(module => ({ default: module.RequestQuote })));
+const HowItWorks = lazy(() => import("./pages/Static").then(module => ({ default: module.HowItWorks })));
+const AiVisualizerStudio = lazy(() => import("./pages/AiVisualizerStudio").then(module => ({ default: module.AiVisualizerStudio })));
+const Login = lazy(() => import("./pages/Auth").then(module => ({ default: module.Login })));
+const Register = lazy(() => import("./pages/Auth").then(module => ({ default: module.Register })));
+const RegisterCustomer = lazy(() => import("./pages/Auth").then(module => ({ default: module.RegisterCustomer })));
+const RegisterBusiness = lazy(() => import("./pages/Auth").then(module => ({ default: module.RegisterBusiness })));
+const BusinessLogin = lazy(() => import("./pages/Auth").then(module => ({ default: module.BusinessLogin })));
+const AdminLogin = lazy(() => import("./pages/Auth").then(module => ({ default: module.AdminLogin })));
+const RoleSelect = lazy(() => import("./pages/Auth").then(module => ({ default: module.RoleSelect })));
+const AccountLayout = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountLayout })));
+const AccountProfile = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountProfile })));
+const AccountInbox = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountInbox })));
+const AccountRequests = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountRequests })));
+const AccountRequestOffers = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountRequestOffers })));
+const AccountOrders = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountOrders })));
+const AccountInvoices = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountInvoices })));
+const AccountFavorites = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountFavorites })));
+const AccountCompare = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountCompare })));
+const AccountRoomProjects = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountRoomProjects })));
+const AccountNotifications = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountNotifications })));
+const AccountSettings = lazy(() => import("./pages/Account").then(module => ({ default: module.AccountSettings })));
+const BusinessLayout = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessLayout })));
+const BusinessOverview = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessOverview })));
+const BusinessOnboarding = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessOnboarding })));
+const BusinessVerification = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessVerification })));
+const BusinessInbox = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessInbox })));
+const BusinessRequests = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessRequests })));
+const BusinessRequestDetail = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessRequestDetail })));
+const BusinessOffers = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessOffers })));
+const BusinessOrders = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessOrders })));
+const BusinessProducts = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessProducts })));
+const BusinessReports = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessReports })));
+const BusinessSubscriptionPage = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessSubscriptionPage })));
+const BusinessSettings = lazy(() => import("./pages/Business").then(module => ({ default: module.BusinessSettings })));
+const SubscriptionsHome = lazy(() => import("./pages/Subscriptions").then(module => ({ default: module.SubscriptionsHome })));
+const SubscriptionsCustomers = lazy(() => import("./pages/Subscriptions").then(module => ({ default: module.SubscriptionsCustomers })));
+const SubscriptionsBusinesses = lazy(() => import("./pages/Subscriptions").then(module => ({ default: module.SubscriptionsBusinesses })));
+const AccountSubscription = lazy(() => import("./pages/Subscriptions").then(module => ({ default: module.AccountSubscription })));
+const AdminLayout = lazy(() => import("./pages/Admin").then(module => ({ default: module.AdminLayout })));
+const AdminOverview = lazy(() => import("./pages/Admin").then(module => ({ default: module.AdminOverview })));
+const AdminSubscriptions = lazy(() => import("./pages/Admin").then(module => ({ default: module.AdminSubscriptions })));
+const AdminPayments = lazy(() => import("./pages/Admin").then(module => ({ default: module.AdminPayments })));
+const AdminStudioLayout = lazy(() => import("./pages/AdminStudio").then(module => ({ default: module.AdminStudioLayout })));
+const AdminStudioHome = lazy(() => import("./pages/AdminStudio").then(module => ({ default: module.AdminStudioHome })));
+const AdminProducts = lazy(() => import("./pages/AdminStudio").then(module => ({ default: module.AdminProducts })));
+const AdminQuality = lazy(() => import("./pages/AdminStudio").then(module => ({ default: module.AdminQuality })));
+const AdminOperations = lazy(() => import("./pages/AdminStudio").then(module => ({ default: module.AdminOperations })));
+const AdminSettings = lazy(() => import("./pages/AdminStudio").then(module => ({ default: module.AdminSettings })));
+const AdminVisualizer = lazy(() => import("./pages/AdminStudio").then(module => ({ default: module.AdminVisualizer })));
+const AdminPromotions = lazy(() => import("./pages/AdminPromotions").then(module => ({ default: module.AdminPromotions })));
+const Checkout = lazy(() => import("./pages/Checkout").then(module => ({ default: module.Checkout })));
 const Room3DStudio = lazy(() => import("./pages/Room3DStudio").then(module => ({ default: module.Room3DStudio })));
-import { CompanyControlCenter, CompanyApplication } from "./pages/CompanyControlCenter";
-import { CompanyRevenueReport, AdminAnnouncementEditor, BusinessAdvertising } from "./pages/BusinessGrowth";
-import { AdminCodeLookup } from "./pages/AdminCodeLookup";
-import { Resources } from "./pages/Resources";
-import { SurfaceStyles } from "./pages/SurfaceStyles";
+const CompanyControlCenter = lazy(() => import("./pages/CompanyControlCenter").then(module => ({ default: module.CompanyControlCenter })));
+const CompanyApplication = lazy(() => import("./pages/CompanyControlCenter").then(module => ({ default: module.CompanyApplication })));
+const CompanyRevenueReport = lazy(() => import("./pages/BusinessGrowth").then(module => ({ default: module.CompanyRevenueReport })));
+const AdminAnnouncementEditor = lazy(() => import("./pages/BusinessGrowth").then(module => ({ default: module.AdminAnnouncementEditor })));
+const BusinessAdvertising = lazy(() => import("./pages/BusinessGrowth").then(module => ({ default: module.BusinessAdvertising })));
+const AdminCodeLookup = lazy(() => import("./pages/AdminCodeLookup").then(module => ({ default: module.AdminCodeLookup })));
+const Resources = lazy(() => import("./pages/Resources").then(module => ({ default: module.Resources })));
+const SurfaceStyles = lazy(() => import("./pages/SurfaceStyles").then(module => ({ default: module.SurfaceStyles })));
+const LegalPage = lazy(() => import("./pages/LegalPages").then(module => ({ default: module.LegalPage })));
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
-  if (!session) return <Navigate to={roles?.includes("admin") ? "/admin/login" : roles?.includes("business") ? "/business/login" : "/login"} replace />;
+  if (!session) return <Navigate to={roles?.includes("admin") ? "/admin/login" : roles?.includes("supplier") ? "/business/login" : "/login"} replace />;
   if (roles && !roles.includes(session.role)) return <Navigate to="/" replace />;
   return <Outlet />;
 }
@@ -57,6 +95,7 @@ export default function App() {
       <BackendProvider>
       <StoreProvider>
         <BrowserRouter basename={window.location.pathname.startsWith("/idea-next/") ? "/idea-next" : undefined}>
+          <Suspense fallback={<div role="status" style={{ padding: 32 }}>Loading IDEA…</div>}>
           <Routes>
             <Route element={<Layout />}>
               {/* Storefront */}
@@ -69,6 +108,8 @@ export default function App() {
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/ai-room-visualizer" element={<AiVisualizerStudio />} />
               <Route path="/surface-styles" element={<SurfaceStyles />} />
+              <Route path="/terms" element={<LegalPage kind="terms" />} />
+              <Route path="/privacy" element={<LegalPage kind="privacy" />} />
 
               {["about", "showrooms", "downloads", "projects", "journal", "videos", "glossary", "contact", "updates"].map(path => <Route key={path} path={`/${path}`} element={<Resources />} />)}
               <Route path="/inspiration/:destination" element={<Resources />} />
@@ -98,11 +139,12 @@ export default function App() {
               <Route path="/room-designer" element={<Navigate to="/room-designer/3d" replace />} />
               <Route path="/room-designer/photo-guide" element={<Navigate to="/ai-room-visualizer" replace />} />
               <Route path="/room-designer/new" element={<Navigate to="/room-designer/3d" replace />} />
-              <Route path="/room-designer/3d" element={<Suspense fallback={<div style={{padding:32}}>Loading 3D studio…</div>}><Room3DStudio /></Suspense>} />
+              <Route path="/room-designer/3d" element={<Suspense fallback={<div style={{padding:32}}>Loading 3D studio…</div>}><Room3DStudio tileOnly /></Suspense>} />
+              <Route path="/tile-showroom" element={<Suspense fallback={<div style={{padding:32}}>Loading tile studio…</div>}><Room3DStudio tileOnly /></Suspense>} />
               <Route path="/room-designer/project/:projectId" element={<Navigate to="/account/room-projects" replace />} />
 
               {/* Customer account */}
-              <Route element={<ProtectedRoute roles={["customer", "designer", "contractor"]} />}>
+              <Route element={<ProtectedRoute roles={["buyer"]} />}>
               <Route path="/account" element={<AccountLayout />}>
                 <Route index element={<AccountProfile />} />
                 <Route path="profile" element={<AccountProfile />} />
@@ -123,7 +165,7 @@ export default function App() {
               </Route>
 
               {/* Business */}
-              <Route element={<ProtectedRoute roles={["business"]} />}>
+              <Route element={<ProtectedRoute roles={["supplier"]} />}>
               <Route path="/business/onboarding" element={<Navigate to="/business/apply" replace />} />
               <Route path="/business" element={<BusinessLayout />}>
                 <Route index element={<BusinessOverview />} />
@@ -167,6 +209,7 @@ export default function App() {
               <Route path="*" element={<Navigate to="/" replace />} />
             </Route>
           </Routes>
+          </Suspense>
         </BrowserRouter>
       </StoreProvider>
       </BackendProvider>

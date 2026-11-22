@@ -1,5 +1,5 @@
 export type BusinessAuthMethod = "business_domain" | "gmail" | "business_phone";
-export type SafeRole = "customer" | "business" | "designer" | "contractor" | "admin";
+export type SafeRole = "buyer" | "supplier" | "admin";
 
 export const FREE_EMAIL_DOMAINS = new Set([
   "gmail.com",
@@ -95,8 +95,9 @@ export function validateBusinessEmailForMethod(
   return { ok: true };
 }
 
-export function resolvePostAuthRoute(role: string | null | undefined): string {
+export function resolvePostAuthRoute(role: string | null | undefined): string | null {
   if (role === "admin") return "/admin";
-  if (role === "business") return "/business";
-  return "/account";
+  if (role === "supplier") return "/business";
+  if (role === "buyer") return "/account";
+  return null;
 }

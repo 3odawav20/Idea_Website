@@ -18,12 +18,14 @@ test("private financial schema enables enforced RLS and rejects anon access",()=
   assert.match(sql,/for delete to authenticated using \(public\.is_admin\(\)\)/i);
   assert.match(sql,/review_status in \('draft','verified','rejected'\)/i);
 });
-test("admin-only multi-offer screen never publishes a draft as a storefront promotion",()=>{
+test("admin promotion UI stays visibly blocked without a verified PHP/MySQL persistence route",()=>{
   assert.match(screen,/session\?\.role!=="admin"/);
-  assert.match(screen,/\.from\("catalogue_admin_promotions"\)/);
-  assert.match(screen,/review_status:"draft"/);
+  assert.match(screen,/BLOCKED: Admin promotion records need a verified PHP\/MySQL endpoint/);
+  assert.doesNotMatch(screen,/requireSupabase|\.from\("catalogue_admin_promotions"\)/);
+  assert.match(screen,/disabled=\{state!=="ready"\}/);
+  assert.match(screen,/setState\("unavailable"\)/);
   assert.match(screen,/source_product_url/);
-  assert.match(screen,/Promotional price|Offer price/);
+  assert.match(screen,/Offer price/);
   assert.doesNotMatch(screen,/localStorage\.setItem|public\.catalogue_admin_promotions|service_role/i);
   assert.match(routes,/<Route element=\{<ProtectedRoute roles=\{\["admin"\]\} \/>/);
   assert.match(routes,/<Route path="promotions" element=\{<AdminPromotions \/>/);

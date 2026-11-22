@@ -57,3 +57,22 @@ export function WhatsAppBrandIcon(props: SVGProps<SVGSVGElement>) {
     </svg>
   );
 }
+
+export function MicrosoftBrandIcon(props: SVGProps<SVGSVGElement>) {
+  return <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
+    <path fill="#F25022" d="M1 1h10.5v10.5H1z"/><path fill="#7FBA00" d="M12.5 1H23v10.5H12.5z"/>
+    <path fill="#00A4EF" d="M1 12.5h10.5V23H1z"/><path fill="#FFB900" d="M12.5 12.5H23V23H12.5z"/>
+  </svg>;
+}
+
+export function LinkedInBrandIcon(props: SVGProps<SVGSVGElement>) {
+  return <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
+    <rect width="24" height="24" rx="2" fill="#0A66C2"/><path fill="#fff" d="M5 9h3.2v10H5zm1.6-4.8a1.85 1.85 0 1 0 0 3.7 1.85 1.85 0 0 0 0-3.7ZM10.3 9h3.1v1.4h.1c.7-1.1 1.8-1.7 3.3-1.7 3.4 0 4 2.2 4 5V19h-3.2v-4.7c0-1.2 0-2.5-1.7-2.5s-2.4 1-2.4 2.4V19h-3.2z"/>
+  </svg>;
+}
+
+export function GitHubBrandIcon(props: SVGProps<SVGSVGElement>) {
+  return <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" {...props}>
+    <path d="M12 .75a11.25 11.25 0 0 0-3.56 21.92c.56.1.77-.24.77-.54v-2.1c-3.13.68-3.8-1.33-3.8-1.33-.5-1.3-1.25-1.65-1.25-1.65-1.02-.7.08-.68.08-.68 1.12.08 1.7 1.15 1.7 1.15 1 1.7 2.61 1.2 3.25.92.1-.72.4-1.2.72-1.47-2.5-.28-5.12-1.25-5.12-5.56 0-1.23.44-2.23 1.15-3.02-.12-.28-.5-1.43.1-2.99 0 0 .94-.3 3.1 1.15a10.8 10.8 0 0 1 5.66 0c2.16-1.45 3.1-1.15 3.1-1.15.61 1.56.23 2.71.11 2.99a4.36 4.36 0 0 1 1.15 3.02c0 4.32-2.63 5.27-5.14 5.55.4.35.76 1.04.76 2.1v3.07c0 .3.2.65.77.54A11.25 11.25 0 0 0 12 .75Z"/>
+  </svg>;
+}

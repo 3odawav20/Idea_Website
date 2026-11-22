@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router";
-import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User } from "lucide-react";
+import { Search, Heart, FileText, Globe, Menu, X, Sun, Moon, User, Sparkles } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import { useStore } from "../store/store";
@@ -39,7 +39,7 @@ export function Header() {
   }, [open]);
   // Navigation via browser history also closes the menu, including on iOS Safari.
   useEffect(() => { setOpen(false); }, [pathname]);
-  const account = session ? session.role === "business" ? "/business" : session.role === "admin" ? "/admin" : "/account" : "/login";
+  const account = session ? session.role === "supplier" ? "/business" : session.role === "admin" ? "/admin" : "/account" : "/login";
   const controls = <>
     <span className="idea-header-languages"><Globe size={15} aria-hidden="true" />
       {(["en", "ar", "fr"] as const).map(code => <button key={code} aria-label={{en:"English",ar:"العربية",fr:"Français"}[code]} aria-pressed={locale === code} onClick={() => setLocale(code)}>{code.toUpperCase()}</button>)}
@@ -58,8 +58,8 @@ export function Header() {
               platform exposes a verified admin-published announcement contract.
               No external account-service request or fabricated live sales in the header. */}
           <div className="idea-catalogue-announcement" dir={locale === "ar" ? "rtl" : "ltr"}>
-            <span aria-hidden="true">✦</span><span>{text(`${products.length} products in the catalogue · Explore surfaces & plan your space`, `${products.length} منتج في الكتالوج · اكتشف الخامات وصمّم مساحتك`, `${products.length} produits au catalogue · Découvrez les surfaces`)}</span>
-            <span aria-hidden="true">✦</span><Link to="/products">{text("Learn more", "اعرف المزيد", "En savoir plus")}</Link>
+            <Sparkles className="idea-catalogue-announcement-icon" size={13} aria-hidden="true"/><span>{text(`${products.length} products in the catalogue · Explore surfaces & plan your space`, `${products.length} منتج في الكتالوج · اكتشف الخامات وصمّم مساحتك`, `${products.length} produits au catalogue · Découvrez les surfaces`)}</span>
+            <Sparkles className="idea-catalogue-announcement-icon" size={13} aria-hidden="true"/><Link to="/products">{text("Learn more", "اعرف المزيد", "En savoir plus")}</Link>
           </div>
         </div>
         <div className="idea-reference-actions">{controls}</div>

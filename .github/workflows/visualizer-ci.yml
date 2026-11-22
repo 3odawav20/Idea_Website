@@ -29,8 +29,12 @@ jobs:
         run: npm run build
       - name: Build cPanel bundle
         run: npm run build:cpanel
+      - name: Verify exact cPanel package manifest
+        run: node scripts/verify-cpanel-release.mjs dist "$GITHUB_SHA"
       - name: Check PHP syntax
         run: php -l server/cpanel/api/visualize.php && php -l server/cpanel/idea-accounts-api/platform-ai.php && php -l server/cpanel/api/tile-dimensions.php && php -l server/cpanel/api/marketplace.php
+      - name: Verify PHP/MySQL marketplace price policy
+        run: php tests/marketplace-private-price-policy.test.php
       - name: Verify PHP/MySQL AI role entitlements at runtime
         run: php tests/ai-role-policy.test.php
       - name: Verify manufacturer tile dimensions and lossless surface edits

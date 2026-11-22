@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Maximize2, Minimize2, Search, X } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, Maximize2, Minimize2, Search, Sparkles, X } from "lucide-react";
 import { createPortal } from "react-dom";
+import { Link } from "react-router";
 import type { Product, ProductSize, Locale } from "../data/types";
 import surfaceMaterials from "../data/surfaceMaterials.json";
 import { localMaterialFace } from "../data/localMaterialFace";
+import { publicProductBrand } from "../data/ideaProductIdentity";
 import "./Room3DMaterialGallery.css";
 
 export type MaterialSurface = "floor" | "back" | "left" | "right";
@@ -26,9 +28,9 @@ export function materialFace(product:Product):string|null {
 }
 const categories:Category[]=["all","ceramics","porcelain","tiles","marble"];
 const materialCopy={
-  en:{title:"Original tile and slab materials",count:"verified materials",all:"All",ceramics:"Ceramic",porcelain:"Porcelain",tiles:"Tiles",marble:"Marble",search:"Search material, brand or model",apply:"Apply to surface",clear:"Clear selected surface",none:"No source-backed tile faces with verified dimensions for this selection.",more:"Load more materials",selected:"Applied",size:"Original size",scale:"Only available, source-backed materials are shown. Sizes are physical repeats, not manufacturer stock guarantees.",floor:"Floor",back:"Back wall",left:"Left wall",right:"Right wall",surface:"Selected surface",navigation:"Scroll vertically, use Shift + mouse wheel for horizontal movement, or use the arrows.",leftArrow:"Scroll left",rightArrow:"Scroll right",upArrow:"Scroll up",downArrow:"Scroll down",allCount:"Matching materials"},
-  ar:{title:"صور البلاطات والخامات الأصلية",count:"خامة بمقاسات موثقة",all:"الكل",ceramics:"سيراميك",porcelain:"بورسلين",tiles:"بلاط",marble:"رخام",search:"ابحث عن خامة أو شركة أو موديل",apply:"ركّب على السطح",clear:"إزالة خامة السطح",none:"مفيش صور خامات بأبعاد موثقة مطابقة للاختيار ده.",more:"تحميل خامات أكتر",selected:"مركّبة",size:"المقاس الأصلي",scale:"المعروض خامات حقيقية مسجّلة بالمصدر فقط. التكرار بالمقاس الفعلي لا يعني تأكيد المخزون.",floor:"الأرضية",back:"الحيطة الخلفية",left:"الحيطة اليسار",right:"الحيطة اليمين",surface:"السطح المختار",navigation:"حرّك بالماوس فوق وتحت، وShift مع عجلة الماوس يمين وشمال، أو استخدم الأسهم.",leftArrow:"حرّك شمال",rightArrow:"حرّك يمين",upArrow:"اطلع فوق",downArrow:"انزل تحت",allCount:"الخامات المطابقة"},
-  fr:{title:"Matériaux réels : carreaux et dalles",count:"matériaux vérifiés",all:"Tous",ceramics:"Céramique",porcelain:"Grès cérame",tiles:"Carrelage",marble:"Marbre",search:"Chercher matériau, marque ou modèle",apply:"Appliquer",clear:"Effacer la surface",none:"Aucun matériau de source vérifiée pour cette sélection.",more:"Charger plus de matériaux",selected:"Appliqué",size:"Format d'origine",scale:"Seules les références disponibles et vérifiables sont affichées. Les formats ne prouvent pas la disponibilité en stock.",floor:"Sol",back:"Mur arrière",left:"Mur gauche",right:"Mur droit",surface:"Surface choisie",navigation:"Défilez verticalement ; Maj + molette pour l'horizontale, ou utilisez les flèches.",leftArrow:"Vers la gauche",rightArrow:"Vers la droite",upArrow:"Vers le haut",downArrow:"Vers le bas",allCount:"Matériaux correspondants"}
+  en:{title:"Original tile and slab materials",count:"verified materials",all:"All",ceramics:"Ceramic",porcelain:"Porcelain",tiles:"Tiles",marble:"Marble",search:"Search material, brand or model",apply:"Apply to surface",clear:"Clear selected surface",none:"No source-backed tile faces with verified dimensions for this selection.",more:"Load more materials",selected:"Applied",size:"Original size",scale:"Only available, source-backed materials are shown. Sizes are physical repeats, not manufacturer stock guarantees.",floor:"Floor",back:"Back wall",left:"Left wall",right:"Right wall",surface:"Selected surface",navigation:"Scroll vertically, use Shift + mouse wheel for horizontal movement, or use the arrows.",leftArrow:"Scroll left",rightArrow:"Scroll right",upArrow:"Scroll up",downArrow:"Scroll down",allCount:"Matching materials",visualize:"View in AI room visualizer",makerUnverified:"Manufacturer not verified",brandUnverified:"Brand not verified"},
+  ar:{title:"صور البلاطات والخامات الأصلية",count:"خامة بمقاسات موثقة",all:"الكل",ceramics:"سيراميك",porcelain:"بورسلين",tiles:"بلاط",marble:"رخام",search:"ابحث عن خامة أو شركة أو موديل",apply:"ركّب على السطح",clear:"إزالة خامة السطح",none:"مفيش صور خامات بأبعاد موثقة مطابقة للاختيار ده.",more:"تحميل خامات أكتر",selected:"مركّبة",size:"المقاس الأصلي",scale:"المعروض خامات حقيقية مسجّلة بالمصدر فقط. التكرار بالمقاس الفعلي لا يعني تأكيد المخزون.",floor:"الأرضية",back:"الحيطة الخلفية",left:"الحيطة اليسار",right:"الحيطة اليمين",surface:"السطح المختار",navigation:"حرّك بالماوس فوق وتحت، وShift مع عجلة الماوس يمين وشمال، أو استخدم الأسهم.",leftArrow:"حرّك شمال",rightArrow:"حرّك يمين",upArrow:"اطلع فوق",downArrow:"انزل تحت",allCount:"الخامات المطابقة",visualize:"جرّبها على صورة غرفتك",makerUnverified:"المصنع غير موثق",brandUnverified:"العلامة التجارية غير موثقة"},
+  fr:{title:"Matériaux réels : carreaux et dalles",count:"matériaux vérifiés",all:"Tous",ceramics:"Céramique",porcelain:"Grès cérame",tiles:"Carrelage",marble:"Marbre",search:"Chercher matériau, marque ou modèle",apply:"Appliquer",clear:"Effacer la surface",none:"Aucun matériau de source vérifiée pour cette sélection.",more:"Charger plus de matériaux",selected:"Appliqué",size:"Format d'origine",scale:"Seules les références disponibles et vérifiables sont affichées. Les formats ne prouvent pas la disponibilité en stock.",floor:"Sol",back:"Mur arrière",left:"Mur gauche",right:"Mur droit",surface:"Surface choisie",navigation:"Défilez verticalement ; Maj + molette pour l'horizontale, ou utilisez les flèches.",leftArrow:"Vers la gauche",rightArrow:"Vers la droite",upArrow:"Vers le haut",downArrow:"Vers le bas",allCount:"Matériaux correspondants",visualize:"Voir dans le visualiseur IA",makerUnverified:"Fabricant non vérifié",brandUnverified:"Marque non vérifiée"}
 } as const;
 function matchesCategory(product:Product,category:Category):boolean {
   if(category==="all")return true;
@@ -47,6 +49,9 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
   const savedScroll=useRef({top:0,left:0});
   const [sizeOptions,setSizeOptions]=useState<Record<string,string>>({});
   const scroller=useRef<HTMLDivElement>(null);
+  const dialogRef=useRef<HTMLElement>(null);
+  const expandButtonRef=useRef<HTMLButtonElement>(null);
+  const wasExpanded=useRef(false);
   const sentinel=useRef<HTMLDivElement>(null);
   const drag=useRef<{x:number;y:number;left:number;top:number}|null>(null);
   const filtered=useMemo(()=>{
@@ -98,12 +103,34 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     }
   },[expanded]);
   useEffect(()=>{
-    if(!expanded)return;
+    if(!expanded){
+      if(!wasExpanded.current)return;
+      wasExpanded.current=false;
+      const focusFrame=window.requestAnimationFrame(()=>expandButtonRef.current?.focus());
+      return ()=>window.cancelAnimationFrame(focusFrame);
+    }
+    wasExpanded.current=true;
     const previousOverflow=document.body.style.overflow;
+    const root=dialogRef.current;
     document.body.style.overflow="hidden";
-    const keydown=(event:KeyboardEvent)=>{if(event.key==="Escape")setExpanded(false);};
+    const getFocusable=()=>Array.from(root?.querySelectorAll<HTMLElement>('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')??[])
+      .filter(element=>!element.hasAttribute("hidden")&&element.getAttribute("aria-hidden")!=="true");
+    const focusFrame=window.requestAnimationFrame(()=>expandButtonRef.current?.focus());
+    const keydown=(event:KeyboardEvent)=>{
+      if(event.key==="Escape"){setExpanded(false);return;}
+      if(event.key!=="Tab")return;
+      const focusable=getFocusable();
+      const first=focusable[0],last=focusable[focusable.length-1];
+      if(!first||!last){event.preventDefault();root?.focus();return;}
+      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+    };
     window.addEventListener("keydown",keydown);
-    return ()=>{document.body.style.overflow=previousOverflow;window.removeEventListener("keydown",keydown);};
+    return ()=>{
+      window.cancelAnimationFrame(focusFrame);
+      document.body.style.overflow=previousOverflow;
+      window.removeEventListener("keydown",keydown);
+    };
   },[expanded]);
 
   const scroll=(x:number,y:number)=>{
@@ -113,7 +140,7 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     }
     scroller.current?.scrollBy({left:x,top:y,behavior:"smooth"});
   };
-  const gallery=<aside className={"idea-room3d-side idea-room3d-material-catalog"+(expanded?" is-expanded":"")} aria-label={t.title}>
+  const gallery=<aside ref={dialogRef} tabIndex={expanded?-1:undefined} className={"idea-room3d-side idea-room3d-material-catalog"+(expanded?" is-expanded":"")} aria-label={t.title} role={expanded?"dialog":undefined} aria-modal={expanded||undefined}>
     <h2>{t.title}<small>{products.length} {t.count}</small></h2>
     <p className="idea-room3d-material-caption">{t.surface}: <strong>{t[surface]}</strong></p>
     <div className="idea-room3d-material-tabs" role="group" aria-label={t.title}>
@@ -128,7 +155,7 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     <div className="idea-room3d-scrollbar-tools">
       <small>{t.allCount}: {filtered.length} · {t.navigation}</small>
       <div>
-        <button type="button" aria-label={expanded?(locale==="ar"?"إغلاق المكتبة":"Close material library"):(locale==="ar"?"افتح مكتبة الخامات":"Expand material library")} onClick={toggleExpanded}>{expanded?<Minimize2 size={17}/>:<Maximize2 size={17}/>}</button>
+        <button ref={expandButtonRef} type="button" aria-label={expanded?(locale==="ar"?"إغلاق المكتبة":"Close material library"):(locale==="ar"?"افتح مكتبة الخامات":"Expand material library")} aria-expanded={expanded} onClick={toggleExpanded}>{expanded?<Minimize2 size={17}/>:<Maximize2 size={17}/>}</button>
         <button type="button" aria-label={t.leftArrow} onClick={()=>scroll(-440,0)}><ArrowLeft size={17}/></button>
         <button type="button" aria-label={t.rightArrow} onClick={()=>scroll(440,0)}><ArrowRight size={17}/></button>
         <button type="button" aria-label={t.upArrow} onClick={()=>scroll(0,-440)}><ArrowUp size={17}/></button>
@@ -153,6 +180,7 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
           const sizes=verifiedSizes(product),image=materialFace(product);
           const chosen=sizeOptions[product.id]&&sizes.some(s=>s.id===sizeOptions[product.id])?sizeOptions[product.id]:sizes[0].id;
           const selectedSize=sizes.find(size=>size.id===chosen)!;
+          const brand=publicProductBrand(product);
           const previewWidth=Math.min(140,180*selectedSize.widthMm!/selectedSize.heightMm!);
           const previewHeight=previewWidth*selectedSize.heightMm!/selectedSize.widthMm!;
           const isActive=activeProductId===product.id&&activeSizeId===chosen;
@@ -161,12 +189,14 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
               <img src={image!} alt={product.name[locale]} loading="lazy" style={{width:previewWidth,height:previewHeight}}/>
             </div>
             <strong title={product.name[locale]}>{product.name[locale]}</strong>
-            <small>{product.manufacturer||product.brand}</small>
+            <small>{brand||t.brandUnverified}</small>
+            <small>{product.manufacturer?.trim()||t.makerUnverified}</small>
             <label>{t.size}<select value={chosen} aria-label={product.name[locale]+" - "+t.size}
               onChange={e=>setSizeOptions(prev=>({...prev,[product.id]:e.target.value}))}>
               {sizes.map(size=><option value={size.id} key={size.id}>{size.widthMm} × {size.heightMm} mm</option>)}
             </select></label>
             <button type="button" aria-pressed={isActive} onClick={()=>onApply(product,chosen)}>{isActive?t.selected:t.apply}</button>
+            <Link className="idea-room3d-material-ai" to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}><Sparkles size={14} aria-hidden="true"/>{t.visualize}</Link>
           </article>;
         })}
       </div>
@@ -177,5 +207,10 @@ export function Room3DMaterialGallery({products,locale,surface,activeProductId,a
     {!filtered.length&&<p className="idea-room3d-empty">{t.none}</p>}
     <p className="idea-room3d-disclaimer">{t.scale}</p>
   </aside>;
-  return expanded?createPortal(gallery,document.body):gallery;
+  return expanded?createPortal(
+    <div className="idea-room3d-material-backdrop" onPointerDown={event=>{if(event.target===event.currentTarget)setExpanded(false);}}>
+      {gallery}
+    </div>,
+    document.body
+  ):gallery;
 }

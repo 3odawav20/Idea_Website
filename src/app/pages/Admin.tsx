@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router";
 import { useI18n } from "../i18n/i18n";
 import { useBackend, type Plan, type PaymentMethodConfig } from "../backend/db";
+import { useStore } from "../store/store";
 import { Container, Section, SectionHeader, Button } from "../components/ui";
 import { Panel, StatusBadge, Field, inputStyle } from "../components/dash";
 
@@ -45,8 +46,9 @@ export function AdminLayout() {
 
 export function AdminOverview() {
   const { db, api } = useBackend();
+  const { products } = useStore();
   const stats = [
-    { label: "Products", value: "475" },
+    { label: "Loaded products", value: products.length },
     { label: "Suppliers", value: db.businesses.length },
     { label: "Requests", value: db.requests.length },
     { label: "Offers", value: db.offers.length },

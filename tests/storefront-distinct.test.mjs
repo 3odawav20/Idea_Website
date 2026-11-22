@@ -1,10 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
-import { transformSync } from "esbuild";
+import { transformWithEsbuild } from "vite";
 
 const ts = readFileSync("src/app/data/storefrontDistinct.ts", "utf8");
-const js = transformSync(ts, { loader: "ts", format: "esm", target: "es2020" }).code;
+const { code: js } = await transformWithEsbuild(ts, "storefrontDistinct.ts", {
+  loader: "ts",
+  format: "esm",
+  target: "es2020",
+});
 const { distinctStorefrontProducts } = await import(
   "data:text/javascript;base64," + Buffer.from(js).toString("base64")
 );

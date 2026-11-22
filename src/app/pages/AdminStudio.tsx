@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { Link, NavLink, Outlet, useNavigate } from "react-router";
 import {
-  Activity, ArrowRight, ArrowUpRight, BadgeCheck, BarChart3, Boxes, Check,
+  Activity, ArrowRight, ArrowUpRight, BadgeCheck, BarChart3, Boxes, Building2, Check,
   ChevronRight, CircleAlert, ClipboardCheck, Database, Download, ExternalLink,
   Eye, EyeOff, Filter, Globe2, Image as ImageIcon, Layers3, LayoutDashboard,
   LockKeyhole, Menu, Megaphone, Package, RefreshCw, Search, Settings2, ShieldCheck,
@@ -10,7 +10,7 @@ import {
 import { useBackend } from "../backend/db";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
-import { requireSupabase } from "../backend/supabaseClient";
+import { requireSupabase, supabase } from "../backend/supabaseClient";
 import type { Product, CollectionSlug } from "../data/types";
 import type { AdminOverride } from "../data/catalogueOverrides";
 import { isValidProductImage, normalizeAdminOverride } from "../data/catalogueOverrides";
@@ -60,8 +60,8 @@ function Pill({ok,children}:{ok:boolean;children:ReactNode}){
  return <span className={"ids-pill "+(ok?"ids-pill-ok":"ids-pill-warn")}>{ok?<Check size={12}/>:<CircleAlert size={12}/>} {children}</span>;
 }
 
-export function AdminStudioLayout(){
- const {session}=useBackend();const [menu,setMenu]=useState(false);
+ export function AdminStudioLayout(){
+  const {session,capabilities}=useBackend();const [menu,setMenu]=useState(false);
  if(!session||session.role!=="admin")return <div className="ids-denied"><LockKeyhole size={30}/><h2>Restricted workspace</h2><p>This area requires an administrator role verified by the authentication server.</p><Link to="/login">Sign in <ArrowRight size={16}/></Link></div>;
  const links=[
   {to:"/admin",label:"Overview",icon:LayoutDashboard,end:true},
@@ -94,7 +94,10 @@ export function AdminStudioLayout(){
     {menu&&<button className="ids-backdrop" aria-label="Close navigation" onClick={()=>setMenu(false)}/>}
     <div className="ids-main">
       <header className="ids-topbar"><div><button className="ids-hamburger" aria-label="Open admin navigation" onClick={()=>setMenu(true)}><Menu size={21}/></button><span className="ids-breadcrumb">WORKSPACE <ChevronRight size={14}/> <strong>Administrator</strong></span></div><div className="ids-topright"><span className="ids-secure"><i/> Authorized access</span><Link to="/" title="Open store" aria-label="Open store"><Globe2 size={19}/></Link></div></header>
-      <div className="ids-page"><Outlet/></div>
+      <div className="ids-page">
+        {!capabilities.rfq&&<div role="status" className="ids-notice">BLOCKED: PHP/MySQL RFQ, offers, orders, subscriptions, payment, and full admin-record APIs are not available in this checkout.</div>}
+        <Outlet/>
+      </div>
       <div className="ids-footer"><span>© IDEA EGYPT — ADMIN WORKSPACE</span><span>Live operations depend on server policy and connectivity</span></div>
     </div>
    </div>
@@ -102,7 +105,7 @@ export function AdminStudioLayout(){
 }
 
 export function AdminStudioHome(){
- const {db}=useBackend();const {products}=useStore();
+ const {products}=useStore();
  const flags=useMemo(()=>products.reduce((n,p)=>n+(qualityFlags(p).length?1:0),0),[products]);
  const counts=useMemo(()=>Object.fromEntries(MATERIALS.map(m=>[m,products.filter(p=>p.collection===m).length])) as Record<Material,number>,[products]);
  const total=Object.values(counts).reduce((s,n)=>s+n,0);
@@ -113,12 +116,12 @@ export function AdminStudioHome(){
     <Stat title="Storefront products" value={products.length} sub="Loaded in this session" icon={Package} accent/>
     <Stat title="Material catalogue" value={total} sub="Across four core categories" icon={Layers3}/>
     <Stat title="Quality flags" value={flags} sub="Static-field review · not image certification" icon={ShieldCheck}/>
-    <Stat title="Quote requests" value={db.requests.length} sub="Returned by connected backend" icon={Activity}/>
+    <Stat title="RFQ records" value="—" sub="Awaiting verified cPanel MySQL API" icon={Activity}/>
   </div>
   <div className="ids-dashboard-grid">
     <div className="ids-panel"><div className="ids-panel-head"><div><span className="ids-kicker">CATALOGUE STATUS</span><h3>Material distribution</h3></div><Link to="/admin/catalogue" className="ids-text-link">Explore <ArrowRight size={15}/></Link></div>
       <div className="ids-material-list">{MATERIALS.map((m,i)=><div className="ids-material" key={m}><span className={"ids-material-icon m"+i}><Layers3 size={17}/></span><div className="ids-material-info"><div><b>{materialName(m)}</b><span>{format(counts[m])} / {format(MIN_PER_MATERIAL)}</span></div><div className="ids-progress"><span style={{width:(Math.min(100,counts[m]/MIN_PER_MATERIAL*100))+"%"}}/></div></div><span className="ids-material-percent">{Math.floor(counts[m]/MIN_PER_MATERIAL*100)}%</span></div>)}</div>
-      <div className="ids-panel-note"><CircleAlert size={16}/> Minimum release requirement: 1,500 verified unique SKUs in each category (6,000 total). Visible counts alone do not certify readiness.</div>
+      <div className="ids-panel-note"><CircleAlert size={16}/> Minimum release target: 2,000 verified unique SKUs in each category (8,000 total). Loaded counts alone do not certify readiness.</div>
     </div>
     <div className="ids-panel ids-standards"><div className="ids-panel-head"><div><span className="ids-kicker">QUALITY FRAMEWORK</span><h3>Publishing standards</h3></div><ShieldCheck size={20}/></div>
       <div className="ids-standard-total">{MATERIALS.filter(m=>counts[m]>=MIN_PER_MATERIAL).length}<small>/ 4</small></div><p>Categories meeting minimum numeric volume</p><div className="ids-standard-lines"><div><span><Check size={16}/> Distinct category targets</span><b>{format(MIN_PER_MATERIAL)}+ / each</b></div><div><span><ImageIcon size={16}/> High-quality product imagery</span><b>QA required</b></div><div><span><Database size={16}/> Source provenance</span><b>QA required</b></div><div><span><ShieldCheck size={16}/> Publication approval</span><b>Manual review</b></div></div><Link to="/admin/quality" className="ids-action-outline">Open quality control <ArrowRight size={16}/></Link>
@@ -161,7 +164,7 @@ export function AdminProducts(){
  return <>
    <Heading kicker="CATALOGUE MANAGEMENT" title="Product intelligence" sub="Search, inspect, audit and edit sourced products. Changes require a configured and protected database."
      action={<button className="ids-action-outline" onClick={exportData}><Download size={16}/> Export CSV</button>}/>
-   {dbState==="unavailable"&&<div className="ids-notice"><CircleAlert size={17}/><span>Editing unavailable until the Supabase admin migration is applied. Existing records remain unchanged. {dbError}</span></div>}
+   {dbState==="unavailable"&&<div className="ids-notice"><CircleAlert size={17}/><span>BLOCKED: catalogue overrides and private price administration are not available through the verified PHP/MySQL API. No database write was attempted. {dbError}</span></div>}
    {dbState==="ready"&&<div className="ids-oknotice"><ShieldCheck size={17}/> Protected catalogue overrides connected. A saved change updates the storefront after data refresh.</div>}
    <div className="ids-stats ids-stats-three"><Stat title="Products loaded" value={products.length} sub="Storefront inventory" icon={Boxes} accent/><Stat title="Filtered results" value={list.length} sub="Matching current filters" icon={Filter}/><Stat title="Quality issues" value={products.filter(p=>qualityFlags(p).length).length} sub="Fields needing review" icon={ClipboardCheck}/></div>
    <div className="ids-panel ids-table-panel"><div className="ids-filterbar"><label className="ids-search"><Search size={18}/><input value={q} onChange={e=>{setQ(e.target.value);setPage(1)}} placeholder="Search name, brand, SKU, slug..." aria-label="Search products"/></label><select aria-label="Filter material" value={category} onChange={e=>{setCategory(e.target.value);setPage(1)}}><option value="all">All materials</option>{MATERIALS.map(m=><option value={m} key={m}>{materialName(m)}</option>)}</select><select aria-label="Quality filter" value={quality} onChange={e=>{setQuality(e.target.value);setPage(1)}}><option value="all">All quality states</option><option value="issues">Needs review</option><option value="clear">No static flags</option></select></div>
@@ -184,8 +187,20 @@ function ProductEditor({product,override,ready,onClose,onSaved}:{product:Product
  const [image,setImage]=useState(override?.image_url||product.image);
  const [visible,setVisible]=useState(override?.visible!==false);
  const [proof,setProof]=useState(override?.source_proof_url||sourceLink(product));
- const [working,setWorking]=useState(false);const [error,setError]=useState("");
- useEffect(()=>{void requireSupabase().from("catalogue_admin_prices").select("price").eq("product_id",product.id).maybeSingle().then(({data})=>{if(data)setPrice(String(data.price));});},[product.id]);
+ const [working,setWorking]=useState(false);const [error,setError]=useState("");const [priceLoaded,setPriceLoaded]=useState(false);
+ useEffect(()=>{
+  if(!ready){setPriceLoaded(false);return}
+  let active=true;
+  setPrice("");setPriceLoaded(false);setError("");
+  void (async()=>{
+   try{
+    const {data,error:priceError}=await requireSupabase().from("catalogue_admin_prices").select("price").eq("product_id",product.id).maybeSingle();
+    if(priceError)throw priceError;
+    if(active){if(data)setPrice(String(data.price));setPriceLoaded(true)}
+   }catch(cause){if(active)setError(cause instanceof Error?cause.message:String(cause))}
+  })();
+  return ()=>{active=false};
+ },[product.id,ready]);
  const onSave=async()=>{
   const normalizedPrice=price.trim()===""?null:Number(price);
   if(!title.trim()||!brand.trim()||!MATERIALS.includes(material)||!isValidProductImage(image)||!/^https:\/\//.test(proof)||normalizedPrice!==null&&(!Number.isFinite(normalizedPrice)||normalizedPrice<0)){setError("Valid title, brand, material, image, HTTPS evidence URL and non-negative price are required.");return}
@@ -217,7 +232,7 @@ function ProductEditor({product,override,ready,onClose,onSaved}:{product:Product
  <p className="ids-editor-warning"><CircleAlert size={15}/> Editing metadata does not certify dimensions, rights or technical suitability. Unapproved staged imports cannot be published here.</p>
  {error&&<p className="ids-form-error" role="alert">{error}</p>}
  {!ready&&<p className="ids-form-error">Database migration / connection required before editing. Nothing will be saved locally.</p>}
- </div><div className="ids-modal-actions"><button onClick={onClose} className="ids-action-outline">Cancel</button><button onClick={()=>void onSave()} className="ids-primary" disabled={!ready||working}>{working?"Saving...":"Save to database"} <ArrowRight size={15}/></button></div>
+ </div><div className="ids-modal-actions"><button onClick={onClose} className="ids-action-outline">Cancel</button><button onClick={()=>void onSave()} className="ids-primary" disabled={!ready||working||!priceLoaded}>{working?"Saving...":"Save to database"} <ArrowRight size={15}/></button></div>
  </section></div>;
 }
 export function AdminQuality(){
@@ -258,7 +273,7 @@ export function AdminOperations(){
  };
  useEffect(()=>{void refresh()},[]);
  return <>
- <Heading kicker="BUSINESS INTELLIGENCE" title="Operations desk" sub="Counts come from authenticated Supabase queries. If access or connection fails, no figures are invented." action={<button className="ids-action-outline" onClick={()=>void refresh()} disabled={loading}><RefreshCw size={16}/> Refresh</button>}/>
+  <Heading kicker="BUSINESS INTELLIGENCE" title="Operations desk" sub="BLOCKED: these legacy Supabase totals are not available from the verified PHP/MySQL API." action={<button className="ids-action-outline" onClick={()=>void refresh()} disabled={loading}><RefreshCw size={16}/> Refresh</button>}/>
  {error&&<div className="ids-notice"><CircleAlert size={17}/>{error}</div>}
  <div className="ids-stats">{[["Suppliers","companies",Store],["Quote requests","requests",Activity],["Offers","quotes",TrendingUp],["Supplier listings","listings",Package]].map(([label,key,Icon])=><Stat key={key as string} title={label as string} value={loading?"…":metrics?metrics[key as keyof typeof metrics]:"—"} sub={metrics?"Database result":"Awaiting secure connection"} icon={Icon as typeof Package}/>)}</div>
  <div className="ids-dashboard-grid"><div className="ids-panel ids-operations-card"><BarChart3 size={29}/><span className="ids-kicker">OPERATIONS DATA</span><h3>Connect the business lifecycle</h3><p>This section reads real supplier, quote and listing totals from your database using the administrator's authenticated session. All record mutations remain under database permissions.</p><Link to="/admin/catalogue" className="ids-action-outline">Product catalogue <ArrowRight size={16}/></Link></div><div className="ids-panel ids-operations-card"><ShieldCheck size={29}/><span className="ids-kicker">SECURITY FIRST</span><h3>No simulated actions</h3><p>Financial settings, refunds, staff permissions and customer records need audited server-side workflows. No buttons on this dashboard pretend to enable an unconfigured integration.</p><Link to="/admin/settings" className="ids-action-outline">Workspace status <ArrowRight size={16}/></Link></div></div>
@@ -273,44 +288,25 @@ export function AdminSettings(){
  <div className="ids-dashboard-grid"><div className="ids-panel ids-operations-card"><ShieldCheck size={25}/><h3>Administrator identity</h3><p>{session?.email||session?.name||"Authenticated user"}</p><Pill ok={session?.role==="admin"}>Server role: {session?.role||"unknown"}</Pill></div><div className="ids-panel ids-operations-card"><Database size={25}/><h3>Catalogue editing</h3><p>{state}</p><small>Migration: supabase/migrations/20261016_admin_catalogue_overrides.sql</small></div></div>
  <div className="ids-panel ids-settings-links"><div className="ids-panel-head"><div><span className="ids-kicker">EXISTING MODULES</span><h3>Advanced administration</h3></div></div>
   <Link to="/admin/subscriptions">Subscription plans <ArrowRight size={17}/></Link><Link to="/admin/settings/payments">Payment configurations <ArrowRight size={17}/></Link>
-  <p><CircleAlert size={16}/> These legacy screens contain integrations which are not yet writable through the current Supabase API. Do not treat them as active payment processing.</p>
+   <p><CircleAlert size={16}/> BLOCKED: subscription plans, payment configuration, catalogue overrides, and customer records have no verified PHP/MySQL admin actions in this checkout. These screens do not submit Supabase writes.</p>
  </div>
  </>;
 }
 
 export function AdminVisualizer(){
  const {session}=useBackend();
- const [state,setState]=useState<"loading"|"configured"|"unavailable">("loading");
- const [detail,setDetail]=useState("Checking the authenticated server adapter…");
- const [quota,setQuota]=useState("—");
- const check=async()=>{
-  setState("loading");setDetail("Checking the authenticated server adapter…");
-  try{
-   const {data}=await requireSupabase().auth.getSession();
-   if(!data.session?.access_token)throw new Error("Administrator session unavailable");
-   const response=await fetch("/api/visualize.php?action=status",{headers:{Authorization:"Bearer "+data.session.access_token},cache:"no-store"});
-   const payload=await response.json().catch(()=>null) as {integration?:string;provider?:string;model?:string;quota?:{unlimited?:boolean;remaining?:number|null;limit?:number|null};error?:string}|null;
-   if(!response.ok||!payload)throw new Error(payload?.error||"Visualizer adapter did not return a valid status");
-   setState("configured");
-   setDetail(payload.integration==="configuration_present_unverified"
-    ?"Runpod credentials are present, but the deployed worker contract and a real generation still require verification."
-    :"The adapter responded without a verified Runpod health state.");
-   setQuota(payload.quota?.unlimited?"Unlimited administrator quota":`${payload.quota?.remaining??"—"} / ${payload.quota?.limit??"—"} remaining`);
-  }catch(error){setState("unavailable");setDetail(error instanceof Error?error.message:String(error))}
- };
- useEffect(()=>{void check();},[]);
+ const detail="BLOCKED: no verified PHP/MySQL visualizer status action or deployed worker contract is available in this checkout.";
  return <>
-  <Heading kicker="IMMUTABLE SCENE ENGINE" title="AI visualizer control room" sub="Observable integration state without exposing endpoint IDs, API keys or customer room images."
-   action={<button className="ids-action-outline" onClick={()=>void check()} disabled={state==="loading"}><RefreshCw size={16}/> Recheck adapter</button>}/>
+  <Heading kicker="IMMUTABLE SCENE ENGINE" title="AI visualizer control room" sub="Integration, quota and worker status stay unverified until the authenticated PHP/MySQL contract is confirmed."/>
   <div className="ids-stats ids-stats-three">
-   <Stat title="Provider" value="Runpod" sub="Server-side adapter" icon={Sparkles} accent/>
-   <Stat title="Application quota" value="Unlimited" sub="Administrator role" icon={ShieldCheck}/>
-   <Stat title="Worker contract" value="v1" sub="Image + verified mask required" icon={Database}/>
+   <Stat title="Intended provider" value="Runpod" sub="Connection not verified" icon={Sparkles} accent/>
+   <Stat title="Application quota" value="—" sub="No verified admin quota policy" icon={ShieldCheck}/>
+   <Stat title="Worker contract" value="Unverified" sub="No deployed schema verified" icon={Database}/>
   </div>
   <div className="ids-dashboard-grid">
-   <div className="ids-panel ids-operations-card"><Activity size={29}/><span className="ids-kicker">INTEGRATION STATUS</span><h3>{state==="configured"?"Configuration present — verification required":state==="loading"?"Checking adapter":"Runpod unavailable"}</h3><p>{detail}</p><Pill ok={state==="configured"}>{state==="configured"?"Not yet health-verified":"No verified connection"}</Pill></div>
-   <div className="ids-panel ids-operations-card"><ShieldCheck size={29}/><span className="ids-kicker">ADMIN QUOTA</span><h3>{quota}</h3><p>{session?.email||session?.name||"Authenticated administrator"} bypasses the five-attempt customer limit. GPU billing, endpoint capacity and abuse controls still apply.</p><Link to="/ai-room-visualizer" className="ids-action-outline">Open test studio <ArrowRight size={16}/></Link></div>
+   <div className="ids-panel ids-operations-card"><Activity size={29}/><span className="ids-kicker">INTEGRATION STATUS</span><h3>Worker status not verified</h3><p>{detail}</p><Pill ok={false}>No verified connection</Pill></div>
+   <div className="ids-panel ids-operations-card"><ShieldCheck size={29}/><span className="ids-kicker">ADMIN QUOTA</span><h3>Policy unavailable</h3><p>{session?.email||session?.name||"Authenticated administrator"}: no admin bypass is assumed until a server-side quota policy is verified. GPU billing, endpoint capacity and abuse controls also remain unverified.</p><Link to="/ai-room-visualizer" className="ids-action-outline">Open test studio <ArrowRight size={16}/></Link></div>
   </div>
-  <div className="ids-notice"><CircleAlert size={17}/><span>This screen must not show “Connected” until a real authorized worker request proves the deployed input/output schema. Job analytics remain unavailable until durable database-backed telemetry is enabled.</span></div>
+  <div className="ids-notice"><CircleAlert size={17}/><span>This screen must not show “Connected” until an authorized worker request proves the deployed input/output schema. Job analytics remain unavailable until durable database-backed telemetry is enabled.</span></div>
  </>;
 }

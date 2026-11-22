@@ -26,6 +26,7 @@
 .idea-reference-ticker{flex:1;min-width:0;overflow:hidden}
 .idea-catalogue-announcement{display:flex;align-items:center;justify-content:center;gap:14px;white-space:nowrap;font-family:Georgia,'Times New Roman',serif;font-size:clamp(11px,1vw,15px);letter-spacing:.06em;text-transform:uppercase;overflow:hidden;text-shadow:0 1px 8px rgba(0,0,0,.65)}
 .idea-catalogue-announcement>span:nth-child(2){overflow:hidden;text-overflow:ellipsis}
+.idea-catalogue-announcement>svg{color:var(--idea-gold);flex:0 0 auto}
 .idea-catalogue-announcement>span[aria-hidden],.idea-catalogue-announcement a{color:var(--idea-gold)}
 .idea-catalogue-announcement a{flex-shrink:0;text-underline-offset:3px}
 .idea-reference-actions,.idea-header-languages,.idea-navigation-controls{display:flex;align-items:center;gap:12px}

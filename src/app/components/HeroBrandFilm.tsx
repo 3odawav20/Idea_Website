@@ -3,23 +3,25 @@ import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import "./HeroBrandFilm.css";
 
-const SOURCES = {
+const DAY_SOURCES = {
   desktop: "/media/hero/idea-owner-20261112.mp4",
   mobile: "/media/hero/idea-owner-20261112-mobile.mp4",
   poster: "/media/hero/idea-light-porcelain.webp",
   images: ["/media/hero/idea-light-porcelain.webp", "/media/hero/idea-light-marble.webp"],
 };
 
-// Owner-supplied film shared by both themes; stills follow the selected theme.
+const NIGHT_SOURCES = {
+  desktop: "/media/hero/idea-night-20261120.mp4",
+  mobile: "/media/hero/idea-night-20261120.mp4",
+  poster: "/media/hero/idea-dark-porcelain.webp",
+  images: ["/media/hero/idea-dark-porcelain.webp", "/media/hero/idea-dark-marble.webp"],
+};
+
+// Each theme has an exclusive film; its theme-matched stills follow the video.
 export function HeroBrandFilm() {
   const { locale } = useI18n();
   const { mode } = useTheme();
-  const sources = mode === "dark" ? {
-    desktop: "/media/hero/idea-owner-20261112.mp4",
-    mobile: "/media/hero/idea-owner-20261112-mobile.mp4",
-    poster: "/media/hero/idea-dark-porcelain.webp",
-    images: ["/media/hero/idea-dark-porcelain.webp", "/media/hero/idea-dark-marble.webp"],
-  } : SOURCES;
+  const sources = mode === "dark" ? NIGHT_SOURCES : DAY_SOURCES;
   const videoRef = useRef<HTMLVideoElement>(null);
   const heroRef = useRef<HTMLElement>(null);
   const [playing, setPlaying] = useState(false);

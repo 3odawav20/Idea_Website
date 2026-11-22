@@ -10,13 +10,13 @@ export function Collections() {
   const { locale, t } = useI18n();
   const groups: { key: string; label: string }[] = [
     { key: "ceramics", label: t("home.ceramicPorcelain") },
-    { key: "porcelain", label: "Porcelain" },
+    { key: "porcelain", label: locale === "ar" ? "بورسلين" : locale === "fr" ? "Grès cérame" : "Porcelain" },
     { key: "sanitary", label: t("home.sanitary") },
   ];
   return (
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container>
-        <SectionHeader eyebrow="Browse" title={t("nav.collections")} sub={t("tagline")} />
+        <SectionHeader eyebrow={locale === "ar" ? "استكشف" : locale === "fr" ? "Explorer" : "Browse"} title={t("nav.collections")} sub={t("tagline")} />
         {groups.map((g) => {
           const items = COLLECTIONS.filter((c) => c.group === g.key);
           if (!items.length) return null;
