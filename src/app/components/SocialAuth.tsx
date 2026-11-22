@@ -8,6 +8,7 @@ import {
 } from "../backend/phpAccounts";
 import {
   AppleBrandIcon, FacebookBrandIcon, GoogleBrandIcon, WhatsAppBrandIcon,
+  MicrosoftBrandIcon, LinkedInBrandIcon, GitHubBrandIcon,
 } from "./SocialAuthIcons";
 
 const PROVIDERS: { id: PhpSocialProvider; label: string }[] = [
@@ -22,7 +23,7 @@ const PROVIDERS: { id: PhpSocialProvider; label: string }[] = [
 // Authentication stays on the production PHP/MySQL identity system.
 // OAuth buttons are disabled unless /api/social-auth.php confirms readiness.
 // WhatsApp requires a verified OTP flow; never redirect it to an unrelated login.
-export function SocialAuth(_props: { redirectTo?: string }) {
+export function SocialAuth({ business = false }: { redirectTo?: string; business?: boolean }) {
   const { locale } = useI18n();
   const tr = (ar: string, en: string) => locale === "ar" ? ar : en;
   const [providerReady, setProviderReady] = useState<PhpSocialProviderStatus | null>(null);
@@ -70,12 +71,18 @@ export function SocialAuth(_props: { redirectTo?: string }) {
                 item.id === "facebook" ? <FacebookBrandIcon /> :
                 item.id === "apple" ? <AppleBrandIcon /> :
                 item.id === "whatsapp" ? <WhatsAppBrandIcon /> :
-                <span aria-hidden="true">{item.id === "x" ? "𝕏" : "M"}</span>}
-              <span>{item.label}</span>
+                item.id === "microsoft" ? <MicrosoftBrandIcon /> : <span aria-hidden="true">𝕏</span>}
+              <span>{item.label}{!enabled && <small style={{display:"block",fontSize:10}}>{tr("قريبًا", "Coming soon")}</small>}</span>
             </button>
           );
         })}
+        {([{id:"github",label:"GitHub",Icon:GitHubBrandIcon},{id:"linkedin",label:"LinkedIn",Icon:LinkedInBrandIcon}]).map(({id,label,Icon}) => (
+          <button key={id} type="button" disabled title={tr("غير مفعّل حاليًا","Not configured yet")} style={{...btnStyle,opacity:.6,cursor:"not-allowed"}}>
+            <Icon/><span>{label}<small style={{display:"block",fontSize:10}}>{tr("قريبًا","Coming soon")}</small></span>
+          </button>
+        ))}
       </div>
+      {business && <p style={{fontSize:12,color:"var(--idea-text-muted)",textAlign:"center"}}>{tr("تسجيل الدخول الاجتماعي يثبت هويتك فقط؛ صلاحيات الشركة تحتاج استكمال الطلب والموافقة.","Social sign-in verifies your identity only. Company access requires a completed and approved application.")}</p>}
       {!providerReady && (
         <p style={{ fontSize: 12, textAlign: "center", color: "var(--idea-text-muted)" }}>
           {tr("تسجيل الدخول بالبريد الإلكتروني متاح من النموذج الأساسي.", "Use the standard email sign-in form while providers are unavailable.")}

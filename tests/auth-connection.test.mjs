@@ -20,6 +20,7 @@ test("PHP account failures are validated and shown in the active auth form", () 
   assert.match(accountApi, /ACCOUNT_API_EMPTY_RESPONSE/);
   assert.match(accountApi, /credentials:"same-origin"/);
   assert.match(auth, /authenticatePhp\("register"/);
+  assert.match(auth, /display_name:name\.trim\(\)/);
   assert.match(auth, /authenticatePhp\("login"/);
   assert.match(auth, /catch\(err\)\{setError\(err instanceof Error\?err\.message/);
   assert.match(auth, /finally\{setBusy\(false\);/);
@@ -34,4 +35,15 @@ test("only server-confirmed buyer, supplier, and admin roles are accepted", () =
 
 test("app never embeds a private service role key", () => {
   assert.doesNotMatch(backend, /service_role\s*=|sb_secret_[a-z0-9]/i);
+});
+
+test("social sign-in uses server-confirmed providers on customer and company screens, never admin", () => {
+  const social = readFileSync("src/app/components/SocialAuth.tsx", "utf8");
+  const php = readFileSync("server/cpanel/api/social-auth.php", "utf8");
+  assert.match(auth, /!isAdmin && <SocialAuth business=\{isBusiness\}/);
+  assert.match(social, /providerReady\?\.\[provider\] !== true/);
+  assert.match(social, /SOCIAL_AUTH_API \+ "\?action=start&provider="/);
+  assert.match(php, /'buyer',\$phone/);
+  assert.match(php, /session_regenerate_id\(true\)/);
+  assert.match(php, /code_challenge_method/);
 });

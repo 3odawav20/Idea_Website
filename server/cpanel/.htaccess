@@ -1,6 +1,10 @@
 Options -MultiViews
 DirectoryIndex index.html
 RewriteEngine On
+# Google OAuth returns to the exact root URL registered in Google Cloud.
+RewriteCond %{QUERY_STRING} (^|&)(code|error)= [NC]
+RewriteCond %{QUERY_STRING} (^|&)state= [NC]
+RewriteRule ^$ api/social-auth.php?action=callback&provider=google [QSA,L]
 
 # Never rewrite API calls to the SPA entry point.
 RewriteRule ^api/ - [END]

@@ -11,6 +11,7 @@ import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import { useBackend } from "../backend/db";
 import { authenticatePhp } from "../backend/phpAccounts";
+import { SocialAuth } from "../components/SocialAuth";
 import { resolvePostAuthRoute } from "../backend/authValidation";
 import "./AccountEntry.css";
 
@@ -117,7 +118,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     try{
       if(isRegister){
         const created=await authenticatePhp("register",{
-          name:name.trim(),email:email.trim(),phone:dial+phone.trim(),password,consent:true,
+          display_name:name.trim(),email:email.trim(),phone:dial+phone.trim(),password,consent:true,account_type:"customer",
         });
         if(created.user?.role!=="buyer")throw new Error("ACCOUNT_ROLE_NOT_CONFIRMED");
         setNotice(tr("تم إنشاء حساب المشتري عبر خادم PHP/MySQL. صلاحيات المورد والإدارة لا تُمنح من هذا النموذج.","The PHP/MySQL server created a buyer account. Supplier and admin roles are never assigned by this form."));
@@ -143,9 +144,6 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     const valid=list.every(f=>f.size<=10*1024*1024&&/^(application\/pdf|image\/jpeg|image\/png)$/i.test(f.type));
     if(!valid){setError(tr("PDF أو JPG أو PNG فقط، وبحد أقصى 10 ميجابايت لكل ملف.","PDF, JPG or PNG only; 10 MB maximum per file."));return;}
     setError("");setDocs(list.slice(0,5));
-  };
-  const showSocial=(provider:"google"|"apple")=>{
-    setError("BLOCKED: the PHP/MySQL account contract does not confirm an OAuth endpoint for "+provider+". No external sign-in was started.");
   };
   const goto=isAdmin?"/admin/login":isBusiness?"/register/business":"/register/customer";
   const heroHeading = isAdmin
@@ -273,11 +271,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
               {isRegister?tr("لديك حساب بالفعل؟","Already have an account?"):tr("ليس لديك حساب؟","Need an account?")}
               {" "}<Link to={isRegister?isBusiness?"/business/login":"/login":goto}>{isRegister?tr("تسجيل الدخول","Sign in"):tr("إنشاء حساب جديد","Create an account")}</Link>
             </p>}
-            {isCustomer&&<div className="idea-auth-social">
-              <p>{tr("أو سجّل عبر","Or continue with")}</p>
-              <div><button type="button" onClick={()=>showSocial("apple")} aria-label="Apple"><span className="idea-apple-mark">●</span> Apple</button>
-                <button type="button" onClick={()=>showSocial("google")} aria-label="Google"><strong className="idea-google-mark">G</strong> Google</button></div>
-            </div>}
+            {!isAdmin && <SocialAuth business={isBusiness}/>}
           </div>
         </form>
       </div>
