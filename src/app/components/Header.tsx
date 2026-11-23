@@ -21,6 +21,14 @@ export function Header() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isHome = pathname === "/";
+  const isOverlayRoute =
+    isHome ||
+    pathname === "/login" ||
+    pathname === "/register" ||
+    pathname === "/register/customer" ||
+    pathname === "/register/business" ||
+    pathname === "/business/login" ||
+    pathname === "/admin/login";
   useEffect(() => {
     const onScroll = () => setScrolled(current => {
       const next = window.scrollY > 28;
@@ -47,10 +55,33 @@ export function Header() {
     <button onClick={toggle} aria-label={text("Toggle theme", "تغيير المظهر", "Changer le thème")} title={text("Toggle theme", "تغيير المظهر", "Changer le thème")}>{mode === "dark" ? <Sun size={21} /> : <Moon size={21} />}</button>
     <Link className="idea-header-favorites" to="/favorites" aria-label={t("fav.title")} onClick={() => setOpen(false)}><Heart size={20} />{favorites.length > 0 && <small>{favorites.length}</small>}</Link>
     <Link to="/request-quote/new" aria-label={t("quote.title")} onClick={() => setOpen(false)}><FileText size={19} />{quote.length > 0 && <small>{quote.length}</small>}</Link>
-    <Link to={account} aria-label={session ? t("nav.account") : t("nav.signIn")} onClick={() => setOpen(false)}><User size={20} /></Link>
+    <Link
+      to={account}
+      className={session ? "idea-header-account is-signed-in" : "idea-header-account"}
+      aria-label={session ? `${t("nav.account")} — ${session.name}` : t("nav.signIn")}
+      title={session ? `${session.name}${session.email ? ` (${session.email})` : ""}` : t("nav.signIn")}
+      onClick={() => setOpen(false)}
+    >
+      {session ? (
+        session.photoURL ? (
+          <img
+            src={session.photoURL}
+            alt={session.name}
+            referrerPolicy="no-referrer"
+            className="idea-header-account-avatar"
+          />
+        ) : (
+          <span className="idea-header-account-initial" aria-hidden="true">
+            {(session.name || "I").trim().charAt(0).toUpperCase()}
+          </span>
+        )
+      ) : (
+        <User size={20} />
+      )}
+    </Link>
   </>;
   return <>
-    <header className={`idea-reference-header${isHome ? " idea-reference-header--home" : ""}${scrolled ? " is-scrolled" : ""}${open ? " is-menu-open" : ""}`}>
+    <header className={`idea-reference-header${isHome ? " idea-reference-header--home" : ""}${isOverlayRoute ? " idea-reference-header--overlay" : ""}${scrolled ? " is-scrolled" : ""}${open ? " is-menu-open" : ""}`}>
       <div className="idea-reference-header-row" dir="ltr">
         <Link className="idea-reference-logo" to="/" aria-label={text("IDEA — Home", "الرئيسية — IDEA", "IDEA — Accueil")}><IdeaLogo compact /></Link>
         <div className="idea-reference-ticker">

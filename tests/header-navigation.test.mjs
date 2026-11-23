@@ -11,8 +11,8 @@ test("Two old horizontal navigation strips are not rendered separately",()=>{
   assert.doesNotMatch(layout,/DiscoveryNavigation|idea-discovery-nav-main/);
   assert.match(header,/<dialog[\s\S]*<DiscoveryNavigation onNavigate=/);
   assert.equal((header.match(/<DiscoveryNavigation/g)||[]).length,1);
-  assert.match(styles,/\.idea-navigation-drawer \.idea-discovery-nav-main\{display:flex;flex-direction:column/);
-  assert.match(styles,/\.idea-navigation-drawer \.idea-discovery-nav-utility\{display:grid/);
+  assert.match(styles,/\.idea-navigation-drawer \.idea-discovery-nav-main\s*\{\s*display:\s*flex;\s*flex-direction:\s*column/);
+  assert.match(styles,/\.idea-navigation-drawer \.idea-discovery-nav-utility\s*\{\s*display:\s*grid/);
 });
 test("All the original top and bottom navigation links remain accessible",()=>{
   for(const link of [
@@ -28,10 +28,10 @@ test("Header remains translucent and animates to legible glass on scroll",()=>{
   assert.match(header,/window\.addEventListener\("scroll", onScroll, \{ passive: true \}\)/);
   assert.match(header,/idea-reference-header--home/);
   assert.match(header,/is-scrolled/);
-  assert.match(styles,/\.idea-reference-header\{[\s\S]*?position:sticky/);
+  assert.match(styles,/\.idea-reference-header\s*\{[\s\S]*?position:\s*sticky/);
   assert.match(styles,/\.idea-reference-header\.is-scrolled/);
-  assert.match(styles,/\.idea-navigation-drawer\[open\]\{animation:idea-menu-drop/);
-  assert.match(styles,/@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(styles,/\.idea-navigation-drawer\[open\]\s*\{\s*animation:\s*idea-menu-drop/);
+  assert.match(styles,/@media\s*\(prefers-reduced-motion:\s*reduce\)/);
 });
 test("Menu supports Arabic RTL, modal dismissal, and retained account links",()=>{
   assert.match(header,/dir=\{locale === "ar" \? "rtl" : "ltr"\}/);

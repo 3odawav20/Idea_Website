@@ -30,8 +30,8 @@
 }
 [data-theme="dark"] .idea-home-finder-scene::before{opacity:.15;filter:grayscale(1) brightness(.7)}
 
-/* Smoky liquid glass: deliberately LOW opacity (unlike the prior 91% white).
-   Rim lighting, background refraction and internal specular reflection. */
+/* Pure borderless optical glass: blends seamlessly with the veined background behind it,
+   zero white outlines, zero double frames. */
 .idea-discovery-search{
   width:min(1280px,calc(100% - 64px));
   margin:32px auto;
@@ -43,50 +43,35 @@
   overflow:hidden;
   color:var(--idea-text);
   border-radius:24px;
-  background:linear-gradient(132deg,rgba(243,245,247,.38) 0%,rgba(137,149,158,.30) 46%,rgba(240,242,244,.34) 100%);
-  border:1px solid rgba(255,255,255,.72);
-  -webkit-backdrop-filter:blur(24px) saturate(1.45) contrast(1.05);
-  backdrop-filter:blur(24px) saturate(1.45) contrast(1.05);
-  box-shadow:0 26px 56px rgba(43,50,57,.25),0 10px 19px rgba(37,42,47,.10),inset 0 2px 1px rgba(255,255,255,.85),inset 1px 0 1px rgba(255,255,255,.40),inset 0 -2px 2px rgba(76,86,96,.10);
+  background:rgba(255,255,255,.10);
+  border:0;
+  -webkit-backdrop-filter:blur(24px) saturate(1.45);
+  backdrop-filter:blur(24px) saturate(1.45);
+  box-shadow:0 20px 48px rgba(18,24,32,.10),0 4px 14px rgba(18,24,32,.05);
 }
-.idea-discovery-search::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  z-index:0;
-  pointer-events:none;
-  background:linear-gradient(157deg,rgba(255,255,255,.44) 0%,transparent 24%,transparent 72%,rgba(255,255,255,.16) 100%);
-}
+.idea-discovery-search::before,
 .idea-discovery-search::after{
-  content:"";
-  position:absolute;
-  inset:2px;
-  border-radius:22px;
-  z-index:0;
-  pointer-events:none;
-  border:1px solid rgba(255,255,255,.24);
-  box-shadow:inset 0 0 20px rgba(255,255,255,.04);
+  content:none;
+  display:none;
 }
 .idea-discovery-search > *{position:relative;z-index:1}
 .idea-discovery-search .idea-discovery-form :is(select,input){
-  background:rgba(250,251,252,.48);
-  border-color:rgba(255,255,255,.62);
-  -webkit-backdrop-filter:blur(9px);
-  backdrop-filter:blur(9px);
-  box-shadow:inset 0 1px 2px rgba(66,75,82,.05),0 1px 0 rgba(255,255,255,.20);
+  background:rgba(18,24,32,.045);
+  border:0;
+  border-radius:12px;
+  -webkit-backdrop-filter:blur(16px) saturate(1.35);
+  backdrop-filter:blur(16px) saturate(1.35);
+  box-shadow:0 4px 14px rgba(18,24,32,.05);
 }
 [data-theme="dark"] .idea-discovery-search{
-  background:linear-gradient(128deg,rgba(104,113,123,.36),rgba(39,44,49,.42) 52%,rgba(105,108,109,.27));
-  border-color:rgba(235,241,245,.27);
-  box-shadow:0 26px 64px rgba(0,0,0,.57),0 7px 24px rgba(0,0,0,.24),inset 0 1px 1px rgba(255,255,255,.28),inset 0 -2px 2px rgba(0,0,0,.23);
+  background:rgba(255,255,255,.045);
+  border:0;
+  box-shadow:0 22px 54px rgba(0,0,0,.38),0 4px 16px rgba(0,0,0,.22);
 }
-[data-theme="dark"] .idea-discovery-search::before{
-  background:linear-gradient(145deg,rgba(255,255,255,.18),transparent 29%,transparent 78%,rgba(255,255,255,.055));
-}
-[data-theme="dark"] .idea-discovery-search::after{border-color:rgba(255,255,255,.12)}
 [data-theme="dark"] .idea-discovery-search .idea-discovery-form :is(select,input){
-  background:rgba(26,30,33,.52);
-  border-color:rgba(218,226,231,.20);
+  background:rgba(255,255,255,.06);
+  border:0;
+  box-shadow:0 4px 16px rgba(0,0,0,.22);
 }
 @supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
   .idea-discovery-search{background:rgba(220,224,228,.87)}

@@ -1,12 +1,14 @@
-import type { CSSProperties, ReactNode } from "react";
+import { useState, type CSSProperties, type ReactNode } from "react";
 import { NavLink, useNavigate } from "react-router";
+import { AlertCircle, CheckCircle2, Info, Menu, X } from "lucide-react";
 import { Container } from "./ui";
 import { useBackend } from "../backend/db";
 import { useI18n } from "../i18n/i18n";
+import "./DashShell.css";
 
 export function Panel({ children, style }: { children: ReactNode; style?: CSSProperties }) {
   return (
-    <div style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-5)", ...style }}>
+    <div className="glass-card" style={{ borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-5)", ...style }}>
       {children}
     </div>
   );
@@ -20,64 +22,210 @@ export function StatusBadge({ text, tone = "gold" }: { text: string; tone?: "gol
     muted: { bg: "var(--idea-surface-2)", fg: "var(--idea-text-muted)", bd: "var(--idea-border-neutral)" },
   };
   const c = map[tone];
-  return <span style={{ fontSize: "var(--idea-text-xs)", padding: "3px 10px", borderRadius: "var(--idea-radius-full)", background: c.bg, color: c.fg, border: `1px solid ${c.bd}`, whiteSpace: "nowrap" }}>{text}</span>;
+  return (
+    <span
+      style={{
+        fontSize: "var(--idea-text-xs)",
+        padding: "3px 10px",
+        borderRadius: "var(--idea-radius-full)",
+        background: c.bg,
+        color: c.fg,
+        border: `1px solid ${c.bd}`,
+        whiteSpace: "nowrap",
+        display: "inline-flex",
+        alignItems: "center",
+      }}
+    >
+      {text}
+    </span>
+  );
 }
 
 export function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label style={{ display: "block", marginBottom: "var(--idea-space-4)" }}>
-      <span style={{ display: "block", fontSize: "var(--idea-text-xs)", color: "var(--idea-text-muted)", letterSpacing: "0.06em", textTransform: "uppercase", marginBottom: 6 }}>{label}</span>
+      <span
+        style={{
+          display: "block",
+          fontSize: "var(--idea-text-xs)",
+          color: "var(--idea-text-muted)",
+          letterSpacing: "0.04em",
+          marginBottom: 6,
+          fontWeight: 600,
+        }}
+      >
+        {label}
+      </span>
       {children}
     </label>
   );
 }
 
 export const inputStyle: CSSProperties = {
-  width: "100%", background: "var(--idea-surface-2)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)",
-  padding: "10px 14px", color: "var(--idea-text)", fontFamily: "var(--idea-font-body)", fontSize: "var(--idea-text-sm)", outline: "none",
+  width: "100%",
+  background: "var(--idea-gt-input-bg, transparent)",
+  border: "1px solid var(--idea-border)",
+  borderRadius: "var(--idea-radius-sm)",
+  padding: "10px 14px",
+  color: "var(--idea-text)",
+  fontFamily: "var(--idea-font-body)",
+  fontSize: "var(--idea-text-sm)",
+  outline: "none",
+  backdropFilter: "blur(18px) saturate(1.4)",
+  WebkitBackdropFilter: "blur(18px) saturate(1.4)",
 };
 
-export function EmptyState({ title, sub }: { title: string; sub?: string }) {
+export function EmptyState({ title, sub, action }: { title: string; sub?: string; action?: ReactNode }) {
   return (
-    <div style={{ padding: "var(--idea-space-8)", textAlign: "center", border: "1px dashed var(--idea-border)", borderRadius: "var(--idea-radius-lg)", color: "var(--idea-text-muted)" }}>
-      <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 6 }}>{title}</div>
-      {sub && <div style={{ fontSize: "var(--idea-text-sm)" }}>{sub}</div>}
+    <div
+      style={{
+        padding: "var(--idea-space-8)",
+        textAlign: "center",
+        border: "1px dashed var(--idea-border)",
+        borderRadius: "var(--idea-radius-lg)",
+        color: "var(--idea-text-muted)",
+      }}
+    >
+      <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 6 }}>
+        {title}
+      </div>
+      {sub && <div style={{ fontSize: "var(--idea-text-sm)", maxWidth: 460, margin: "0 auto" }}>{sub}</div>}
+      {action && <div style={{ marginTop: 16 }}>{action}</div>}
     </div>
   );
 }
 
-/* Dashboard layout with a token-driven side rail (collapses on mobile). */
-export function DashLayout({ title, links, children }: { title: string; links: { to: string; label: string; badge?: number }[]; children: ReactNode }) {
+export function DashBanner({
+  tone = "info",
+  children,
+}: {
+  tone?: "info" | "warn" | "error" | "ok";
+  children: ReactNode;
+}) {
+  const Icon = tone === "error" || tone === "warn" ? AlertCircle : tone === "ok" ? CheckCircle2 : Info;
+  const cls =
+    tone === "error"
+      ? "idea-dash-banner idea-dash-banner--error"
+      : tone === "warn"
+      ? "idea-dash-banner idea-dash-banner--warn"
+      : tone === "ok"
+      ? "idea-dash-banner idea-dash-banner--ok"
+      : "idea-dash-banner";
+  return (
+    <div className={cls} role={tone === "error" ? "alert" : "status"}>
+      <Icon size={17} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden="true" />
+      <div style={{ minWidth: 0 }}>{children}</div>
+    </div>
+  );
+}
+
+export function DashLoading({ count = 3 }: { count?: number }) {
+  return (
+    <div style={{ display: "grid", gap: 12 }} aria-busy="true" aria-live="polite">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="idea-dash-skeleton" />
+      ))}
+    </div>
+  );
+}
+
+/* Dashboard layout with responsive collapsible navigation rail (RTL/LTR safe). */
+export function DashLayout({
+  title,
+  links,
+  children,
+}: {
+  title: string;
+  links: { to: string; label: string; badge?: number }[];
+  children: ReactNode;
+}) {
   const { session, api } = useBackend();
   const { locale } = useI18n();
   const nav = useNavigate();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const roleLabel =
+    session?.role === "admin"
+      ? locale === "ar"
+        ? "مسؤول المنصة"
+        : "Administrator"
+      : session?.role === "business"
+      ? locale === "ar"
+        ? "حساب شركة / مورد"
+        : "Business / Supplier"
+      : locale === "ar"
+      ? "حساب عميل"
+      : "Customer";
+
   return (
-    <Container style={{ padding: "var(--idea-space-7) var(--idea-space-5)" }}>
-      <div style={{ display: "flex", gap: "var(--idea-space-6)", alignItems: "flex-start" }} className="idea-dash-wrap">
-        <aside style={{ width: 240, flexShrink: 0, position: "sticky", top: 88 }} className="idea-dash-rail">
-          <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)", marginBottom: 4 }}>{title}</div>
-          <div style={{ fontSize: "var(--idea-text-xs)", color: "var(--idea-text-muted)", marginBottom: "var(--idea-space-4)" }}>{session?.name} · {session?.role}</div>
-          <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+    <Container className="idea-dash-shell">
+      <div className="idea-dash-wrap">
+        <aside className="idea-dash-rail">
+          <div className="idea-dash-rail-head">
+            <div>
+              <div className="idea-display idea-dash-rail-title">{title}</div>
+              <div className="idea-dash-rail-user">
+                {session?.name} · {roleLabel}
+              </div>
+            </div>
+            <button
+              type="button"
+              className="idea-dash-mobile-toggle"
+              aria-expanded={mobileOpen}
+              onClick={() => setMobileOpen((v) => !v)}
+            >
+              {mobileOpen ? <X size={15} /> : <Menu size={15} />}
+              {locale === "ar" ? "الأقسام" : "Sections"}
+            </button>
+          </div>
+          <nav
+            className={`idea-dash-nav idea-dash-rail-nav idea-glass-tablist idea-glass-tablist--vertical${
+              mobileOpen ? " is-open" : ""
+            }`}
+            aria-label={title}
+          >
             {links.map((l) => (
-              <NavLink key={l.to} to={l.to} end style={({ isActive }) => ({
-                display: "flex", justifyContent: "space-between", alignItems: "center", textDecoration: "none",
-                padding: "9px 12px", borderRadius: "var(--idea-radius-sm)", fontSize: "var(--idea-text-sm)",
-                color: isActive ? "var(--idea-gold-bright)" : "var(--idea-text-muted)",
-                background: isActive ? "var(--idea-gold-soft)" : "transparent",
-                borderInlineStart: `2px solid ${isActive ? "var(--idea-gold)" : "transparent"}`,
-              })}>
+              <NavLink
+                key={l.to}
+                to={l.to}
+                end={l.to === "/account" || l.to === "/business"}
+                onClick={() => setMobileOpen(false)}
+                className={({ isActive }) => `idea-glass-tab idea-dash-tab${isActive ? " is-active" : ""}`}
+              >
                 <span>{l.label}</span>
-                {l.badge ? <span style={{ background: "var(--idea-gold)", color: "var(--idea-on-gold)", borderRadius: 999, fontSize: 10, minWidth: 16, height: 16, display: "grid", placeItems: "center", padding: "0 4px" }}>{l.badge}</span> : null}
+                {l.badge ? (
+                  <span
+                    style={{
+                      background: "var(--idea-gold)",
+                      color: "var(--idea-on-gold)",
+                      borderRadius: 999,
+                      fontSize: 10,
+                      minWidth: 16,
+                      height: 16,
+                      display: "grid",
+                      placeItems: "center",
+                      padding: "0 4px",
+                    }}
+                  >
+                    {l.badge}
+                  </span>
+                ) : null}
               </NavLink>
             ))}
-            <button onClick={() => { api.signOut(); nav("/"); }} style={{ marginTop: "var(--idea-space-3)", textAlign: locale === "ar" ? "right" : "left", background: "none", border: "none", color: "var(--idea-text-faint)", cursor: "pointer", padding: "9px 12px", fontSize: "var(--idea-text-sm)", fontFamily: "var(--idea-font-body)" }}>
+            <button
+              type="button"
+              className="idea-dash-signout"
+              onClick={() => {
+                api.signOut();
+                nav("/");
+              }}
+            >
               {locale === "ar" ? "تسجيل الخروج" : locale === "fr" ? "Se déconnecter" : "Sign out"}
             </button>
           </nav>
         </aside>
-        <div style={{ flex: 1, minWidth: 0 }}>{children}</div>
+        <div className="idea-dash-main">{children}</div>
       </div>
-      <style>{`@media (max-width: 860px){ .idea-dash-wrap{ flex-direction: column !important; } .idea-dash-rail{ width: 100% !important; position: static !important; } }`}</style>
     </Container>
   );
 }

@@ -215,22 +215,13 @@ export function SurfaceStyles() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: 0.22 }}
-          style={{ display: "flex", gap: "var(--idea-space-2)", alignItems: "center", flexWrap: "wrap" }}
+          className="idea-sf-swatches idea-glass-tablist"
         >
           {MATERIAL_LOOKS.map(look => (
             <div
               key={look.id}
               title={look.label[locale as Locale]}
-              style={{
-                display: "flex", alignItems: "center", gap: "var(--idea-space-2)",
-                padding: "6px 14px 6px 8px",
-                borderRadius: "var(--idea-radius-full)",
-                border: "var(--idea-hairline)",
-                background: "var(--idea-surface)",
-                textDecoration: "none",
-                transition: "border-color 0.22s, background 0.22s",
-              }}
-              className="idea-sf-swatch"
+              className="idea-sf-swatch idea-glass-tab"
             >
               <div style={{
                 width: 16, height: 16,
@@ -241,7 +232,6 @@ export function SurfaceStyles() {
               <span style={{
                 fontFamily: "var(--idea-font-display)",
                 fontSize: "var(--idea-text-xs)",
-                color: "var(--idea-text-muted)",
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
               }}>{look.label[locale as Locale]}</span>
@@ -382,10 +372,6 @@ export function SurfaceStyles() {
 
       <style>{`
         .idea-sf-thumb:hover .idea-sf-thumb-img { transform: scale(1.06); }
-        .idea-sf-swatch:hover {
-          border-color: var(--idea-gold-bright) !important;
-          background: var(--idea-gold-soft) !important;
-        }
       `}</style>
     </>
   );

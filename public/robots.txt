@@ -1,0 +1,17 @@
+User-agent: *
+Allow: /
+Allow: /legal
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+Allow: /refund-policy
+Allow: /intellectual-property
+Allow: /licenses
+Allow: /accessibility
+
+Disallow: /admin
+Disallow: /account
+Disallow: /business
+Disallow: /api/
+
+Sitemap: https://idea-dh.com/sitemap.xml

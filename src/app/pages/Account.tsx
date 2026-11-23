@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, useNavigate, useParams, Link } from "react-router";
-import { Inbox, Package, FileText, Heart, GitCompare, CreditCard, Home as HomeIcon } from "lucide-react";
+import { Inbox, Package, FileText, Heart, GitCompare, CreditCard, Home as HomeIcon, LogOut } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useBackend } from "../backend/db";
 import { useStore } from "../store/store";
@@ -9,17 +9,19 @@ import { DashLayout, Panel, StatusBadge, EmptyState, Field, inputStyle } from ".
 import { ProductCard } from "../components/ProductCard";
 
 function useGuard() {
-  const { session } = useBackend();
+  const { session, loading } = useBackend();
   const nav = useNavigate();
-  useEffect(() => { if (!session) nav("/login"); }, [session, nav]);
-  return session;
+  useEffect(() => {
+    if (!loading && !session) nav("/login");
+  }, [loading, session, nav]);
+  return { session, loading };
 }
 
 export function AccountLayout() {
   const { t, locale } = useI18n();
-  const session = useGuard();
+  const { session, loading } = useGuard();
   const { db } = useBackend();
-  if (!session) return null;
+  if (loading || !session) return null;
   const unread = db.messages.filter((m) => m.to === session.id && m.scope === "customer" && !m.read).length;
   const links = [
     { to: "/account", label: t("acct.profile") },
@@ -38,8 +40,9 @@ export function AccountLayout() {
 }
 
 export function AccountProfile() {
-  const { session, db } = useBackend();
-  const { t } = useI18n();
+  const { session, db, api } = useBackend();
+  const { t, locale } = useI18n();
+  const nav = useNavigate();
   const orders = db.orders.filter((o) => o.customerId === session?.id);
   const reqs = db.requests.filter((r) => r.customerId === session?.id);
   const stats = [
@@ -49,9 +52,32 @@ export function AccountProfile() {
   ];
   return (
     <>
-      <Panel style={{ marginBottom: "var(--idea-space-4)" }}>
-        <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: "var(--idea-text)" }}>{session?.name}</div>
-        <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", marginTop: 4 }}>{session?.email || session?.phone} · {session?.provider}</div>
+      <Panel style={{ marginBottom: "var(--idea-space-4)", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          {session?.photoURL ? (
+            <img
+              src={session.photoURL}
+              alt={session.name}
+              referrerPolicy="no-referrer"
+              style={{ width: 48, height: 48, borderRadius: "50%", objectFit: "cover", border: "2px solid var(--idea-gold)" }}
+            />
+          ) : null}
+          <div>
+            <div className="idea-display" style={{ fontSize: "var(--idea-text-xl)", color: "var(--idea-text)" }}>{session?.name}</div>
+            <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", marginTop: 4 }}>{session?.email || session?.phone} · {session?.provider}</div>
+          </div>
+        </div>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => {
+            api.signOut();
+            nav("/login");
+          }}
+        >
+          <LogOut size={15} />
+          {locale === "ar" ? "تسجيل الخروج" : locale === "fr" ? "Déconnexion" : "Sign out"}
+        </Button>
       </Panel>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: "var(--idea-space-3)" }}>
         {stats.map((s) => (
@@ -284,14 +310,39 @@ export function AccountRoomProjects() {
 export function AccountNotifications() { return <AccountInbox />; }
 
 export function AccountSettings() {
-  const { session } = useBackend();
-  const { t } = useI18n();
+  const { session, api } = useBackend();
+  const { t, locale } = useI18n();
+  const [name, setName] = useState(session?.name || "");
+  const [phone, setPhone] = useState(session?.phone || "");
+  const [saving, setSaving] = useState(false);
+  const [statusMsg, setStatusMsg] = useState("");
+
+  useEffect(() => {
+    setName(session?.name || "");
+    setPhone(session?.phone || "");
+  }, [session?.name, session?.phone]);
+
+  const handleSave = async () => {
+    if (saving) return;
+    setSaving(true);
+    setStatusMsg("");
+    try {
+      await api.updateProfile({ name, phone });
+      setStatusMsg(locale === "ar" ? "تم حفظ بيانات حسابك بنجاح." : "Account profile saved.");
+    } catch {
+      setStatusMsg(locale === "ar" ? "تعذّر حفظ التعديلات. حاول مرة أخرى." : "Could not save changes. Please try again.");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <Panel>
-      <Field label={t("acct.profile")}><input style={inputStyle} defaultValue={session?.name} /></Field>
-      <Field label={t("auth.email")}><input style={inputStyle} defaultValue={session?.email || ""} /></Field>
-      <Field label={t("auth.phone")}><input style={inputStyle} defaultValue={session?.phone || ""} /></Field>
-      <Button size="sm">{t("common.save")}</Button>
+      <Field label={t("acct.profile")}><input style={inputStyle} value={name} onChange={(e) => setName(e.currentTarget.value)} maxLength={120} /></Field>
+      <Field label={t("auth.email")}><input style={inputStyle} value={session?.email || ""} readOnly disabled /></Field>
+      <Field label={t("auth.phone")}><input style={inputStyle} value={phone} onChange={(e) => setPhone(e.currentTarget.value)} maxLength={32} /></Field>
+      {statusMsg ? <p role="status" style={{ color: "var(--idea-gold-bright)", fontSize: "var(--idea-text-sm)", marginBottom: 10 }}>{statusMsg}</p> : null}
+      <Button size="sm" disabled={saving} onClick={() => void handleSave()}>{saving ? (locale === "ar" ? "جاري الحفظ..." : "Saving...") : t("common.save")}</Button>
     </Panel>
   );
 }

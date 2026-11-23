@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Pillar 0: Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Shared hardened primitives
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isValidId(id) {
+      return id is string
+        && id.size() >= 1
+        && id.size() <= 128
+        && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        || (
+          request.auth.token.email is string
+          && request.auth.token.email == 'abdelrahmanamr895@gmail.com'
+        )
+      );
+    }
+
+    // Validation Blueprint synced verbatim with firebase-blueprint.json (CustomerProfile)
+    function isValidCustomerProfile(data, userId) {
+      return data.keys().hasAll(['uid', 'name', 'email', 'role', 'provider', 'createdAt', 'updatedAt'])
+        && data.keys().hasOnly(['uid', 'name', 'email', 'phone', 'photoURL', 'role', 'provider', 'createdAt', 'updatedAt'])
+        && data.uid is string
+        && isValidId(data.uid)
+        && data.uid == userId
+        && data.name is string
+        && data.name.size() >= 1
+        && data.name.size() <= 120
+        && data.email is string
+        && data.email.size() >= 3
+        && data.email.size() <= 254
+        && (!('phone' in data) || (data.phone is string && data.phone.size() <= 32))
+        && (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() <= 1024))
+        && data.role is string
+        && data.role == 'customer'
+        && data.provider is string
+        && data.provider.size() >= 1
+        && data.provider.size() <= 40
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // /users/{userId} — Strict PII isolation (owner or verified admin only)
+    match /users/{userId} {
+      allow get: if isSignedIn() && isValidId(userId) && (isOwner(userId) || isAdmin());
+      allow list: if isAdmin();
+
+      allow create: if isVerifiedUser()
+        && isValidId(userId)
+        && isOwner(userId)
+        && isValidCustomerProfile(incoming(), userId)
+        && incoming().uid == request.auth.uid
+        && incoming().email == request.auth.token.email
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+
+      allow update: if isVerifiedUser()
+        && isValidId(userId)
+        && isValidCustomerProfile(incoming(), userId)
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin()
+          || (
+            isOwner(userId)
+            && incoming().role == existing().role
+            && incoming().provider == existing().provider
+            && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'phone', 'photoURL', 'updatedAt'])
+          )
+        );
+
+      allow delete: if isAdmin() && isValidId(userId);
+    }
+
+    // /admins/{adminId} — Server-provisioned admin registry (never client-writable)
+    match /admins/{adminId} {
+      allow get: if isVerifiedUser() && isValidId(adminId) && (isOwner(adminId) || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+  }
+}

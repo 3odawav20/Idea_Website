@@ -118,7 +118,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
     values.length > 1 && (
       <div style={{ marginBottom: "var(--idea-space-4)" }}>
         <div className="idea-eyebrow" style={{ color: "var(--idea-text-muted)", marginBottom: 10 }}>{label}</div>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <div className="idea-glass-tablist idea-glass-tablist--wrap" role="group" aria-label={label}>
           {values.map((v) => <Chip key={v} active={val === v} onClick={() => set(val === v ? null : v)}>{v}</Chip>)}
         </div>
       </div>
@@ -162,8 +162,8 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           {/* Filters */}
           {mobileOpen && <div onClick={() => setMobileOpen(false)} className="idea-filter-scrim" style={{ display: "none", position: "fixed", inset: 0, zIndex: 60, background: "var(--idea-scrim)" }} />}
           <aside className={`idea-filters-panel${mobileOpen ? " is-open" : ""}`} style={{
-            background: "var(--idea-surface)",
-            border: "var(--idea-hairline)",
+            background: "transparent",
+            border: 0,
             borderRadius: "var(--idea-radius-lg)",
             padding: "var(--idea-space-5)",
             position: "sticky",
@@ -173,6 +173,9 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
             overscrollBehavior: "contain",
             scrollbarGutter: "stable",
             scrollbarWidth: "thin",
+            backdropFilter: "blur(20px) saturate(1.4)",
+            WebkitBackdropFilter: "blur(20px) saturate(1.4)",
+            boxShadow: "0 12px 34px rgba(18, 24, 32, 0.06)",
           }}>
             <button className="idea-filter-close" onClick={() => setMobileOpen(false)}
               style={{ display: "none", position: "absolute", insetInlineEnd: "var(--idea-space-4)", top: "var(--idea-space-4)", background: "none", border: "none", color: "var(--idea-text-muted)", cursor: "pointer" }}>
@@ -201,9 +204,9 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           {/* Results */}
           <div id="product-results" style={{minWidth:0, scrollMarginTop: 100}}>
             <form onSubmit={e=>{e.preventDefault(); const data = new FormData(e.currentTarget); setFilter("q", String(data.get("q")??"").trim());}} style={{display:"flex",gap:12,flexWrap:"wrap",marginBottom:24}}>
-              <input key={q} name="q" defaultValue={q} aria-label={locale === "ar" ? "البحث بالاسم" : locale === "fr" ? "Recherche par nom" : "Search by name"} placeholder={locale==="ar"?"اسم الشركة أو البراند أو كود البلاطة":locale==="fr"?"Code, marque ou fabricant":"Product code, brand or manufacturer"} style={{flex:"1 1 180px",minWidth:0,padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}/>
+              <input key={q} name="q" defaultValue={q} aria-label={locale === "ar" ? "البحث بالاسم" : locale === "fr" ? "Recherche par nom" : "Search by name"} placeholder={locale==="ar"?"اسم الشركة أو البراند أو كود البلاطة":locale==="fr"?"Code, marque ou fabricant":"Product code, brand or manufacturer"} style={{flex:"1 1 180px",minWidth:0,padding:"11px 16px",color:"var(--idea-text)",borderRadius:12}}/>
               <button type="submit" className="idea-discovery-submit">{locale === "ar" ? "ابحث" : locale === "fr" ? "Rechercher" : "Search"}</button>
-              <select aria-label={locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort products"} value={sort} onChange={e=>setFilter("sort",e.target.value)} style={{padding:"10px 12px",background:"var(--idea-surface)",border:"var(--idea-hairline)",color:"var(--idea-text)",borderRadius:6}}><option value="source">{locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order"}</option><option value="az">A → Z</option><option value="za">Z → A</option></select>
+              <select aria-label={locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort products"} value={sort} onChange={e=>setFilter("sort",e.target.value)} style={{padding:"11px 16px",color:"var(--idea-text)",borderRadius:12}}><option value="source">{locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order"}</option><option value="az">A → Z</option><option value="za">Z → A</option></select>
             </form>
             <div style={{ color: "var(--idea-text-muted)", marginBottom: "var(--idea-space-4)", fontSize: "var(--idea-text-sm)" }}>
               {firstResult}–{lastResult} {locale === "ar" ? `من ${results.length}` : locale === "fr" ? `sur ${results.length}` : `of ${results.length}`} {t("label.results")}

@@ -38,6 +38,25 @@ export function Footer() {
       ["/request-quote/new", text("Request a quote", "اطلب عرض سعر", "Demander un devis")],
       ["/updates", text("Email updates", "التحديثات البريدية", "Actualités email")],
     ] },
+    { title: text("Legal & Licenses", "الشؤون القانونية والتراخيص", "Légal & Licences"), links: [
+      ["/legal", text("Legal Center", "المركز القانوني", "Centre légal")],
+      ["/privacy", text("Privacy Policy", "سياسة الخصوصية", "Politique de confidentialité")],
+      ["/terms", text("Terms of Use", "شروط الاستخدام", "Conditions d'utilisation")],
+      ["/refund-policy", text("Orders & Returns", "الطلبات والاسترجاع", "Commandes et retours")],
+      ["/cookies", text("Cookie Policy", "ملفات تعريف الارتباط", "Politique de cookies")],
+      ["/intellectual-property", text("IP & Disclaimers", "الملكية الفكرية", "Propriété intellectuelle")],
+      ["/licenses", text("Software Licenses", "تراخيص البرمجيات", "Licences open source")],
+      ["/accessibility", text("Accessibility", "إمكانية الوصول", "Accessibilité")],
+    ] },
+  ] as const;
+
+  const legalQuickLinks = [
+    ["/legal", text("Legal Center", "المركز القانوني", "Centre légal")],
+    ["/privacy", text("Privacy", "الخصوصية", "Confidentialité")],
+    ["/terms", text("Terms", "الشروط", "Conditions")],
+    ["/cookies", text("Cookies", "ملفات الارتباط", "Cookies")],
+    ["/refund-policy", text("Returns", "الاسترجاع", "Retours")],
+    ["/licenses", text("Licenses", "التراخيص", "Licences")],
   ] as const;
 
   return (
@@ -72,6 +91,11 @@ export function Footer() {
       </div>
       <div className="idea-footer-bottom">
         <span>© {new Date().getFullYear()} IDEA. {text("All rights reserved.", "جميع الحقوق محفوظة.", "Tous droits réservés.")}</span>
+        <nav className="idea-footer-legal-bar" aria-label={text("Legal links", "الروابط القانونية", "Liens légaux")}>
+          {legalQuickLinks.map(([to, label]) => (
+            <Link key={to} to={to}>{label}</Link>
+          ))}
+        </nav>
         <span>{text("Private quotes · Product availability confirmed by suppliers", "عروض أسعار خاصة · التوفر يؤكده المورد", "Devis privés · Disponibilité confirmée par les fournisseurs")}</span>
       </div>
     </footer>

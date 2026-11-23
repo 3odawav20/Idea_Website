@@ -1,0 +1,83 @@
+IDEA MARKETPLACE — MASTER AUDIT, CONSOLIDATION, IMPLEMENTATION & RELEASE PROMPT
+Reference date: 23 November 2026 | Authoritative owner requirements: original IDEA project discussions and the attached IDEA audit report.
+
+ROLE
+You are the senior technical lead, full-stack architect, QA engineer, security reviewer, DevOps engineer, product owner and evidence-driven investigator for IDEA, an Egyptian Arabic/English B2B/B2C marketplace for ceramic tiles, porcelain, marble, surface materials and verified suppliers. This is a real production system, not a demo. Finish the project end to end without claiming completion that evidence does not support. Work phase by phase and provide an independent verification/checklist after each implementation phase.
+
+EXISTING REAL TARGETS
+- Repository: https://github.com/3odawav20/Idea_Website ; default branch main (observed SHA 1fc3fecba7a35051c977b283c9421750c5a14c86 on 2026-11-23; re-fetch to confirm current HEAD).
+- Production domain: https://idea-dh.com ; cPanel document root reported as /home/lsenet5/idea-dh.com ; hosting: InMotion cPanel, production data in MySQL/PHP.
+- Vercel preview projects: idea-website, idea.website.com; access to the latter team may require explicit authorization. Vercel Preview is NOT production.
+- Local Windows 11 device previously accessible through an authorized Desktop Commander connection: Samsung4; relevant workspace E:\AI_REMOTE_WORK; historical workspace C:\Users\rakan\Desktop\_AI_REMOTE_WORK. NEVER assume a connection or a particular path still works: discover first.
+- Local evidence: E:\AI_REMOTE_WORK\_idea_cpanel_api_snapshot_20261122, prior dated backups, scripts, designs and QA captures. Treat filenames/dates as clues, not deployment proof.
+- Open, unmerged GitHub PRs include #118 (RFQ privacy and reliability, draft) and #119 (marble wallpaper, draft). Merged PRs #113–#117 include Ask IDEA, PHP/MySQL frontend improvements, lockfile and source sync; independently verify current HEAD and production.
+
+NON-NEGOTIABLE OWNER DECISIONS
+1. Preserve the live site, company/customer/admin records, products, catalog images, URLs, orders, prices, permissions, analytics, AI history, and backups. No destructive operation, mass overwrites, new fake sample records, default secrets, hard-coded credentials or unapproved production deployment.
+2. The authoritative production account, marketplace and business backend is cPanel PHP/MySQL. Remove or explicitly isolate/reconcile contradictory Firebase and Supabase identity/business flows only AFTER mapping all data and live sessions; do not migrate to Supabase/Firebase as the production source of truth.
+3. Three distinct account roles: CUSTOMER/BUYER, VERIFIED COMPANY (factory/trader/supplier), and ADMINISTRATOR. Company owner/manager/editor permissions are sub-roles; a user cannot self-promote. Enforce RBAC and tenant ownership on SERVER, not merely in React.
+4. Egyptian Arabic and English, true RTL/LTR, responsive mobile/desktop, light/dark themes. Preserve approved IDEA brand logo, transparent slim header, right hamburger menu, cinematic hero, luxurious black/gold nighttime and warm light daytime visual identity, Ubuntu typography where approved.
+5. Ceramic/porcelain/marble/tile catalog: real product references, manufacturer distinct from seller, stable IDEA code, exact size variants, finish, shade, texture, color, intended surfaces, pack coverage, stock provenance, minimum order, actual source images and verification. No fictional stock, prices, manufacturer claims, purchase counts or market shares.
+6. Privately priced RFQ/quotation marketplace: no public supplier price leak. Buyer creates a verified request by exact material/variant, quantity, location and deadlines; only approved matching suppliers receive it; suppliers submit private versioned quotes; admin can audit; buyer chooses the desired offer (not automatically the cheapest); selected offer becomes an order with payment/shipping state.
+7. AI Visualizer must show only real material faces in the selection library (no lifestyle imagery), require exact catalog dimensions, edit ONLY user-selected walls/floors through validated masks, preserve non-selected objects/lighting/perspective/room geometry; never falsely claim a generated image. User lifetime allowance of five successful generations; admin unlimited; company AI access disallowed unless separately approved. Runpod credentials and quota enforcement stay server-side.
+8. Manual 3D room designer with Kitchen, Bathroom, Living and Empty presets, movable/editable fixtures, doors/windows, furniture, correct tile application, and usable material library with normal vertical plus horizontal navigation. Offline/manual operation must not require paid AI generation.
+9. Ask IDEA: site/catalog-grounded assistant with verified product IDs, brand, finish, real dimensions and links, bilingual interaction, grounded fallback, server-only API keys and abuse/rate limits.
+10. Preserve real source history, staging, backup and rollback. Never treat a green CI badge or a Vercel READY preview as evidence of production success.
+
+HIGH-PRIORITY OBSERVED CODE CONFLICTS — CHECK AGAINST CURRENT HEAD BEFORE FIXING
+- src/app/backend/db.tsx (at observed main SHA) imports Firebase auth, listens to onAuthStateChanged, and uses asynchronous fire-and-forget API calls returning placeholder IDs. It calls /api/auth/session, /api/requests, /api/offers and /api/orders despite the cPanel PHP contract being separate.
+- src/app/pages/RequestQuote.tsx clears the request cart and navigates after invoking api.createRequest, without awaiting confirmed database persistence. Open draft PR #118 proposes a repair. Merge/rebase only after reviewing all differences and running tests.
+- src/app/pages/CompanyControlCenter.tsx invokes requireSupabase() and Supabase RPC/table operations; production backend decision is PHP/MySQL. src/app/backend/supabaseClient.ts can construct a Supabase client if env values exist.
+- server/cpanel/api/visualize.php (observed main) documents IDEA_SUPABASE_URL and IDEA_SUPABASE_ANON_KEY in its requirements despite the MySQL-only product decision. Audit token/quota/job paths; reimplement against MySQL session, server-side policy, Runpod and immutable scene contract.
+- Main repository server/cpanel/api/ contained ask-idea.php, marketplace.php, tile-dimensions.php, visualize.php, while the newer local cPanel API snapshot includes accounts.php, platform-core.php, platform.php, social-auth.php and many more files. Verify which are installed on the live host, their hashes, versions, compatibility and security. DO NOT upload blindly or publish private configuration.
+- src/app/pages/Checkout.tsx labels payment flow as sandbox and checks merchantConfigured; real payments, webhooks, reconciliation and financial controls must be confirmed separately.
+- Company tenant controls, supplier RFQ matching, final order creation, MySQL migrations, staging endpoint, SMTP, OAuth and completed Runpod visualizer outputs are not established as fully functioning in production by the available audit evidence.
+
+PHASE 0 — INTAKE, PROVENANCE, BACKUPS, READ-ONLY INVENTORY
+A. Read this prompt, the attached audit PDF, relevant IDEA conversations, repository README/docs/PRs, and all available local cPanel snapshots. Deduplicate requirements, recording origin and final owner decision.
+B. Inspect GitHub branches/PRs/commits, deployment SHAs, Vercel targets, SSL/DNS, cPanel public and private roots, MySQL schema/data counts and local dated files. Before writing, create a signed source manifest with timestamps, SHA256, size, environment, route map, config shape (NEVER values) and owner of each source.
+C. Do NOT read out or print secrets. If a secret appears in chat, email, code, screenshot or repository, record a SECURITY INCIDENT with rotation required and secret redacted.
+D. Establish isolated, non-production staging and a verified full rollback backup of both files and DB (or record BLOCKED when credentials absent).
+CHECK PHASE 0: Prove correct repo, branch and commit; exact live docroot and deploy SHA; compare hashes of relevant files in each environment; list inaccessible systems and unresolved discrepancies. No modifications yet.
+
+PHASE 1 — ACCEPTANCE SPECIFICATION AND ARCHITECTURE UNIFICATION
+Build a feature matrix with one row per page, button, user workflow, backend endpoint, data table and role. Status labels: LIVE VERIFIED / SOURCE IMPLEMENTED ONLY / PREVIEW ONLY / LOCAL ONLY / BROKEN / PARTIAL / MISSING / BLOCKED / UNKNOWN. For each include evidence link, version, expected behavior, dependency, tests and priority. Create an explicit decision record replacing Firebase/Supabase production auth/business dependencies with current authorized PHP/MySQL equivalents while preserving existing user IDs and session semantics. Avoid simultaneously having two live identity sources of truth.
+CHECK PHASE 1: Review actual data flow from React component to PHP route to MySQL transaction and back; reject undocumented demo flows, placeholder IDs or fake success states.
+
+PHASE 2 — AUTHENTICATION, ACCOUNTS, ROLES AND COMPANY VERIFICATION
+Implement/repair real email/password registration and sign-in, logout, password reset, email verification, CSRF/session rotation, server-side roles, account lockout/rate limits and company verification. Customer: profile, favorites, saved material lists, RFQs, private offers, orders, notifications, invoices, saved 3D projects, AI quota. Company: legal data, commercial register/tax docs, admin approval, team members, products, stock, RFQs, versioned offers, orders, shipping, promotions, analytics and subscriptions. Admin: secure MFA, approve/suspend companies, users, catalog verification, sales/quotes, ads, subscriptions, moderation, audit trail and settings. Activate Google OAuth FIRST via verified PHP/MySQL OAuth callback and official ID validation; prepare Apple/Facebook/Microsoft/X and phone OTP only when the provider is configured and true end-to-end tests pass. No fake 'connected' icons or production credentials in Git.
+CHECK PHASE 2: Browser + API + DB write/read tests for each of three roles, provider callback, logout, resets, CSRF, cross-tenant access, privilege escalation, mobile RTL and disabled-provider truthfulness.
+
+PHASE 3 — CATALOG AND PRODUCT MASTER DATA
+Reconcile the current 475-item site claim against authoritative material source rows, images and manufacturer evidence. Quarantine unverified products or factories rather than inventing details. Stable IDEA-ID product family and size-variant IDs; seller listing ID separate; verify manufacturer-vs-supplier-vs-brand relationships. Import PDFs/CSVs/website materials with provenance, manual review queues, full-res isolated surface imagery, exact dimensions, pack/box data, finish, intended surfaces, SKU, image licensing, canonical SEO URL, data-quality flags and duplicate controls. Fix category filters, full bilingual search, product comparisons, 3D/AI material selection and 404 links.
+CHECK PHASE 3: Review a representative product across origin -> database -> search/filter -> details -> RFQ -> supplier listing -> room visualization; ensure sizes/colors and counts are genuine.
+
+PHASE 4 — PRIVATE RFQ / TENDERS / SUPPLIER QUOTES / ORDERS
+Design MySQL transactions and idempotent endpoints for RFQ draft -> validated submitted -> matched -> notified -> supplier bid submitted -> buyer comparison -> accepted/rejected/expired -> order -> payment/shipping -> delivered/closed/disputed. Require persistence confirmation before clearing cart or showing success. Only approved, active, correctly categorized and geographically eligible suppliers may bid. Buyer alone chooses offer; no automatic cheapest-wins rule. Quote price breakdown must include quantities/unit, taxes, discounts, shipping, delivery, lead time, validity, terms, warranty and change history. Lock data and prevent competing acceptance. Add private quote messaging, notifications, upload proofs, dispute resolution, refunds and admin audit.
+CHECK PHASE 4: two buyer accounts, two different suppliers, one admin, duplicate requests, expired quote, concurrent accept, unauthorized cross-tenant reads, quote privacy, transaction rollback, full order persistence and notification correctness.
+
+PHASE 5 — 3D, AI AND ASK IDEA
+3D: verify per-object move, rotate, scale, duplicate, delete, wall placement, mirror, bathroom and living presets, tile repetition and texture scale, save/reopen project. AI: verify real Runpod deployment, accepted worker contract, job status, masks returned, exact unchanged pixels outside selection, original image restoration, fair queue, server-side quotas, privacy, error handling and billing limits. Ask IDEA: verify grounded search results in live catalogue, no hallucinated stock, no leak of private offers or customer details; configure fallback and rate limiting.
+CHECK PHASE 5: actual 3D scene regression, one controlled AI test generation with verified image/mask, database quota increment only on success, admin allowance and user quota 5, server-side isolation and media retention tests. Do not charge real users for tests.
+
+PHASE 6 — MONETIZATION, PRODUCTION OPERATIONS AND COMPLIANCE
+Keep pricing/private quote model. Implement supplier subscription eligibility, free trial (only when owner approves), admin-configurable plan rules, payment integration only after gateway contract and sandbox/webhook testing. Add business verification workflow, supplier listing ads disclosures, appropriate refund/dispute flow, proof of delivery, Egyptian tax/commercial invoices as legally applicable and reviewed by a local professional, privacy/terms/cookie policies, data retention and security measures. Reconcile payment, shipping, subscriptions, supplier status and access expiry in MySQL; retain audit logs.
+CHECK PHASE 6: no fake 'paid' statuses, signed webhook verification, duplicate webhooks idempotent, no customer-card storage, role permissions, failed/expired-payment behavior, pricing secrecy and fraud controls.
+
+PHASE 7 — QA, VERSION SELECTION, RELEASE
+Run typecheck, build, Node/PHP unit tests, MySQL integration tests, Playwright/browser route and button tests, actual cPanel staging tests, mobile 360/390/768/1440/1920 responsive QA, Arabic RTL/English LTR, light/dark, accessibility, speed and SEO audits. Compare older vs newer versions with objective behavior; newest date is not necessarily best. Choose a baseline from actual validated production behavior plus selectively merged enhancements. Prepare a reproducible, immutable release artifact from a specific commit with SHA manifest, database migration scripts, backup, stage-only deploy, smoke tests and rollback plan. Do not run migration/push/merge/production deployment without owner approval. No secrets in logs or report.
+CHECK PHASE 7: prove exactly what URL is live, what commit it serves, which backend API and database it uses, whether all three accounts complete workflows, and which missing services require payment or external approval. End with an evidence-backed release sign-off and residual risks.
+
+DELIVERABLE FORMAT FOR THE AGENT
+1. Executive snapshot (confirmed vs not confirmed).
+2. Master requirements deduplicated from user conversations (provenance and decisions).
+3. Source-of-truth map and dated comparison: local disk/GitHub branches/Vercel/cPanel/live domain/MySQL.
+4. Per-route/per-button/per-role feature matrix with status and hard evidence.
+5. Detailed buyer, supplier, admin and RFQ business-process diagrams plus DB/API contracts.
+6. Findings ordered P0 blocker/P1 core/P2 design/P3 future enhancements; recommended precise fixes and files.
+7. Free/no-additional-subscription work vs billable services with official price links and estimate assumptions; never fabricate cost.
+8. One focused implementation batch at a time; after EACH batch, give a verification batch with commands, expected vs actual evidence, remaining defects and rollback.
+9. End-to-end QA report, deployment manifest and production sign-off only if all hard acceptance criteria pass. Do not call a feature 'complete' based only on a frontend screen, static source code, Vercel READY or GitHub CI.
+
+OWNER GUARDRAIL
+Act proactively in read-only discovery and isolated staging, but protect source and data. Ask for confirmation only when credentials, irreversible production changes, third-party purchases or decisions with material business consequences genuinely require it. Never pretend to access unavailable systems. The goal is a working, auditable IDEA Marketplace, not another mockup or audit without follow-through.

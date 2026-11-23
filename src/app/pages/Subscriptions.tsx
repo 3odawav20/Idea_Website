@@ -48,14 +48,22 @@ function PlanGrid({ audience }: { audience: "customer" | "business" }) {
   };
   return (
     <>
-      <div style={{ display: "flex", justifyContent: "center", gap: 8, marginBottom: "var(--idea-space-6)" }}>
-        {(["monthly", "annual"] as const).map((x) => (
-          <button key={x} onClick={() => setInterval(x)} style={{
-            padding: "8px 20px", borderRadius: "var(--idea-radius-full)", cursor: "pointer", textTransform: "capitalize",
-            border: `1px solid ${interval === x ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
-            background: interval === x ? "var(--idea-gold-soft)" : "transparent", color: interval === x ? "var(--idea-gold-bright)" : "var(--idea-text-muted)",
-          }}>{x}</button>
-        ))}
+      <div style={{ display: "flex", justifyContent: "center", marginBottom: "var(--idea-space-6)" }}>
+        <div className="idea-glass-tablist" role="tablist" aria-label="Billing interval">
+          {(["monthly", "annual"] as const).map((x) => (
+            <button
+              key={x}
+              type="button"
+              role="tab"
+              aria-selected={interval === x}
+              onClick={() => setInterval(x)}
+              className={`idea-glass-tab${interval === x ? " is-active" : ""}`}
+              style={{ textTransform: "capitalize" }}
+            >
+              {x}
+            </button>
+          ))}
+        </div>
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: "var(--idea-space-4)" }}>
         {plans.map((p) => <PlanCard key={p.id} plan={p} interval={interval} current={sub?.planId === p.id} onChoose={() => choose(p)} />)}
@@ -70,9 +78,9 @@ export function SubscriptionsHome() {
     <Section style={{ paddingTop: "var(--idea-space-7)" }}>
       <Container>
         <SectionHeader eyebrow="Plans" title={t("nav.subscriptions")} sub="Choose a plan for customers or businesses. All prices in EGP are configured by the administrator." />
-        <div style={{ display: "flex", gap: 12, marginBottom: "var(--idea-space-6)" }}>
-          <Link to="/subscriptions/customers"><Button variant="outline">For Customers</Button></Link>
-          <Link to="/subscriptions/businesses"><Button variant="outline">For Businesses</Button></Link>
+        <div className="idea-glass-tablist" style={{ marginBottom: "var(--idea-space-6)" }}>
+          <Link to="/subscriptions/customers" className="idea-glass-tab is-active">For Customers</Link>
+          <Link to="/subscriptions/businesses" className="idea-glass-tab">For Businesses</Link>
         </div>
         <div className="idea-eyebrow" style={{ marginBottom: 12 }}>Customer plans</div>
         <PlanGrid audience="customer" />

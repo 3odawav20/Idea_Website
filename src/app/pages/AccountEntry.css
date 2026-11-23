@@ -918,58 +918,53 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   background:linear-gradient(115deg,rgba(255,249,240,.10),transparent 38%,rgba(8,13,23,.12)),
     radial-gradient(circle at 87% 10%,rgba(255,188,109,.18),transparent 35%);
 }
-/* The same premium beveled glass for ALL six entry routes, not business alone. */
+/* The same premium borderless transparent glass for ALL six entry routes. */
+.idea-auth-scene .idea-auth-panel-wrap {
+  padding-top: max(68px, clamp(18px, 2.4vw, 44px));
+}
 .idea-auth-scene .idea-auth-panel {
   position:relative;
   z-index:1;
-  border:1px solid rgba(255,255,255,.64);
-  border-radius:28px;
+  border:0;
+  border-radius:26px;
   overflow:hidden;
-  background:
-    linear-gradient(140deg,rgba(255,255,255,.15) 0%,rgba(41,39,39,.39) 29%,rgba(27,29,32,.43) 70%,rgba(255,255,255,.10) 100%);
-  -webkit-backdrop-filter:blur(26px) saturate(1.35);
-  backdrop-filter:blur(26px) saturate(1.35);
-  box-shadow:
-    0 28px 62px rgba(0,0,0,.32),
-    0 0 0 1px rgba(248,190,127,.15),
-    inset 0 2px 1px rgba(255,255,255,.76),
-    inset 2px 0 1px rgba(255,255,255,.32),
-    inset 0 -2px 1px rgba(255,198,131,.42),
-    inset -1px 0 1px rgba(255,255,255,.16);
+  background:rgba(16,18,22,.22);
+  -webkit-backdrop-filter:blur(26px) saturate(1.38);
+  backdrop-filter:blur(26px) saturate(1.38);
+  box-shadow:0 28px 64px rgba(0,0,0,.32);
   color:#fff;
 }
 .idea-auth-scene.idea-auth-scene--light .idea-auth-panel {
-  background:linear-gradient(145deg,rgba(53,53,52,.28),rgba(35,41,45,.32) 48%,rgba(66,63,62,.29));
-  border-color:rgba(255,255,255,.73);
+  background:rgba(24,26,30,.20);
+  border:0;
 }
 .idea-auth-scene .idea-auth-panel::before {
   content:"";
   position:absolute;
-  inset:1px;
+  inset:0;
   z-index:0;
-  border-radius:27px;
+  border-radius:26px;
   pointer-events:none;
-  background:linear-gradient(140deg,rgba(255,255,255,.21),transparent 22%,transparent 78%,rgba(255,198,120,.13));
+  background:linear-gradient(145deg,rgba(255,255,255,.07),transparent 36%,rgba(0,0,0,.06));
 }
 .idea-auth-scene .idea-auth-panel > * {
   position:relative;
   z-index:1;
 }
-/* Every input retains its real DOM focus/typing, with a visible glass body. */
+/* Every input retains its real DOM focus/typing, with pure borderless blurred glass. */
 .idea-auth-scene .idea-auth-input-wrap {
   box-sizing:border-box;
-  border:1px solid rgba(255,255,255,.55);
+  border:0;
   border-radius:12px;
-  background:linear-gradient(120deg,rgba(255,255,255,.13),rgba(30,32,36,.20));
-  -webkit-backdrop-filter:blur(12px) saturate(1.2);
-  backdrop-filter:blur(12px) saturate(1.2);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 3px 12px rgba(0,0,0,.08);
-  transition:background .18s,border-color .18s,box-shadow .18s;
+  background:rgba(255,255,255,.08);
+  -webkit-backdrop-filter:blur(12px) saturate(1.3);
+  backdrop-filter:blur(12px) saturate(1.3);
+  box-shadow:0 4px 16px rgba(0,0,0,.14);
+  transition:background .18s ease,box-shadow .18s ease;
 }
 .idea-auth-scene .idea-auth-input-wrap:focus-within {
-  border-color:rgba(255,196,118,.98);
-  background:rgba(18,19,21,.24);
-  box-shadow:0 0 0 3px rgba(255,177,67,.22),inset 0 1px 0 rgba(255,255,255,.27);
+  background:rgba(255,255,255,.14);
+  box-shadow:0 0 0 2px rgba(255,186,96,.55),0 8px 22px rgba(0,0,0,.20);
 }
 .idea-auth-scene .idea-auth-input-wrap input,
 .idea-auth-scene .idea-auth-input-wrap select {
@@ -978,8 +973,8 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   -webkit-text-fill-color:#fff;
 }
 .idea-auth-scene .idea-auth-input-wrap input::placeholder {
-  color:rgba(255,255,255,.77);
-  -webkit-text-fill-color:rgba(255,255,255,.77);
+  color:rgba(255,255,255,.74);
+  -webkit-text-fill-color:rgba(255,255,255,.74);
 }
 .idea-auth-scene .idea-auth-input-wrap input:-webkit-autofill {
   transition:background-color 600000s 0s;
@@ -989,25 +984,23 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 }
 .idea-auth-scene .idea-auth-dropzone,
 .idea-auth-scene .idea-auth-social button {
-  border-color:rgba(255,255,255,.43);
-  background:rgba(31,32,34,.21);
-  -webkit-backdrop-filter:blur(11px);
-  backdrop-filter:blur(11px);
+  border:0;
+  background:rgba(255,255,255,.08);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  backdrop-filter:blur(14px) saturate(1.3);
 }
 .idea-auth-scene .idea-auth-submit {
-  border:1px solid rgba(255,236,196,.85);
+  border:0;
   border-radius:12px;
   color:#2a170c;
   background:linear-gradient(120deg,#ffe0ad 0%,#ffbb61 43%,#d58829 80%,#ffc77b 100%);
   text-shadow:0 1px 0 rgba(255,255,255,.17);
-  box-shadow:inset 0 2px 1px rgba(255,255,255,.67),
-    inset 0 -2px 0 rgba(119,64,17,.2),
-    0 6px 25px rgba(255,157,51,.25);
+  box-shadow:0 8px 26px rgba(255,157,51,.28);
 }
 .idea-auth-scene .idea-auth-submit:hover:not(:disabled) {
   filter:brightness(1.07);
   transform:translateY(-1px);
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.65),0 9px 29px rgba(255,168,68,.31);
+  box-shadow:0 12px 30px rgba(255,168,68,.34);
 }
 .idea-auth-scene .idea-auth-submit:focus-visible,
 .idea-auth-scene .idea-auth-eye:focus-visible,
@@ -1021,7 +1014,7 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   .idea-auth-scene--admin .idea-auth-content {
     display:grid;
     grid-template-columns:minmax(0,1fr) minmax(360px,35%);
-    grid-template-rows:minmax(780px,calc(100svh - 52px));
+    grid-template-rows:minmax(780px,100svh);
     max-width:none;
   }
   .idea-auth-scene--admin .idea-auth-visual {
@@ -1045,29 +1038,29 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
     isolation:auto;
     overflow:visible;
     background:transparent;
-    padding:clamp(16px,2.4vw,48px);
+    padding:max(68px,clamp(16px,2.4vw,48px)) clamp(16px,2.4vw,48px) clamp(16px,2.4vw,48px);
   }
   .idea-auth-scene--admin .idea-auth-panel-wrap::before,
   .idea-auth-scene--admin .idea-auth-panel-wrap::after { display:none; }
   .idea-auth-scene--admin .idea-auth-panel {
     max-width:540px;
     padding:clamp(22px,2.5vw,40px);
-    background:linear-gradient(145deg,rgba(42,37,36,.32),rgba(32,31,34,.38),rgba(55,46,41,.26));
+    background:rgba(24,22,24,.26);
   }
   .idea-auth-scene--admin .idea-auth-copy {
     left:clamp(30px,5vw,105px);
     right:auto;
-    top:clamp(40px,6vw,114px);
+    top:clamp(68px,7vw,120px);
     inset-inline-start:auto;
     inset-inline-end:auto;
     width:min(46%,670px);
     max-width:min(46%,670px);
     padding:clamp(16px,2vw,26px);
     border-radius:17px;
-    background:linear-gradient(120deg,rgba(12,12,13,.27),rgba(25,25,27,.10));
+    background:rgba(16,18,22,.22);
     -webkit-backdrop-filter:blur(13px) saturate(1.15);
     backdrop-filter:blur(13px) saturate(1.15);
-    border:1px solid rgba(255,255,255,.16);
+    border:0;
   }
 }
 /* No rounded glass element can push a real form off screen on small displays. */
@@ -1077,7 +1070,7 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   .idea-auth-scene--admin .idea-auth-panel-wrap::before,
   .idea-auth-scene--admin .idea-auth-panel-wrap::after {display:block}
   .idea-auth-scene .idea-auth-panel {border-radius:20px}
-  .idea-auth-scene .idea-auth-panel::before {border-radius:19px}
+  .idea-auth-scene .idea-auth-panel::before {border-radius:20px}
 }
 @media(prefers-reduced-motion:reduce) {
   .idea-auth-scene .idea-auth-submit,
@@ -1098,12 +1091,12 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
   filter:blur(17px) brightness(1.02) saturate(1.02);
 }
 .idea-auth-scene .idea-auth-panel {
-  background:linear-gradient(140deg,rgba(255,255,255,.16),rgba(28,31,34,.30) 35%,rgba(25,27,29,.34) 77%,rgba(255,255,255,.12));
-  -webkit-backdrop-filter:blur(20px) saturate(1.38);
-  backdrop-filter:blur(20px) saturate(1.38);
+  background:rgba(20,22,26,.22);
+  -webkit-backdrop-filter:blur(22px) saturate(1.42);
+  backdrop-filter:blur(22px) saturate(1.42);
 }
 .idea-auth-scene.idea-auth-scene--light .idea-auth-panel {
-  background:linear-gradient(130deg,rgba(255,255,255,.18),rgba(30,34,38,.26) 38%,rgba(30,30,33,.28));
+  background:rgba(26,28,32,.20);
 }
 
 /* ADMIN OFFICE DAY/NIGHT — authentic owner-provided photo, never a screenshot.
@@ -1174,3 +1167,308 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
     opacity:1;
   }
 }
+
+/* ============================================================================
+   CUSTOMER 6-PROVIDER SOCIAL AUTHENTICATION + WHATSAPP VERIFIED OTP
+   Borderless frosted optical glass matching the panel behind it.
+   ============================================================================ */
+.idea-google-login-wrap{
+  margin-top:14px;
+}
+.idea-google-login-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:100%;
+  min-height:46px;
+  padding:10px 16px;
+  border-radius:12px;
+  border:0;
+  background:rgba(255,255,255,.14);
+  color:#ffffff;
+  font-family:var(--idea-font-body);
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:.01em;
+  cursor:pointer;
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+  -webkit-backdrop-filter:blur(16px) saturate(1.35);
+  backdrop-filter:blur(16px) saturate(1.35);
+  transition:transform .2s cubic-bezier(.22,1,.36,1),box-shadow .2s ease,background-color .2s ease;
+}
+.idea-google-login-btn:hover:not(:disabled){
+  transform:scale(1.012);
+  background:rgba(255,255,255,.22);
+  box-shadow:0 12px 28px rgba(0,0,0,.24);
+}
+.idea-google-login-btn:focus-visible{
+  outline:2px solid #ffcb8c;
+  outline-offset:2px;
+}
+.idea-google-login-btn:disabled{
+  opacity:.62;
+  cursor:not-allowed;
+  transform:none;
+}
+.idea-google-login-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:20px;
+  flex:0 0 20px;
+}
+.idea-auth-social{
+  margin-top:18px;
+  padding-top:2px;
+  border-top:none;
+}
+.idea-auth-social .idea-auth-social-divider{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  margin:0 0 13px;
+  color:rgba(241,238,233,.88);
+  font-size:12px;
+  font-weight:500;
+  letter-spacing:.01em;
+}
+.idea-auth-social .idea-auth-social-divider::before,
+.idea-auth-social .idea-auth-social-divider::after{
+  content:"";
+  flex:1 1 0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.20),transparent);
+}
+.idea-auth-social .idea-auth-social-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+}
+.idea-auth-scene .idea-auth-social .idea-social-btn,
+.idea-auth-social .idea-social-btn{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  width:100%;
+  min-height:44px;
+  padding:8px 10px;
+  border-radius:11px;
+  border:0;
+  background:rgba(255,255,255,.10);
+  color:#ffffff;
+  font-size:12.5px;
+  font-weight:600;
+  letter-spacing:.01em;
+  line-height:1.1;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,.14);
+  -webkit-backdrop-filter:blur(14px) saturate(1.3);
+  backdrop-filter:blur(14px) saturate(1.3);
+  transition:transform .2s cubic-bezier(.22,1,.36,1),background-color .18s ease,box-shadow .18s ease,opacity .18s ease;
+}
+.idea-auth-scene.idea-auth-scene--light .idea-auth-social .idea-social-btn{
+  background:rgba(255,255,255,.16);
+  border:0;
+  color:#ffffff;
+  box-shadow:0 4px 16px rgba(17,22,29,.16);
+}
+.idea-auth-scene .idea-auth-social .idea-social-btn:hover:not(:disabled),
+.idea-auth-social .idea-social-btn:hover:not(:disabled){
+  transform:scale(1.02);
+  background:rgba(255,255,255,.18);
+  box-shadow:0 8px 22px rgba(0,0,0,.22);
+}
+.idea-auth-scene.idea-auth-scene--light .idea-auth-social .idea-social-btn:hover:not(:disabled){
+  background:rgba(255,255,255,.24);
+  box-shadow:0 8px 22px rgba(17,22,29,.22);
+}
+.idea-auth-scene .idea-auth-social .idea-social-btn:focus-visible,
+.idea-auth-social .idea-social-btn:focus-visible{
+  outline:2px solid #ffcb8c;
+  outline-offset:2px;
+}
+.idea-auth-scene .idea-auth-social .idea-social-btn:disabled,
+.idea-auth-social .idea-social-btn:disabled{
+  cursor:not-allowed;
+  transform:none;
+}
+.idea-auth-scene .idea-auth-social .idea-social-btn.is-unavailable,
+.idea-auth-social .idea-social-btn.is-unavailable{
+  opacity:.72;
+}
+.idea-auth-scene .idea-auth-social .idea-social-btn.is-loading,
+.idea-auth-social .idea-social-btn.is-loading{
+  cursor:progress;
+  opacity:.92;
+}
+.idea-social-btn-icon{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:19px;
+  height:19px;
+  flex:0 0 19px;
+}
+.idea-social-icon{
+  display:block;
+  width:18px;
+  height:18px;
+}
+.idea-social-icon--mono{
+  color:currentColor;
+}
+.idea-social-btn-label{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-family:var(--idea-font-body);
+}
+@keyframes ideaSocialSpin{
+  to{transform:rotate(360deg)}
+}
+.idea-social-spin{
+  animation:ideaSocialSpin .85s linear infinite;
+}
+.idea-auth-social-note{
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  gap:6px;
+  margin:10px 0 0;
+  color:rgba(236,232,226,.76);
+  font-size:11.5px;
+  line-height:1.45;
+  text-align:center;
+}
+.idea-auth-social-note svg{
+  flex:0 0 auto;
+  margin-top:2px;
+  color:#ffcb8c;
+}
+.idea-auth-social .idea-wa-otp-box{
+  display:block;
+  margin-top:12px;
+  padding:13px;
+  border-radius:12px;
+  border:1px solid rgba(37,211,102,.42);
+  background:rgba(15,24,19,.56);
+  -webkit-backdrop-filter:blur(12px);
+  backdrop-filter:blur(12px);
+}
+.idea-auth-scene.idea-auth-scene--light .idea-auth-social .idea-wa-otp-box{
+  background:rgba(248,252,249,.94);
+  border-color:rgba(22,163,74,.45);
+  color:#152019;
+}
+.idea-wa-otp-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:8px;
+}
+.idea-wa-otp-title{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:13px;
+  color:inherit;
+}
+.idea-auth-scene .idea-auth-social .idea-wa-otp-close{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:28px;
+  height:28px;
+  min-height:28px;
+  padding:0;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(255,255,255,.08);
+  color:inherit;
+}
+.idea-auth-scene.idea-auth-scene--light .idea-auth-social .idea-wa-otp-close{
+  border-color:rgba(20,32,24,.18);
+  background:rgba(20,32,24,.06);
+  color:#152019;
+}
+.idea-wa-otp-body{
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+.idea-wa-otp-hint{
+  margin:0;
+  font-size:12px;
+  line-height:1.45;
+  opacity:.86;
+}
+.idea-wa-otp-row{
+  display:grid;
+  grid-template-columns:108px minmax(0,1fr);
+  gap:8px;
+}
+.idea-wa-otp-select,
+.idea-wa-otp-input{
+  min-height:40px;
+  padding:8px 10px;
+  border-radius:9px;
+  border:1px solid rgba(255,255,255,.32);
+  background:rgba(0,0,0,.28);
+  color:#ffffff;
+  font-size:13px;
+}
+.idea-auth-scene.idea-auth-scene--light .idea-wa-otp-select,
+.idea-auth-scene.idea-auth-scene--light .idea-wa-otp-input{
+  background:#ffffff;
+  border-color:rgba(20,32,24,.24);
+  color:#141a16;
+}
+.idea-wa-otp-code{
+  letter-spacing:.26em;
+  text-align:center;
+  font-weight:700;
+  direction:ltr;
+}
+.idea-wa-otp-actions{
+  display:flex;
+  gap:8px;
+}
+.idea-auth-scene .idea-auth-social .idea-wa-otp-action{
+  flex:1 1 auto;
+  min-height:40px;
+  border-radius:9px;
+  border:1px solid rgba(37,211,102,.65);
+  background:linear-gradient(135deg,#25d366,#16a34a);
+  color:#ffffff;
+  font-weight:600;
+  font-size:12.5px;
+}
+.idea-auth-scene .idea-auth-social .idea-wa-otp-secondary{
+  min-height:40px;
+  padding:8px 12px;
+  border-radius:9px;
+  border:1px solid rgba(255,255,255,.28);
+  background:transparent;
+  color:inherit;
+  font-size:12px;
+}
+@media(max-width:520px){
+  .idea-auth-social .idea-auth-social-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:8px;
+  }
+  .idea-wa-otp-row{
+    grid-template-columns:96px minmax(0,1fr);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  .idea-auth-social .idea-social-btn{transition:none}
+  .idea-social-spin{animation:none}
+}
+

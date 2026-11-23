@@ -1,0 +1,95 @@
+{
+  "entities": {
+    "CustomerProfile": {
+      "title": "Customer Profile",
+      "description": "Authenticated IDEA Marketplace customer profile persisted in Firestore after verified Google sign-in.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID matching the document ID."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Customer display name."
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "minLength": 3,
+          "maxLength": 254,
+          "description": "Verified customer email address (PII, owner/admin read only)."
+        },
+        "phone": {
+          "type": "string",
+          "maxLength": 32,
+          "description": "Optional international phone number (PII, owner/admin read only)."
+        },
+        "photoURL": {
+          "type": "string",
+          "maxLength": 1024,
+          "description": "Optional HTTPS avatar URL from Google profile."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["customer"],
+          "description": "Immutable customer role assigned on creation. Admin/supplier roles are never self-assigned."
+        },
+        "provider": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 40,
+          "description": "Authentication provider identifier (e.g. google.com)."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Immutable server creation timestamp."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server last-updated timestamp."
+        }
+      },
+      "required": ["uid", "name", "email", "role", "provider", "createdAt", "updatedAt"]
+    },
+    "AdminRecord": {
+      "title": "Admin Record",
+      "description": "Trusted server-managed administrator authorization record.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "grantedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["uid", "grantedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/CustomerProfile"
+      },
+      "description": "Private customer profile documents containing PII (email, phone). Strict owner-only or admin access."
+    },
+    "/admins/{adminId}": {
+      "schema": {
+        "$ref": "#/entities/AdminRecord"
+      },
+      "description": "Server-provisioned administrator membership documents. Read-only for self/admin, no client writes."
+    }
+  }
+}

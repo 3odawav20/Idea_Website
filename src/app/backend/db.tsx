@@ -1,6 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { auth, firebaseSignOut, onAuthStateChanged } from "../../lib/firebase";
 import { apiFetch } from "./apiClient";
+import { getPhpSession, PHP_ACCOUNT_API, signOutPhp, type PhpUser } from "./phpAccounts";
 
 export type Role = "customer" | "business" | "designer" | "contractor" | "admin";
 export type Unit = "sqm" | "pieces";
@@ -9,6 +9,7 @@ export interface User {
   name: string;
   email?: string;
   phone?: string;
+  photoURL?: string;
   role: Role;
   provider: string;
   authMethod?: string;
@@ -180,26 +181,35 @@ const emptyDb = (): DB => ({
   sessionUserId: null,
 });
 
-interface SessionResponse {
-  user: User;
-  businesses: Business[];
-  requests: QuoteRequest[];
-  offers: Offer[];
-  orders: Order[];
-  messages: Message[];
-  plans: Plan[];
-  subscriptions: Subscription[];
-  payments: PaymentMethodConfig[];
-  roomProjects: RoomProject[];
-  audit: AuditEntry[];
-  favorites: string[];
+function mapPhpRole(role: PhpUser["role"]): Role {
+  if (role === "admin") return "admin";
+  if (role === "supplier") return "business";
+  return "customer";
+}
+
+function mapPhpUser(phpUser: PhpUser): User {
+  const created =
+    typeof phpUser.created_at === "number"
+      ? phpUser.created_at
+      : phpUser.created_at
+      ? Date.parse(String(phpUser.created_at)) || Date.now()
+      : Date.now();
+  return {
+    id: String(phpUser.id),
+    name: phpUser.name || phpUser.email || "IDEA Member",
+    email: phpUser.email || undefined,
+    phone: phpUser.phone || undefined,
+    role: mapPhpRole(phpUser.role),
+    provider: "php-mysql",
+    createdAt: created,
+  };
 }
 
 interface BackendCtx {
   db: DB;
   session: User | null;
   loading: boolean;
-  refresh: (opts?: { name?: string; phone?: string; authMethod?: string; requestedRole?: string }) => Promise<User | null>;
+  refresh: () => Promise<User | null>;
   api: Api;
 }
 
@@ -209,10 +219,14 @@ export interface Api {
   signIn: (provider: string, role: Role, info?: { name?: string; email?: string; phone?: string }) => User;
   signOut: () => void;
   setRole: (role: Role) => void;
+  updateProfile: (updates: { name?: string; phone?: string }) => Promise<void>;
   createBusiness: (b: Partial<Business>) => Business;
   updateBusinessStatus: (id: string, status: BusinessStatus) => void;
   connectProduct: (bizId: string, productId: string) => void;
-  createRequest: (r: Omit<QuoteRequest, "id" | "createdAt" | "status" | "deadlineAt" | "matchedBusinessIds" | "customerId">, hours: number) => QuoteRequest;
+  createRequest: (
+    r: Omit<QuoteRequest, "id" | "createdAt" | "status" | "deadlineAt" | "matchedBusinessIds" | "customerId">,
+    hours: number
+  ) => Promise<QuoteRequest>;
   submitOffer: (o: Omit<Offer, "id" | "createdAt" | "status">) => Offer;
   acceptOffer: (offerId: string) => Order | null;
   sandboxPay: (orderId: string, ok: boolean) => void;
@@ -230,106 +244,73 @@ export interface Api {
 export function BackendProvider({ children }: { children: ReactNode }) {
   const [db, setDb] = useState<DB>(emptyDb);
   const [session, setSession] = useState<User | null>(null);
+  const [csrfToken, setCsrfToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
 
-  const loadPublicRef = useCallback(async () => {
+  const refresh = useCallback(async (): Promise<User | null> => {
     try {
-      const [plansData, paymentsData] = await Promise.all([
-        apiFetch<Plan[]>("/api/plans"),
-        apiFetch<PaymentMethodConfig[]>("/api/payments/public"),
-      ]);
+      const phpSession = await getPhpSession();
+      setCsrfToken(phpSession.csrf || "");
+      if (!phpSession.user) {
+        setSession(null);
+        setDb((old) => ({ ...emptyDb(), plans: old.plans, payments: old.payments }));
+        return null;
+      }
+      const mapped = mapPhpUser(phpSession.user);
+      setSession(mapped);
       setDb((old) => ({
         ...old,
-        plans: Array.isArray(plansData) ? plansData : old.plans,
-        payments: Array.isArray(paymentsData) ? paymentsData : old.payments,
+        users: [mapped],
+        sessionUserId: mapped.id,
       }));
+      return mapped;
     } catch {
-      // Keep UI functional even if backend reference fetch fails momentarily
+      // Static preview host without cPanel PHP backend mounted: fail closed with no synthetic session.
+      setSession(null);
+      setCsrfToken("");
+      return null;
     }
   }, []);
 
-  const refresh = useCallback(
-    async (opts?: { name?: string; phone?: string; authMethod?: string; requestedRole?: string }): Promise<User | null> => {
-      if (!auth.currentUser) {
-        setSession(null);
-        await loadPublicRef();
-        return null;
-      }
-      try {
-        const data = await apiFetch<SessionResponse>("/api/auth/session", {
-          method: "POST",
-          body: opts || {},
-          authRequired: true,
-        });
-        setSession(data.user);
-        setDb({
-          users: [data.user],
-          businesses: data.businesses || [],
-          requests: data.requests || [],
-          offers: data.offers || [],
-          orders: data.orders || [],
-          messages: data.messages || [],
-          plans: data.plans || [],
-          subscriptions: data.subscriptions || [],
-          payments: data.payments || [],
-          roomProjects: data.roomProjects || [],
-          audit: data.audit || [],
-          sessionUserId: data.user.id,
-        });
-        return data.user;
-      } catch (error) {
-        console.error("IDEA session sync failed:", error);
-        return null;
-      }
-    },
-    [loadPublicRef]
-  );
-
   useEffect(() => {
-    void loadPublicRef();
-    const unsub = onAuthStateChanged(auth, (fbUser) => {
-      if (!fbUser) {
-        setSession(null);
-        setDb((old) => ({ ...emptyDb(), plans: old.plans, payments: old.payments }));
-        setLoading(false);
-        return;
-      }
-      void refresh().finally(() => setLoading(false));
-    });
-    return () => unsub();
-  }, [loadPublicRef, refresh]);
+    void refresh().finally(() => setLoading(false));
+  }, [refresh]);
 
   const api = useMemo<Api>(
     () => ({
-      signIn: (_provider, role, info) => {
-        // Optimistic placeholder only when invoked synchronously; primary login uses Firebase + refresh()
-        const user: User = {
-          id: session?.id || "pending",
-          name: info?.name || session?.name || "IDEA Member",
-          email: info?.email || session?.email,
-          phone: info?.phone || session?.phone,
-          role,
-          provider: "firebase",
-          createdAt: Date.now(),
-        };
-        return user;
-      },
+      signIn: (_provider, role, info) => ({
+        id: session?.id || "",
+        name: info?.name || session?.name || "IDEA Member",
+        email: info?.email || session?.email,
+        phone: info?.phone || session?.phone,
+        role: session?.role || role,
+        provider: "php-mysql",
+        createdAt: session?.createdAt || Date.now(),
+      }),
       signOut: () => {
-        void firebaseSignOut(auth).then(() => {
-          setSession(null);
-          setDb((old) => ({ ...emptyDb(), plans: old.plans, payments: old.payments }));
-        });
+        void signOutPhp()
+          .catch(() => undefined)
+          .finally(() => {
+            setSession(null);
+            setCsrfToken("");
+            setDb((old) => ({ ...emptyDb(), plans: old.plans, payments: old.payments }));
+          });
       },
-      setRole: (role) => {
-        void apiFetch("/api/auth/profile", {
+      setRole: () => {
+        // Roles are assigned strictly server-side in MySQL; client-side self-promotion is disabled.
+      },
+      updateProfile: async (updates) => {
+        const current = await getPhpSession();
+        await apiFetch(`${PHP_ACCOUNT_API}?action=profile`, {
           method: "POST",
-          body: { role },
-          authRequired: true,
-        }).then(() => refresh());
+          body: updates,
+          csrfToken: current.csrf,
+        });
+        await refresh();
       },
       createBusiness: (b) => {
         const pending: Business = {
-          id: "pending",
+          id: "",
           ownerId: session?.id || "",
           legalName: b.legalName || "",
           publicName: b.publicName || "",
@@ -350,51 +331,46 @@ export function BackendProvider({ children }: { children: ReactNode }) {
           rating: 0,
           createdAt: Date.now(),
         };
-        void apiFetch("/api/companies/apply", {
+        void apiFetch("/api/platform.php?action=company-apply", {
           method: "POST",
           body: b,
-          authRequired: true,
+          csrfToken,
         }).then(() => refresh());
         return pending;
       },
       updateBusinessStatus: (id, status) => {
-        const mapped = status.toLowerCase();
-        void apiFetch(`/api/companies/${encodeURIComponent(id)}/status`, {
-          method: "PATCH",
-          body: { status: mapped },
-          authRequired: true,
+        void apiFetch("/api/platform.php?action=company-status", {
+          method: "POST",
+          body: { id, status: status.toLowerCase() },
+          csrfToken,
         }).then(() => refresh());
       },
       connectProduct: (bizId, productId) => {
-        void apiFetch(`/api/companies/${encodeURIComponent(bizId)}/connect-product`, {
+        void apiFetch("/api/platform.php?action=company-connect-product", {
           method: "POST",
-          body: { productId },
-          authRequired: true,
+          body: { business_id: bizId, product_id: productId },
+          csrfToken,
         }).then(() => refresh());
       },
-      createRequest: (r, hours) => {
-        const pending: QuoteRequest = {
-          ...r,
-          id: "pending",
-          customerId: session?.id || "",
-          status: "Request Submitted",
-          createdAt: Date.now(),
-          deadlineAt: Date.now() + hours * 3600_000,
-          matchedBusinessIds: [],
-        };
-        void apiFetch("/api/requests", {
+      createRequest: async (r, hours) => {
+        const current = await getPhpSession();
+        const saved = await apiFetch<QuoteRequest>("/api/marketplace.php?action=rfq-create", {
           method: "POST",
           body: { ...r, hours },
-          authRequired: true,
-        }).then(() => refresh());
-        return pending;
+          csrfToken: current.csrf,
+        });
+        if (!saved || !saved.id) {
+          throw new Error("RFQ_NOT_PERSISTED");
+        }
+        await refresh();
+        return saved;
       },
       submitOffer: (offer) => {
-        const pending: Offer = { ...offer, id: "pending", status: "submitted", createdAt: Date.now() };
-        void apiFetch("/api/offers", {
+        const pending: Offer = { ...offer, id: "", status: "submitted", createdAt: Date.now() };
+        void apiFetch("/api/marketplace.php?action=offer-submit", {
           method: "POST",
           body: offer,
-          authRequired: true,
+          csrfToken,
         }).then(() => refresh());
         return pending;
       },
@@ -404,7 +380,7 @@ export function BackendProvider({ children }: { children: ReactNode }) {
         const subtotal = offer.unitPrice * offer.quantity;
         const total = subtotal + subtotal * offer.taxRate + offer.shipping;
         const pending: Order = {
-          id: "pending",
+          id: "",
           requestId: offer.requestId,
           offerId,
           customerId: session?.id || "",
@@ -414,17 +390,18 @@ export function BackendProvider({ children }: { children: ReactNode }) {
           paymentStatus: "None",
           createdAt: Date.now(),
         };
-        void apiFetch(`/api/offers/${encodeURIComponent(offerId)}/accept`, {
+        void apiFetch("/api/marketplace.php?action=offer-accept", {
           method: "POST",
-          authRequired: true,
+          body: { offer_id: offerId },
+          csrfToken,
         }).then(() => refresh());
         return pending;
       },
       sandboxPay: (orderId, ok) => {
-        void apiFetch(`/api/orders/${encodeURIComponent(orderId)}/pay`, {
+        void apiFetch("/api/marketplace.php?action=order-pay", {
           method: "POST",
-          body: { ok },
-          authRequired: true,
+          body: { order_id: orderId, ok },
+          csrfToken,
         }).then(() => refresh());
       },
       subscribe: (planId, interval, paid) => {
@@ -436,64 +413,68 @@ export function BackendProvider({ children }: { children: ReactNode }) {
           startedAt: Date.now(),
           renewsAt: Date.now() + (interval === "annual" ? 365 : 30) * 86400_000,
         };
-        void apiFetch("/api/subscriptions", {
+        void apiFetch("/api/platform.php?action=subscribe", {
           method: "POST",
           body: { planId, interval, paid },
-          authRequired: true,
+          csrfToken,
         }).then(() => refresh());
         return sub;
       },
       cancelSubscription: () => {
-        void apiFetch("/api/subscriptions/cancel", {
+        void apiFetch("/api/platform.php?action=subscription-cancel", {
           method: "POST",
-          authRequired: true,
+          csrfToken,
         }).then(() => refresh());
       },
       updatePlan: (plan) => {
-        void apiFetch(`/api/admin/plans/${encodeURIComponent(plan.id)}`, {
-          method: "PATCH",
-          body: { monthly: plan.monthly, annual: plan.annual, trialDays: plan.trialDays },
-          authRequired: true,
+        void apiFetch("/api/platform.php?action=admin-plan-update", {
+          method: "POST",
+          body: { id: plan.id, monthly: plan.monthly, annual: plan.annual, trialDays: plan.trialDays },
+          csrfToken,
         }).then(() => refresh());
       },
       updatePayment: (cfg) => {
-        void apiFetch(`/api/admin/payments/${encodeURIComponent(cfg.key)}`, {
-          method: "PATCH",
+        void apiFetch("/api/platform.php?action=admin-payment-update", {
+          method: "POST",
           body: cfg,
-          authRequired: true,
+          csrfToken,
         }).then(() => refresh());
       },
       testPayment: (key) => {
-        void apiFetch(`/api/admin/payments/${encodeURIComponent(key)}/test`, {
+        void apiFetch("/api/platform.php?action=admin-payment-test", {
           method: "POST",
-          authRequired: true,
+          body: { key },
+          csrfToken,
         }).then(() => refresh());
       },
       markRead: (id) => {
-        void apiFetch(`/api/notifications/${encodeURIComponent(id)}/read`, {
-          method: "PATCH",
-          authRequired: true,
+        void apiFetch("/api/platform.php?action=notification-read", {
+          method: "POST",
+          body: { id },
+          csrfToken,
         }).then(() => refresh());
       },
       saveRoomProject: (p) => {
-        void apiFetch("/api/room-projects", {
+        void apiFetch("/api/platform.php?action=room-project-save", {
           method: "POST",
           body: p,
-          authRequired: true,
+          csrfToken,
         }).then(() => refresh());
       },
       deleteRoomProject: (id) => {
-        void apiFetch(`/api/room-projects/${encodeURIComponent(id)}`, {
-          method: "DELETE",
-          authRequired: true,
+        void apiFetch("/api/platform.php?action=room-project-delete", {
+          method: "POST",
+          body: { id },
+          csrfToken,
         }).then(() => refresh());
       },
       reset: () => {
         setSession(null);
+        setCsrfToken("");
         setDb(emptyDb());
       },
     }),
-    [db.offers, refresh, session]
+    [csrfToken, db.offers, refresh, session]
   );
 
   return <Ctx.Provider value={{ db, session, loading, refresh, api }}>{children}</Ctx.Provider>;

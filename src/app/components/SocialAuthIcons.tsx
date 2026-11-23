@@ -1,5 +1,6 @@
 import type { SVGProps } from "react";
 
+/** Official multicolor Google "G" mark. */
 export function GoogleBrandIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
@@ -23,14 +24,23 @@ export function GoogleBrandIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function AppleBrandIcon(props: SVGProps<SVGSVGElement>) {
+/** Official WhatsApp green badge & phone handset icon. */
+export function WhatsAppBrandIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" {...props}>
-      <path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43Zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45Z" />
+    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
+      <path
+        fill="#25D366"
+        d="M12.03 2C6.51 2 2.02 6.48 2.02 12c0 1.76.46 3.48 1.33 4.99L2 22l5.15-1.35A9.97 9.97 0 0 0 12.03 22c5.52 0 10.01-4.48 10.01-10S17.55 2 12.03 2Z"
+      />
+      <path
+        fill="#FFFFFF"
+        d="M17.52 14.95c-.29-.15-1.74-.86-2.01-.96-.27-.1-.47-.15-.66.15-.2.29-.76.96-.93 1.15-.17.2-.34.22-.64.07-.29-.15-1.24-.46-2.37-1.46-.88-.78-1.47-1.75-1.64-2.04-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.49.1-.2.05-.37-.02-.51-.07-.15-.66-1.59-.91-2.18-.24-.57-.48-.5-.66-.51h-.56c-.2 0-.51.07-.78.37-.27.29-1.03 1-1.03 2.45 0 1.44 1.05 2.84 1.2 3.04.15.2 2.07 3.16 5.01 4.43.7.3 1.25.48 1.67.62.7.22 1.34.19 1.85.12.56-.08 1.74-.71 1.98-1.4.25-.69.25-1.27.17-1.4-.07-.12-.27-.2-.56-.34Z"
+      />
     </svg>
   );
 }
 
+/** Official Meta Facebook blue circle & white "f" mark. */
 export function FacebookBrandIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
@@ -43,17 +53,32 @@ export function FacebookBrandIcon(props: SVGProps<SVGSVGElement>) {
   );
 }
 
-export function WhatsAppBrandIcon(props: SVGProps<SVGSVGElement>) {
+/** Official Apple silhouette mark — adapts automatically to light/dark themes via currentColor. */
+export function AppleBrandIcon(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" {...props}>
-      <path
-        fill="#25D366"
-        d="M12.03 2C6.51 2 2.02 6.48 2.02 12c0 1.76.46 3.48 1.33 4.99L2 22l5.15-1.35A9.97 9.97 0 0 0 12.03 22c5.52 0 10.01-4.48 10.01-10S17.55 2 12.03 2Z"
-      />
-      <path
-        fill="#FFFFFF"
-        d="M17.52 14.95c-.29-.15-1.74-.86-2.01-.96-.27-.1-.47-.15-.66.15-.2.29-.76.96-.93 1.15-.17.2-.34.22-.64.07-.29-.15-1.24-.46-2.37-1.46-.88-.78-1.47-1.75-1.64-2.04-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.2-.29.29-.49.1-.2.05-.37-.02-.51-.07-.15-.66-1.59-.91-2.18-.24-.57-.48-.5-.66-.51h-.56c-.2 0-.51.07-.78.37-.27.29-1.03 1-1.03 2.45 0 1.44 1.05 2.84 1.2 3.04.15.2 2.07 3.16 5.01 4.43.7.3 1.25.48 1.67.62.7.22 1.34.19 1.85.12.56-.08 1.74-.71 1.98-1.4.25-.69.25-1.27.17-1.4-.07-.12-.27-.2-.56-.34Z"
-      />
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M16.365 1.43c0 1.14-.493 2.27-1.177 3.08-.744.9-1.99 1.57-2.987 1.57-.12 0-.23-.02-.3-.03-.01-.06-.04-.22-.04-.39 0-1.15.572-2.27 1.206-2.98.804-.94 2.142-1.64 3.248-1.68.03.13.05.28.05.43Zm4.565 15.71c-.03.07-.463 1.58-1.518 3.12-.945 1.34-1.94 2.71-3.43 2.71-1.517 0-1.9-.88-3.63-.88-1.698 0-2.302.91-3.67.91-1.377 0-2.332-1.26-3.428-2.8-1.287-1.82-2.323-4.63-2.323-7.28 0-4.28 2.797-6.55 5.552-6.55 1.448 0 2.675.95 3.6.95.865 0 2.222-1.01 3.902-1.01.613 0 2.886.06 4.374 2.19-.13.09-2.383 1.37-2.383 4.19 0 3.26 2.854 4.42 2.955 4.45Z" />
+    </svg>
+  );
+}
+
+/** Official four-color Microsoft logo mark. */
+export function MicrosoftBrandIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 23 23" width="20" height="20" aria-hidden="true" {...props}>
+      <rect x="1" y="1" width="10" height="10" fill="#F25022" />
+      <rect x="12" y="1" width="10" height="10" fill="#7FBA00" />
+      <rect x="1" y="12" width="10" height="10" fill="#00A4EF" />
+      <rect x="12" y="12" width="10" height="10" fill="#FFB900" />
+    </svg>
+  );
+}
+
+/** Official X (formerly Twitter) mark — adapts automatically to light/dark themes via currentColor. */
+export function XBrandIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true" {...props}>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231Zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77Z" />
     </svg>
   );
 }

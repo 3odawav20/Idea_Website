@@ -1,0 +1,878 @@
+/* ==========================================================================
+   IDEA True Borderless Real Glass System
+   Pure transparent frosted optical glass for ALL tabs, inputs, header controls,
+   and .glass-card surfaces:
+   - Seamlessly takes the color & imagery of the background behind it
+   - Zero harsh white borders, zero blocky stacked frames
+   - Authentic backdrop-filter blur + soft ambient refraction across Light & Dark
+   ========================================================================== */
+
+:root,
+[data-theme="light"] {
+  --idea-gt-blur: 20px;
+  --idea-gt-tray-blur: 24px;
+  --idea-gt-input-blur: 18px;
+
+  /* Seamless sheer glass tray (blends directly with background, no white frame) */
+  --idea-gt-tray-bg: rgba(255, 255, 255, 0.08);
+  --idea-gt-tray-shadow:
+    0 12px 32px rgba(18, 24, 32, 0.07),
+    0 2px 8px rgba(18, 24, 32, 0.04);
+
+  /* Individual tab surface: pure sheer blurred glass with zero white outline */
+  --idea-gt-bg: rgba(255, 255, 255, 0.04);
+  --idea-gt-bg-hover: rgba(18, 24, 32, 0.055);
+  --idea-gt-bg-active: linear-gradient(
+    136deg,
+    rgba(253, 118, 28, 0.16) 0%,
+    rgba(255, 196, 128, 0.12) 100%
+  );
+
+  --idea-gt-text: #20242a;
+  --idea-gt-text-hover: #0d1014;
+  --idea-gt-text-active: #9a4000;
+
+  --idea-gt-shadow: 0 4px 16px rgba(18, 24, 32, 0.05);
+  --idea-gt-shadow-hover: 0 8px 22px rgba(18, 24, 32, 0.09);
+  --idea-gt-shadow-active: 0 8px 24px rgba(196, 88, 12, 0.14);
+
+  /* Subtle internal liquid refraction sheen & ambient soft mist */
+  --idea-gt-sheen: linear-gradient(
+    128deg,
+    rgba(255, 255, 255, 0.16) 0%,
+    transparent 45%,
+    rgba(255, 255, 255, 0.06) 100%
+  );
+  --idea-gt-sheen-active: linear-gradient(
+    128deg,
+    rgba(255, 232, 204, 0.24) 0%,
+    transparent 50%,
+    rgba(253, 118, 28, 0.10) 100%
+  );
+  --idea-gt-mist-a: rgba(253, 126, 40, 0.14);
+  --idea-gt-mist-b: rgba(102, 138, 174, 0.16);
+  --idea-gt-mist-c: rgba(212, 178, 132, 0.12);
+
+  /* Transparent borderless real-glass inputs ("أي تبويب بيتكتب فيه") */
+  --idea-gt-input-bg: rgba(18, 24, 32, 0.04);
+  --idea-gt-input-bg-focus: rgba(18, 24, 32, 0.075);
+  --idea-gt-input-shadow: 0 4px 18px rgba(18, 24, 32, 0.05);
+  --idea-gt-input-shadow-focus: 0 0 0 2px rgba(253, 100, 1, 0.28), 0 8px 24px rgba(18, 24, 32, 0.08);
+
+  /* .glass-card adaptive surface */
+  --idea-glass-card-bg: rgba(255, 255, 255, 0.12);
+  --idea-glass-card-bg-hover: rgba(255, 255, 255, 0.18);
+  --idea-glass-card-shadow: 0 12px 34px rgba(18, 24, 32, 0.08);
+  --idea-glass-card-shadow-hover: 0 20px 46px rgba(18, 24, 32, 0.13);
+
+  --idea-gt-fallback-bg: rgba(240, 243, 246, 0.86);
+  --idea-gt-fallback-active: rgba(255, 240, 226, 0.92);
+}
+
+[data-theme="dark"] {
+  --idea-gt-tray-bg: rgba(255, 255, 255, 0.035);
+  --idea-gt-tray-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.32),
+    0 3px 10px rgba(0, 0, 0, 0.20);
+
+  --idea-gt-bg: rgba(255, 255, 255, 0.025);
+  --idea-gt-bg-hover: rgba(255, 255, 255, 0.08);
+  --idea-gt-bg-active: linear-gradient(
+    136deg,
+    rgba(253, 118, 28, 0.24) 0%,
+    rgba(255, 186, 112, 0.12) 100%
+  );
+
+  --idea-gt-text: #e6ebf0;
+  --idea-gt-text-hover: #ffffff;
+  --idea-gt-text-active: #ffe8cc;
+
+  --idea-gt-shadow: 0 6px 20px rgba(0, 0, 0, 0.26);
+  --idea-gt-shadow-hover: 0 10px 26px rgba(0, 0, 0, 0.34);
+  --idea-gt-shadow-active: 0 10px 28px rgba(0, 0, 0, 0.38), 0 0 18px rgba(253, 100, 1, 0.18);
+
+  --idea-gt-sheen: linear-gradient(
+    128deg,
+    rgba(255, 255, 255, 0.10) 0%,
+    transparent 48%,
+    rgba(255, 255, 255, 0.04) 100%
+  );
+  --idea-gt-sheen-active: linear-gradient(
+    128deg,
+    rgba(255, 232, 204, 0.16) 0%,
+    transparent 52%,
+    rgba(253, 118, 28, 0.09) 100%
+  );
+  --idea-gt-mist-a: rgba(253, 118, 28, 0.16);
+  --idea-gt-mist-b: rgba(108, 148, 196, 0.14);
+  --idea-gt-mist-c: rgba(242, 200, 140, 0.10);
+
+  --idea-gt-input-bg: rgba(255, 255, 255, 0.05);
+  --idea-gt-input-bg-focus: rgba(255, 255, 255, 0.09);
+  --idea-gt-input-shadow: 0 6px 20px rgba(0, 0, 0, 0.24);
+  --idea-gt-input-shadow-focus: 0 0 0 2px rgba(253, 118, 28, 0.34), 0 10px 28px rgba(0, 0, 0, 0.32);
+
+  --idea-glass-card-bg: rgba(255, 255, 255, 0.045);
+  --idea-glass-card-bg-hover: rgba(255, 255, 255, 0.085);
+  --idea-glass-card-shadow: 0 14px 36px rgba(0, 0, 0, 0.34);
+  --idea-glass-card-shadow-hover: 0 22px 48px rgba(0, 0, 0, 0.44);
+
+  --idea-gt-fallback-bg: rgba(28, 32, 38, 0.88);
+  --idea-gt-fallback-active: rgba(68, 44, 24, 0.92);
+}
+
+/* ==========================================================================
+   0. .glass-card — Borderless Frosted Glass Card with Subtle Transition & Hover Scale
+   ========================================================================== */
+.glass-card {
+  position: relative;
+  isolation: isolate;
+  background: var(--idea-glass-card-bg);
+  border: 0;
+  box-shadow: var(--idea-glass-card-shadow);
+  -webkit-backdrop-filter: blur(20px) saturate(1.45);
+  backdrop-filter: blur(20px) saturate(1.45);
+  will-change: transform;
+  transition:
+    transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.24s ease;
+}
+
+.glass-card:hover {
+  transform: scale(1.018);
+  background: var(--idea-glass-card-bg-hover);
+  box-shadow: var(--idea-glass-card-shadow-hover);
+}
+
+/* ==========================================================================
+   1. SEAMLESS BORDERLESS GLASS TAB TRAYS (Zero white frame, soft optical blur)
+   ========================================================================== */
+
+:is(html, html[data-theme]) :is(
+  .idea-glass-tablist,
+  [role="tablist"],
+  .idea-discovery-tabs,
+  .idea-studio-view-tabs,
+  .idea-studio-choice,
+  .idea-atlas-categories,
+  .idea-room3d-material-tabs,
+  .idea-room3d-pills,
+  .idea-room3d-selected-surfaces,
+  .idea-lighting-segments,
+  .idea-dash-nav,
+  .idea-admin-tabs,
+  .ids-nav,
+  .icc-brands,
+  .idea-material-face-selector,
+  .idea-sf-swatches
+) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: 16px;
+  padding: 5px;
+  background: var(--idea-gt-tray-bg);
+  border: 0;
+  box-shadow: var(--idea-gt-tray-shadow);
+  -webkit-backdrop-filter: blur(var(--idea-gt-tray-blur)) saturate(1.55);
+  backdrop-filter: blur(var(--idea-gt-tray-blur)) saturate(1.55);
+}
+
+/* Zero colored mist blobs — pure background-adaptive optical blur only */
+:is(html, html[data-theme]) :is(
+  .idea-glass-tablist,
+  [role="tablist"],
+  .idea-discovery-tabs,
+  .idea-studio-view-tabs,
+  .idea-studio-choice,
+  .idea-atlas-categories,
+  .idea-room3d-material-tabs,
+  .idea-room3d-pills,
+  .idea-room3d-selected-surfaces,
+  .idea-lighting-segments,
+  .idea-dash-nav,
+  .idea-admin-tabs,
+  .ids-nav,
+  .icc-brands,
+  .idea-material-face-selector,
+  .idea-sf-swatches
+)::before {
+  content: none;
+  display: none;
+}
+
+/* Remove inner white border rim completely */
+:is(html, html[data-theme]) :is(
+  .idea-glass-tablist,
+  [role="tablist"],
+  .idea-discovery-tabs,
+  .idea-studio-view-tabs,
+  .idea-studio-choice,
+  .idea-atlas-categories,
+  .idea-room3d-material-tabs,
+  .idea-room3d-pills,
+  .idea-room3d-selected-surfaces,
+  .idea-lighting-segments,
+  .idea-dash-nav,
+  .idea-admin-tabs,
+  .ids-nav,
+  .icc-brands,
+  .idea-material-face-selector,
+  .idea-sf-swatches
+)::after {
+  content: none;
+  display: none;
+}
+
+/* Specific tray geometry refinements */
+:is(html, html[data-theme]) .idea-discovery-tabs {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 24px;
+  gap: 6px;
+  border-radius: 16px;
+  padding: 5px;
+}
+
+.idea-discovery-search {
+  display: flex;
+  flex-direction: column;
+}
+
+:is(html, html[data-theme]) .idea-glass-tablist {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  border-radius: 14px;
+}
+
+:is(html, html[data-theme]) .idea-glass-tablist--wrap {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  border-radius: 16px;
+  padding: 7px;
+  gap: 7px;
+}
+
+:is(html, html[data-theme]) .idea-glass-tablist--vertical,
+:is(html, html[data-theme]) .idea-dash-nav,
+:is(html, html[data-theme]) .ids-nav {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border-radius: 16px;
+  padding: 7px;
+  gap: 5px;
+}
+
+:is(html, html[data-theme]) .idea-studio-view-tabs {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+:is(html, html[data-theme]) .idea-studio-choice {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+:is(html, html[data-theme]) .idea-atlas-categories {
+  padding: 8px;
+  gap: 8px;
+  border-radius: 16px;
+}
+
+:is(html, html[data-theme]) .idea-room3d-material-tabs,
+:is(html, html[data-theme]) .idea-room3d-pills,
+:is(html, html[data-theme]) .idea-room3d-selected-surfaces {
+  padding: 5px;
+  gap: 5px;
+  border-radius: 12px;
+}
+
+:is(html, html[data-theme]) .idea-lighting-segments {
+  padding: 4px;
+  gap: 4px;
+  border-radius: 12px;
+}
+
+:is(html, html[data-theme]) .idea-admin-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 14px;
+}
+
+:is(html, html[data-theme]) .icc-brands {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 14px;
+}
+
+:is(html, html[data-theme]) .idea-sf-swatches {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 16px;
+}
+
+/* Sticky Product Detail section tab bar — borderless transparent blurred glass */
+:is(html, html[data-theme]) .idea-product-section-nav {
+  background: transparent;
+  border: 0;
+  border-bottom: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(var(--idea-gt-tray-blur)) saturate(1.55);
+  backdrop-filter: blur(var(--idea-gt-tray-blur)) saturate(1.55);
+}
+
+:is(html, html[data-theme]) .idea-product-section-nav .idea-container {
+  gap: 8px;
+  padding-block: 8px;
+  align-items: center;
+}
+
+/* ==========================================================================
+   2. INDIVIDUAL BORDERLESS REAL GLASS TABS
+   No boxy stacked frames, no white outlines — pure adaptive blurred translucency.
+   ========================================================================== */
+
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-catalogue-pagination button,
+  .idea-product-section-nav a:not(.idea-product-nav-visualizer),
+  .idea-material-face-selector button,
+  .idea-studio .idea-studio-view-tabs button,
+  .idea-studio .idea-studio-choice button,
+  .idea-studio .idea-studio-library .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-room3d-pills button,
+  .idea-room3d-selected-surfaces button,
+  .idea-room3d-fixture-chips button,
+  .idea-lighting-segments button,
+  .idea-lighting-swatches button,
+  .idea-navigation-tools a,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button,
+  .icc-company,
+  .ibg-package,
+  .idea-sf-swatch
+) {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--idea-gt-bg);
+  border: 0;
+  color: var(--idea-gt-text);
+  box-shadow: none;
+  -webkit-backdrop-filter: blur(var(--idea-gt-blur)) saturate(1.55);
+  backdrop-filter: blur(var(--idea-gt-blur)) saturate(1.55);
+  transition:
+    background 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.2s ease,
+    box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Keep individual tabs flush inside their glass tray — zero stacked button overlays */
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-catalogue-pagination button,
+  .idea-product-section-nav a:not(.idea-product-nav-visualizer),
+  .idea-material-face-selector button,
+  .idea-studio .idea-studio-view-tabs button,
+  .idea-studio .idea-studio-choice button,
+  .idea-studio .idea-studio-library .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-room3d-pills button,
+  .idea-room3d-selected-surfaces button,
+  .idea-room3d-fixture-chips button,
+  .idea-lighting-segments button,
+  .idea-lighting-swatches button,
+  .idea-navigation-tools a,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button,
+  .icc-company,
+  .ibg-package,
+  .idea-sf-swatch
+)::before {
+  content: none;
+  display: none;
+}
+
+/* Remove inner white rim completely */
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-studio .idea-studio-view-tabs button,
+  .idea-studio .idea-studio-choice button,
+  .idea-studio .idea-studio-library .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-lighting-segments button,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button
+)::after {
+  content: none;
+  display: none;
+}
+
+/* Hover state: soft frosted lift, zero white outline */
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-catalogue-pagination button,
+  .idea-product-section-nav a:not(.idea-product-nav-visualizer),
+  .idea-material-face-selector button,
+  .idea-studio .idea-studio-view-tabs button,
+  .idea-studio .idea-studio-choice button,
+  .idea-studio .idea-studio-library .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-room3d-pills button,
+  .idea-room3d-selected-surfaces button,
+  .idea-room3d-fixture-chips button,
+  .idea-lighting-segments button,
+  .idea-lighting-swatches button,
+  .idea-navigation-tools a,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button,
+  .icc-company,
+  .ibg-package,
+  .idea-sf-swatch
+):not(:disabled):hover {
+  background: var(--idea-gt-bg-hover);
+  color: var(--idea-gt-text-hover);
+  box-shadow: var(--idea-gt-shadow-hover);
+  transform: translateY(-1px);
+}
+
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-studio .idea-studio-view-tabs button,
+  .idea-studio .idea-studio-choice button,
+  .idea-studio .idea-studio-library .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-lighting-segments button,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button
+):not(:disabled):hover::before {
+  opacity: 0.9;
+}
+
+/* Active / Selected state: warm liquid-glass tint, zero white outline */
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-product-section-nav a:not(.idea-product-nav-visualizer),
+  .idea-material-face-selector button,
+  .idea-studio .idea-studio-view-tabs button,
+  .idea-studio .idea-studio-choice button,
+  .idea-studio .idea-studio-library .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-room3d-pills button,
+  .idea-room3d-selected-surfaces button,
+  .idea-room3d-fixture-chips button,
+  .idea-lighting-segments button,
+  .idea-lighting-swatches button,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button,
+  .icc-company,
+  .ibg-package
+):is(
+  [aria-selected="true"],
+  [aria-pressed="true"],
+  [aria-current="page"],
+  .active,
+  .is-active,
+  .selected,
+  .chosen
+) {
+  background: var(--idea-gt-bg-active);
+  color: var(--idea-gt-text-active);
+  box-shadow: var(--idea-gt-shadow-active);
+  font-weight: 600;
+}
+
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-studio .idea-studio-view-tabs button,
+  .idea-studio .idea-studio-choice button,
+  .idea-studio .idea-studio-library .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-lighting-segments button,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button
+):is(
+  [aria-selected="true"],
+  [aria-pressed="true"],
+  [aria-current="page"],
+  .active,
+  .is-active,
+  .selected,
+  .chosen
+)::before {
+  background: var(--idea-gt-sheen-active);
+  opacity: 1;
+}
+
+/* ==========================================================================
+   3. TRANSPARENT REAL-GLASS INPUTS ("أي تبويب بيتكتب فيه")
+   All editable fields seamlessly adopt and blur the background behind them —
+   zero solid boxy backgrounds and zero white borders.
+   ========================================================================== */
+
+:is(html, html[data-theme]) :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]),
+  textarea,
+  select
+):not(.idea-auth-input-wrap input):not(.idea-auth-input-wrap select):not(.idea-navigation-content input) {
+  background: var(--idea-gt-input-bg);
+  border: 0;
+  box-shadow: var(--idea-gt-input-shadow);
+  -webkit-backdrop-filter: blur(var(--idea-gt-input-blur)) saturate(1.4);
+  backdrop-filter: blur(var(--idea-gt-input-blur)) saturate(1.4);
+  transition: background-color 0.2s ease, box-shadow 0.22s ease;
+}
+
+:is(html, html[data-theme]) :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]),
+  textarea,
+  select
+):not(.idea-auth-input-wrap input):not(.idea-auth-input-wrap select):not(.idea-navigation-content input):focus {
+  background: var(--idea-gt-input-bg-focus);
+  box-shadow: var(--idea-gt-input-shadow-focus);
+  outline: none;
+}
+
+/* ==========================================================================
+   4. COMPONENT-SPECIFIC REFINEMENTS (Clean geometry, zero white capsules)
+   ========================================================================== */
+
+:is(html, html[data-theme]) .idea-discovery-tabs button {
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-weight: 500;
+  gap: 8px;
+}
+
+:is(html, html[data-theme]) .idea-chip {
+  min-height: var(--idea-control-height-compact, 34px);
+  padding: 6px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: var(--idea-text-sm, 0.875rem);
+  font-family: var(--idea-font-body);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+:is(html, html[data-theme]) .idea-catalogue-pagination button {
+  border-radius: 12px;
+}
+
+:is(html, html[data-theme]) .idea-product-section-nav a:not(.idea-product-nav-visualizer) {
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: 12px;
+}
+
+:is(html, html[data-theme]) .idea-product-section-nav .idea-product-nav-visualizer {
+  min-height: 40px;
+  border-radius: 12px;
+}
+
+:is(html, html[data-theme]) .idea-studio .idea-studio-view-tabs button {
+  min-height: 32px;
+  padding: 6px 14px;
+  border-radius: 10px;
+}
+
+:is(html, html[data-theme]) .idea-studio .idea-studio-choice button {
+  min-height: 36px;
+  padding: 6px 10px;
+  border-radius: 9px;
+}
+
+:is(html, html[data-theme]) .idea-studio .idea-studio-library .idea-atlas-categories button {
+  border-radius: 12px;
+}
+
+:is(html, html[data-theme]) .idea-studio .idea-studio-library .idea-atlas-categories button small {
+  border-radius: 8px;
+  background: rgba(128, 134, 144, 0.14);
+  color: inherit;
+  border: 0;
+}
+
+:is(html, html[data-theme]) .idea-room3d-material-tabs button,
+:is(html, html[data-theme]) .idea-room3d-pills button,
+:is(html, html[data-theme]) .idea-room3d-selected-surfaces button,
+:is(html, html[data-theme]) .idea-room3d-fixture-chips button,
+:is(html, html[data-theme]) .idea-lighting-segments button,
+:is(html, html[data-theme]) .idea-lighting-swatches button {
+  border-radius: 10px;
+}
+
+:is(html, html[data-theme]) .idea-glass-tab {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: var(--idea-font-body);
+  font-size: var(--idea-text-sm, 0.875rem);
+  text-decoration: none;
+}
+
+:is(html, html[data-theme]) .idea-dash-nav a,
+:is(html, html[data-theme]) .ids-navlink {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  text-decoration: none;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: var(--idea-text-sm, 0.875rem);
+}
+
+:is(html, html[data-theme]) .idea-sf-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--idea-space-2, 8px);
+  padding: 6px 14px 6px 8px;
+  border-radius: 12px;
+  text-decoration: none;
+}
+
+:is(html, html[data-theme]) .idea-sf-swatch span {
+  color: inherit;
+}
+
+/* Header language switcher — completely borderless & transparent, no white capsule */
+:is(html, html[data-theme]) .idea-header-languages {
+  position: relative;
+  isolation: isolate;
+  padding: 2px;
+  gap: 2px;
+  border-radius: 10px;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+:is(html, html[data-theme]) .idea-header-languages button {
+  position: relative;
+  min-height: 28px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  opacity: 0.78;
+  transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+:is(html, html[data-theme]) .idea-header-languages button:hover {
+  background: rgba(255, 255, 255, 0.12);
+  opacity: 1;
+}
+
+:is(html, html[data-theme]) .idea-header-languages button[aria-pressed="true"] {
+  background: rgba(253, 118, 28, 0.18);
+  color: var(--idea-gold-bright, var(--idea-gold));
+  opacity: 1;
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   5. ACCESSIBILITY, FALLBACKS & REDUCED MOTION
+   ========================================================================== */
+
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-studio .idea-studio-view-tabs button,
+  .idea-studio .idea-studio-choice button,
+  .idea-studio .idea-studio-library .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-lighting-segments button,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button,
+  .idea-header-languages button
+):focus-visible {
+  outline: 2px solid var(--idea-gold-bright, #fd6401);
+  outline-offset: 2px;
+}
+
+:is(html, html[data-theme]) :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-catalogue-pagination button,
+  .idea-studio .idea-studio-view-tabs button
+):disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@supports not ((backdrop-filter: blur(2px)) or (-webkit-backdrop-filter: blur(2px))) {
+  :is(html, html[data-theme]) :is(
+    .glass-card,
+    .idea-glass-tablist,
+    [role="tablist"],
+    .idea-discovery-tabs,
+    .idea-studio-view-tabs,
+    .idea-studio-choice,
+    .idea-atlas-categories,
+    .idea-room3d-material-tabs,
+    .idea-room3d-pills,
+    .idea-lighting-segments,
+    .idea-dash-nav,
+    .idea-admin-tabs,
+    .ids-nav,
+    .icc-brands,
+    .idea-sf-swatches
+  ) {
+    background: var(--idea-gt-fallback-bg);
+  }
+
+  :is(html, html[data-theme]) :is(
+    .idea-glass-tab,
+    [role="tab"],
+    .idea-discovery-tabs button,
+    .idea-chip,
+    .idea-studio .idea-studio-view-tabs button,
+    .idea-studio .idea-studio-choice button,
+    .idea-studio .idea-studio-library .idea-atlas-categories button,
+    .idea-room3d-material-tabs button,
+    .idea-lighting-segments button,
+    .idea-dash-nav a,
+    .idea-admin-tabs a,
+    .ids-navlink,
+    .icc-brands > button
+  ) {
+    background: var(--idea-gt-fallback-bg);
+  }
+
+  :is(html, html[data-theme]) :is(
+    .idea-glass-tab,
+    [role="tab"],
+    .idea-discovery-tabs button,
+    .idea-chip,
+    .idea-studio .idea-studio-view-tabs button,
+    .idea-studio .idea-studio-choice button,
+    .idea-studio .idea-studio-library .idea-atlas-categories button,
+    .idea-room3d-material-tabs button,
+    .idea-lighting-segments button,
+    .idea-dash-nav a,
+    .idea-admin-tabs a,
+    .ids-navlink,
+    .icc-brands > button
+  ):is([aria-selected="true"], [aria-pressed="true"], [aria-current="page"], .active, .is-active) {
+    background: var(--idea-gt-fallback-active);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-card,
+  :is(html, html[data-theme]) :is(
+    .idea-glass-tab,
+    [role="tab"],
+    .idea-discovery-tabs button,
+    .idea-chip,
+    .idea-catalogue-pagination button,
+    .idea-product-section-nav a,
+    .idea-material-face-selector button,
+    .idea-studio .idea-studio-view-tabs button,
+    .idea-studio .idea-studio-choice button,
+    .idea-studio .idea-studio-library .idea-atlas-categories button,
+    .idea-room3d-material-tabs button,
+    .idea-room3d-pills button,
+    .idea-room3d-selected-surfaces button,
+    .idea-room3d-fixture-chips button,
+    .idea-lighting-segments button,
+    .idea-lighting-swatches button,
+    .idea-navigation-tools a,
+    .idea-dash-nav a,
+    .idea-admin-tabs a,
+    .ids-navlink,
+    .icc-brands > button,
+    .icc-company,
+    .ibg-package,
+    .idea-sf-swatch,
+    .idea-header-languages button
+  ) {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 700px) {
+  :is(html, html[data-theme]) .idea-discovery-tabs {
+    width: 100%;
+    justify-content: center;
+    gap: 5px;
+  }
+
+  :is(html, html[data-theme]) .idea-discovery-tabs button {
+    flex: 1 1 0;
+    justify-content: center;
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+}

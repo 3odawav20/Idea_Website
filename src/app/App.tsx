@@ -37,6 +37,7 @@ import { CompanyRevenueReport, AdminAnnouncementEditor, BusinessAdvertising } fr
 import { AdminCodeLookup } from "./pages/AdminCodeLookup";
 import { Resources } from "./pages/Resources";
 import { SurfaceStyles } from "./pages/SurfaceStyles";
+import { LegalDocumentPage, LegalHubPage } from "./pages/Legal";
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
   const { session } = useBackend();
@@ -73,6 +74,16 @@ export default function App() {
               {["about", "showrooms", "downloads", "projects", "journal", "videos", "glossary", "contact", "updates"].map(path => <Route key={path} path={`/${path}`} element={<Resources />} />)}
               <Route path="/inspiration/:destination" element={<Resources />} />
               <Route path="/journal/:guideId" element={<Resources />} />
+
+              {/* Legal, Compliance & Software Licenses Sitelinks */}
+              <Route path="/legal" element={<LegalHubPage />} />
+              <Route path="/privacy" element={<LegalDocumentPage slug="privacy" />} />
+              <Route path="/terms" element={<LegalDocumentPage slug="terms" />} />
+              <Route path="/cookies" element={<LegalDocumentPage slug="cookies" />} />
+              <Route path="/refund-policy" element={<LegalDocumentPage slug="refund-policy" />} />
+              <Route path="/intellectual-property" element={<LegalDocumentPage slug="intellectual-property" />} />
+              <Route path="/licenses" element={<LegalDocumentPage slug="licenses" />} />
+              <Route path="/accessibility" element={<LegalDocumentPage slug="accessibility" />} />
 
               {/* RFQ */}
               <Route path="/request-quote" element={<Navigate to="/request-quote/new" replace />} />

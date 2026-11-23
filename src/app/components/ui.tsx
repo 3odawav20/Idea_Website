@@ -66,14 +66,10 @@ export function Button({ variant = "gold", size = "md", style, children, ...rest
 export function Chip({ active, children, onClick }: { active?: boolean; children: ReactNode; onClick?: () => void }) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      style={{
-        minHeight: "var(--idea-control-height-compact)", padding: "var(--idea-space-2) var(--idea-space-4)", borderRadius: "var(--idea-radius-full)", cursor: "pointer",
-        fontSize: "var(--idea-text-sm)", fontFamily: "var(--idea-font-body)", transition: "all .2s ease",
-        border: `1px solid ${active ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
-        background: active ? "var(--idea-gold-soft)" : "transparent",
-        color: active ? "var(--idea-gold-bright)" : "var(--idea-text-muted)",
-      }}
+      aria-pressed={Boolean(active)}
+      className={`idea-glass-tab idea-chip${active ? " is-active" : ""}`}
     >
       {children}
     </button>

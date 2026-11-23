@@ -29,15 +29,18 @@ export function AdminLayout() {
   ];
   return (
     <Container style={{ padding: "var(--idea-space-7) var(--idea-space-5)" }}>
-      <div style={{ display: "flex", gap: 12, marginBottom: "var(--idea-space-5)", flexWrap: "wrap" }}>
+      <nav className="idea-admin-tabs idea-glass-tablist" aria-label="Administrator sections" style={{ marginBottom: "var(--idea-space-5)" }}>
         {links.map((l) => (
-          <NavLink key={l.to} to={l.to} end style={({ isActive }) => ({
-            textDecoration: "none", padding: "8px 16px", borderRadius: "var(--idea-radius-full)", fontSize: "var(--idea-text-sm)",
-            border: `1px solid ${isActive ? "var(--idea-gold)" : "var(--idea-border-neutral)"}`,
-            background: isActive ? "var(--idea-gold-soft)" : "transparent", color: isActive ? "var(--idea-gold-bright)" : "var(--idea-text-muted)",
-          })}>{l.label}</NavLink>
+          <NavLink
+            key={l.to}
+            to={l.to}
+            end
+            className={({ isActive }) => `idea-glass-tab${isActive ? " is-active" : ""}`}
+          >
+            {l.label}
+          </NavLink>
         ))}
-      </div>
+      </nav>
       <Outlet />
     </Container>
   );

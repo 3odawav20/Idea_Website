@@ -1,0 +1,19 @@
+# IDEA Marketplace — API Security & Narrowly Scoped OAuth Callback Exception
+# Never disable ModSecurity globally and never add HTTP Basic Auth here.
+#
+# Resolves HTTP 406 Not Acceptable false positives triggered by OAuth 2.0 callback
+# query parameters (e.g. Google's scope=https://www.googleapis.com/auth/userinfo.email
+# and base64url code/state tokens) strictly for social-auth.php only.
+
+<Files "social-auth.php">
+  <IfModule mod_security2.c>
+    # Narrowly remove only OWASP CRS query-string URL/SQLi false positives on OAuth callbacks
+    SecRuleRemoveById 931120
+    SecRuleRemoveById 931130
+    SecRuleRemoveById 942100
+    SecRuleRemoveById 949110
+  </IfModule>
+
+  # Ensure strict security headers and prevent Apache MultiViews 406 content negotiation conflicts
+  Options -MultiViews
+</Files>

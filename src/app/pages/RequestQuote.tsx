@@ -15,21 +15,38 @@ export function RequestQuote() {
   const { api, session } = useBackend();
   const nav = useNavigate();
   const [d, setD] = useState({ governorate: "Cairo", destination: "", deliveryDate: "", projectType: "Residential", phased: false, notes: "", hours: 24 });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const rows = quote.map((q) => ({ item: q, product: products.find((p) => p.id === q.productId)! })).filter((r) => r.product);
 
-  const submit = () => {
+  const submit = async () => {
+    if (submitting) return;
     if (!session) { nav("/login"); return; }
-    rows.forEach(({ item, product }) => {
-      api.createRequest({
-        productId: product.id, variantLabel: product.sizes[0]?.label || product.variant || "",
-        quantity: item.quantity, unit: item.unit,
-        governorate: d.governorate, destination: d.destination, deliveryDate: d.deliveryDate,
-        projectType: d.projectType, phased: d.phased, notes: d.notes,
-      }, d.hours);
-    });
-    clearQuote();
-    nav("/account/requests");
+    setSubmitting(true);
+    setSubmitError("");
+    try {
+      for (const { item, product } of rows) {
+        await api.createRequest({
+          productId: product.id, variantLabel: product.sizes[0]?.label || product.variant || "",
+          quantity: item.quantity, unit: item.unit,
+          governorate: d.governorate, destination: d.destination, deliveryDate: d.deliveryDate,
+          projectType: d.projectType, phased: d.phased, notes: d.notes,
+        }, d.hours);
+      }
+      clearQuote();
+      nav("/account/requests");
+    } catch {
+      setSubmitError(
+        locale === "ar"
+          ? "لم يتم تأكيد حفظ طلب عرض السعر على خادم MySQL بعد. تم الاحتفاظ بسلة الطلب كما هي."
+          : locale === "fr"
+          ? "La demande de devis n'a pas pu être confirmée par le serveur. Votre panier est conservé."
+          : "Could not confirm quotation persistence on the MySQL server. Your request items were preserved."
+      );
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -46,7 +63,7 @@ export function RequestQuote() {
             {/* Step 1 — items & quantity */}
             <div style={{ display: "flex", flexDirection: "column", gap: "var(--idea-space-3)", marginBottom: "var(--idea-space-6)" }}>
               {rows.map(({ item, product }) => (
-                <div key={item.productId} style={{ display: "flex", gap: "var(--idea-space-4)", alignItems: "center", background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-3)" }}>
+                <div key={item.productId} className="glass-card" style={{ display: "flex", gap: "var(--idea-space-4)", alignItems: "center", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-3)" }}>
                   <img src={product.image} alt={product.name[locale]} style={{ width: 72, height: 72, objectFit: "cover", borderRadius: "var(--idea-radius-sm)" }} />
                   <div style={{ flex: 1 }}>
                     <div className="idea-display" style={{ fontSize: "var(--idea-text-base)", color: "var(--idea-text)" }}>{product.name[locale]}</div>
@@ -55,7 +72,7 @@ export function RequestQuote() {
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <button onClick={() => updateQuoteQty(item.productId, item.quantity - (item.unit === "sqm" ? 10 : 1))} style={qtyBtn}><Minus size={14} /></button>
                     <input value={item.quantity} onChange={(e) => updateQuoteQty(item.productId, Number(e.target.value.replace(/\D/g, "")) || 1)}
-                      style={{ width: 70, textAlign: "center", background: "var(--idea-surface-2)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-sm)", color: "var(--idea-text)", padding: "6px" }} />
+                      style={{ width: 70, textAlign: "center", borderRadius: "var(--idea-radius-sm)", color: "var(--idea-text)", padding: "6px" }} />
                     <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", minWidth: 30 }}>{item.unit === "sqm" ? t("quote.sqm") : t("quote.pieces")}</span>
                     <button onClick={() => updateQuoteQty(item.productId, item.quantity + (item.unit === "sqm" ? 10 : 1))} style={qtyBtn}><Plus size={14} /></button>
                   </div>
@@ -66,7 +83,7 @@ export function RequestQuote() {
             </div>
 
             {/* Step 2 — delivery details */}
-            <div style={{ background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-5)" }}>
+            <div className="glass-card" style={{ borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-5)" }}>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "var(--idea-space-4)" }}>
                 <Field label={t("rfq.deliveryGov")}>
                   <select style={inputStyle} value={d.governorate} onChange={(e) => setD({ ...d, governorate: e.target.value })}>{GOVS.map((g) => <option key={g}>{g}</option>)}</select>
@@ -89,9 +106,16 @@ export function RequestQuote() {
                   </select>
                 </label>
               </div>
+              {submitError ? (
+                <p role="alert" style={{ color: "var(--idea-danger)", fontSize: "var(--idea-text-sm)", marginBottom: "var(--idea-space-3)" }}>
+                  {submitError}
+                </p>
+              ) : null}
               <div style={{ display: "flex", gap: "var(--idea-space-3)", flexWrap: "wrap" }}>
-                <Button size="lg" onClick={submit}>{t("quote.submit")}</Button>
-                <Button variant="ghost" onClick={clearQuote}>{t("filters.clear")}</Button>
+                <Button size="lg" disabled={submitting} onClick={() => void submit()}>
+                  {submitting ? (locale === "ar" ? "جاري الإرسال..." : "Submitting...") : t("quote.submit")}
+                </Button>
+                <Button variant="ghost" disabled={submitting} onClick={clearQuote}>{t("filters.clear")}</Button>
               </div>
               {!session && <p style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: 10 }}>You'll be asked to sign in to submit and receive private offers.</p>}
             </div>
@@ -104,5 +128,5 @@ export function RequestQuote() {
 
 const qtyBtn: React.CSSProperties = {
   width: 30, height: 30, display: "grid", placeItems: "center", borderRadius: "var(--idea-radius-sm)",
-  border: "1px solid var(--idea-border-neutral)", background: "var(--idea-surface-2)", color: "var(--idea-text)", cursor: "pointer",
+  border: "none", background: "transparent", color: "var(--idea-text)", cursor: "pointer",
 };
