@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router";
 import {
   ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, ChevronDown,
@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
+import { SOCIAL_AUTH_API, socialProviderStatus } from "../backend/phpAccounts";
 import "./AccountEntry.css";
 
 type Audience = "customer" | "business" | "admin";
@@ -44,7 +45,6 @@ const ADMIN_FEATURES = [
 ];
 
 const API = String(import.meta.env.VITE_IDEA_ACCOUNT_API || "").trim();
-const socialProviders = new Set(String(import.meta.env.VITE_IDEA_AUTH_PROVIDERS || "").split(",").map(v=>v.trim().toLowerCase()).filter(Boolean));
 
 function FeatureItems({ audience,locale }: {audience:Audience;locale:"ar"|"en"|"fr"}) {
   const features=audience==="customer"?CUSTOMER_FEATURES:audience==="business"?BUSINESS_FEATURES:ADMIN_FEATURES;
@@ -95,6 +95,15 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [notice,setNotice]=useState("");
+  // OAuth availability must come from the real PHP/MySQL backend, never from a build-time flag.
+  const [socialReady,setSocialReady]=useState<{google:boolean;apple:boolean}|null>(null);
+  useEffect(()=>{
+    let active=true;
+    socialProviderStatus().then(status=>{
+      if(active)setSocialReady({google:status.google,apple:status.apple});
+    }).catch(()=>{if(active)setSocialReady(null);});
+    return ()=>{active=false;};
+  },[]);
   const selectedTitle=useMemo(()=>{
     if(isAdmin)return tr("دخول الإدارة","Admin access");
     if(isBusiness)return isRegister?tr("تسجيل حساب شركة","Register a company"):tr("دخول حساب الشركة","Business sign in");
@@ -158,12 +167,17 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     setError("");setDocs(list.slice(0,5));
   };
   const showSocial=(provider:"google"|"apple")=>{
-    if(!socialProviders.has(provider)){setError(tr("تسجيل الدخول عبر "+(provider==="google"?"Google":"Apple")+" لم يُربط بمزوّد هوية معتمد بعد.","Real "+(provider==="google"?"Google":"Apple")+" sign-in is not configured yet."));return;}
-    if(!openApi){setError(tr("يلزم اتصال PHP/MySQL أولًا لتفعيل طريقة الدخول.","Account backend configuration is required."));return;}
-    const url=API.replace(/\/$/,"")+"/oauth/"+provider;
-    const validUrl=new URL(url,window.location.origin);
-    if(validUrl.protocol!=="https:"){setError(tr("رابط تسجيل الدخول غير آمن.","Insecure authentication endpoint."));return;}
-    window.location.assign(validUrl.href);
+    setError("");
+    if(socialReady?.[provider]!==true){
+      setError(tr("تسجيل الدخول عبر "+(provider==="google"?"Google":"Apple")+" غير متاح حتى يؤكد خادم PHP/MySQL تفعيله.","Real "+(provider==="google"?"Google":"Apple")+" sign-in is unavailable until the PHP/MySQL server confirms readiness."));
+      return;
+    }
+    const url=new URL(SOCIAL_AUTH_API+"?action=start&provider="+encodeURIComponent(provider),window.location.origin);
+    if(url.origin!==window.location.origin||url.protocol!=="https:"){
+      setError(tr("رابط تسجيل الدخول غير آمن.","Insecure authentication endpoint."));
+      return;
+    }
+    window.location.assign(url.href);
   };
   const goto=isAdmin?"/admin/login":isBusiness?"/register/business":"/register/customer";
   const heroHeading = isAdmin
@@ -292,8 +306,8 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
             </p>}
             {isCustomer&&<div className="idea-auth-social">
               <p>{tr("أو سجّل عبر","Or continue with")}</p>
-              <div><button type="button" onClick={()=>showSocial("apple")} aria-label="Apple"><span className="idea-apple-mark">●</span> Apple</button>
-                <button type="button" onClick={()=>showSocial("google")} aria-label="Google"><strong className="idea-google-mark">G</strong> Google</button></div>
+              <div><button type="button" onClick={()=>showSocial("apple")} aria-label="Apple" aria-disabled={socialReady?.apple!==true}><span className="idea-apple-mark">●</span> Apple</button>
+                <button type="button" onClick={()=>showSocial("google")} aria-label="Google" aria-disabled={socialReady?.google!==true}><strong className="idea-google-mark">G</strong> Google</button></div>
             </div>}
           </div>
         </form>
