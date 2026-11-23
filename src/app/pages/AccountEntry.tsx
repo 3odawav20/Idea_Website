@@ -109,6 +109,19 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     }).catch(()=>{if(active)setSocialReady(null);});
     return ()=>{active=false;};
   },[]);
+  useEffect(()=>{
+    const errorCode=new URLSearchParams(window.location.search).get("social_error");
+    if(!errorCode)return;
+    const labels:Record<string,[string,string]>={
+      SOCIAL_STATE_INVALID:["انتهت جلسة تسجيل Google. ابدأ تسجيل الدخول من جديد.","Google session expired. Please sign in again."],
+      SOCIAL_AUTH_DECLINED:["تم إلغاء تسجيل الدخول باستخدام Google.","Google sign-in was canceled."],
+      EMAIL_ALREADY_REGISTERED_SIGN_IN_FIRST:["الإيميل مسجل مسبقًا. سجّل الدخول بكلمة المرور لربط الحساب.","Email already registered. Sign in with your password to link it."],
+      SOCIAL_IDENTITY_MISSING:["لم نتمكن من تأكيد هوية Google.","Google identity verification failed."],
+      SOCIAL_TOKEN_INVALID:["تعذر استكمال الدخول عبر Google.","Google sign-in could not be completed."],
+    };
+    const label=labels[errorCode]??["تعذر تسجيل الدخول عبر Google. حاول مرة أخرى.","Google sign-in failed. Please try again."];
+    setError(locale==="ar"?label[0]:label[1]);
+  },[locale]);
   const selectedTitle=useMemo(()=>{
     if(isAdmin)return tr("دخول الإدارة","Admin access");
     if(isBusiness)return isRegister?tr("تسجيل حساب شركة","Register a company"):tr("دخول حساب الشركة","Business sign in");
@@ -191,6 +204,7 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
       return;
     }
     const url=new URL(SOCIAL_AUTH_API+"?action=start&provider="+encodeURIComponent(provider),window.location.origin);
+    if(window.location.pathname.startsWith("/idea-next/"))url.searchParams.set("return_to","/idea-next/account");
     if(url.origin!==window.location.origin||url.protocol!=="https:"){
       setError(tr("رابط تسجيل الدخول غير آمن.","Insecure authentication endpoint."));
       return;

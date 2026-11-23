@@ -46,7 +46,9 @@ export function SocialAuth(_props: { redirectTo?: string }) {
     }
     setError("");
     setPending(provider);
-    window.location.assign(SOCIAL_AUTH_API + "?action=start&provider=" + encodeURIComponent(provider));
+    const url=new URL(SOCIAL_AUTH_API + "?action=start&provider=" + encodeURIComponent(provider),window.location.origin);
+    if(window.location.pathname.startsWith("/idea-next/"))url.searchParams.set("return_to","/idea-next/account");
+    window.location.assign(url.href);
   };
 
   return (
