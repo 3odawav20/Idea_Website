@@ -518,3 +518,29 @@ html[lang] :where(h1, h2, h3, h4) {
     cursor: not-allowed;
   }
 }
+
+/* IDEA theme-aware global marble wallpaper. One fixed image per theme, no tiling. */
+html { background-color: #f7f4ee; }
+html::before {
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-color:#f7f4ee;
+  background-image:url('/media/hero/idea-light-marble-2x.webp');
+  background-position:center center;background-size:cover;background-repeat:no-repeat;
+}
+html[data-theme='dark']::before{
+  background-color:#080808;
+  background-image:url('/media/hero/idea-dark-marble-2x.webp');
+}
+body{position:relative;z-index:1;min-height:100vh;min-height:100dvh;background:transparent !important;}
+#root{position:relative;z-index:1;min-height:100vh;min-height:100dvh;}
+#root>div[style*="background"]{background:transparent !important;}
+html:not([data-theme='dark']) :is(
+ .idea-home-editorial,.idea-catalogue-detail,.idea-product-photo-gallery,
+ .idea-product-formats-section,.idea-contact-page,.idea-room3d
+){background-color:rgba(255,255,255,.30) !important;}
+html[data-theme='dark'] :is(
+ .idea-home-editorial,.idea-catalogue-detail,.idea-product-photo-gallery,
+ .idea-product-formats-section,.idea-contact-page,.idea-room3d
+){background-color:rgba(8,8,8,.24) !important;}
+html :is(.idea-studio,.ids-root){background-color:rgba(14,14,14,.88) !important;}
+@media print{html::before{display:none !important;}}
