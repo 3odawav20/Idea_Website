@@ -122,11 +122,15 @@ test("ad package prices are administrator-editable and remain unpublished until 
   assert.match(growth,/updateRate/);
   assert.match(growth,/نشر السعر/);
 });
-test("logins route verified platform admin and supplier to appropriate workspaces",()=>{
-  const content=read("src/app/pages/Auth.tsx");
-  assert.match(content,/from\("user_roles"\)\.select\("role"\)/);
-  assert.match(content,/verifiedRole\?\.role === "admin" \? "\/admin"/);
-  assert.match(content,/verifiedRole\?\.role === "supplier" \? "\/business"/);
+test("logins map PHP server roles to the proper workspaces",()=>{
+  const entry=read("src/app/pages/AccountEntry.tsx");
+  const session=read("src/app/backend/db.tsx");
+  assert.match(entry,/actualRole === "admin"/);
+  assert.match(entry,/actualRole === "supplier"/);
+  assert.match(entry,/authenticatePhp\(action, payload\)/);
+  assert.match(session,/account\.role === "admin"/);
+  assert.match(session,/account\.role === "supplier"/);
+  assert.doesNotMatch(entry,/signInWithOAuth|firebase/i);
 });
 test("company ad request can never self-authorize public media",()=>{
   assert.match(sql,/media_url is null or public\.is_admin\(\)/);

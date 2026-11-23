@@ -9,7 +9,8 @@ import {
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
-import { SOCIAL_AUTH_API, socialProviderStatus } from "../backend/phpAccounts";
+import { SOCIAL_AUTH_API, authenticatePhp, socialProviderStatus, uploadBusinessDocument } from "../backend/phpAccounts";
+import { useBackend } from "../backend/db";
 import "./AccountEntry.css";
 
 type Audience = "customer" | "business" | "admin";
@@ -44,7 +45,6 @@ const ADMIN_FEATURES = [
   {icon:ShieldCheck,title:msg("وصول آمن ومحمي","Secure access"),desc:msg("حماية متعددة الطبقات والتحقق الثنائي.","Layered protection and two-factor verification.")}
 ];
 
-const API = String(import.meta.env.VITE_IDEA_ACCOUNT_API || "").trim();
 
 function FeatureItems({ audience,locale }: {audience:Audience;locale:"ar"|"en"|"fr"}) {
   const features=audience==="customer"?CUSTOMER_FEATURES:audience==="business"?BUSINESS_FEATURES:ADMIN_FEATURES;
@@ -72,11 +72,16 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
   const {locale}=useI18n();
   const {mode:theme}=useTheme();
   const navigate=useNavigate();
+  const { refresh } = useBackend();
   const isAdmin=audience==="admin",isBusiness=audience==="business",isCustomer=audience==="customer";
   const isRegister=mode==="register"&&!isAdmin;
   const tr=(ar:string,en:string,fr=en)=>content(msg(ar,en,fr),locale);
   const [name,setName]=useState("");
   const [company,setCompany]=useState("");
+  const [legalCompany,setLegalCompany]=useState("");
+  const [category,setCategory]=useState("");
+  const [legalActivity,setLegalActivity]=useState("");
+  const [contractVolume,setContractVolume]=useState("prefer_not_to_say");
   const [email,setEmail]=useState("");
   const [phone,setPhone]=useState("");
   const [dial,setDial]=useState("+20");
@@ -109,61 +114,74 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
     if(isBusiness)return isRegister?tr("تسجيل حساب شركة","Register a company"):tr("دخول حساب الشركة","Business sign in");
     return isRegister?tr("إنشاء حساب جديد","Create a new account"):tr("تسجيل الدخول","Sign in");
   },[audience,mode,locale]);
-  const openApi=API.startsWith("https://") || (import.meta.env.DEV&&API.startsWith("/"));
   const onSubmit=async(e:FormEvent<HTMLFormElement>)=>{
     e.preventDefault();setError("");setNotice("");
     if(isRegister&&password!==confirmation){setError(tr("كلمتا المرور غير متطابقتين.","Passwords do not match."));return;}
     if(password.length<8){setError(tr("كلمة المرور يجب ألا تقل عن 8 أحرف.","Password must be at least 8 characters."));return;}
     if(isRegister&&!consent){setError(tr("يجب الموافقة على الشروط وسياسة الخصوصية.","You must accept the terms and privacy policy."));return;}
     if(isBusiness&&isRegister){
-      if(!company.trim()||!name.trim()||!businessKind||!country||!city.trim()||!license.trim()){
+      if(!company.trim()||!legalCompany.trim()||!name.trim()||!businessKind||!category||!legalActivity||!country||!city.trim()||!license.trim()){
         setError(tr("أكمل بيانات الشركة المطلوبة.","Complete the required company details."));return;
       }
       if(!docs.length){setError(tr("ارفع مستندًا داعمًا واحدًا على الأقل.","Upload at least one supporting document."));return;}
     }
-    if(!openApi){setError(tr("معاينة التصميم جاهزة، لكن خدمة حسابات PHP/MySQL لم تُربط بهذه النسخة بعد. لم يتم إنشاء حساب.","This is a working form preview, but the PHP/MySQL account API is not yet connected. No account has been created."));return;}
     const action=isRegister?"register":"login";
     setBusy(true);
     try{
-      let response:Response;
-      const body=new FormData();
-      body.append("audience",audience);
-      body.append("email",email.trim());
-      body.append("password",password);
-      if(isRegister){
-        body.append("name",name.trim());
-        body.append("phone",dial+phone.trim());
-        body.append("consent","true");
-        if(isBusiness){
-          body.append("company_name",company.trim());
-          body.append("company_type",businessKind);
-          body.append("country",country);
-          body.append("city",city.trim());
-          body.append("license_number",license.trim());
-          docs.forEach(file=>body.append("documents[]",file,file.name));
+      const registrationProfile = isBusiness && isRegister ? {
+        categories: [category],
+        primary_category: category,
+        contract_volume: contractVolume,
+        company_type: legalActivity,
+        commercial_registration: license.trim(),
+        // Do not invent the missing region/registration data; the verified
+        // company dashboard asks the representative to complete these.
+      } : undefined;
+      const payload: Record<string, unknown> = {
+        email: email.trim(),
+        password,
+        ...(isRegister ? {
+          account_type: isBusiness ? "business" : "customer",
+          display_name: name.trim(),
+          phone: dial + phone.trim(),
+          ...(isBusiness ? {
+            company_name: company.trim(),
+            legal_name: legalCompany.trim(),
+            business_profile: registrationProfile,
+          } : {}),
+        } : {}),
+      };
+      const result = await authenticatePhp(action, payload);
+      const actualRole = result.user?.role;
+      const allowedRole = isBusiness ? "supplier" : isAdmin ? "admin" : "buyer";
+      if (actualRole !== allowedRole) {
+        throw new Error(tr("الحساب ده مش مخصص لنوع الدخول المختار. افتح صفحة الدخول المناسبة.",
+          "This account belongs to a different account area. Use the correct sign-in page."));
+      }
+      const confirmed = await refresh();
+      if (!confirmed || confirmed.id !== result.user?.id) {
+        throw new Error(tr("تعذر تأكيد جلسة حسابك من قاعدة البيانات.",
+          "The database session could not be verified."));
+      }
+      if (isBusiness && isRegister && docs.length) {
+        // Never silently label unsupported documents as a tax card or invent
+        // an antivirus result; the first explicitly requested document here is
+        // the commercial-registration evidence.
+        try {
+          await uploadBusinessDocument(docs[0], "commercial_registration");
+        } catch (documentError) {
+          setNotice(tr("حساب الشركة اتسجّل، لكن مستند السجل التجاري لم يُرفع. افتح تبويب التحقق وارفع المستند من جديد.",
+            "The company account was created, but its document upload failed. Re-upload it in Verification."));
         }
       }
-      if(isAdmin){body.append("otp",otp.trim());body.append("remember_device",remember?"1":"0");}
-      response=await fetch(API.replace(/\/$/,"")+"/"+action,{method:"POST",body,credentials:"include",headers:{"Accept":"application/json"},redirect:"error"});
-      const ct=response.headers.get("content-type")||"";
-      if(!ct.includes("application/json"))throw new Error(tr("خدمة الحسابات لم ترجع استجابة JSON صالحة.","Account endpoint returned a non-JSON response."));
-      const data=await response.json() as {ok?:boolean;error?:string;message?:string;role?:string};
-      if(!response.ok||data.ok!==true)throw new Error(data.message||data.error||tr("فشل طلب الحساب.","Account request failed."));
-      if(isRegister){
-        setNotice(tr("تم استقبال طلبك على الخادم. راجع بريدك لاستكمال إجراءات التفعيل عند توفرها.","Your request has been accepted by the server. Follow any verification instructions."));
-      }else{
-        // Route selection still requires a role actually returned by the server.
-        const role=data.role;
-        if(role!=="admin"&&role!=="business"&&role!=="customer")throw new Error(tr("الخادم لم يؤكد صلاحيات الحساب.","The server did not confirm your account role."));
-        navigate(role==="admin"?"/admin":role==="business"?"/business":"/account");
-      }
+      navigate(actualRole === "admin" ? "/admin" : actualRole === "supplier" ? "/business/verification" : "/account");
     }catch(err){setError(err instanceof Error?err.message:tr("تعذّر إتمام الطلب.","Request failed."))}
     finally{setBusy(false);}
   };
   const onDocuments=(files:FileList|null)=>{
     const list=Array.from(files||[]);
-    const valid=list.every(f=>f.size<=10*1024*1024&&/^(application\/pdf|image\/jpeg|image\/png)$/i.test(f.type));
-    if(!valid){setError(tr("PDF أو JPG أو PNG فقط، وبحد أقصى 10 ميجابايت لكل ملف.","PDF, JPG or PNG only; 10 MB maximum per file."));return;}
+    const valid=list.every(f=>f.size<=5*1024*1024&&/^(application\/pdf|image\/jpeg|image\/png|image\/webp)$/i.test(f.type));
+    if(!valid){setError(tr("PDF أو JPG أو PNG أو WebP فقط، وبحد أقصى 5 ميجابايت لكل ملف.","PDF, JPG, PNG or WebP only; 5 MB maximum per file."));return;}
     setError("");setDocs(list.slice(0,5));
   };
   const showSocial=(provider:"google"|"apple")=>{
@@ -225,7 +243,10 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
               :tr("سجّل دخولك إلى حسابك الشخصي في IDEA.","Access your personal IDEA account.")}</p>
           </div>
           <div className={"idea-auth-fields"+(isBusiness&&isRegister?" idea-auth-fields--business":"")}>
-            {isBusiness&&isRegister&&<FormField id="company" label={tr("اسم الشركة","Company name")} icon={Building2} value={company} onChange={setCompany} autoComplete="organization"/>}
+            {isBusiness&&isRegister&&<>
+              <FormField id="company" label={tr("الاسم التجاري للشركة","Company trade name")} icon={Building2} value={company} onChange={setCompany} autoComplete="organization"/>
+              <FormField id="legal-company" label={tr("الاسم القانوني المسجل","Registered legal name")} icon={FileCheck2} value={legalCompany} onChange={setLegalCompany}/>
+            </>}
             {isRegister&&<FormField id="fullname" label={isBusiness?tr("اسم المسؤول","Contact person"):tr("الاسم الكامل","Full name")} icon={UserRound} value={name} onChange={setName} autoComplete="name"/>}
             <FormField id="email" label={isAdmin?tr("البريد الإلكتروني للمدير","Administrator email"):isBusiness?tr("البريد الإلكتروني للأعمال","Business email"):tr("البريد الإلكتروني","Email address")} icon={Mail} type="email" value={email} onChange={setEmail} autoComplete="email" placeholder={isAdmin?"admin@idea.com":isBusiness?"example@company.com":""}/>
             {isRegister&&<label className="idea-auth-field idea-auth-field--phone" htmlFor="idea-phone">
@@ -259,12 +280,38 @@ export function AccountEntry({audience, mode="register"}:{audience:Audience;mode
                   </select></span>
               </label>
               <FormField id="biz-city" label={tr("المدينة","City")} icon={MapPin} value={city} onChange={setCity}/>
+              <label className="idea-auth-field" htmlFor="biz-category">
+                <span className="idea-auth-label">{tr("المنتجات الأساسية","Main product category")} <em>*</em></span>
+                <span className="idea-auth-input-wrap"><Layers3 size={17} aria-hidden="true"/>
+                  <select id="biz-category" required value={category} onChange={e=>setCategory(e.currentTarget.value)}>
+                    <option value="">{tr("اختر المنتجات","Choose category")}</option>
+                    {["ceramic","porcelain","marble","granite","sanitary","faucets"].map(v=><option key={v} value={v}>{v}</option>)}
+                  </select>
+                </span>
+              </label>
+              <label className="idea-auth-field" htmlFor="biz-activity">
+                <span className="idea-auth-label">{tr("الصفة التجارية القانونية","Registered business activity")} <em>*</em></span>
+                <span className="idea-auth-input-wrap"><Building2 size={17} aria-hidden="true"/>
+                  <select id="biz-activity" required value={legalActivity} onChange={e=>setLegalActivity(e.currentTarget.value)}>
+                    <option value="">{tr("اختر النشاط","Choose activity")}</option>
+                    {["retailer","wholesaler","manufacturer","importer","contractor"].map(v=><option key={v} value={v}>{v}</option>)}
+                  </select>
+                </span>
+              </label>
+              <label className="idea-auth-field" htmlFor="biz-volume">
+                <span className="idea-auth-label">{tr("حجم العقود (اختياري)","Contract volume (optional)")}</span>
+                <span className="idea-auth-input-wrap"><Package size={17} aria-hidden="true"/>
+                  <select id="biz-volume" value={contractVolume} onChange={e=>setContractVolume(e.currentTarget.value)}>
+                    {[["prefer_not_to_say",tr("أفضل عدم الإفصاح","Prefer not to say")],["under_100k","Under 100k"],["100k_500k","100k–500k"],["500k_2m","500k–2m"],["2m_10m","2m–10m"],["over_10m","Over 10m"]].map(([v,label])=><option key={v} value={v}>{label}</option>)}
+                  </select>
+                </span>
+              </label>
               <div className="idea-auth-field idea-auth-field--full"><FormField id="license" label={tr("رقم السجل التجاري / رقم الترخيص","Commercial registration / license number")} icon={FileCheck2} value={license} onChange={setLicense}/></div>
               <label className="idea-auth-field idea-auth-field--full" htmlFor="biz-docs">
                 <span className="idea-auth-label">{tr("رفع المستندات الداعمة","Supporting documents")} <em>*</em></span>
                 <span className="idea-auth-dropzone"><UploadCloud size={29} aria-hidden="true"/>
                   <span>{docs.length?tr("الملفات المختارة: "+docs.map(x=>x.name).join("، "),docs.length+" files selected"):tr("اسحب الملفات هنا أو اختر من جهازك","Choose your files or drop them here")}</span>
-                  <small>{tr("PDF أو JPG أو PNG — بحد أقصى 10MB لكل ملف","PDF, JPG or PNG — max 10 MB per file")}</small>
+                  <small>{tr("PDF أو JPG أو PNG — بحد أقصى 5MB لكل ملف","PDF, JPG or PNG — max 5 MB per file")}</small>
                   <input id="biz-docs" type="file" multiple accept=".pdf,.jpg,.jpeg,.png" onChange={e=>onDocuments(e.currentTarget.files)} required={!docs.length}/>
                 </span>
               </label>
