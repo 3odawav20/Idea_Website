@@ -7,6 +7,9 @@ const social=readFileSync("src/app/components/SocialAuth.tsx","utf8");
 
 test("Google root callback and PKCE match live Google OAuth configuration",()=>{
   assert.match(server,/return 'https:\/\/idea-dh\.com';|return \$uri;/);
+  assert.match(server,/HTTP_HOST/);
+  assert.match(server,/www cookie loss/);
+  assert.ok(server.includes("https://idea-dh.com/api/social-auth.php?action=start&provider="));
   assert.match(server,/code_challenge_method'=>'S256'/);
   assert.ok(server.includes("'code_verifier'=>(string)$flow['code_verifier']"));
   assert.match(server,/hash\('sha256',\$state\)/);

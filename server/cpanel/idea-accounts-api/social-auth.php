@@ -142,8 +142,17 @@ try{
     ]]);
   }
   if($method==='GET'&&$action==='start'){
-    if(($_SERVER['HTTPS']??'')==='off'||empty($_SERVER['HTTPS']))socialFail('HTTPS_REQUIRED',403);
     $provider=(string)($_GET['provider']??'');
+    $host=strtolower((string)($_SERVER['HTTP_HOST']??''));
+    $https=!empty($_SERVER['HTTPS'])&&$_SERVER['HTTPS']!=='off';
+    // OAuth starts on the canonical host so the state cookie and Google
+    // callback return to the SAME host. In particular, avoid www cookie loss.
+    if($host!=='idea-dh.com'||!$https){
+      $target='https://idea-dh.com/api/social-auth.php?action=start&provider='.rawurlencode($provider);
+      if(($_GET['return_to']??'')==='/idea-next/account')$target.='&return_to=%2Fidea-next%2Faccount';
+      header('Location: '.$target,true,302);
+      exit;
+    }
     if(!socialTableReady()||!socialReady($provider,$config))socialFail('PROVIDER_NOT_CONFIGURED',503);
     accountSession();
     $state=bin2hex(random_bytes(24));
