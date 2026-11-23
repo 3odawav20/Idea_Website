@@ -15,8 +15,7 @@ function useBiz() {
 export function BusinessLayout() {
   const { t, locale } = useI18n();
   const { session, db } = useBackend();
-  const nav = useNavigate();
-  useEffect(() => { if (!session) nav("/login"); }, [session, nav]);
+  // Authorization is enforced by ProtectedRoute after PHP session hydration.
   if (!session) return null;
   const biz = db.businesses.find((b) => b.ownerId === session.id);
   const unread = biz ? db.messages.filter((m) => m.to === biz.id && !m.read).length : 0;
