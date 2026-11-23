@@ -39,9 +39,15 @@ import { Resources } from "./pages/Resources";
 import { SurfaceStyles } from "./pages/SurfaceStyles";
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
-  const { session } = useBackend();
+  const { session, loading } = useBackend();
+  // Wait for PHP/MySQL session hydration after an OAuth redirect.
+  // Redirecting during initial load sent signed-in users back to login.
+  if (loading) return <div role="status" aria-live="polite" style={{ padding: "5rem 1rem", textAlign: "center" }}>Checking secure session…</div>;
   if (!session) return <Navigate to={roles?.includes("admin") ? "/admin/login" : roles?.includes("business") ? "/business/login" : "/login"} replace />;
-  if (roles && !roles.includes(session.role)) return <Navigate to="/" replace />;
+  if (roles && !roles.includes(session.role)) {
+    const ownDashboard = session.role === "admin" ? "/admin" : session.role === "business" ? "/business" : "/account";
+    return <Navigate to={ownDashboard} replace />;
+  }
   return <Outlet />;
 }
 

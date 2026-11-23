@@ -18,7 +18,10 @@ test("one published studio route receives stable catalogue product IDs", () => {
 test("frontend uses real asynchronous jobs and never manufactures a preview", () => {
   assert.match(page, /jobId/);
   assert.match(page, /setResult\(/);
-  assert.match(page, /"\/api\/visualize\.php"/);
+  assert.match(page, /createVisualizerJob\(/);
+  assert.match(page, /startVisualizerJob\(/);
+  assert.match(page, /getVisualizerJob\(/);
+  assert.match(page, /getVisualizerImage\(/);
   assert.doesNotMatch(page, /GEMINI|generativelanguage|fake preview/i);
 });
 test("Runpod credentials remain server-only", () => {

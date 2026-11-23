@@ -1,5 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { auth, firebaseSignOut, onAuthStateChanged } from "../../lib/firebase";
+import { getPhpSession, signOutPhp } from "./phpAccounts";
 import { apiFetch } from "./apiClient";
 
 export type Role = "customer" | "business" | "designer" | "contractor" | "admin";
@@ -232,100 +232,85 @@ export function BackendProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  const loadPublicRef = useCallback(async () => {
-    try {
-      const [plansData, paymentsData] = await Promise.all([
-        apiFetch<Plan[]>("/api/plans"),
-        apiFetch<PaymentMethodConfig[]>("/api/payments/public"),
-      ]);
-      setDb((old) => ({
-        ...old,
-        plans: Array.isArray(plansData) ? plansData : old.plans,
-        payments: Array.isArray(paymentsData) ? paymentsData : old.payments,
-      }));
-    } catch {
-      // Keep UI functional even if backend reference fetch fails momentarily
-    }
-  }, []);
-
   const refresh = useCallback(
-    async (opts?: { name?: string; phone?: string; authMethod?: string; requestedRole?: string }): Promise<User | null> => {
-      if (!auth.currentUser) {
-        setSession(null);
-        await loadPublicRef();
-        return null;
-      }
+    async (_opts?: { name?: string; phone?: string; authMethod?: string; requestedRole?: string }): Promise<User | null> => {
       try {
-        const data = await apiFetch<SessionResponse>("/api/auth/session", {
-          method: "POST",
-          body: opts || {},
-          authRequired: true,
-        });
-        setSession(data.user);
-        setDb({
-          users: [data.user],
-          businesses: data.businesses || [],
-          requests: data.requests || [],
-          offers: data.offers || [],
-          orders: data.orders || [],
-          messages: data.messages || [],
-          plans: data.plans || [],
-          subscriptions: data.subscriptions || [],
-          payments: data.payments || [],
-          roomProjects: data.roomProjects || [],
-          audit: data.audit || [],
-          sessionUserId: data.user.id,
-        });
-        return data.user;
+        // Same-origin PHP/MySQL session is the only authentication authority.
+        // Never ask a client-provided role to alter the server account.
+        const snapshot = await getPhpSession();
+        const account = snapshot.user;
+        if (!account) {
+          setSession(null);
+          setDb(emptyDb());
+          return null;
+        }
+        const role: Role = account.role === "admin" ? "admin"
+          : account.role === "supplier" ? "business"
+          : account.role === "buyer" ? "customer" : (() => { throw new Error("INVALID_SERVER_ROLE"); })();
+        const user: User = {
+          id: account.id,
+          name: account.name,
+          email: account.email,
+          phone: account.phone || undefined,
+          role,
+          provider: "php-mysql",
+          createdAt: Number(account.created_at) || 0,
+        };
+        const company = snapshot.company;
+        const details = company?.business_details || {};
+        const statusLabel: BusinessStatus =
+          company?.status === "verified" ? "Verified"
+          : company?.status === "rejected" ? "Rejected"
+          : company?.status === "suspended" ? "Suspended"
+          : company?.status === "submitted" ? "Submitted" : "Draft";
+        const business: Business[] = company ? [{
+          id: company.id, ownerId: company.owner_id, legalName: company.legal_name,
+          publicName: company.public_name, representative: String(details.representative_name || ""),
+          email: company.email, phone: company.phone,
+          governorate: String(details.governorate || ""),
+          serviceAreas: Array.isArray(details.service_areas) ? details.service_areas.filter((v): v is string => typeof v === "string") : [],
+          companyType: String(details.company_type || ""),
+          crNumber: String(details.commercial_registration || ""),
+          taxNumber: String(details.tax_number || ""),
+          brands: Array.isArray(details.brands) ? details.brands.filter((v): v is string => typeof v === "string") : [],
+          categories: Array.isArray(details.categories) ? details.categories.filter((v): v is string => typeof v === "string") : [],
+          productIds: [],
+          deliveryCapacityM2: 0, minOrderM2: 0, status: statusLabel,
+          rating: 0, createdAt: Number(company.created_at) || 0,
+        }] : [];
+        setSession(user);
+        // Do not populate prices, quotes, orders or approval data from demo state.
+        // These must be fetched from separate PHP endpoints after contract verification.
+        setDb({ ...emptyDb(), users: [user], businesses: business, sessionUserId: user.id });
+        return user;
       } catch (error) {
-        console.error("IDEA session sync failed:", error);
+        console.error("IDEA PHP/MySQL session verification failed:", error);
+        setSession(null);
+        setDb(emptyDb());
         return null;
       }
-    },
-    [loadPublicRef]
+    }, []
   );
 
   useEffect(() => {
-    void loadPublicRef();
-    const unsub = onAuthStateChanged(auth, (fbUser) => {
-      if (!fbUser) {
-        setSession(null);
-        setDb((old) => ({ ...emptyDb(), plans: old.plans, payments: old.payments }));
-        setLoading(false);
-        return;
-      }
-      void refresh().finally(() => setLoading(false));
-    });
-    return () => unsub();
-  }, [loadPublicRef, refresh]);
+    void refresh().finally(() => setLoading(false));
+    const onFocus = () => { void refresh(); };
+    window.addEventListener("focus", onFocus);
+    return () => window.removeEventListener("focus", onFocus);
+  }, [refresh]);
 
   const api = useMemo<Api>(
     () => ({
-      signIn: (_provider, role, info) => {
-        // Optimistic placeholder only when invoked synchronously; primary login uses Firebase + refresh()
-        const user: User = {
-          id: session?.id || "pending",
-          name: info?.name || session?.name || "IDEA Member",
-          email: info?.email || session?.email,
-          phone: info?.phone || session?.phone,
-          role,
-          provider: "firebase",
-          createdAt: Date.now(),
-        };
-        return user;
+      signIn: () => {
+        throw new Error("Use the verified PHP/MySQL login form; local login is not supported.");
       },
       signOut: () => {
-        void firebaseSignOut(auth).then(() => {
-          setSession(null);
-          setDb((old) => ({ ...emptyDb(), plans: old.plans, payments: old.payments }));
-        });
+        void signOutPhp()
+          .then(() => refresh())
+          .catch((error) => console.error("IDEA logout failed; server session remains authoritative", error));
       },
-      setRole: (role) => {
-        void apiFetch("/api/auth/profile", {
-          method: "POST",
-          body: { role },
-          authRequired: true,
-        }).then(() => refresh());
+      setRole: () => {
+        throw new Error("ACCOUNT_ROLE_SERVER_CONTROLLED");
       },
       createBusiness: (b) => {
         const pending: Business = {

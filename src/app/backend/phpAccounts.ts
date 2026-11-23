@@ -34,8 +34,14 @@ async function parseAccountResponse(response: Response): Promise<Record<string, 
   return data;
 }
 export async function getPhpSession(): Promise<PhpSession> {
-  const response = await fetch(PHP_ACCOUNT_API + "?action=session", {
-    credentials:"same-origin", cache:"no-store", headers:{Accept:"application/json"}
+  // Hosting Nginx cached the bare ?action=session response by User-Agent and
+  // served a shared CSRF value WITHOUT a Set-Cookie header (X-Proxy-Cache:HIT).
+  // A fresh cache key on every request forces the genuine PHP session response.
+  // This is intentionally cryptographically random, including post-OAuth.
+  const nonce = crypto.randomUUID();
+  const response = await fetch(PHP_ACCOUNT_API + "?action=session&nonce=" + encodeURIComponent(nonce), {
+    credentials:"same-origin", cache:"no-store",
+    headers: { Accept: "application/json", "Cache-Control": "no-cache, no-store", Pragma: "no-cache" }
   });
   const data = await parseAccountResponse(response);
   if (typeof data.csrf !== "string" || data.csrf.length < 20) throw new Error("ACCOUNT_SESSION_MISSING");

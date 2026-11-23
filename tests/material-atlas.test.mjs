@@ -35,7 +35,7 @@ test("atlas has discovery filters and a responsive paginated catalogue", () => {
 test("chosen material deep-links to the original room visualizer", () => {
   assert.match(studio, /setSearchParams\(\{ product: id \}/);
   assert.match(studio, /scrollIntoView/);
-  assert.match(studio, /form\.append\("productId", selectedProduct\.id\)/);
-  assert.match(studio, /form\.append\("material", reference/);
+  assert.match(studio, /product_id: selectedProduct\.id/);
+  assert.match(studio, /imageToPhpDataUrl\(reference\)/);
   assert.doesNotMatch(studio, /generativelanguage|Gemini API key|VITE_GEMINI/i);
 });

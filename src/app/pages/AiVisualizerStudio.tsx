@@ -10,7 +10,10 @@ import { useI18n } from "../i18n/i18n";
 import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
-import { supabase } from "../backend/supabaseClient";
+import {
+  createVisualizerJob, getVisualizerImage, getVisualizerJob, getVisualizerQuota,
+  imageToPhpDataUrl, startVisualizerJob
+} from "../backend/visualizerPhp";
 import type { Product } from "../data/types";
 import "./AiVisualizerStudio.css";
 
@@ -125,6 +128,7 @@ export function AiVisualizerStudio() {
   const [grout, setGrout] = useState("#ddd8cf");
   const [tileSize, setTileSize] = useState("60 × 60 cm");
   const [result, setResult] = useState<string | null>(null);
+  const [resultExtension, setResultExtension] = useState("png");
   const [quality, setQuality] = useState<Quality | null>(null);
   const [compare, setCompare] = useState(50);
   const [viewMode, setViewMode] = useState<ViewMode>("compare");
@@ -208,25 +212,23 @@ export function AiVisualizerStudio() {
   useEffect(() => () => requestRef.current?.abort(), []);
   useEffect(() => () => { if (photoUrl) URL.revokeObjectURL(photoUrl); }, [photoUrl]);
   useEffect(() => () => { if (materialUrl) URL.revokeObjectURL(materialUrl); }, [materialUrl]);
+  useEffect(() => () => { if (result?.startsWith("blob:")) URL.revokeObjectURL(result); }, [result]);
 
   useEffect(() => {
-    if (!aiEligible || !supabase) {
+    if (!aiEligible) {
       setQuota(null);
+      setIntegration("unavailable");
       return;
     }
     let active = true;
-    void (async () => {
-      const { data: auth } = await supabase.auth.getSession();
-      if (!auth.session?.access_token) return;
-      const response = await fetch("/api/visualize.php?action=status", {
-        headers: { Authorization: `Bearer ${auth.session.access_token}` },
-        cache: "no-store",
-      });
-      const data = await response.json().catch(() => null) as (JobResponse & { integration?: string }) | null;
-      if (!active || !data) return;
-      if (data.quota) setQuota(data.quota);
-      setIntegration(data.integration || (response.ok ? "configuration_present_unverified" : "configuration_required"));
-    })().catch(() => { if (active) setIntegration("unavailable"); });
+    void getVisualizerQuota().then(value => {
+      if (!active) return;
+      setQuota(value);
+      // PHP/MySQL service answered. Actual Runpod worker health is separate.
+      setIntegration("backend_reachable");
+    }).catch(() => {
+      if (active) { setQuota(null); setIntegration("unavailable"); }
+    });
     return () => { active = false; };
   }, [session?.id, aiEligible]);
 
@@ -241,9 +243,9 @@ export function AiVisualizerStudio() {
     setStage("validating");
     try {
       const bitmap = await createImageBitmap(file);
-      if (bitmap.width < 256 || bitmap.height < 256 || bitmap.width * bitmap.height > 12_000_000) {
+      if (bitmap.width < 256 || bitmap.height < 256 || bitmap.width * bitmap.height > 10_000_000) {
         bitmap.close();
-        throw new Error(tr("أبعاد الصورة غير مناسبة. الحد من 256 بكسل وحتى 12 ميجابكسل.", "Image dimensions must be at least 256px and no more than 12 megapixels."));
+        throw new Error(tr("أبعاد الصورة غير مناسبة. الحد من 256 بكسل وحتى 12 ميجابكسل.", "Image dimensions must be at least 256px and no more than 10 megapixels."));
       }
       setPhotoMeta({ width: bitmap.width, height: bitmap.height, megapixels: (bitmap.width * bitmap.height / 1_000_000).toFixed(1) });
       bitmap.close();
@@ -294,13 +296,6 @@ export function AiVisualizerStudio() {
     });
   }
 
-  async function accessToken() {
-    if (!supabase) throw new Error(tr("خدمة تسجيل الدخول غير مهيأة.", "Authentication is not configured."));
-    const { data, error: authError } = await supabase.auth.getSession();
-    if (authError || !data.session?.access_token) throw new Error(tr("سجّل الدخول قبل بدء التوليد.", "Sign in before starting a generation."));
-    return data.session.access_token;
-  }
-
   async function materialBlob(signal: AbortSignal) {
     if (material) return material;
     if (!selectedFaceImage) return null;
@@ -314,32 +309,30 @@ export function AiVisualizerStudio() {
     }
   }
 
-  async function pollJob(id: string, token: string, controller: AbortController) {
+  async function pollJob(id: string, controller: AbortController) {
     for (let attempt = 0; attempt < POLL_LIMIT; attempt++) {
       await wait(POLL_INTERVAL, controller.signal);
-      const response = await fetch(`/api/visualize.php?job=${encodeURIComponent(id)}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        cache: "no-store",
-        signal: controller.signal,
-      });
-      const data = await response.json().catch(() => null) as JobResponse | null;
-      if (!data) throw new Error(tr("استجابة غير صالحة من خدمة التصور.", "The visualization service returned an invalid response."));
-      if (data.quota) setQuota(data.quota);
-      if (data.stage) setStage(data.stage);
-      if (data.state === "ready" && data.image) {
-        if (!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(data.image)) throw new Error("Invalid verified image response");
-        setResult(data.image);
-        setQuality(data.quality || null);
+      const job = await getVisualizerJob(id);
+      if (controller.signal.aborted) return;
+      if (job.state === "completed") {
+        const image = await getVisualizerImage(id, controller.signal);
+        if (controller.signal.aborted) { URL.revokeObjectURL(image.url); return; }
+        setResultExtension(image.extension);
+        setResult(image.url);
+        // The PHP backend marks a job completed only after checking the edit
+        // mask and reconstructing the protected regions from the source.
+        setQuality({ dimensionsPreserved: true, maskVerified: true, protectedPixelsCompositedFromOriginal: true });
         setCompare(50);
         setViewMode("compare");
         setStage("ready");
         return;
       }
-      if (data.state === "failed" || data.state === "cancelled") {
-        throw new Error(data.error || tr("فشل التوليد وتم رد المحاولة.", "Generation failed and the attempt was released."));
+      if (job.state === "failed") {
+        throw new Error(job.error_code || tr("فشل التوليد.", "Generation failed."));
       }
+      setStage(job.state === "processing" ? "generating" : "queued");
     }
-    throw new Error(tr("انتهت مهلة الوظيفة. يمكن فحصها لاحقًا من السجل.", "The job timed out. It can be inspected later from history."));
+    throw new Error(tr("انتهت مهلة الانتظار. قد تستمر الوظيفة على الخادم.", "The waiting period ended; the server job may still be running."));
   }
 
   async function generate() {
@@ -376,43 +369,37 @@ export function AiVisualizerStudio() {
     setError("");
     setStage("uploading");
     try {
-      const token = await accessToken();
       const reference = await materialBlob(controller.signal);
       if (!reference) throw new Error(tr(
         "تعذر قراءة صورة المنتج من مصدرها. ارفع عينة أصلية واضحة للخامة.",
         "The product image cannot be read from its source. Upload a clear original material reference."
       ));
-      const form = new FormData();
-      form.append("action", "create");
-      form.append("room", photo);
-      form.append("material", reference, "material-reference");
-      form.append("productId", selectedProduct.id);
-      form.append("productName", selectedProduct.name.en);
-      form.append("brand", selectedProduct.brand);
-      form.append("finish", selectedProduct.finish || "");
-      form.append("surface", surface);
-      form.append("roomKind", roomKind);
-      form.append("rotation", String(rotation));
-      form.append("tileSize", selectedPhysicalSize.label);
-       form.append("tile_width_mm", String(selectedPhysicalSize.widthMm));
-       form.append("tile_height_mm", String(selectedPhysicalSize.heightMm));
-       form.append("variant_id", selectedPhysicalSize.id);
-      form.append("grout", grout);
-      form.append("idempotencyKey", crypto.randomUUID());
+      const [room, sample] = await Promise.all([
+        imageToPhpDataUrl(photo),
+        imageToPhpDataUrl(reference),
+      ]);
+      if (controller.signal.aborted) return;
       setStage("validating");
-      const response = await fetch("/api/visualize.php", {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: form,
-        cache: "no-store",
-        signal: controller.signal,
+      const created = await createVisualizerJob({
+        room, material: sample,
+        product_id: selectedProduct.id,
+        surface,
+        size: selectedPhysicalSize.label,
+        tile_width_mm: selectedPhysicalSize.widthMm,
+        tile_height_mm: selectedPhysicalSize.heightMm,
+        angle: String(rotation),
+        grout,
+        roomType: roomKind,
       });
-      const data = await response.json().catch(() => null) as JobResponse | null;
-      if (!response.ok || !data?.jobId) throw new Error(data?.error || tr("تعذر قبول وظيفة التوليد.", "The generation job could not be accepted."));
-      if (data.quota) setQuota(data.quota);
-      setJobId(data.jobId);
-      setStage(data.stage || "queued");
-      await pollJob(data.jobId, token, controller);
+      if (!/^[a-f0-9]{32}$/.test(created.id) || created.state !== "queued") {
+        throw new Error("INVALID_AI_JOB_RESPONSE");
+      }
+      setJobId(created.id);
+      setStage("queued");
+      const started = await startVisualizerJob(created.id);
+      if (started.state === "failed") throw new Error(started.error_code || "RUNPOD_JOB_FAILED");
+      setStage(started.state === "processing" ? "generating" : "queued");
+      await pollJob(created.id, controller);
     } catch (cause) {
       if (!controller.signal.aborted) {
         setStage("failed");
@@ -420,24 +407,18 @@ export function AiVisualizerStudio() {
       }
     } finally {
       requestRef.current = null;
+      if (aiEligible) void getVisualizerQuota().then(setQuota).catch(() => {});
     }
   }
 
   async function cancelJob() {
     if (!jobId || !busy) return;
+    // The PHP backend has no verified cancellation contract. Stop client
+    // polling only; do not falsely claim that a billed Runpod job was canceled.
     requestRef.current?.abort();
-    try {
-      const token = await accessToken();
-      const form = new FormData();
-      form.append("action", "cancel");
-      form.append("jobId", jobId);
-      const response = await fetch("/api/visualize.php", { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: form, cache: "no-store" });
-      const data = await response.json().catch(() => null) as JobResponse | null;
-      if (data?.quota) setQuota(data.quota);
-    } finally {
-      setStage("idle");
-      setJobId(null);
-    }
+    setStage("idle");
+    setError(tr("توقف انتظار النتيجة، لكن معالجة Runpod قد تستمر. احتفظ برقم الوظيفة.",
+      "Stopped waiting. Runpod processing may continue; keep your job reference."));
   }
 
   const productName = selectedProduct ? localizedName(selectedProduct) : tr("اختر خامة", "Select a material");
@@ -461,8 +442,8 @@ export function AiVisualizerStudio() {
           <span><b>IDEA</b><small>{tr("محرك حماية المشهد", "IMMUTABLE SCENE ENGINE")}</small></span>
         </div>
         <div className="idea-studio-command-status">
-          <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : ""}`}>
-            <i /> {integration === "configuration_present_unverified" ? tr("Runpod جاهز للاختبار", "Runpod configuration unverified") : tr("حالة Runpod غير مؤكدة", "Runpod status unavailable")}
+          <span className={`idea-studio-provider ${integration === "backend_reachable" ? "pending" : ""}`}>
+            <i /> {integration === "backend_reachable" ? tr("بوابة PHP متصلة · عامل Runpod غير مؤكد", "PHP connected · Runpod worker unverified") : tr("خدمة الصور غير متاحة", "Image backend unavailable")}
           </span>
           <span className="idea-studio-quota">
             <ShieldCheck size={15} />
@@ -575,7 +556,7 @@ export function AiVisualizerStudio() {
                 <div className="idea-studio-stage-track">
                   {STAGE_ORDER.map((item) => <span key={item} className={STAGE_ORDER.indexOf(item) <= STAGE_ORDER.indexOf(stage) ? "done" : ""}>{stageText[item]}</span>)}
                 </div>
-                <button type="button" onClick={() => void cancelJob()}><X size={14} /> {tr("إلغاء الوظيفة", "Cancel job")}</button>
+                <button type="button" onClick={() => void cancelJob()}><X size={14} /> {tr("إيقاف انتظار النتيجة", "Stop waiting")}</button>
               </div>
             )}
           </div>
@@ -585,7 +566,7 @@ export function AiVisualizerStudio() {
               <button type="button" disabled><Eye size={15} /> {tr("قناع الحماية بعد التحليل", "Protection mask after analysis")}</button>
               <button type="button" disabled><Expand size={15} /> {tr("مراجعة المعماري", "Architect review")}</button>
             </div>
-            {result && <a download={`idea-${selectedProduct?.slug || "visualization"}.png`} href={result}><Download size={16} /> {tr("تنزيل PNG", "Download PNG")}</a>}
+            {result && <a download={`idea-${selectedProduct?.slug || "visualization"}.${resultExtension}`} href={result}><Download size={16} /> {tr("تنزيل الصورة", "Download image")}</a>}
           </div>
           {quality && (
             <div className="idea-studio-quality">
