@@ -29,6 +29,9 @@ test("Google login targets real role-based dashboard, including preview route",(
   assert.match(server,/\$role==='admin'\?'\/admin'/);
   assert.match(server,/\$role==='supplier'\?'\/business'/);
   assert.match(server,/return_to/);
+  assert.match(server,/oauth_fresh/);
+  assert.match(server,/bin2hex\(random_bytes\(12\)\)/);
+  assert.match(server,/X-Accel-Expires: 0/);
   assert.match(server,/\/idea-next\/account/);
   assert.match(entry,/url\.searchParams\.set\("return_to","\/idea-next\/account"\)/);
   assert.match(social,/url\.searchParams\.set\("return_to","\/idea-next\/account"\)/);

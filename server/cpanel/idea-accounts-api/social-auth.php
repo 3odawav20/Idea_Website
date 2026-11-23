@@ -122,7 +122,13 @@ function socialRedirect(string $error='',string $target='/account'): never {
   if($error){
     $login=str_starts_with($target,'/idea-next/')?'/idea-next/login':'/login';
     $target=$login.'?social_error='.rawurlencode($error);
+  }else{
+    // Login success must bypass stale Nginx-cached /account HTML, which can
+    // still reference a pre-fix JS bundle and reject the live PHP session.
+    $target.='?oauth_fresh='.bin2hex(random_bytes(12));
   }
+  header('Cache-Control: private, no-store, no-cache, max-age=0');
+  header('X-Accel-Expires: 0');
   header('Location: '.$target,true,303);
   exit;
 }
