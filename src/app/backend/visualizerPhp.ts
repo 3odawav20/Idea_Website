@@ -48,7 +48,15 @@ export async function getVisualizerImage(id: string, signal?: AbortSignal): Prom
   if (!["image/png", "image/jpeg"].includes(type)) throw new ApiError("AI_IMAGE_FORMAT_INVALID", 502);
   const image = await response.blob();
   if (image.size < 100 || image.size > 25000000) throw new ApiError("AI_IMAGE_INVALID", 502);
-  return { url: URL.createObjectURL(image), extension: type === "image/png" ? "png" : "jpg" };
+  // Older PHP backends can serve a verified PNG with a .jpg filename/MIME.
+  // Trust image signatures rather than misleading Content-Type metadata.
+  const signature = new Uint8Array(await image.slice(0, 12).arrayBuffer());
+  const png = signature[0] === 137 && signature[1] === 80 && signature[2] === 78 && signature[3] === 71
+    && signature[4] === 13 && signature[5] === 10 && signature[6] === 26 && signature[7] === 10;
+  const jpeg = signature[0] === 255 && signature[1] === 216 && signature[2] === 255;
+  if (!png && !jpeg) throw new ApiError("AI_IMAGE_SIGNATURE_INVALID", 502);
+  const mime = png ? "image/png" : "image/jpeg";
+  return { url: URL.createObjectURL(new Blob([image], { type: mime })), extension: png ? "png" : "jpg" };
 }
 
 /** Normalize a real uploaded image to the server's bounded 8 MB JPEG contract.
