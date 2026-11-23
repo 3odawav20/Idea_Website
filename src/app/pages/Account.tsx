@@ -9,10 +9,9 @@ import { DashLayout, Panel, StatusBadge, EmptyState, Field, inputStyle } from ".
 import { ProductCard } from "../components/ProductCard";
 
 function useGuard() {
-  const { session } = useBackend();
-  const nav = useNavigate();
-  useEffect(() => { if (!session) nav("/login"); }, [session, nav]);
-  return session;
+  // ProtectedRoute verifies the server session before mounting this layout.
+  // Avoid a second eager redirect while the OAuth session is loading.
+  return useBackend().session;
 }
 
 export function AccountLayout() {
