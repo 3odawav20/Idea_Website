@@ -58,7 +58,8 @@ export function AskIdea() {
     if (!question || busy) return;
     const matches = searchProducts(question);
     setDraft("");
-    setMessages(old => [...old, { role: "user", text: question }].slice(-16));
+    const userMessage: Message = { role: "user", text: question };
+    setMessages(old => [...old, userMessage].slice(-16));
     setBusy(true);
     const controller = new AbortController();
     const timeout = window.setTimeout(() => controller.abort(), 22000);
@@ -72,18 +73,21 @@ export function AskIdea() {
       });
       if (!response.ok) throw new Error("assistant-unavailable");
       const data: unknown = await response.json();
-      if (!data || typeof data !== "object" || !("answer" in data) || typeof data.answer !== "string" || !data.answer.trim()) {
+      const answer = data && typeof data === "object" && "answer" in data ? data.answer : null;
+      if (typeof answer !== "string" || !answer.trim()) {
         throw new Error("invalid-answer");
       }
-      setMessages(old => [...old, { role: "assistant", text: data.answer.slice(0, 4000), products: matches }].slice(-16));
+      const assistantMessage: Message = { role: "assistant", text: answer.slice(0, 4000), products: matches };
+      setMessages(old => [...old, assistantMessage].slice(-16));
     } catch {
-      setMessages(old => [...old, {
+      const fallbackMessage: Message = {
         role: "assistant",
         text: matches.length
           ? tr("لقيت منتجات مطابقة في كتالوج IDEA. تقدر تفتح تفاصيل كل منتج من النتائج دي. الرد الذكي غير متاح دلوقتي، والأسعار والتوافر يؤكدهم المورد.", "I found matching IDEA catalogue products below. The AI service is currently unavailable; suppliers confirm prices and availability.")
           : tr("الرد الذكي غير متاح حاليًا. تقدر تتصفح المنتجات أو استوديو 3D أو أداة تعديل الصور من الروابط. مش هقدّم مقاسات أو مواصفات غير موثقة.", "The AI service is unavailable right now. Explore the catalogue, 3D studio or image visualizer from the links below. I won't invent product specifications."),
         products: matches, offline: true,
-      }].slice(-16));
+      };
+      setMessages(old => [...old, fallbackMessage].slice(-16));
     } finally {
       window.clearTimeout(timeout);
       setBusy(false);
