@@ -95,6 +95,56 @@ class WorkerContractTests(unittest.TestCase):
         with self.assertRaises(handler.WorkerError):
             handler._decode_image(uri, "original_image")
 
+    def test_explicit_mask_is_binary_opaque_and_exact_geometry(self):
+        mask = np.zeros((256, 256), dtype=np.uint8)
+        mask[80:180, 40:200] = 255
+
+        def uri(array):
+            out = io.BytesIO()
+            Image.fromarray(array).save(out, format="PNG")
+            return "data:image/png;base64," + base64.b64encode(out.getvalue()).decode("ascii")
+
+        decoded = handler._decode_input_mask(uri(mask), (256, 256))
+        self.assertTrue(np.array_equal(decoded, mask == 255))
+        with self.assertRaises(handler.WorkerError):
+            handler._decode_input_mask(uri(mask), (257, 256))
+        mask[0, 0] = 127
+        with self.assertRaises(handler.WorkerError):
+            handler._decode_input_mask(uri(mask), (256, 256))
+        with self.assertRaises(handler.WorkerError):
+            handler._decode_input_mask(uri(np.zeros((256, 256), dtype=np.uint8)), (256, 256))
+
+    def test_explicit_mask_limits_actual_composite_and_legacy_aliases(self):
+        runtime = FakeRuntime()
+        allowed = np.zeros((256, 256), dtype=bool)
+        allowed[40:200, 40:200] = True
+        semantic = np.zeros_like(allowed)
+        semantic[80:230, 80:230] = True
+        protected = np.zeros_like(allowed)
+        protected[100:130, 100:130] = True
+        expected = allowed & semantic & ~protected
+        request = {
+            "contract": handler.LEGACY_CONTRACT,
+            "return_edit_mask": True,
+            "preserve_unmasked_pixels": True,
+            "original_image": image_uri((80, 100, 120)),
+            "material_reference": image_uri((220, 60, 40)),
+            "target_surface": "floor",
+            "input_mask": handler._png_data_uri(Image.fromarray(allowed.astype(np.uint8) * 255)),
+        }
+        depth = np.tile(np.linspace(0, 1, 256, dtype=np.float32)[:, None], (1, 256))
+        with patch.object(handler, "_semantic_masks", return_value=({"floor": semantic}, protected)), patch.object(handler, "_estimate_depth", return_value=depth), patch.object(handler, "_run_generation", return_value=Image.new("RGB", (256, 256), (80, 100, 120))):
+            result = handler.process(request, runtime)
+        self.assertEqual(result["contract"], handler.LEGACY_CONTRACT)
+        self.assertEqual(result["mask"], result["edit_mask"])
+        self.assertTrue(result["quality"]["input_mask_applied"])
+        final_mask = handler._decode_input_mask(result["edit_mask"], (256, 256))
+        self.assertTrue(np.array_equal(final_mask, expected))
+        image = handler._decode_image(result["image"], "result")
+        before = np.asarray(Image.new("RGB", (256, 256), (80, 100, 120)))
+        self.assertTrue(np.array_equal(np.asarray(image)[~expected], before[~expected]))
+        self.assertFalse(np.array_equal(np.asarray(image)[expected], before[expected]))
+
     def test_surface_mask_area_guard_rejects_empty_full_and_malformed_masks(self):
         with self.assertRaises(handler.WorkerError):
             handler._validate_mask(np.zeros((256, 256), dtype=bool))
