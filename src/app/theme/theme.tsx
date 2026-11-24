@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useLayoutEffect, useState, type ReactNode } from "react";
 
 type Mode = "dark" | "light";
 interface ThemeCtx {
@@ -10,13 +10,14 @@ const Ctx = createContext<ThemeCtx | null>(null);
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<Mode>(() => {
     try {
-      return (localStorage.getItem("idea.theme") as Mode) || "light";
+      const saved = localStorage.getItem("idea.theme");
+      return saved === "dark" || saved === "light" ? saved : "light";
     } catch {
       return "dark";
     }
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     document.documentElement.setAttribute("data-theme", mode);
     try {
       localStorage.setItem("idea.theme", mode);

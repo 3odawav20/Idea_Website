@@ -100,7 +100,7 @@ def main():
             atomic_copy(src,dst,mode);installed.append(rel)
         for m in manifest:
             if digest(LIVE/m["path"])!=m["new"]:raise RuntimeError("Published digest mismatch")
-        for route in ("/","/ai-room-visualizer","/products","/login","/business","/account","/admin","/room-designer/3d"):
+        for route in ("/","/ai-room-visualizer","/products","/product/aqua-39","/login","/business","/account","/admin","/room-designer/3d"):
             data=fetch(route+"?idea_release="+sha[:12])
             if not all(e in data for e in entries):raise RuntimeError("Live route mismatch "+route)
         for e in entries:
