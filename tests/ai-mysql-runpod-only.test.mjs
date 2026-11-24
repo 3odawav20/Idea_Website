@@ -7,6 +7,7 @@ const mysql = read("server/cpanel/idea-accounts-api/platform-ai.php");
 const old = read("deploy/livefree/20261102/idea-accounts-api/platform-ai.php");
 const qwen = read("server/cpanel/api/visualize.php");
 const front = read("src/app/pages/AiVisualizerStudio.tsx");
+const worker = read("runpod/flux2-klein/handler.py");
 
 test("deployable PHP AI adapters contain no Gemini API or Google image model fallback", () => {
   for (const source of [mysql, old, qwen]) {
@@ -15,10 +16,13 @@ test("deployable PHP AI adapters contain no Gemini API or Google image model fal
   assert.match(old, /LEGACY_ADAPTER_RETIRED/);
   assert.doesNotMatch(front, /generativelanguage|GEMINI_API_KEY/);
 });
-test("MySQL tenant AI uses Qwen worker contract, not assumed model availability", () => {
-  assert.match(mysql, /RUNPOD_WORKER_CONTRACT'\)!=='idea-qwen-mask-v1'/);
-  assert.match(mysql, /RUNPOD_ENDPOINT_ID/);
+test("MySQL tenant AI retains the legacy contract and opts into the versioned FLUX worker explicitly", () => {
+  assert.match(mysql, /function platformAiWorkerContract/);
+  assert.match(mysql, /idea-qwen-mask-v1/);
+  assert.match(mysql, /idea-flux2-klein-mask-v2/);
   assert.match(mysql, /Qwen\/Qwen-Image-Edit-2511/);
+  assert.match(mysql, /black-forest-labs\/FLUX\.2-klein-4B/);
+  assert.match(mysql, /_worker_contract/);
   assert.match(mysql, /api\.runpod\.ai\/v2\//);
   assert.match(mysql, /RUNPOD_WORKER_NOT_VERIFIED/);
   assert.match(mysql, /RUNPOD_MASK_WORKER_REQUIRED/);

@@ -2,6 +2,12 @@
 declare(strict_types=1);
 require_once __DIR__.'/tile-dimensions.php';
 if(realpath($_SERVER['SCRIPT_FILENAME']??'')===__FILE__){http_response_code(404);exit;}
+function platformAiWorkerContract(): string{
+ $contract=platformSecret('RUNPOD_WORKER_CONTRACT');
+ if(!is_string($contract)||$contract==='')return 'idea-qwen-mask-v1';
+ if(!in_array($contract,['idea-qwen-mask-v1','idea-flux2-klein-mask-v2'],true))accountError(503,'RUNPOD_WORKER_NOT_VERIFIED');
+ return $contract;
+}
 function platformAiDir(string $id): string{if(!preg_match('/^[a-f0-9]{32}$/D',$id))accountError(422,'INVALID_JOB');return platformPrivateRoot().'/jobs/'.$id;}
 function platformAiImage(string $value): string{
  if(strlen($value)>11534336||!preg_match('#^data:image/(?:png|jpeg|webp);base64,([A-Za-z0-9+/=\r\n]+)$#D',$value,$m))accountError(422,'INVALID_IMAGE');$bytes=base64_decode($m[1],true);if(!$bytes||strlen($bytes)>8388608)accountError(413,'IMAGE_TOO_LARGE');$info=@getimagesizefromstring($bytes);if(!$info||!in_array($info[2],[IMAGETYPE_JPEG,IMAGETYPE_PNG,IMAGETYPE_WEBP],true)||$info[0]*$info[1]>10000000)accountError(422,'INVALID_IMAGE');
@@ -73,7 +79,8 @@ function platformAiVerifiedMaskComposite(string $room,string $edited,string $mas
    }
   }
  }
- if($approved===0||$approved>=$width*$height)accountError(502,'RUNPOD_MASK_UNSAFE');
+ $fraction=$approved/($width*$height);
+ if($approved<max(64,(int)ceil($width*$height*0.001))||$fraction>0.88)accountError(502,'RUNPOD_MASK_UNSAFE');
  ob_start();imagepng($a,null,6);$final=ob_get_clean();
  imagedestroy($a);imagedestroy($b);imagedestroy($m);
  if(!is_string($final)||!$final)accountError(503,'IMAGE_EXPORT_FAILED');
@@ -119,13 +126,17 @@ function platformAiPollJob(array $u,string $id): array{
   return $job;
  }
  $endpoint=platformSecret('RUNPOD_ENDPOINT_ID');
- if(!is_string($endpoint)||!preg_match('/^[A-Za-z0-9_-]{3,120}$/D',$endpoint)
-   ||platformSecret('RUNPOD_WORKER_CONTRACT')!=='idea-qwen-mask-v1')
+ if(!is_string($endpoint)||!preg_match('/^[A-Za-z0-9_-]{3,120}$/D',$endpoint))
    accountError(503,'RUNPOD_WORKER_NOT_VERIFIED');
+ platformAiWorkerContract();
  [$code,$response]=platformAiProviderStatus($endpoint,$providerId);
  if($code!==200||!is_array($response))return $job;
  $status=strtoupper((string)($response['status']??''));
- if(in_array($status,['IN_QUEUE','IN_PROGRESS'],true))return $job;
+ if(in_array($status,['IN_QUEUE','IN_PROGRESS'],true)){
+  $stage=$status==='IN_QUEUE'?'queued':'generating';
+  if(($settings['_runpod_stage']??'')!==$stage){$settings['_runpod_stage']=$stage;accountQuery('UPDATE idea_ai_jobs SET settings=?,updated_at=? WHERE id=? AND user_id=? AND state=\'processing\'',[platformJson($settings),platformNow(),$id,$u['id']]);}
+  return platformAiJob($u,$id);
+ }
  if($status==='COMPLETED'){
   try{
   $out=$response['output']??null;
@@ -165,24 +176,33 @@ function platformAiAction(string $a,array $d,array $u): array{
  if($a==='ai-history')return ['jobs'=>array_map(function($r){$r['settings']=json_decode($r['settings'],true);return $r;},accountQuery('SELECT * FROM idea_ai_jobs WHERE user_id=? ORDER BY created_at DESC LIMIT 50',[$u['id']])->fetchAll())];
  if($a==='ai-job')return platformAiPollJob($u,accountString($d,'id',32,true));
  if($a==='ai-create'){
-  if(!platformSecret('RUNPOD_API_KEY')||!platformSecret('RUNPOD_ENDPOINT_ID')||platformSecret('RUNPOD_WORKER_CONTRACT')!=='idea-qwen-mask-v1')accountError(503,'RUNPOD_API_KEY_REQUIRED');if(platformSecret('RUNPOD_ENDPOINT_ID')==='qwen-image-edit-2511')accountError(503,'RUNPOD_MASK_WORKER_REQUIRED');
+  $contract=platformAiWorkerContract();
+  if(!platformSecret('RUNPOD_API_KEY')||!platformSecret('RUNPOD_ENDPOINT_ID'))accountError(503,'RUNPOD_API_KEY_REQUIRED');if(platformSecret('RUNPOD_ENDPOINT_ID')==='qwen-image-edit-2511')accountError(503,'RUNPOD_MASK_WORKER_REQUIRED');
   if($limit!==null)accountRate('ai-create',10,3600); // buyer only; admin has no artificial hourly cap
   $parent=accountString($d,'parent_id',32);$room=platformAiInputImage($d,'room');if(!$room)accountError(422,'PARENT_IMAGE_UNAVAILABLE');
   $material=platformAiInputImage($d,'material');$product=accountString($d,'product_id',100,true);$tileSpec=ideaTileCataloguedVariant($product);
   try { ideaTileAssertMatches($tileSpec,isset($d['size'])?(string)$d['size']:null,$d['tile_width_mm']??null,$d['tile_height_mm']??null); }
   catch(InvalidArgumentException $e){accountError(422,'PRODUCT_TILE_SIZE_MISMATCH');}
   $settings=[];foreach(['surface'=>50,'size'=>60,'grout'=>40,'angle'=>30,'roomType'=>80,'instructions'=>1200] as $key=>$len)$settings[$key]=accountString($d,$key,$len);if(!in_array($settings['surface'],['floor','walls','wall','both','الأرضية','الجدران','الحوائط'],true))accountError(422,'INVALID_SURFACE');
+  $idempotencyKey=accountString($d,'idempotency_key',80);
+  if($idempotencyKey!==''&&!preg_match('/^[A-Za-z0-9._:-]{16,80}$/D',$idempotencyKey))accountError(422,'INVALID_IDEMPOTENCY_KEY');
+  if($idempotencyKey==='')$idempotencyKey=bin2hex(random_bytes(24));
+  $settings['_idempotency_key']=$idempotencyKey;$settings['_worker_contract']=$contract;
   $points=$d['points']??[];if(!is_array($points)||count($points)!==0&&count($points)!==4)accountError(422,'INVALID_SURFACE_POINTS');foreach($points as $point){if(!is_array($point)||count($point)!==2||!is_numeric($point[0])||!is_numeric($point[1])||$point[0]<0||$point[0]>1||$point[1]<0||$point[1]>1)accountError(422,'INVALID_SURFACE_POINTS');}$settings['points']=$points;
   $settings['size']=$tileSpec['size_label'];$settings['tile_width_mm']=$tileSpec['width_mm'];$settings['tile_height_mm']=$tileSpec['height_mm'];
   $settings['tile_aspect_ratio']=$tileSpec['aspect_ratio'];$settings['tile_size_source']=$tileSpec['source_type'];
   $joint=$d['grout_width_mm']??2;
   if(!is_numeric($joint)||!is_finite((float)$joint)||(float)$joint<1||(float)$joint>15)accountError(422,'INVALID_GROUT_WIDTH');
   $settings['grout_width_mm']=(float)$joint;
+  $requestFingerprint=hash('sha256',hash('sha256',$room).':'.hash('sha256',$material).':'.platformJson([$product,$settings['surface'],$settings['size'],$settings['angle'],$settings['grout'],$tileSpec['width_mm'],$tileSpec['height_mm'],$joint]));
+  $settings['_request_fingerprint']=$requestFingerprint;
   $settings['physical_scale_calibrated']=false;
   $id=platformId();$dir=platformAiDir($id);mkdir($dir,0700,true);file_put_contents($dir.'/room.jpg',$room);file_put_contents($dir.'/material.jpg',$material);chmod($dir.'/room.jpg',0600);chmod($dir.'/material.jpg',0600);
-  try{platformTransaction(function()use($u,$parent,$product,$settings,$id,$limit){accountQuery('SELECT id FROM idea_users WHERE id=?'.platformLock(),[$u['id']]);$now=platformNow();$n=(int)accountQuery("SELECT COUNT(*) FROM idea_ai_jobs WHERE user_id=? AND state IN ('queued','processing','completed') AND settings NOT LIKE ?",[$u['id'],'%"quota_companion":true%'])->fetchColumn();$all=(int)accountQuery('SELECT COUNT(*) FROM idea_ai_jobs WHERE created_at>?',[$now-86400000])->fetchColumn();if($parent===''&&$limit!==null&&$n>=$limit)accountError(429,'AI_SUBSCRIPTION_REQUIRED');if($limit!==null&&$all>=(int)(platformConfig()['ai_daily_global_limit']??100))accountError(429,'AI_DAILY_LIMIT');
+  try{$created=platformTransaction(function()use($u,$parent,$product,$settings,$id,$limit,$idempotencyKey,$requestFingerprint){accountQuery('SELECT id FROM idea_users WHERE id=?'.platformLock(),[$u['id']]);$now=platformNow();$duplicate=accountQuery('SELECT id,state FROM idea_ai_jobs WHERE user_id=? AND settings LIKE ? ORDER BY created_at DESC LIMIT 1',[$u['id'],'%"_idempotency_key":"'.$idempotencyKey.'"%'])->fetch();if($duplicate)return ['_duplicate'=>$duplicate];$sameActive=accountQuery("SELECT id,state FROM idea_ai_jobs WHERE user_id=? AND state IN ('queued','processing') AND settings LIKE ? ORDER BY created_at DESC LIMIT 1",[$u['id'],'%"_request_fingerprint":"'.$requestFingerprint.'"%'])->fetch();if($sameActive)return ['_duplicate'=>$sameActive];$n=(int)accountQuery("SELECT COUNT(*) FROM idea_ai_jobs WHERE user_id=? AND state IN ('queued','processing','completed') AND settings NOT LIKE ?",[$u['id'],'%"quota_companion":true%'])->fetchColumn();$all=(int)accountQuery('SELECT COUNT(*) FROM idea_ai_jobs WHERE created_at>?',[$now-86400000])->fetchColumn();if($parent===''&&$limit!==null&&$n>=$limit)accountError(429,'AI_SUBSCRIPTION_REQUIRED');if($limit!==null&&$all>=(int)(platformConfig()['ai_daily_global_limit']??100))accountError(429,'AI_DAILY_LIMIT');
    if($parent!==''){$source=accountQuery('SELECT id,state,settings,created_at FROM idea_ai_jobs WHERE id=? AND user_id=?'.platformLock(),[$parent,$u['id']])->fetch();$sourceSettings=$source?json_decode($source['settings'],true):null;if(!$source||$source['state']!=='completed'||$source['created_at']<$now-600000||!in_array($sourceSettings['surface']??'',['floor','الأرضية'],true)||!in_array($settings['surface'],['walls','wall','الجدران','الحوائط'],true)||accountQuery('SELECT id FROM idea_ai_jobs WHERE parent_id=? LIMIT 1',[$parent])->fetch())accountError(422,'INVALID_COMBINED_SURFACE');$settings['quota_companion']=true;}
-   accountQuery('INSERT INTO idea_ai_jobs(id,user_id,parent_id,product_id,state,settings,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)',[$id,$u['id'],$parent?:null,$product,'queued',platformJson($settings),$now,$now]);});}catch(Throwable $e){@unlink($dir.'/room.jpg');@unlink($dir.'/material.jpg');@rmdir($dir);throw $e;}return ['id'=>$id,'state'=>'queued'];
+   accountQuery('INSERT INTO idea_ai_jobs(id,user_id,parent_id,product_id,state,settings,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?)',[$id,$u['id'],$parent?:null,$product,'queued',platformJson($settings),$now,$now]);return ['created'=>true];});}catch(Throwable $e){@unlink($dir.'/room.jpg');@unlink($dir.'/material.jpg');@rmdir($dir);throw $e;}
+  if(is_array($created)&&isset($created['_duplicate'])){@unlink($dir.'/room.jpg');@unlink($dir.'/material.jpg');@rmdir($dir);return ['id'=>$created['_duplicate']['id'],'state'=>$created['_duplicate']['state'],'duplicate'=>true];}
+  return ['id'=>$id,'state'=>'queued','duplicate'=>false];
  }
  if($a==='ai-process'){
   $id=accountString($d,'id',32,true);$job=platformTransaction(function()use($id,$u){$r=accountQuery('SELECT * FROM idea_ai_jobs WHERE id=? AND user_id=?'.platformLock(),[$id,$u['id']])->fetch();if(!$r)accountError(404,'JOB_NOT_FOUND');if($r['state']!=='queued')return $r;accountQuery("UPDATE idea_ai_jobs SET state='processing',attempts=attempts+1,updated_at=? WHERE id=?",[platformNow(),$id]);$r['claimed']=true;return $r;});if(empty($job['claimed']))return ['id'=>$id,'state'=>$job['state']];
@@ -190,15 +210,17 @@ function platformAiAction(string $a,array $d,array $u): array{
   try{
    $s=json_decode($job['settings'],true);if($job['parent_id']){$parent=platformAiJob($u,$job['parent_id']);$source=platformAiDir($parent['id']).'/result.png';if(!is_file($source))$source=platformAiDir($parent['id']).'/result.jpg';if($parent['state']!=='completed'||!is_file($source))accountError(422,'PARENT_IMAGE_UNAVAILABLE');$room=file_get_contents($source);if(file_put_contents($dir.'/room.jpg',$room,LOCK_EX)===false)accountError(503,'STORAGE_UNAVAILABLE');}else $room=file_get_contents($dir.'/room.jpg');$target=match($s['surface']??''){ 'floor','الأرضية'=>'floor only','walls','wall','الجدران','الحوائط'=>'walls only','ceiling','السقف'=>'ceiling only','both','الأرضية والحوائط','الأرضية والجدران'=>'floor and walls only',default=>'the explicitly selected surface only'};$prompt='Edit IMAGE 1, an interior photograph. IMAGE 2 is the ceramic tile face. Replace ONLY the selected surface: '.$target.'. WALLS means VERTICAL WALL FACES only, never the ceiling, floor, mantel, hearth or furniture. FLOOR means only the walkable floor, never walls or ceiling. Keep the ceiling, all unselected surfaces, sofa, table, fireplace opening, lighting, glass, plants and every other object unchanged. Do NOT redesign the room or add objects. Use the actual tile motif from IMAGE 2 in perspective, without inventing veins. Keep the same camera, composition and aspect ratio. Design settings: '.platformJson(['surface'=>$s['surface'],'tile_size_cm'=>$s['size'],'angle'=>$s['angle'],'grout'=>$s['grout']]);
    $prompt.=' HARD MATERIAL DIMENSIONS: Every tile is exactly '.($s['tile_width_mm']/10).' by '.($s['tile_height_mm']/10).' cm (aspect ratio '.$s['tile_aspect_ratio'].'). Tile joints '.($s['grout_width_mm']??2).' mm. No random resize or invented tile formats. Repeat the exact material reference in consistent perspective. Without a measured room reference, physical tile count is only an approximate visualization and must not be certified as measured.';
-    // Qwen edit worker is mandatory; all alternate providers are disabled.
+    // Only the configured Runpod worker contract is accepted; no provider fallback is used.
    $endpoint=platformSecret('RUNPOD_ENDPOINT_ID');
+   $contract=$s['_worker_contract']??platformAiWorkerContract();
    if(!is_string($endpoint)||!preg_match('/^[A-Za-z0-9_-]{3,120}$/D',$endpoint)
-      ||platformSecret('RUNPOD_WORKER_CONTRACT')!=='idea-qwen-mask-v1')
+      ||!in_array($contract,['idea-qwen-mask-v1','idea-flux2-klein-mask-v2'],true))
       accountError(503,'RUNPOD_WORKER_NOT_VERIFIED');
    $roomInfo=@getimagesizefromstring($room);
    if(!$roomInfo||$roomInfo[0]*$roomInfo[1]>12000000)accountError(422,'ROOM_IMAGE_INVALID');
+   $model=$contract==='idea-flux2-klein-mask-v2'?'black-forest-labs/FLUX.2-klein-4B':'Qwen/Qwen-Image-Edit-2511';
    $payload=['input'=>[
-     'contract'=>'idea-qwen-mask-v1','model'=>'Qwen/Qwen-Image-Edit-2511',
+     'contract'=>$contract,'model'=>$model,
      'prompt'=>$prompt,
      'original_image'=>'data:image/jpeg;base64,'.base64_encode($room),
      'material_reference'=>'data:image/jpeg;base64,'.base64_encode(file_get_contents($dir.'/material.jpg')),
@@ -208,6 +230,7 @@ function platformAiAction(string $a,array $d,array $u): array{
      'product'=>['id'=>$job['product_id'],'tile_size'=>$s['size']??null,
          'tile_width_mm'=>$s['tile_width_mm']??null,'tile_height_mm'=>$s['tile_height_mm']??null,
          'tile_aspect_ratio'=>$s['tile_aspect_ratio']??null,'grout_width_mm'=>$s['grout_width_mm']??null,
+         'grout'=>$s['grout']??null,'rotation'=>$s['angle']??0,
          'physical_scale_calibrated'=>false],
    ]];
    // Submit and store provider ID; clients poll ai-job for completion.
@@ -218,10 +241,10 @@ function platformAiAction(string $a,array $d,array $u): array{
    if(!in_array($code,[200,201,202],true)||!is_string($providerId)
        ||!preg_match('/^[A-Za-z0-9_-]{8,128}$/D',$providerId))
      accountError(502,$code===429?'RUNPOD_RATE_LIMIT':'RUNPOD_QUEUE_REJECTED');
-   $s['_runpod_job_id']=$providerId;
+   $s['_runpod_job_id']=$providerId;$s['_runpod_stage']='queued';
    accountQuery("UPDATE idea_ai_jobs SET settings=?,updated_at=? WHERE id=? AND user_id=?",
      [platformJson($s),platformNow(),$id,$u['id']]);
-   return ['id'=>$id,'state'=>'processing','adapter_revision'=>'20261103-runpod-qwen-async-v1'];
+   return ['id'=>$id,'state'=>'processing','adapter_revision'=>$contract==='idea-flux2-klein-mask-v2'?'20261124-runpod-flux2-klein-v2':'20261103-runpod-qwen-async-v1','model'=>$model];
   }catch(Throwable $e){$error=$e instanceof IdeaAccountError?$e->getMessage():'GENERATION_FAILED';accountQuery("UPDATE idea_ai_jobs SET state='failed',error_code=?,updated_at=? WHERE id=?",[$error,platformNow(),$id]);if($e instanceof IdeaAccountError)throw $e;accountError(502,'GENERATION_FAILED');}
  }
  accountError(404,'UNKNOWN_ACTION');

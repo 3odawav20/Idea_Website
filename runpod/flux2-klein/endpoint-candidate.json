@@ -1,0 +1,34 @@
+{
+  "endpointId": "5lvjvfqqbkw3c7",
+  "productionCutoverApproved": false,
+  "candidateImage": "ghcr.io/3odawav20/idea-dh-flux2-klein:20261124-v1",
+  "rollbackImage": "ghcr.io/3odawav20/idea-dh-qwen-mask:20261115-v3",
+  "workers": {
+    "min": 0,
+    "max": 1,
+    "idleTimeout": 10
+  },
+  "workerContract": {
+    "new": "idea-flux2-klein-mask-v2",
+    "legacyCompatible": "idea-qwen-mask-v1",
+    "serverEnvOptIn": "RUNPOD_WORKER_CONTRACT=idea-flux2-klein-mask-v2"
+  },
+  "models": {
+    "generation": "black-forest-labs/FLUX.2-klein-4B",
+    "segmentation": "nvidia/segformer-b5-finetuned-ade-640-640",
+    "depth": "depth-anything/Depth-Anything-V2-Small-hf"
+  },
+  "cache": {
+    "modelName": "black-forest-labs/FLUX.2-klein-4B",
+    "hfHome": "/runpod-volume/huggingface-cache",
+    "networkVolumeCreationRequested": false,
+    "loadOncePerWorker": true
+  },
+  "gpuRecommendation": {
+    "candidate": "NVIDIA RTX 4090 (24 GB VRAM)",
+    "modelCardMinimum": "Approximately 13 GB VRAM for FLUX.2 Klein 4B",
+    "status": "REQUIRES live endpoint-region availability and price check; not applied",
+    "previousPool": "AMPERE_80"
+  },
+  "regionCandidates": ["US-KS-2", "US-MO-1", "US-MD-1"]
+}

@@ -15,11 +15,15 @@ test("one published studio route receives stable catalogue product IDs", () => {
   assert.match(detail, /encodeURIComponent\(product\.id\)/);
   assert.match(page, /to=\{`\/product\/\$\{product\.slug\}`\}/);
 });
-test("frontend uses real asynchronous jobs and never manufactures a preview", () => {
+test("frontend uses authenticated asynchronous MySQL jobs and restores saved results", () => {
   assert.match(page, /jobId/);
   assert.match(page, /setResult\(/);
-  assert.match(page, /"\/api\/visualize\.php"/);
-  assert.doesNotMatch(page, /GEMINI|generativelanguage|fake preview/i);
+  assert.match(page, /createPlatformAiJob/);
+  assert.match(page, /fetchPlatformAiHistory/);
+  assert.match(page, /fetchPlatformAiJob/);
+  assert.match(page, /downloadPlatformAiResult/);
+  assert.match(page, /useSWR/);
+  assert.doesNotMatch(page, /visualize\.php|GEMINI|generativelanguage|fake preview/i);
 });
 test("Runpod credentials remain server-only", () => {
   assert.doesNotMatch(page, /RUNPOD_API_KEY|api\.runpod\.ai/);
