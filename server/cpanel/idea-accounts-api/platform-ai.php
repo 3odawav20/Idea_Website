@@ -233,6 +233,18 @@ function platformAiAction(string $a,array $d,array $u): array{
          'grout'=>$s['grout']??null,'rotation'=>$s['angle']??0,
          'physical_scale_calibrated'=>false],
    ]];
+   // Rasterize the customer's existing normalized polygon into an actual
+   // opaque binary PNG at room resolution. The FLUX worker intersects this
+   // hard constraint with semantic floor/wall masks and protected objects.
+   if($contract==='idea-flux2-klein-mask-v2'&&!empty($s['points'])){
+     $selection=imagecreatetruecolor($roomInfo[0],$roomInfo[1]);
+     if(!$selection)accountError(503,'MASK_ALLOCATION_FAILED');
+     $coords=[];foreach($s['points'] as $point){$coords[]=(int)round($point[0]*($roomInfo[0]-1));$coords[]=(int)round($point[1]*($roomInfo[1]-1));}
+     imagefilledpolygon($selection,$coords,0xffffff);
+     ob_start();$ok=imagepng($selection,null,6);$maskBytes=ob_get_clean();imagedestroy($selection);
+     if(!$ok||!is_string($maskBytes)||$maskBytes==='')accountError(503,'MASK_ENCODING_FAILED');
+     $payload['input']['input_mask']='data:image/png;base64,'.base64_encode($maskBytes);
+   }
    // Submit and store provider ID; clients poll ai-job for completion.
    [$code,$response]=platformHttp('https://api.runpod.ai/v2/'.$endpoint.'/run',
      ['Content-Type: application/json','Authorization: Bearer '.platformSecret('RUNPOD_API_KEY')],
