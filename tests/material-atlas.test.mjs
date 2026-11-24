@@ -33,9 +33,9 @@ test("atlas has discovery filters and a responsive paginated catalogue", () => {
   assert.match(css, /prefers-reduced-motion:reduce/);
 });
 test("chosen material deep-links to the original room visualizer", () => {
-  assert.match(studio, /setSearchParams\(\{ product: id \}/);
+  assert.match(studio, /setSearchParams\(\{ product: id, surface: materialSurface \}/);
   assert.match(studio, /scrollIntoView/);
-  assert.match(studio, /form\.append\("productId", selectedProduct\.id\)/);
-  assert.match(studio, /form\.append\("material", reference/);
+  assert.match(studio, /form\.append\(prefix \+ "productId", choice\.product\.id\)/);
+  assert.match(studio, /form\.append\(prefix \+ "face", String\(choice\.selection\.face\)\)/);
   assert.doesNotMatch(studio, /generativelanguage|Gemini API key|VITE_GEMINI/i);
 });

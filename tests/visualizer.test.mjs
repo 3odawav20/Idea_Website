@@ -53,9 +53,22 @@ test("oversized mobile images are normalized before upload without cropping or r
   assert.match(page, /Math\.floor\(h \* scale\)/);
   assert.match(page, /ctx\.drawImage\(image, 0, 0, width, height\)/);
   assert.match(page, /blob\.size <= MAX_BYTES/);
-  assert.equal((page.match(/await prepareUpload\(file\)/g) || []).length, 2);
+  assert.match(page, /await prepareUpload\(file\)/);
   assert.match(page, /setPhoto\(prepared\.file\)/);
-  assert.match(page, /setMaterial\(prepared\.file\)/);
   assert.match(server, /MAX_PIXELS = 12000000/);
   assert.match(server, /MAX_IMAGE_BYTES = 12 \* 1024 \* 1024/);
+});
+
+test("walls and floor have independent catalogue selections and one logical job", () => {
+  const liveAdapter = readFileSync("server/cpanel/idea-accounts-api/visualize.php", "utf8");
+  const surfaces = readFileSync("server/cpanel/idea-accounts-api/platform-ai-surfaces.php", "utf8");
+  assert.match(page, /Record<MaterialSurface, SurfaceSelection>/);
+  assert.match(page, /for \(const target of targets\)/);
+  assert.match(liveAdapter, /platformAiSurfaceFace\(\$product,\(int\)\$face\)/);
+  assert.match(liveAdapter, /'independent_surfaces'=>2/);
+  assert.match(surfaces, /target_surface.*=>.*\$target/);
+  assert.match(surfaces, /platformAiSurfaceSavePng\(\$result, \$dir\.'/);
+  assert.equal((surfaces.match(/INSERT INTO idea_ai_jobs/g) || []).length, 1);
+  assert.ok(surfaces.indexOf("accountRate('ai-create'") < surfaces.indexOf("return platformTransaction("),
+    "the production rate limiter opens its own transaction");
 });
