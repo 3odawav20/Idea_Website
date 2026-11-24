@@ -10,7 +10,7 @@ import { useI18n } from "../i18n/i18n";
 import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
-import { supabase } from "../backend/supabaseClient";
+import { getPhpSession } from "../backend/phpAccounts";
 import type { Product } from "../data/types";
 import "./AiVisualizerStudio.css";
 
@@ -37,12 +37,12 @@ type JobResponse = {
 };
 
 const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
-const MAX_BYTES = 12 * 1024 * 1024;
+const MAX_BYTES = 8 * 1024 * 1024;
 const POLL_INTERVAL = 2500;
-const POLL_LIMIT = 240;
+const POLL_LIMIT = 480;
 const STAGE_ORDER: JobStage[] = ["uploading", "validating", "queued", "generating", "ready"];
 
-const MAX_PIXELS = 12_000_000;
+const MAX_PIXELS = 10_000_000;
 const MAX_EDGE = 8192;
 
 // Keep the full frame and normalize oversized camera images before PHP validation.
@@ -267,16 +267,14 @@ export function AiVisualizerStudio() {
   useEffect(() => () => { if (materialUrl) URL.revokeObjectURL(materialUrl); }, [materialUrl]);
 
   useEffect(() => {
-    if (!aiEligible || !supabase) {
+    if (!aiEligible) {
       setQuota(null);
       return;
     }
     let active = true;
     void (async () => {
-      const { data: auth } = await supabase.auth.getSession();
-      if (!auth.session?.access_token) return;
       const response = await fetch("/api/visualize.php?action=status", {
-        headers: { Authorization: `Bearer ${auth.session.access_token}` },
+        credentials: "same-origin",
         cache: "no-store",
       });
       const data = await response.json().catch(() => null) as (JobResponse & { integration?: string }) | null;
@@ -348,11 +346,12 @@ export function AiVisualizerStudio() {
     });
   }
 
-  async function accessToken() {
-    if (!supabase) throw new Error(tr("خدمة تسجيل الدخول غير مهيأة.", "Authentication is not configured."));
-    const { data, error: authError } = await supabase.auth.getSession();
-    if (authError || !data.session?.access_token) throw new Error(tr("سجّل الدخول قبل بدء التوليد.", "Sign in before starting a generation."));
-    return data.session.access_token;
+  async function csrfToken() {
+    const current = await getPhpSession();
+    if (!current.user || !["buyer", "admin"].includes(current.user.role)) {
+      throw new Error(tr("سجّل الدخول بحساب عميل أو أدمن.", "Sign in with a customer or administrator account."));
+    }
+    return current.csrf;
   }
 
   async function materialBlob(signal: AbortSignal) {
@@ -362,22 +361,22 @@ export function AiVisualizerStudio() {
       const response = await fetch(selectedFaceImage, { mode: "cors", signal, cache: "force-cache" });
       if (!response.ok) return null;
       const blob = await response.blob();
-      return ALLOWED.includes(blob.type) && blob.size > 0 && blob.size <= MAX_BYTES ? blob : null;
+      return (await prepareUpload(new File([blob], "catalogue-material", { type: blob.type }))).file;
     } catch {
       return null;
     }
   }
 
-  async function pollJob(id: string, token: string, controller: AbortController) {
+  async function pollJob(id: string, controller: AbortController) {
     for (let attempt = 0; attempt < POLL_LIMIT; attempt++) {
       await wait(POLL_INTERVAL, controller.signal);
       const response = await fetch(`/api/visualize.php?job=${encodeURIComponent(id)}`, {
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "same-origin",
         cache: "no-store",
         signal: controller.signal,
       });
       const data = await response.json().catch(() => null) as JobResponse | null;
-      if (!data) throw new Error(tr("استجابة غير صالحة من خدمة التصور.", "The visualization service returned an invalid response."));
+      if (!response.ok || !data) throw new Error(data?.error || tr("استجابة غير صالحة من خدمة التصور.", "The visualization service returned an invalid response."));
       if (data.quota) setQuota(data.quota);
       if (data.stage) setStage(data.stage);
       if (data.state === "ready" && data.image) {
@@ -430,7 +429,7 @@ export function AiVisualizerStudio() {
     setError("");
     setStage("uploading");
     try {
-      const token = await accessToken();
+      const token = await csrfToken();
       const reference = await materialBlob(controller.signal);
       if (!reference) throw new Error(tr(
         "تعذر قراءة صورة المنتج من مصدرها. ارفع عينة أصلية واضحة للخامة.",
@@ -456,7 +455,8 @@ export function AiVisualizerStudio() {
       setStage("validating");
       const response = await fetch("/api/visualize.php", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
+        credentials: "same-origin",
+        headers: { "X-CSRF-Token": token },
         body: form,
         cache: "no-store",
         signal: controller.signal,
@@ -466,7 +466,7 @@ export function AiVisualizerStudio() {
       if (data.quota) setQuota(data.quota);
       setJobId(data.jobId);
       setStage(data.stage || "queued");
-      await pollJob(data.jobId, token, controller);
+      await pollJob(data.jobId, controller);
     } catch (cause) {
       if (!controller.signal.aborted) {
         setStage("failed");
@@ -480,18 +480,8 @@ export function AiVisualizerStudio() {
   async function cancelJob() {
     if (!jobId || !busy) return;
     requestRef.current?.abort();
-    try {
-      const token = await accessToken();
-      const form = new FormData();
-      form.append("action", "cancel");
-      form.append("jobId", jobId);
-      const response = await fetch("/api/visualize.php", { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: form, cache: "no-store" });
-      const data = await response.json().catch(() => null) as JobResponse | null;
-      if (data?.quota) setQuota(data.quota);
-    } finally {
-      setStage("idle");
-      setJobId(null);
-    }
+    setStage("failed");
+    setError(tr("تم إيقاف المتابعة فقط. قد تستمر الوظيفة على الخادم؛ راجع سجل التصميمات.", "Polling stopped only. The server job may continue; check design history."));
   }
 
   const productName = selectedProduct ? localizedName(selectedProduct) : tr("اختر خامة", "Select a material");
@@ -629,7 +619,7 @@ export function AiVisualizerStudio() {
                 <div className="idea-studio-stage-track">
                   {STAGE_ORDER.map((item) => <span key={item} className={STAGE_ORDER.indexOf(item) <= STAGE_ORDER.indexOf(stage) ? "done" : ""}>{stageText[item]}</span>)}
                 </div>
-                <button type="button" onClick={() => void cancelJob()}><X size={14} /> {tr("إلغاء الوظيفة", "Cancel job")}</button>
+                <button type="button" onClick={() => void cancelJob()}><X size={14} /> {tr("إيقاف المتابعة", "Stop waiting")}</button>
               </div>
             )}
           </div>
