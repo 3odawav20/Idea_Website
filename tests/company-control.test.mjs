@@ -70,7 +70,7 @@ test("admin announcement implementation remains staged; live header never reads 
   const header = read("src/app/components/Header.tsx");
   assert.match(header,/idea-catalogue-announcement/);
   assert.doesNotMatch(header,/<AnnouncementBar\b|supabase/i);
-  assert.match(read("src/app/components/Header.css"),/position:sticky/);
+  assert.match(read("src/app/components/Header.css"),/position:\s*sticky/);
   assert.match(read("src/app/components/AnnouncementBar.css"),/prefers-reduced-motion/);
   assert.match(read("src/app/components/AnnouncementBar.css"),/max-width:640px/);
 });
@@ -97,14 +97,18 @@ test("code and brand search preserves admin-only prices, similar items never inv
 test("social login requires server-configured PHP providers; unconfigured buttons stay disabled",()=>{
   for(const provider of ["google","facebook","apple","x","microsoft","whatsapp"])
     assert.ok(auth.includes('id: "'+provider+'"'));
-  assert.match(auth,/socialProviderStatus\(\)/);
-  assert.match(auth,/providerReady\?\.\[item\.id\] === true/);
-  assert.match(auth,/disabled=\{!enabled \|\| pending !== null\}/);
-  assert.match(auth,/SOCIAL_AUTH_API \+ "\?action=start&provider="/);
+  assert.match(auth,/socialProviderDetails\(\)/);
+  assert.match(auth,/setProviderReady\(info\.providers\)/);
+  assert.match(auth,/setProviderReady\(null\)/);
+  assert.match(auth,/providerReady\?\.\[id\] === true/);
+  assert.match(auth,/disabled=\{!isReady \|\| pending !== null \|\| waBusy\}/);
+  assert.match(auth,/getSocialAuthStartUrl\(provider as PhpOAuthProvider, mode, redirectTo\)/);
+  assert.match(auth,/window\.location\.assign\(targetUrl\)/);
   assert.match(auth,/provider === "whatsapp"/); // no fake OAuth for unimplemented WhatsApp OTP
   assert.doesNotMatch(auth,/signInWithPopup|signInWithOAuth|signInWithOtp/);
   const php=read("src/app/backend/phpAccounts.ts");
   assert.match(php,/\?action=providers/);
+  assert.match(php,/new URLSearchParams\(\{\s*action: "start",\s*provider,\s*mode,\s*redirect: sanitizeSocialRedirect\(redirectTo\)/);
   assert.match(php,/credentials: "same-origin"/);
 });
 

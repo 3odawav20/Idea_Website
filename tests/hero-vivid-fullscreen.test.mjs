@@ -7,29 +7,28 @@ const header = readFileSync("src/app/components/Header.css", "utf8");
 const globals = readFileSync("src/styles/globals.css", "utf8");
 const home = readFileSync("src/app/pages/Home.css", "utf8");
 
-test("cinematic hero fills the viewport below the header on desktop and mobile", () => {
-  assert.match(hero, /height:\s*calc\(100svh - 52px\)/);
-  assert.match(hero, /height:\s*calc\(100svh - 54px\)/);
+test("cinematic hero fills the viewport behind the transparent header on desktop and mobile", () => {
+  const headerTsx = readFileSync("src/app/components/Header.tsx", "utf8");
+  assert.match(hero, /\.idea-editorial-hero\.idea-film-ready\s*\{[^}]*height:\s*100svh;/);
+  assert.match(hero, /@media\s*\(max-width: 767px\)\s*\{\s*\.idea-editorial-hero\.idea-film-ready\s*\{[^}]*height:\s*100svh;/);
+  assert.match(header, /\.idea-reference-header--overlay\s*\{\s*margin-bottom:\s*calc\(-1 \* var\(--idea-header-height\)\)/);
+  assert.match(headerTsx, /const isOverlayRoute\s*=\s*isHome\s*\|\|/);
   assert.doesNotMatch(hero, /height:\s*min\(78svh/);
   assert.doesNotMatch(hero, /max-height:\s*1200px/);
 });
 
-test("day orange glass and night dark glass retain visible logos and subtle black type shadows", () => {
+test("transparent adaptive glass retains visible logos and type shadows in both themes", () => {
   assert.match(header, /html\[data-theme="light"\] \.idea-reference-header/);
   assert.match(header, /html\[data-theme="dark"\] \.idea-reference-header/);
-  assert.match(header, /background-color:\s*rgba\(255,255,255,\.09\)/);
-  assert.match(header, /background-color:\s*rgba\(255,255,255,\.045\)/);
-  assert.match(header, /backdrop-filter:\s*blur\(26px\)/);
-  assert.doesNotMatch(header, /rgba\(171,\s*58,\s*1,\s*\.45\)/);
-  assert.doesNotMatch(header, /rgba\(10,\s*10,\s*12,\s*\.38\)/);
+  assert.match(header, /\.idea-reference-header\s*\{[^}]*background:\s*transparent;[^}]*background-color:\s*transparent;[^}]*background-image:\s*none;/);
+  assert.match(header, /backdrop-filter:\s*blur\(22px\)\s*saturate\(/);
+  assert.match(header, /backdrop-filter:\s*blur\(26px\)\s*saturate\(/);
+  assert.match(header, /\.idea-reference-header::before,\s*\.idea-reference-header::after\s*\{\s*display:\s*none;\s*content:\s*none;/);
+  assert.match(header, /text-shadow:\s*0 1px 10px rgba\(0,\s*0,\s*0/);
+  assert.match(header, /\.idea-reference-logo\s*\{[^}]*background:\s*transparent/);
+  assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo img\s*\{[^}]*drop-shadow/);
   assert.match(globals, /--idea-gold:\s*#fd6401/);
-  assert.match(header, /\.idea-reference-header::before/);
-  assert.match(header, /\.idea-reference-header::after/);
-  assert.match(header, /background-image: linear-gradient/);
-  assert.match(header, /text-shadow:\s*0 1px 3px rgba\(0,0,0/);
-  assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo\s*\{\s*background:\s*transparent/);
-  assert.match(header, /html\[data-theme="light"\] \.idea-reference-logo img\s*\{[\s\S]*?drop-shadow/);
-  assert.doesNotMatch(header, /html\[data-theme="light"\] \.idea-reference-logo\s*\{\s*background:\s*#090909/);
+  assert.doesNotMatch(header, /rgba\(171,\s*58,\s*1,\s*\.45\)|rgba\(10,\s*10,\s*12,\s*\.38\)/);
 });
 
 test("subtle editorial colour grade only; original material and product assets untouched", () => {

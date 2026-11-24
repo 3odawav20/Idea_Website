@@ -10,6 +10,8 @@ import {
 import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import { SocialAuth } from "../components/SocialAuth";
+import { useBackend } from "../backend/db";
+import { authenticatePhp, uploadBusinessDocument } from "../backend/phpAccounts";
 import "./AccountEntry.css";
 
 type Audience = "customer" | "business" | "admin";
@@ -44,7 +46,6 @@ const ADMIN_FEATURES = [
   {icon:ShieldCheck,title:msg("وصول آمن ومحمي","Secure access"),desc:msg("حماية متعددة الطبقات والتحقق الثنائي.","Layered protection and two-factor verification.")}
 ];
 
-const API = String(import.meta.env.VITE_IDEA_ACCOUNT_API || "").trim();
 
 function FeatureItems({ audience,locale }: {audience:Audience;locale:"ar"|"en"|"fr"}) {
   const features=audience==="customer"?CUSTOMER_FEATURES:audience==="business"?BUSINESS_FEATURES:ADMIN_FEATURES;
@@ -72,6 +73,7 @@ export function AccountEntry({audience, mode="register", googleLoginSlot}:{audie
   const {locale}=useI18n();
   const {mode:theme}=useTheme();
   const navigate=useNavigate();
+  const { refresh }=useBackend();
   const isAdmin=audience==="admin",isBusiness=audience==="business",isCustomer=audience==="customer";
   const isRegister=mode==="register"&&!isAdmin;
   const tr=(ar:string,en:string,fr=en)=>content(msg(ar,en,fr),locale);
@@ -100,56 +102,86 @@ export function AccountEntry({audience, mode="register", googleLoginSlot}:{audie
     if(isBusiness)return isRegister?tr("تسجيل حساب شركة","Register a company"):tr("دخول حساب الشركة","Business sign in");
     return isRegister?tr("إنشاء حساب جديد","Create a new account"):tr("تسجيل الدخول","Sign in");
   },[audience,mode,locale]);
-  const openApi=API.startsWith("https://") || (import.meta.env.DEV&&API.startsWith("/"));
   const onSubmit=async(e:FormEvent<HTMLFormElement>)=>{
     e.preventDefault();setError("");setNotice("");
     if(isRegister&&password!==confirmation){setError(tr("كلمتا المرور غير متطابقتين.","Passwords do not match."));return;}
     if(password.length<8){setError(tr("كلمة المرور يجب ألا تقل عن 8 أحرف.","Password must be at least 8 characters."));return;}
-    if(isRegister&&!consent){setError(tr("يجب الموافقة على الشروط وسياسة الخصوصية.","You must accept the terms and privacy policy."));return;}
+    if(isRegister&&!consent){setError(tr("يجب الموافقة على الشروط وسياسة الخصوصية.","Accept the terms and privacy policy."));return;}
     if(isBusiness&&isRegister){
       if(!company.trim()||!name.trim()||!businessKind||!country||!city.trim()||!license.trim()){
         setError(tr("أكمل بيانات الشركة المطلوبة.","Complete the required company details."));return;
       }
       if(!docs.length){setError(tr("ارفع مستندًا داعمًا واحدًا على الأقل.","Upload at least one supporting document."));return;}
     }
-    if(!openApi){setError(tr("معاينة التصميم جاهزة، لكن خدمة حسابات PHP/MySQL لم تُربط بهذه النسخة بعد. لم يتم إنشاء حساب.","This is a working form preview, but the PHP/MySQL account API is not yet connected. No account has been created."));return;}
-    const action=isRegister?"register":"login";
     setBusy(true);
     try{
-      let response:Response;
-      const body=new FormData();
-      body.append("audience",audience);
-      body.append("email",email.trim());
-      body.append("password",password);
+      const payload:Record<string,unknown>={email:email.trim(),password};
       if(isRegister){
-        body.append("name",name.trim());
-        body.append("phone",dial+phone.trim());
-        body.append("consent","true");
+        payload.display_name=name.trim();
+        payload.account_type=isBusiness?"business":"customer";
+        payload.phone=dial+phone.trim();
         if(isBusiness){
-          body.append("company_name",company.trim());
-          body.append("company_type",businessKind);
-          body.append("country",country);
-          body.append("city",city.trim());
-          body.append("license_number",license.trim());
-          docs.forEach(file=>body.append("documents[]",file,file.name));
+          const kinds:Record<string,{activity:string;category:string}>={
+            ceramic:{activity:"retailer",category:"ceramic"},
+            factory:{activity:"manufacturer",category:"ceramic"},
+            marble:{activity:"wholesaler",category:"marble"},
+            distributor:{activity:"wholesaler",category:"ceramic"},
+            wholesale:{activity:"wholesaler",category:"ceramic"}
+          };
+          const choice=kinds[businessKind];
+          if(!choice)throw new Error("INVALID_COMPANY_TYPE");
+          payload.company_name=company.trim();
+          payload.legal_name=company.trim();
+          payload.business_profile={
+            company_type:choice.activity,categories:[choice.category],primary_category:choice.category,
+            contract_volume:"prefer_not_to_say",commercial_registration:license.trim(),
+            governorate:city.trim(),service_areas:country,industry:businessKind
+          };
         }
       }
-      if(isAdmin){body.append("otp",otp.trim());body.append("remember_device",remember?"1":"0");}
-      response=await fetch(API.replace(/\/$/,"")+"/"+action,{method:"POST",body,credentials:"include",headers:{"Accept":"application/json"},redirect:"error"});
-      const ct=response.headers.get("content-type")||"";
-      if(!ct.includes("application/json"))throw new Error(tr("خدمة الحسابات لم ترجع استجابة JSON صالحة.","Account endpoint returned a non-JSON response."));
-      const data=await response.json() as {ok?:boolean;error?:string;message?:string;role?:string};
-      if(!response.ok||data.ok!==true)throw new Error(data.message||data.error||tr("فشل طلب الحساب.","Account request failed."));
-      if(isRegister){
-        setNotice(tr("تم استقبال طلبك على الخادم. راجع بريدك لاستكمال إجراءات التفعيل عند توفرها.","Your request has been accepted by the server. Follow any verification instructions."));
-      }else{
-        // Route selection still requires a role actually returned by the server.
-        const role=data.role;
-        if(role!=="admin"&&role!=="business"&&role!=="customer")throw new Error(tr("الخادم لم يؤكد صلاحيات الحساب.","The server did not confirm your account role."));
-        navigate(role==="admin"?"/admin":role==="business"?"/business":"/account");
+      if(isRegister)payload.consent=true;
+      if(isAdmin){payload.otp=otp.trim();payload.remember_device=remember;}
+      const account=await authenticatePhp(isRegister?"register":"login",payload);
+      const role=account.user?.role;
+      if(!role)throw new Error("ACCOUNT_ROLE_NOT_CONFIRMED");
+      if(isAdmin&&role!=="admin")throw new Error("ADMIN_ACCESS_REQUIRED");
+      if(isBusiness&&role!=="supplier")throw new Error("BUSINESS_ACCOUNT_REQUIRED");
+      if(isCustomer&&role!=="buyer")throw new Error("CUSTOMER_ACCOUNT_REQUIRED");
+      const verifiedSession=await refresh();
+      const expectedRole=role==="supplier"?"business":role==="buyer"?"customer":"admin";
+      if(!verifiedSession||verifiedSession.id!==String(account.user?.id)||verifiedSession.role!==expectedRole)throw new Error("ACCOUNT_SESSION_MISSING");
+      if(isBusiness&&isRegister){
+        let uploaded=0;
+        try{
+          for(const file of docs){
+            await uploadBusinessDocument(file, "commercial_registration");
+            uploaded++;
+          }
+        }catch(err){
+          setError(tr("تم إنشاء حساب الشركة لكن رفع المستندات غير مكتمل. يمكنك تسجيل الدخول لاستكمال التحقق.","Business account created; document upload is incomplete. Sign in to complete verification."));
+          setNotice(tr("المستندات المرفوعة: "+uploaded+" من "+docs.length,"Documents uploaded: "+uploaded+" of "+docs.length));
+          return;
+        }
       }
-    }catch(err){setError(err instanceof Error?err.message:tr("تعذّر إتمام الطلب.","Request failed."))}
-    finally{setBusy(false);}
+      navigate(role==="admin"?"/admin":role==="supplier"?"/business":"/account");
+    }catch(err){
+      const reason=err instanceof Error?err.message:"ACCOUNT_REQUEST_FAILED";
+      const messages:Record<string,string>={
+        INVALID_FIELDS:tr("راجع بيانات التسجيل المطلوبة.","Check the required fields."),
+        INVALID_LOGIN:tr("البريد الإلكتروني أو كلمة المرور غير صحيحة.","Incorrect email or password."),
+        ACCOUNT_EXISTS:tr("البريد الإلكتروني مسجل بالفعل.","This email is already registered."),
+        INVALID_CSRF:tr("انتهت جلسة الأمان. حاول مجددًا.","Security session expired. Please retry."),
+        ACCOUNT_SESSION_MISSING:tr("تعذر تأكيد جلسة الحساب. حاول تسجيل الدخول مرة أخرى.","Could not verify your account session. Please sign in again."),
+        CSRF_INVALID:tr("انتهت جلسة الأمان. حاول مجددًا.","Security session expired. Please retry."),
+        ACCOUNT_API_NON_JSON:tr("خدمة الحسابات غير متاحة على هذا الخادم.","Account API is not available on this host."),
+        ADMIN_ACCESS_REQUIRED:tr("استخدم بوابة الإدارة بحساب مسؤول.","An administrator account is required."),
+        BUSINESS_ACCOUNT_REQUIRED:tr("استخدم حساب شركة.","A business account is required."),
+        CUSTOMER_ACCOUNT_REQUIRED:tr("استخدم حساب عميل.","A customer account is required."),
+        ACCOUNTS_UNAVAILABLE:tr("خدمة الحسابات غير متاحة الآن.","Account service is temporarily unavailable."),
+        TRY_LATER:tr("محاولات كثيرة. جرّب لاحقًا.","Too many attempts. Try later.")
+      };
+      setError(messages[reason]||reason);
+    }finally{setBusy(false);}
   };
   const onDocuments=(files:FileList|null)=>{
     const list=Array.from(files||[]);
