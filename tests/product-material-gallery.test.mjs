@@ -35,3 +35,12 @@ test("responsive white product sheet separates product image and features", () =
   assert.match(css, /idea-technical-grid\{grid-template-columns:repeat\(2/);
   assert.match(css, /@media\(max-width:540px\)/);
 });
+
+test("product detail follows the selected light and dark storefront themes", () => {
+  assert.match(css, /html\[data-theme="light"\] \.idea-catalogue-detail\s*\{[^}]*color-scheme:\s*light/s);
+  assert.match(css, /html\[data-theme="dark"\] \.idea-catalogue-detail\s*\{[^}]*color-scheme:\s*dark/s);
+  assert.match(css, /html\[data-theme="dark"\] \.idea-material-hero\s*\{[^}]*background:\s*var\(--idea-surface\)/s);
+  assert.match(css, /html\[data-theme="dark"\] \.idea-material-hero-content h1\s*\{[^}]*color:\s*var\(--idea-text\)/s);
+  assert.match(css, /html\[data-theme="dark"\] \.idea-material-summary dd\s*\{[^}]*color:\s*var\(--idea-text\)/s);
+  assert.match(css, /html\[data-theme="dark"\] \.idea-product-catalogue-sheet \.idea-technical-panel\s*\{[^}]*background:\s*var\(--idea-surface\)/s);
+});
