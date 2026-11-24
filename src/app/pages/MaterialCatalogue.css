@@ -206,3 +206,124 @@
 @media(prefers-reduced-motion:reduce) {
   .idea-material-orb,.idea-material-orb img { transition:none; }
 }
+
+
+/* Product catalogue: keep the reference typography and give the material orb real depth. */
+.idea-material-card-body { align-items:stretch; gap:7px; padding:11px 2px 0; text-align:start; }
+.idea-material-card-body .idea-material-maker { justify-content:flex-start; text-align:start; gap:7px; min-height:0; order:0; font-size:12px; }
+.idea-material-card-body .idea-material-maker > span { color:var(--idea-text); font-size:13px; font-weight:700; line-height:1.25; }
+.idea-material-card-body .idea-material-maker > small { color:var(--idea-text-muted); font-size:11px; font-weight:400; line-height:1.25; }
+.idea-material-card-body .idea-material-name-pill {
+  align-self:flex-start; display:inline-flex; max-width:100%; margin:0; padding:0;
+  border:0; border-radius:0; background:transparent; box-shadow:none; color:var(--idea-text);
+  font-size:17px; font-weight:500; line-height:1.35; text-align:start; text-decoration:none;
+  order:1; transition:color .2s ease,transform .2s ease;
+}
+.idea-material-card-body .idea-material-name-pill:hover { color:var(--idea-gold); transform:translateY(-1px); }
+.idea-material-card-body .idea-material-meta {
+  display:flex; align-items:center; justify-content:flex-start; flex-wrap:nowrap; gap:8px;
+  width:100%; min-width:0; padding:0 0 10px; border-bottom:1px solid var(--mc-rim);
+  color:var(--idea-text-muted); font-size:12px; line-height:1.35; order:2;
+}
+.idea-material-card-body .idea-material-meta > span:first-child { flex:0 0 auto; white-space:nowrap; }
+.idea-material-card-body .idea-material-meta > span:last-child { flex:1 1 auto; min-width:0; max-width:none; }
+.idea-material-card-footer { width:100%; margin-top:2px; padding-top:1px; border-top:0; gap:8px; order:3; }
+.idea-material-quote,.idea-material-visualize {
+  min-width:0; min-height:38px; padding:0 4px; gap:6px; font-size:12px; line-height:1.25; white-space:nowrap;
+}
+.idea-material-quote { justify-content:flex-start; color:var(--idea-text); }
+.idea-material-visualize { justify-content:flex-end; color:var(--idea-gold); }
+.idea-material-quote:hover,.idea-material-visualize:hover { transform:translateY(-1px); }
+
+/* Layered highlights, a soft contact shadow and slow idle movement create a 3D swatch. */
+.idea-material-card { perspective:1100px; }
+.idea-material-card-media { isolation:isolate; transform-style:preserve-3d; }
+.idea-material-card-media::after {
+  width:58%; height:9%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.34) 0%,rgba(0,0,0,.15) 48%,transparent 76%);
+  filter:blur(16px); transform:translateX(-50%) scale(.88);
+  transition:transform .45s ease,opacity .45s ease,filter .45s ease;
+}
+.idea-material-orb {
+  transform:translate3d(0,0,0); transform-style:preserve-3d; will-change:transform,filter;
+  animation:idea-material-orb-float 7.2s ease-in-out infinite;
+  filter:drop-shadow(0 17px 18px rgba(0,0,0,.20)) drop-shadow(0 5px 7px rgba(0,0,0,.13));
+  transition:transform .55s cubic-bezier(.2,.8,.2,1),filter .55s ease;
+}
+.idea-material-orb::before {
+  position:absolute; z-index:1; inset:-12%; border-radius:inherit;
+  background:linear-gradient(112deg,transparent 34%,rgba(255,255,255,0) 42%,rgba(255,255,255,.48) 49%,rgba(255,255,255,.10) 55%,transparent 64%);
+  content:""; opacity:0; pointer-events:none; transform:translate3d(-125%,0,2px) rotate(16deg);
+}
+.idea-material-orb::after {
+  z-index:2; border:1px solid rgba(255,255,255,.48);
+  background:
+    radial-gradient(ellipse at 26% 16%,rgba(255,255,255,.34),transparent 31%),
+    radial-gradient(ellipse at 76% 86%,transparent 24%,rgba(0,0,0,.12) 65%,rgba(0,0,0,.30) 100%),
+    linear-gradient(138deg,rgba(255,255,255,.13),transparent 46%,rgba(0,0,0,.15));
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.44),inset 0 -18px 28px rgba(0,0,0,.16),0 0 0 1px rgba(255,255,255,.08);
+}
+.idea-material-orb img { position:relative; z-index:0; transform:translateZ(0); backface-visibility:hidden; }
+.idea-material-card:nth-child(4n + 2) .idea-material-orb { animation-delay:-1.8s; }
+.idea-material-card:nth-child(4n + 3) .idea-material-orb { animation-delay:-3.6s; }
+.idea-material-card:nth-child(4n + 4) .idea-material-orb { animation-delay:-5.1s; }
+@keyframes idea-material-orb-float {
+  0%,100% { transform:translate3d(0,0,0) rotateX(0deg); }
+  50% { transform:translate3d(0,-4px,5px) rotateX(.8deg); }
+}
+@keyframes idea-material-orb-shine {
+  0% { opacity:0; transform:translate3d(-125%,0,2px) rotate(16deg); }
+  18% { opacity:.9; }
+  100% { opacity:0; transform:translate3d(125%,0,2px) rotate(16deg); }
+}
+@media (hover:hover) and (pointer:fine) {
+  .idea-material-card:hover .idea-material-orb {
+    animation:none;
+    transform:translate3d(0,-7px,16px) rotateX(2.2deg) rotateY(-1.8deg) scale(1.025);
+    filter:drop-shadow(0 25px 25px rgba(0,0,0,.25)) drop-shadow(0 8px 10px rgba(0,0,0,.16));
+  }
+  .idea-material-card:hover .idea-material-orb::before { animation:idea-material-orb-shine 1.25s cubic-bezier(.2,.65,.3,1) 1; }
+  .idea-material-card:hover .idea-material-card-media::after {
+    transform:translateX(-50%) scale(1.08); filter:blur(19px); opacity:.95;
+  }
+}
+[data-theme="dark"] .idea-material-orb {
+  filter:drop-shadow(0 19px 22px rgba(0,0,0,.52)) drop-shadow(0 0 9px rgba(255,255,255,.075));
+}
+[data-theme="dark"] .idea-material-orb::after {
+  border-color:rgba(255,255,255,.38);
+  background:
+    radial-gradient(ellipse at 26% 16%,rgba(255,255,255,.30),transparent 31%),
+    radial-gradient(ellipse at 76% 86%,transparent 20%,rgba(0,0,0,.25) 62%,rgba(0,0,0,.48) 100%),
+    linear-gradient(138deg,rgba(255,255,255,.15),transparent 46%,rgba(0,0,0,.22));
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.36),inset 0 -20px 30px rgba(0,0,0,.27),0 0 0 1px rgba(255,255,255,.10);
+}
+[data-theme="dark"] .idea-material-card-media::after {
+  background:radial-gradient(ellipse,rgba(0,0,0,.62) 0%,rgba(0,0,0,.25) 48%,transparent 76%);
+}
+[data-theme="light"] .idea-material-orb {
+  filter:drop-shadow(0 16px 18px rgba(58,43,24,.18)) drop-shadow(0 4px 7px rgba(58,43,24,.10));
+}
+[data-theme="light"] .idea-material-orb::after {
+  border-color:rgba(255,255,255,.62);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,.62),inset 0 -16px 24px rgba(67,53,35,.12),0 0 0 1px rgba(86,69,46,.06);
+}
+@media(max-width:560px) {
+  .idea-material-card-body { gap:6px; padding-top:8px; }
+  .idea-material-card-body .idea-material-maker > span { font-size:11px; }
+  .idea-material-card-body .idea-material-maker > small { font-size:10px; }
+  .idea-material-card-body .idea-material-name-pill { font-size:14px; }
+  .idea-material-card-body .idea-material-meta { gap:5px; padding-bottom:8px; font-size:10px; }
+  .idea-material-quote,.idea-material-visualize { min-height:38px; gap:4px; font-size:10px; }
+}
+@media(max-width:390px) {
+  .idea-material-card-footer { gap:2px; }
+  .idea-material-quote,.idea-material-visualize { gap:3px; font-size:9px; }
+  .idea-material-quote svg,.idea-material-visualize svg { width:13px; height:13px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .idea-material-orb,.idea-material-orb::before,.idea-material-orb img,
+  .idea-material-card-body .idea-material-name-pill,.idea-material-quote,.idea-material-visualize {
+    animation:none !important; transition:none !important; transform:none !important;
+  }
+}
