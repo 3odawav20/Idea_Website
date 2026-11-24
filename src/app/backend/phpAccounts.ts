@@ -2,6 +2,98 @@ export const PHP_ACCOUNT_API = "/api/accounts.php";
 export const SOCIAL_AUTH_API = "/api/social-auth.php";
 export const PHP_PLATFORM_API = "/api/platform.php";
 
+export type PlatformAiJob = {
+  id: string;
+  state: "queued" | "processing" | "completed" | "failed";
+  product_id?: string;
+  error_code?: string;
+  created_at?: number | string;
+  settings?: Record<string, unknown>;
+};
+
+export type PlatformAiQuota = {
+  limit: number | null;
+  used: number;
+  remaining: number | null;
+  unlimited: boolean;
+};
+
+async function platformAiGet(action: string, params: Record<string, string> = {}): Promise<Record<string, unknown>> {
+  const query = new URLSearchParams({ action, ...params });
+  const response = await fetch(`${PHP_PLATFORM_API}?${query.toString()}`, {
+    credentials: "same-origin",
+    cache: "no-store",
+    headers: { Accept: "application/json" },
+  });
+  return parseAccountResponse(response);
+}
+
+async function platformAiPost(action: string, payload: Record<string, unknown>): Promise<Record<string, unknown>> {
+  const session = await getPhpSession();
+  if (!session.user || session.csrf.length < 20) throw new Error("AUTHENTICATION_REQUIRED");
+  const response = await fetch(`${PHP_PLATFORM_API}?action=${encodeURIComponent(action)}`, {
+    method: "POST",
+    credentials: "same-origin",
+    cache: "no-store",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      "X-CSRF-Token": session.csrf,
+    },
+    body: JSON.stringify(payload),
+  });
+  return parseAccountResponse(response);
+}
+
+export async function fetchPlatformAiQuota(): Promise<PlatformAiQuota> {
+  const data = await platformAiGet("ai-quota");
+  return {
+    limit: typeof data.limit === "number" ? data.limit : null,
+    used: typeof data.used === "number" ? data.used : 0,
+    remaining: typeof data.remaining === "number" ? data.remaining : null,
+    unlimited: data.unlimited === true,
+  };
+}
+
+export async function fetchPlatformAiHistory(): Promise<PlatformAiJob[]> {
+  const data = await platformAiGet("ai-history");
+  return Array.isArray(data.jobs)
+    ? data.jobs.filter((job): job is PlatformAiJob => Boolean(job && typeof job === "object" && typeof (job as PlatformAiJob).id === "string"))
+    : [];
+}
+
+export async function fetchPlatformAiJob(id: string): Promise<PlatformAiJob> {
+  const data = await platformAiGet("ai-job", { id });
+  if (typeof data.id !== "string" || typeof data.state !== "string") throw new Error("AI_JOB_INVALID");
+  return data as unknown as PlatformAiJob;
+}
+
+export async function createPlatformAiJob(payload: Record<string, unknown>): Promise<PlatformAiJob> {
+  const data = await platformAiPost("ai-create", payload);
+  if (typeof data.id !== "string" || typeof data.state !== "string") throw new Error("AI_JOB_NOT_CREATED");
+  return data as unknown as PlatformAiJob;
+}
+
+export async function processPlatformAiJob(id: string): Promise<PlatformAiJob> {
+  const data = await platformAiPost("ai-process", { id });
+  if (typeof data.id !== "string" || typeof data.state !== "string") throw new Error("AI_JOB_NOT_STARTED");
+  return data as unknown as PlatformAiJob;
+}
+
+export async function downloadPlatformAiResult(id: string): Promise<Blob> {
+  const query = new URLSearchParams({ action: "ai-download", id });
+  const response = await fetch(`${PHP_PLATFORM_API}?${query.toString()}`, {
+    credentials: "same-origin",
+    cache: "no-store",
+    headers: { Accept: "image/png,image/jpeg" },
+  });
+  const contentType = (response.headers.get("content-type") || "").split(";")[0];
+  if (!response.ok || !["image/png", "image/jpeg"].includes(contentType)) throw new Error("AI_RESULT_UNAVAILABLE");
+  const blob = await response.blob();
+  if (!blob.size || blob.size > 25 * 1024 * 1024) throw new Error("AI_RESULT_INVALID");
+  return blob;
+}
+
 export interface PhpUser {
   id: string;
   name: string;

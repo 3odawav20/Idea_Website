@@ -17,6 +17,11 @@ jobs:
         with:
           node-version: '22'
           cache: pnpm
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+      - name: Install worker test dependencies
+        run: python -m pip install numpy==1.26.4 Pillow==11.1.0
       - uses: shivammathur/setup-php@v2
         with:
           php-version: '8.3'
@@ -37,6 +42,8 @@ jobs:
         run: pnpm run build
       - name: Build cPanel bundle
         run: pnpm run build:cpanel
+      - name: Check worker Python syntax and CPU-only tests
+        run: python -m py_compile runpod/flux2-klein/handler.py && python -m unittest discover -s runpod/flux2-klein -p 'test_*.py'
       - name: Check PHP syntax
         run: php -l server/cpanel/api/visualize.php && php -l server/cpanel/idea-accounts-api/platform-ai.php && php -l server/cpanel/api/tile-dimensions.php && php -l server/cpanel/api/marketplace.php
       - name: Verify PHP/MySQL AI role entitlements at runtime

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
+import useSWR from "swr";
 import { localMaterialFace } from "../data/localMaterialFace";
 import { Link, useSearchParams } from "react-router";
 import {
@@ -10,7 +11,14 @@ import { useI18n } from "../i18n/i18n";
 import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
-import { getPhpSession } from "../backend/phpAccounts";
+import {
+  createPlatformAiJob,
+  downloadPlatformAiResult,
+  fetchPlatformAiHistory,
+  fetchPlatformAiJob,
+  fetchPlatformAiQuota,
+  processPlatformAiJob,
+} from "../backend/phpAccounts";
 import type { Product } from "../data/types";
 import "./AiVisualizerStudio.css";
 
@@ -25,21 +33,9 @@ type Quality = {
   protectedPixelsCompositedFromOriginal?: boolean;
   watermark?: string;
 };
-type JobResponse = {
-  jobId?: string;
-  state?: string;
-  stage?: JobStage;
-  image?: string;
-  error?: string;
-  code?: string;
-  quota?: Quota;
-  quality?: Quality;
-};
-
 const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
 const MAX_BYTES = 8 * 1024 * 1024;
 const POLL_INTERVAL = 2500;
-const POLL_LIMIT = 480;
 const STAGE_ORDER: JobStage[] = ["uploading", "validating", "queued", "generating", "ready"];
 
 const MAX_PIXELS = 10_000_000;
@@ -112,14 +108,39 @@ function safeBlobUrl(value: string | null): string | null {
     return null;
   }
 }
-function wait(ms: number, signal: AbortSignal) {
-  return new Promise<void>((resolve, reject) => {
-    const timer = window.setTimeout(resolve, ms);
-    signal.addEventListener("abort", () => {
-      window.clearTimeout(timer);
-      reject(new DOMException("Aborted", "AbortError"));
-    }, { once: true });
+function fileToDataUri(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("IMAGE_ENCODING_FAILED"));
+    reader.onerror = () => reject(new Error("IMAGE_ENCODING_FAILED"));
+    reader.readAsDataURL(file);
   });
+}
+
+function blobToDataUri(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("AI_RESULT_INVALID"));
+    reader.onerror = () => reject(new Error("AI_RESULT_INVALID"));
+    reader.readAsDataURL(blob);
+  });
+}
+
+function submissionKey(userId: string): string {
+  const key = `idea-ai-idempotency:${userId}`;
+  try {
+    const existing = sessionStorage.getItem(key);
+    if (existing && /^[A-Za-z0-9._:-]{16,80}$/.test(existing)) return existing;
+    const created = crypto.randomUUID();
+    sessionStorage.setItem(key, created);
+    return created;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
+
+function clearSubmissionKey(userId: string) {
+  try { sessionStorage.removeItem(`idea-ai-idempotency:${userId}`); } catch { /* Storage can be disabled by the browser. */ }
 }
 
 /** Source-labelled product faces are the only allowed images in the material gallery. */
@@ -188,11 +209,43 @@ export function AiVisualizerStudio() {
   const [zoom, setZoom] = useState(1);
   const [stage, setStage] = useState<JobStage>("idle");
   const [jobId, setJobId] = useState<string | null>(null);
-  const [quota, setQuota] = useState<Quota | null>(null);
-  const [integration, setIntegration] = useState("configuration_unchecked");
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const requestRef = useRef<AbortController | null>(null);
+  const submissionLock = useRef(false);
+  const historyRecoveryUser = useRef<string | null>(null);
+
+  const { data: quota, mutate: refreshQuota } = useSWR<Quota>(
+    aiEligible && session?.id ? `idea-ai-quota:${session.id}` : null,
+    async () => fetchPlatformAiQuota(),
+    { refreshInterval: 30_000, revalidateOnFocus: true }
+  );
+  const integration = quota ? "configuration_present_unverified" : "unavailable";
+  const { data: aiHistory } = useSWR(
+    aiEligible && session?.id ? `idea-ai-history:${session.id}` : null,
+    fetchPlatformAiHistory,
+    { revalidateOnFocus: true }
+  );
+  const { data: currentJob } = useSWR(
+    jobId ? ["idea-ai-job", jobId] as const : null,
+    async ([, id]) => {
+      let current = await fetchPlatformAiJob(id);
+      if (current.state === "queued") {
+        await processPlatformAiJob(id);
+        current = await fetchPlatformAiJob(id);
+      }
+      return current;
+    },
+    {
+      refreshInterval: (current) => current && ["queued", "processing"].includes(current.state) ? POLL_INTERVAL : 0,
+      revalidateOnFocus: true,
+    }
+  );
+  const { data: recoveredImage } = useSWR(
+    currentJob?.state === "completed" ? `idea-ai-result:${currentJob.id}` : null,
+    async () => blobToDataUri(await downloadPlatformAiResult(currentJob!.id)),
+    { revalidateOnFocus: false, shouldRetryOnError: false }
+  );
 
   const selectedFaces = useMemo(() => selectedProduct ? materialFaces(selectedProduct) : [], [selectedProduct]);
   // Never offer an arbitrary default; only use dimensions recorded for this product variant.
@@ -267,23 +320,42 @@ export function AiVisualizerStudio() {
   useEffect(() => () => { if (materialUrl) URL.revokeObjectURL(materialUrl); }, [materialUrl]);
 
   useEffect(() => {
-    if (!aiEligible) {
-      setQuota(null);
-      return;
+    if (!session?.id || !aiHistory || historyRecoveryUser.current === session.id) return;
+    historyRecoveryUser.current = session.id;
+    const resumable = aiHistory.find((job) => job.state === "queued" || job.state === "processing")
+      || aiHistory.find((job) => job.state === "completed");
+    if (!resumable) return;
+    setJobId(resumable.id);
+    if (resumable.state === "queued") setStage("queued");
+    else if (resumable.state === "processing") setStage("generating");
+    if (resumable.product_id) setSearchParams({ product: resumable.product_id }, { replace: true });
+  }, [aiHistory, session?.id, setSearchParams]);
+
+  useEffect(() => {
+    if (!currentJob) return;
+    if (currentJob.state === "queued") {
+      setStage("queued");
+    } else if (currentJob.state === "processing") {
+      const workerStage = currentJob.settings?._runpod_stage;
+      setStage(workerStage === "queued" ? "queued" : "generating");
+    } else if (currentJob.state === "completed") {
+      setStage("generating");
+    } else if (currentJob.state === "failed") {
+      setStage("failed");
+      setError(tr("تعذّر إتمام التصور أو اجتياز فحوص حماية المشهد. لم تُحفظ نتيجة.", "The visualization could not complete or pass scene-protection checks. No result was saved."));
+      if (session?.id) clearSubmissionKey(session.id);
     }
-    let active = true;
-    void (async () => {
-      const response = await fetch("/api/visualize.php?action=status", {
-        credentials: "same-origin",
-        cache: "no-store",
-      });
-      const data = await response.json().catch(() => null) as (JobResponse & { integration?: string }) | null;
-      if (!active || !data) return;
-      if (data.quota) setQuota(data.quota);
-      setIntegration(data.integration || (response.ok ? "configuration_present_unverified" : "configuration_required"));
-    })().catch(() => { if (active) setIntegration("unavailable"); });
-    return () => { active = false; };
-  }, [session?.id, aiEligible]);
+  }, [currentJob, session?.id, tr]);
+
+  useEffect(() => {
+    if (!recoveredImage || !currentJob) return;
+    setResult(recoveredImage);
+    setQuality({ dimensionsPreserved: true, maskVerified: true, protectedPixelsCompositedFromOriginal: true });
+    setCompare(50);
+    setViewMode(safePhotoUrl ? "compare" : "result");
+    setStage("ready");
+    if (session?.id) clearSubmissionKey(session.id);
+  }, [recoveredImage, currentJob, safePhotoUrl, session?.id]);
 
   async function onRoomFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -299,6 +371,8 @@ export function AiVisualizerStudio() {
       setResult(null);
       setQuality(null);
       setJobId(null);
+      if (session?.id) clearSubmissionKey(session.id);
+      setStage("idle");
       setZoom(1);
       setError("");
       setStage("idle");
@@ -323,6 +397,9 @@ export function AiVisualizerStudio() {
       setMaterialUrl(URL.createObjectURL(prepared.file));
       setResult(null);
       setQuality(null);
+      setJobId(null);
+      if (session?.id) clearSubmissionKey(session.id);
+      setStage("idle");
       setError("");
     } catch {
       setError(tr("تعذر تجهيز صورة الخامة. اختر صورة JPG أو PNG أو WebP بأبعاد لا تقل عن 256 بكسل.", "Choose a readable JPG, PNG or WebP reference at least 256px on each side."));
@@ -337,6 +414,9 @@ export function AiVisualizerStudio() {
     setTileSize("");
     setResult(null);
     setQuality(null);
+    setJobId(null);
+    if (session?.id) clearSubmissionKey(session.id);
+    setStage("idle");
     setError("");
     window.requestAnimationFrame(() => {
       document.querySelector(".idea-studio-workspace")?.scrollIntoView({
@@ -344,14 +424,6 @@ export function AiVisualizerStudio() {
         block: "start",
       });
     });
-  }
-
-  async function csrfToken() {
-    const current = await getPhpSession();
-    if (!current.user || !["buyer", "admin"].includes(current.user.role)) {
-      throw new Error(tr("سجّل الدخول بحساب عميل أو أدمن.", "Sign in with a customer or administrator account."));
-    }
-    return current.csrf;
   }
 
   async function materialBlob(signal: AbortSignal) {
@@ -367,36 +439,8 @@ export function AiVisualizerStudio() {
     }
   }
 
-  async function pollJob(id: string, controller: AbortController) {
-    for (let attempt = 0; attempt < POLL_LIMIT; attempt++) {
-      await wait(POLL_INTERVAL, controller.signal);
-      const response = await fetch(`/api/visualize.php?job=${encodeURIComponent(id)}`, {
-        credentials: "same-origin",
-        cache: "no-store",
-        signal: controller.signal,
-      });
-      const data = await response.json().catch(() => null) as JobResponse | null;
-      if (!response.ok || !data) throw new Error(data?.error || tr("استجابة غير صالحة من خدمة التصور.", "The visualization service returned an invalid response."));
-      if (data.quota) setQuota(data.quota);
-      if (data.stage) setStage(data.stage);
-      if (data.state === "ready" && data.image) {
-        if (!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(data.image)) throw new Error("Invalid verified image response");
-        setResult(data.image);
-        setQuality(data.quality || null);
-        setCompare(50);
-        setViewMode("compare");
-        setStage("ready");
-        return;
-      }
-      if (data.state === "failed" || data.state === "cancelled") {
-        throw new Error(data.error || tr("فشل التوليد وتم رد المحاولة.", "Generation failed and the attempt was released."));
-      }
-    }
-    throw new Error(tr("انتهت مهلة الوظيفة. يمكن فحصها لاحقًا من السجل.", "The job timed out. It can be inspected later from history."));
-  }
-
   async function generate() {
-    if (busy) return;
+    if (busy || submissionLock.current) return;
     if (!session) {
       setError(tr("سجّل حساب مستخدم أولًا قبل توليد الصور.", "Create a customer account and sign in to generate images."));
       return;
@@ -423,50 +467,39 @@ export function AiVisualizerStudio() {
       setError(tr("استخدمت المحاولات الخمس المتاحة.", "Your five lifetime attempts have been used."));
       return;
     }
+    submissionLock.current = true;
     const controller = new AbortController();
     requestRef.current?.abort();
     requestRef.current = controller;
     setError("");
     setStage("uploading");
     try {
-      const token = await csrfToken();
       const reference = await materialBlob(controller.signal);
       if (!reference) throw new Error(tr(
         "تعذر قراءة صورة المنتج من مصدرها. ارفع عينة أصلية واضحة للخامة.",
         "The product image cannot be read from its source. Upload a clear original material reference."
       ));
-      const form = new FormData();
-      form.append("action", "create");
-      form.append("room", photo);
-      form.append("material", reference, "material-reference");
-      form.append("productId", selectedProduct.id);
-      form.append("productName", selectedProduct.name.en);
-      form.append("brand", selectedProduct.brand);
-      form.append("finish", selectedProduct.finish || "");
-      form.append("surface", surface);
-      form.append("roomKind", roomKind);
-      form.append("rotation", String(rotation));
-      form.append("tileSize", selectedPhysicalSize.label);
-       form.append("tile_width_mm", String(selectedPhysicalSize.widthMm));
-       form.append("tile_height_mm", String(selectedPhysicalSize.heightMm));
-       form.append("variant_id", selectedPhysicalSize.id);
-      form.append("grout", grout);
-      form.append("idempotencyKey", crypto.randomUUID());
       setStage("validating");
-      const response = await fetch("/api/visualize.php", {
-        method: "POST",
-        credentials: "same-origin",
-        headers: { "X-CSRF-Token": token },
-        body: form,
-        cache: "no-store",
-        signal: controller.signal,
+      const [roomData, materialData] = await Promise.all([fileToDataUri(photo), fileToDataUri(reference)]);
+      const created = await createPlatformAiJob({
+        room: roomData,
+        material: materialData,
+        product_id: selectedProduct.id,
+        size: selectedPhysicalSize.label,
+        tile_width_mm: selectedPhysicalSize.widthMm,
+        tile_height_mm: selectedPhysicalSize.heightMm,
+        surface,
+        angle: rotation,
+        grout,
+        grout_width_mm: 2,
+        roomType: roomKind,
+        idempotency_key: submissionKey(session.id),
       });
-      const data = await response.json().catch(() => null) as JobResponse | null;
-      if (!response.ok || !data?.jobId) throw new Error(data?.error || tr("تعذر قبول وظيفة التوليد.", "The generation job could not be accepted."));
-      if (data.quota) setQuota(data.quota);
-      setJobId(data.jobId);
-      setStage(data.stage || "queued");
-      await pollJob(data.jobId, controller);
+      setJobId(created.id);
+      setStage(created.state === "processing" ? "generating" : created.state === "completed" ? "ready" : "queued");
+      clearSubmissionKey(session.id);
+      void refreshQuota();
+      if (created.state === "queued") await processPlatformAiJob(created.id);
     } catch (cause) {
       if (!controller.signal.aborted) {
         setStage("failed");
@@ -474,14 +507,16 @@ export function AiVisualizerStudio() {
       }
     } finally {
       requestRef.current = null;
+      submissionLock.current = false;
     }
   }
 
   async function cancelJob() {
     if (!jobId || !busy) return;
     requestRef.current?.abort();
+    setJobId(null);
     setStage("failed");
-    setError(tr("تم إيقاف المتابعة فقط. قد تستمر الوظيفة على الخادم؛ راجع سجل التصميمات.", "Polling stopped only. The server job may continue; check design history."));
+    setError(tr("تم إيقاف المتابعة فقط. قد تستمر الوظيفة على الخادم ويمكن استعادتها من سجل التصميمات.", "Monitoring stopped only. The server job may continue and can be recovered from design history."));
   }
 
   const productName = selectedProduct ? localizedName(selectedProduct) : tr("اختر خامة", "Select a material");

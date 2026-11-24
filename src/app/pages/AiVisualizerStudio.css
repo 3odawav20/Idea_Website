@@ -172,13 +172,24 @@
   background:#f3ede6;color:var(--studio-gold);
 }
 [data-theme="light"] .idea-studio-upload{background:linear-gradient(145deg,#f9f9f9,#fff)}
-[data-theme="light"] .idea-studio-choice button,
+[data-theme="light"] .idea-studio-choice button{
+  background:var(--idea-gt-bg);color:var(--idea-gt-text);border-color:transparent;
+}
 [data-theme="light"] .idea-studio select{
   background:#fff;color:#404040;border-color:var(--studio-line);
 }
-[data-theme="light"] .idea-studio-choice button.active{background:#f6f1ea;color:#81501d}
-[data-theme="light"] .idea-studio-view-tabs{background:#f3f3f3}
-[data-theme="light"] .idea-studio-view-tabs button.active{background:#e9e9e9;color:#71420e}
+[data-theme="light"] .idea-studio-choice button.active,
+[data-theme="light"] .idea-studio-view-tabs button.active{
+  background:var(--idea-gt-bg-active);
+  color:var(--idea-gt-text-active);
+  box-shadow:var(--idea-gt-shadow-active);
+}
+[data-theme="light"] .idea-studio-view-tabs{
+  background:var(--idea-gt-tray-bg);
+  box-shadow:var(--idea-gt-tray-shadow);
+  -webkit-backdrop-filter:blur(var(--idea-gt-tray-blur)) saturate(1.55);
+  backdrop-filter:blur(var(--idea-gt-tray-blur)) saturate(1.55);
+}
 [data-theme="light"] .idea-studio-canvas{background:#fff}
 [data-theme="light"] .idea-studio-stage{
   background:radial-gradient(circle at center,#fff 5%,#f3f3f3 74%);

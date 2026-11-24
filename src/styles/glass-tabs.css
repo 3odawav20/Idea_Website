@@ -9,32 +9,40 @@
 
 :root,
 [data-theme="light"] {
-  --idea-gt-blur: 20px;
-  --idea-gt-tray-blur: 24px;
-  --idea-gt-input-blur: 18px;
+  --idea-gt-blur: 11px;
+  --idea-gt-tray-blur: 14px;
+  --idea-gt-input-blur: 10px;
 
-  /* Seamless sheer glass tray (blends directly with background, no white frame) */
-  --idea-gt-tray-bg: rgba(255, 255, 255, 0.08);
+  /* Clear, gently lifted glass keeps the tile texture visible beneath each tab. */
+  --idea-gt-tray-bg: rgba(255, 255, 255, 0.19);
   --idea-gt-tray-shadow:
-    0 12px 32px rgba(18, 24, 32, 0.07),
-    0 2px 8px rgba(18, 24, 32, 0.04);
+    0 14px 34px rgba(36, 32, 27, 0.14),
+    0 3px 9px rgba(36, 32, 27, 0.08),
+    inset 0 0 0 1px rgba(255,  255, 255, 0.42);
 
-  /* Individual tab surface: pure sheer blurred glass with zero white outline */
-  --idea-gt-bg: rgba(255, 255, 255, 0.04);
-  --idea-gt-bg-hover: rgba(18, 24, 32, 0.055);
+  --idea-gt-bg: rgba(255, 255, 255, 0.16);
+  --idea-gt-bg-hover: rgba(255, 255, 255, 0.34);
+  --idea-gt-tab-border-color: rgba(78, 62, 43, 0.22);
   --idea-gt-bg-active: linear-gradient(
     136deg,
-    rgba(253, 118, 28, 0.16) 0%,
-    rgba(255, 196, 128, 0.12) 100%
+    rgba(253, 118, 28, 0.25) 0%,
+    rgba(255, 196, 128, 0.20) 100%
   );
 
-  --idea-gt-text: #20242a;
+  --idea-gt-text: #24211d;
   --idea-gt-text-hover: #0d1014;
-  --idea-gt-text-active: #9a4000;
+  --idea-gt-text-active: #783500;
 
+  --idea-gt-tab-shadow:
+    0 2px 8px rgba(18, 24, 32, 0.07),
+    inset 0 0 0 1px rgba(78, 62, 43, 0.12);
   --idea-gt-shadow: 0 4px 16px rgba(18, 24, 32, 0.05);
-  --idea-gt-shadow-hover: 0 8px 22px rgba(18, 24, 32, 0.09);
-  --idea-gt-shadow-active: 0 8px 24px rgba(196, 88, 12, 0.14);
+  --idea-gt-shadow-hover:
+    0 8px 22px rgba(18, 24, 32, 0.10),
+    inset 0 0 0 1px rgba(78, 62, 43, 0.18);
+  --idea-gt-shadow-active:
+    0 8px 24px rgba(196, 88, 12, 0.16),
+    inset 0 0 0 1px rgba(196, 88, 12, 0.23);
 
   /* Subtle internal liquid refraction sheen & ambient soft mist */
   --idea-gt-sheen: linear-gradient(
@@ -70,6 +78,7 @@
 }
 
 [data-theme="dark"] {
+  --idea-gt-tab-border-color: rgba(255, 255, 255, 0.18);
   --idea-gt-tray-bg: rgba(255, 255, 255, 0.035);
   --idea-gt-tray-shadow:
     0 14px 36px rgba(0, 0, 0, 0.32),
@@ -77,6 +86,7 @@
 
   --idea-gt-bg: rgba(255, 255, 255, 0.025);
   --idea-gt-bg-hover: rgba(255, 255, 255, 0.08);
+  --idea-gt-tab-shadow: none;
   --idea-gt-bg-active: linear-gradient(
     136deg,
     rgba(253, 118, 28, 0.24) 0%,
@@ -380,9 +390,9 @@
   isolation: isolate;
   overflow: hidden;
   background: var(--idea-gt-bg);
-  border: 0;
+  border: 1px solid var(--idea-gt-tab-border-color);
   color: var(--idea-gt-text);
-  box-shadow: none;
+  box-shadow: var(--idea-gt-tab-shadow, none);
   -webkit-backdrop-filter: blur(var(--idea-gt-blur)) saturate(1.55);
   backdrop-filter: blur(var(--idea-gt-blur)) saturate(1.55);
   transition:
