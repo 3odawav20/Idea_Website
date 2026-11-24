@@ -1,0 +1,89 @@
+/* Shared material orb: supplier face images remain the source texture; layered light and
+   shadow create a spherical volume without one WebGL context per product card. */
+.idea-surface-orb {
+  position: relative; display: block; width: 78%; max-width: 280px;
+  aspect-ratio: 1; overflow: hidden; isolation: isolate; border-radius: 50%;
+  background: radial-gradient(circle at 29% 21%, #f5f2ed 0%, #c9c4bc 62%, #716b63 100%);
+  transform: translate3d(0,0,0); transform-style: preserve-3d; backface-visibility: hidden;
+  animation: idea-surface-orb-float 7.2s ease-in-out infinite;
+  filter: drop-shadow(0 17px 19px rgba(40,30,18,.19)) drop-shadow(0 5px 7px rgba(40,30,18,.11));
+  transition: transform .55s cubic-bezier(.2,.8,.2,1), filter .55s ease;
+}
+.idea-surface-orb img {
+  position: relative; z-index: 0; display: block; width: 100%; height: 100%;
+  border: 0; border-radius: inherit; object-fit: cover; object-position: center;
+  transform: translateZ(0) scale(1.015); backface-visibility: hidden;
+}
+.idea-surface-orb::before {
+  position: absolute; z-index: 1; inset: 0; border-radius: inherit;
+  background:
+    radial-gradient(ellipse 35% 25% at 27% 17%, rgba(255,255,255,.52), rgba(255,255,255,.15) 48%, transparent 82%),
+    linear-gradient(112deg, transparent 34%, rgba(255,255,255,0) 42%, rgba(255,255,255,.34) 49%, rgba(255,255,255,.06) 56%, transparent 65%);
+  background-size: 220% 100%; background-position: -120% 0;
+  content: ""; opacity: .78; pointer-events: none;
+}
+.idea-surface-orb::after {
+  position: absolute; z-index: 2; inset: 0; border: 1px solid rgba(255,255,255,.43);
+  border-radius: inherit;
+  background:
+    radial-gradient(ellipse at 27% 17%, rgba(255,255,255,.20), transparent 31%),
+    radial-gradient(ellipse at 72% 82%, transparent 22%, rgba(0,0,0,.12) 58%, rgba(0,0,0,.48) 100%),
+    linear-gradient(137deg, rgba(255,255,255,.13), transparent 45%, rgba(0,0,0,.19));
+  box-shadow: inset -24px -27px 38px rgba(0,0,0,.23), inset 10px 9px 19px rgba(255,255,255,.20), inset 0 0 0 1px rgba(255,255,255,.16);
+  content: ""; pointer-events: none;
+}
+.idea-surface-orb--home { width: 78%; max-width: 300px; }
+.idea-surface-orb--featured { width: 80%; max-width: 260px; }
+.idea-surface-orb--catalogue { width: 78%; max-width: 250px; }
+.idea-material-card,
+.idea-material-featured-card,
+.idea-home-featured-card { perspective: 1100px; }
+@media (hover: hover) and (pointer: fine) {
+  .idea-material-card:hover .idea-surface-orb,
+  .idea-material-featured-card:hover .idea-surface-orb,
+  .idea-home-featured-card:hover .idea-surface-orb {
+    animation: none;
+    transform: perspective(1100px) translate3d(0,-7px,16px) rotateX(2.2deg) rotateY(-1.8deg) scale(1.025);
+    filter: drop-shadow(0 25px 25px rgba(0,0,0,.25)) drop-shadow(0 8px 10px rgba(0,0,0,.16));
+  }
+  .idea-material-card:hover .idea-surface-orb::before,
+  .idea-material-featured-card:hover .idea-surface-orb::before,
+  .idea-home-featured-card:hover .idea-surface-orb::before {
+    animation: idea-surface-orb-shine 1.25s cubic-bezier(.2,.65,.3,1) 1;
+  }
+}
+[data-theme="dark"] .idea-surface-orb {
+  filter: drop-shadow(0 19px 22px rgba(0,0,0,.52)) drop-shadow(0 0 9px rgba(255,255,255,.07));
+}
+[data-theme="dark"] .idea-surface-orb::after {
+  border-color: rgba(255,255,255,.36);
+  background:
+    radial-gradient(ellipse at 27% 17%, rgba(255,255,255,.18), transparent 31%),
+    radial-gradient(ellipse at 72% 82%, transparent 18%, rgba(0,0,0,.24) 59%, rgba(0,0,0,.54) 100%),
+    linear-gradient(137deg, rgba(255,255,255,.14), transparent 45%, rgba(0,0,0,.24));
+  box-shadow: inset -25px -28px 40px rgba(0,0,0,.32), inset 10px 9px 19px rgba(255,255,255,.13), inset 0 0 0 1px rgba(255,255,255,.13);
+}
+[data-theme="light"] .idea-surface-orb {
+  filter: drop-shadow(0 16px 18px rgba(58,43,24,.18)) drop-shadow(0 4px 7px rgba(58,43,24,.10));
+}
+[data-theme="light"] .idea-surface-orb::after {
+  border-color: rgba(255,255,255,.62);
+  box-shadow: inset -22px -25px 36px rgba(67,53,35,.14), inset 10px 9px 19px rgba(255,255,255,.28), inset 0 0 0 1px rgba(86,69,46,.05);
+}
+@keyframes idea-surface-orb-float {
+  0%, 100% { transform: translate3d(0,0,0) rotateX(0deg); }
+  50% { transform: translate3d(0,-3px,4px) rotateX(.7deg); }
+}
+@keyframes idea-surface-orb-shine {
+  0% { opacity: 0; background-position: -120% 0; }
+  18% { opacity: .95; }
+  100% { opacity: 0; background-position: 120% 0; }
+}
+@media (max-width: 700px) {
+  .idea-surface-orb--home { width: 80%; }
+  .idea-surface-orb--featured { width: 78%; }
+  .idea-surface-orb--catalogue { width: 76%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .idea-surface-orb, .idea-surface-orb::before { animation: none !important; transition: none !important; }
+}

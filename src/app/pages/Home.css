@@ -227,3 +227,70 @@
   .idea-home-featured-card-copy { gap:7px; padding-top:11px; }
   .idea-home-featured-card-copy .idea-material-name-pill { max-width:min(100%,220px); }
 }
+
+
+/* Homepage material library: same dimensional sphere and product hierarchy as /products. */
+.idea-home-featured-card { perspective: 1100px; min-width: 0; }
+.idea-home-featured-media {
+  position: relative; display: grid; place-items: center;
+  aspect-ratio: 1.06; overflow: visible; isolation: isolate;
+}
+.idea-home-featured-photo {
+  display: grid; width: 100%; height: 100%;
+  place-items: center; overflow: visible;
+}
+.idea-home-featured-photo .idea-surface-orb { width: 78%; max-width: 290px; }
+.idea-home-featured-finish {
+  position: absolute; z-index: 3; inset-inline-start: 10%; bottom: 7%;
+  padding: 4px 8px; border: 1px solid var(--idea-border-neutral);
+  border-radius: 5px; background: var(--idea-surface-2);
+  color: var(--idea-text); font-size: 10px; line-height: 1.2; pointer-events: none;
+}
+.idea-home-featured-card-copy {
+  display: grid; align-items: stretch; gap: 7px;
+  padding: 12px 1px 0; text-align: start;
+}
+.idea-home-featured-maker {
+  display: flex; align-items: baseline; gap: 7px; min-width: 0;
+  color: var(--idea-text); font-size: 12px; line-height: 1.3;
+}
+.idea-home-featured-maker strong { font-weight: 700; }
+.idea-home-featured-maker small { color: var(--idea-text-muted); font-size: 10px; font-weight: 400; }
+.idea-home-featured-name {
+  display: block; color: var(--idea-text); font-size: 16px;
+  font-weight: 500; line-height: 1.35; text-decoration: none; overflow-wrap: anywhere;
+}
+.idea-home-featured-name:hover { color: var(--idea-gold); }
+.idea-home-featured-meta {
+  display: flex; align-items: center; flex-wrap: nowrap; gap: 8px;
+  min-width: 0; padding-bottom: 8px;
+  border-bottom: 1px solid var(--idea-border-neutral);
+  color: var(--idea-text-muted); font-size: 10px; line-height: 1.35;
+}
+.idea-home-featured-meta > span:first-child { flex: 0 0 auto; white-space: nowrap; }
+.idea-home-featured-meta > span:last-child {
+  min-width: 0; overflow-wrap: anywhere; text-align: end;
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 9px;
+}
+.idea-home-featured-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; min-width: 0;
+}
+.idea-home-featured-actions button,
+.idea-home-featured-actions a {
+  display: inline-flex; align-items: center; justify-content: center; gap: 5px;
+  min-width: 0; min-height: 36px; padding: 4px 2px;
+  border: 0; background: transparent; color: var(--idea-text);
+  font: inherit; font-size: 11px; line-height: 1.25; text-decoration: none; cursor: pointer;
+}
+.idea-home-featured-actions a { color: var(--idea-gold); }
+.idea-home-featured-actions button:hover,
+.idea-home-featured-actions a:hover { color: var(--idea-gold); }
+.idea-home-featured-actions svg { flex: 0 0 auto; }
+@media (max-width: 560px) {
+  .idea-home-featured-card-copy { gap: 6px; padding-top: 9px; }
+  .idea-home-featured-name { font-size: 14px; }
+  .idea-home-featured-actions { gap: 4px; }
+  .idea-home-featured-actions button,
+  .idea-home-featured-actions a { font-size: 10px; }
+}

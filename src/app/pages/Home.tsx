@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, Layers, FileText, Users, MapPin, Play, FolderOpen, Download } from "lucide-react";
+import { ArrowRight, Layers, FileText, Users, MapPin, Play, FolderOpen, Download, Sparkles } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
@@ -8,7 +8,9 @@ import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
 import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
-import { productMaker } from "../data/ideaProductIdentity";
+import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
+import { localMaterialFace } from "../data/localMaterialFace";
+import { MaterialOrb } from "../components/MaterialOrb";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import "./Home.css";
@@ -26,7 +28,7 @@ const BATH_SLUGS = ["bathroom-sets", "bathroom-units", "faucets", "shower-units"
 
 export function Home() {
   const { locale, t } = useI18n();
-  const { products } = useStore();
+  const { products, addToQuote } = useStore();
   // Public home cards show one design per source maker, never repetitive variants.
   const featuredProducts = distinctStorefrontProducts(products).slice(0, 8);
   const destinations = useCollectionDestinations();
@@ -62,23 +64,36 @@ export function Home() {
         </nav>
         <div className="idea-home-featured-grid">{featuredProducts.map((product) => {
           const maker = productMaker(product, locale);
-          const image = ["ceramics", "porcelain", "marble"].includes(product.collection) ? product.source?.original?.tiles?.[0] : product.image;
+          const image = localMaterialFace(product.id) || product.source?.original?.tiles?.[0] || product.image;
+          const unit = ["ceramics", "porcelain", "marble"].includes(product.collection) ? "sqm" : "pieces";
           return <article className="idea-home-featured-card" key={product.id}>
-            <Link className="idea-home-featured-photo" to={`/product/${product.slug}`} aria-label={product.name[locale]}>
-              <span className="idea-home-material-sphere" aria-hidden="true">
-                <img src={image || product.image} alt="" loading="lazy" decoding="async" />
-              </span>
-              <span className="sr-only">{product.name[locale]}</span>
-            </Link>
-            <div className="idea-home-featured-card-copy">
-              <Link
-                className="idea-material-name-pill"
-                to={`/product/${product.slug}`}
-                title={product.name[locale]}
-              >
-                <span>{product.name[locale]}</span>
+            <div className="idea-home-featured-media">
+              <Link className="idea-home-featured-photo" to={`/product/${product.slug}`} aria-label={product.name[locale]}>
+                <MaterialOrb src={image} alt="" className="idea-surface-orb--home" />
+                <span className="sr-only">{product.name[locale]}</span>
               </Link>
-              <span className="idea-home-material-maker">{maker.verified ? maker.value : product.brand}</span>
+              {product.finish && <span className="idea-home-featured-finish">{product.finish}</span>}
+            </div>
+            <div className="idea-home-featured-card-copy">
+              <div className="idea-home-featured-maker">
+                <strong>{maker.verified ? maker.value : product.brand}</strong>
+                <small>{locale === "ar" ? "العلامة التجارية" : locale === "fr" ? "Marque" : "Brand"}</small>
+              </div>
+              <Link className="idea-home-featured-name" to={`/product/${product.slug}`} title={product.name[locale]}>
+                {product.name[locale]}
+              </Link>
+              <div className="idea-home-featured-meta">
+                {product.sizes[0] && <span>{product.sizes[0].label}</span>}
+                <span dir="ltr" title={ideaInternalCode(product)}>{ideaInternalCode(product)}</span>
+              </div>
+              <div className="idea-home-featured-actions">
+                <button type="button" onClick={() => addToQuote(product.id, unit)}>
+                  <FileText size={14} />{t("action.requestPrice")}
+                </button>
+                <Link to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}>
+                  <Sparkles size={14} />{locale === "ar" ? "جرّب الخامة" : locale === "fr" ? "Essayer" : "Try in AI"}
+                </Link>
+              </div>
             </div>
           </article>;
         })}</div>

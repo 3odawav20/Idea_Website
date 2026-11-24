@@ -1,12 +1,13 @@
 import { useMemo } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Heart, GitCompare, Sparkles, FileText, ChevronDown } from "lucide-react";
+import { Heart, GitCompare, Sparkles, FileText, ChevronDown, ArrowRight } from "lucide-react";
 import type { CollectionSlug, Product } from "../data/types";
 import { COLLECTIONS } from "../data/catalog";
 import { isColourLabel, isUsageLabel, isLargeFormat, isOutdoor20mm, matchesApplication } from "../data/discovery";
 import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
 import { localMaterialFace } from "../data/localMaterialFace";
+import { MaterialOrb } from "../components/MaterialOrb";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Container, Section } from "../components/ui";
@@ -88,6 +89,7 @@ export function MaterialCatalogue() {
         : distinct;
   }, [baseProducts, application, finish, size, color, type, texture, brand, usage, query, locale, sort]);
 
+  const featuredProducts = useMemo(() => distinctStorefrontProducts(products).slice(0, 4), [products]);
   const pageCount = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
   const rawPage = Number.parseInt(params.get("page") ?? "1", 10);
   const page = Math.min(Math.max(Number.isFinite(rawPage) ? rawPage : 1, 1), pageCount);
@@ -106,6 +108,9 @@ export function MaterialCatalogue() {
       : material === "marble"
         ? SURFACE_TABS[4].label[locale]
         : t("nav.products");
+  const catalogueHeading = category || material || format
+    ? title ?? (locale === "ar" ? "كتالوج الخامات" : locale === "fr" ? "Catalogue des matériaux" : "Material catalogue")
+    : ({ en: "Explore Our Material Collection", ar: "استكشف مجموعة الخامات", fr: "Explorez notre collection de matériaux" }[locale]);
 
   const updateFilter = (key: string, value: string | null) => setParams((current) => {
     const next = new URLSearchParams(current);
@@ -145,91 +150,159 @@ export function MaterialCatalogue() {
   );
 
   return (
-    <Section style={{ paddingTop: "var(--idea-space-7)", background: "var(--idea-bg)" }}>
+    <Section style={{ paddingTop: "var(--idea-space-5)", background: "var(--idea-page-background)" }}>
       <Container className="idea-material-catalogue" style={{ maxWidth: 1800 }}>
-        <header className="idea-material-heading">
-          <div className="idea-material-breadcrumb">
-            <Link to="/">IDEA</Link><span aria-hidden="true">/</span><span>{locale === "ar" ? "المواد" : locale === "fr" ? "MATÉRIAUX" : "MATERIALS"}</span>
-          </div>
-          <div className="idea-material-title-row">
-            <div>
-              <p className="idea-eyebrow">{locale === "ar" ? "اكتشف خاماتنا" : locale === "fr" ? "DÉCOUVREZ NOS MATÉRIAUX" : "EXPLORE OUR MATERIALS"}</p>
-              <h1 className="idea-display">{title}</h1>
-              <p className="idea-material-subtitle">
-                {locale === "ar" ? "تصفّح خامات موثقة من كتالوج IDEA واختر الأنسب لمساحتك." : locale === "fr" ? "Parcourez les matériaux du catalogue IDEA et trouvez la finition idéale." : "Browse materials from the IDEA catalogue and find the right finish for your space."}
+        {featuredProducts.length > 0 && (
+          <section className="idea-material-featured" aria-labelledby="idea-material-featured-title">
+            <div className="idea-material-featured-intro">
+              <p className="idea-eyebrow">{locale === "ar" ? "الخامات المميزة" : locale === "fr" ? "MATÉRIAUX À LA UNE" : "FEATURED MATERIALS"}</p>
+              <h2 id="idea-material-featured-title">
+                {locale === "ar" ? "خامات مختارة لمساحات ملهمة" : locale === "fr" ? "Des matériaux choisis pour des espaces inspirés" : "Curated Materials for Inspired Spaces"}
+              </h2>
+              <p>
+                {locale === "ar" ? "تشكيلة مختارة من أجمل الأسطح والتشطيبات في كتالوجنا." : locale === "fr" ? "Une sélection soignée de surfaces remarquables de notre collection." : "A handpicked selection of standout surfaces from our collection."}
               </p>
+              <Link className="idea-material-featured-link" to="#product-catalogue">
+                {locale === "ar" ? "استكشف الخامات" : locale === "fr" ? "Explorer les matériaux" : "Explore Featured"} <ArrowRight size={16} />
+              </Link>
             </div>
-            <span className="idea-material-count">{results.length.toLocaleString(locale)} {locale === "ar" ? "خامة" : locale === "fr" ? "matériaux" : "materials"}</span>
-          </div>
-        </header>
-
-        <nav className="idea-material-tabs" aria-label={locale === "ar" ? "فئات الخامات" : locale === "fr" ? "Catégories de matériaux" : "Material categories"}>
-          {availableTabs.map((tab) => (
-            <button key={tab.key} type="button" className={activeTab === tab.key ? "is-active" : ""} aria-pressed={activeTab === tab.key} onClick={() => changeTab(tab.key)}>
-              {tab.label[locale]}
-            </button>
-          ))}
-        </nav>
-
-        <div className="idea-material-layout">
-          <div className="idea-material-results">
-          <div className="idea-material-toolbar">
-          <form className="idea-material-search" onSubmit={(event) => {
-            event.preventDefault();
-            const formData = new FormData(event.currentTarget);
-            updateFilter("q", String(formData.get("q") ?? "").trim() || null);
-          }}>
-            <input key={query} type="search" name="q" defaultValue={query} aria-label={locale === "ar" ? "ابحث عن خامة" : locale === "fr" ? "Rechercher un matériau" : "Search materials"} placeholder={locale === "ar" ? "ابحث بالاسم أو البراند أو الكود" : locale === "fr" ? "Nom, marque ou référence" : "Search by name, brand or code"} />
-            <button type="submit">{locale === "ar" ? "بحث" : locale === "fr" ? "Rechercher" : "Search"}</button>
-            <label className="idea-material-sort"><span className="sr-only">{locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort materials"}</span>
-              <select value={sort} onChange={(event) => updateFilter("sort", event.target.value)}>
-                <option value="source">{locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order"}</option>
-                <option value="az">A–Z</option><option value="za">Z–A</option>
-              </select>
-            </label>
-          </form>
-          <div className="idea-material-filter-row" aria-label={locale === "ar" ? "تصفية الخامات" : locale === "fr" ? "Filtrer les matériaux" : "Filter materials"}>
-            <span className="idea-material-filter-label">{locale === "ar" ? "تصفية حسب" : locale === "fr" ? "Filtrer par" : "Filter by"}{activeFilters > 0 ? ` · ${activeFilters}` : ""}</span>
-            {filterGroup(locale === "ar" ? "العلامة التجارية" : locale === "fr" ? "Marque" : "Brand", "brand", brand, facets.brands)}
-            {filterGroup(locale === "ar" ? "الخامة" : locale === "fr" ? "Matériau" : "Material", "type", type, facets.types)}
-            {filterGroup(locale === "ar" ? "النقشة" : locale === "fr" ? "Aspect" : "Texture", "texture", texture, facets.textures)}
-            {filterGroup(t("filters.finish"), "finish", finish, facets.finishes)}
-            {filterGroup(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", "application", application, facets.applications)}
-            {filterGroup(t("filters.size"), "size", size, facets.sizes)}
-            {filterGroup(t("label.usage"), "usage", usage, facets.usages)}
-            {filterGroup(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", "color", color, facets.colors)}
-            {activeFilters > 0 && <button type="button" className="idea-material-reset" onClick={clearFilters}>{t("filters.clear")}</button>}
-          </div>
-        </div>
-
-        {query && <p className="idea-material-query">{locale === "ar" ? "نتائج البحث عن" : locale === "fr" ? "Résultats pour" : "Results for"} “{query}”</p>}
-        {results.length === 0 ? (
-          <div className="idea-material-empty">
-            <h2>{locale === "ar" ? "لم نعثر على خامات مطابقة" : locale === "fr" ? "Aucun matériau correspondant" : "No matching materials"}</h2>
-            <p>{locale === "ar" ? "جرّب تغيير البحث أو مسح بعض الفلاتر." : locale === "fr" ? "Essayez une autre recherche ou réinitialisez vos filtres." : "Try another search or reset your filters."}</p>
-            <button type="button" onClick={clearFilters}>{t("filters.clear")}</button>
-          </div>
-        ) : (
-          <>
-            <div className="idea-material-resultline" aria-live="polite">
-              <span>{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, results.length)} {locale === "ar" ? `من ${results.length}` : locale === "fr" ? `sur ${results.length}` : `of ${results.length}`}</span>
+            <div className="idea-material-featured-grid">
+              {featuredProducts.map((product) => (
+                <FeaturedMaterialCard key={product.id} product={product} locale={locale} t={t} addToQuote={addToQuote} />
+              ))}
             </div>
-            <div className="idea-material-grid">
-              {visibleProducts.map((product) => <MaterialCard key={product.id} product={product} locale={locale} t={t} isFavorite={isFavorite} toggleFavorite={toggleFavorite} toggleCompare={toggleCompare} compare={compare} addToQuote={addToQuote} />)}
-            </div>
-            {pageCount > 1 && (
-              <nav className="idea-material-pagination" aria-label={locale === "ar" ? "صفحات الخامات" : locale === "fr" ? "Pages des matériaux" : "Material pages"}>
-                <button type="button" disabled={page <= 1} onClick={() => updateFilter("page", String(page - 1))}>{locale === "ar" ? "السابق" : locale === "fr" ? "Précédent" : "Previous"}</button>
-                {Array.from({ length: pageCount }, (_, index) => index + 1).filter(number => number === 1 || number === pageCount || Math.abs(number - page) <= 2).map(number => <button key={number} type="button" aria-current={number === page ? "page" : undefined} aria-label={String(number)} onClick={() => updateFilter("page", String(number))}>{number}</button>)}
-                <button type="button" disabled={page >= pageCount} onClick={() => updateFilter("page", String(page + 1))}>{locale === "ar" ? "التالي" : locale === "fr" ? "Suivant" : "Next"}</button>
-              </nav>
-            )}
-          </>
+          </section>
         )}
+
+        <div className="idea-material-catalogue-layout" id="product-catalogue">
+          <header className="idea-material-heading idea-material-catalogue-intro">
+            <div className="idea-material-breadcrumb">
+              <Link to="/">IDEA</Link><span aria-hidden="true">/</span><span>{locale === "ar" ? "المواد" : locale === "fr" ? "MATÉRIAUX" : "MATERIALS"}</span>
+            </div>
+            <div className="idea-material-title-row">
+              <div>
+                <p className="idea-eyebrow">{locale === "ar" ? "كتالوج المنتجات" : locale === "fr" ? "CATALOGUE PRODUITS" : "PRODUCT CATALOGUE"}</p>
+                <h1 className="idea-display">{catalogueHeading}</h1>
+                <p className="idea-material-subtitle">
+                  {locale === "ar" ? "تصفّح خامات كتالوج IDEA واختر الأنسب لمساحتك." : locale === "fr" ? "Parcourez les matériaux du catalogue IDEA et trouvez la finition idéale." : "Browse the complete range of surfaces for your next project."}
+                </p>
+              </div>
+              <span className="idea-material-count">{results.length.toLocaleString(locale)} {locale === "ar" ? "خامة" : locale === "fr" ? "matériaux" : "materials"}</span>
+            </div>
+            <Link className="idea-material-all-link" to="/products">
+              {locale === "ar" ? `عرض كل المنتجات ${products.length}` : locale === "fr" ? `Voir les ${products.length} produits` : `View All ${products.length} Products`} <ArrowRight size={16} />
+            </Link>
+          </header>
+
+          <div className="idea-material-results">
+            <nav className="idea-material-tabs" aria-label={locale === "ar" ? "فئات الخامات" : locale === "fr" ? "Catégories de matériaux" : "Material categories"}>
+              {availableTabs.map((tab) => (
+                <button key={tab.key} type="button" className={activeTab === tab.key ? "is-active" : ""} aria-pressed={activeTab === tab.key} onClick={() => changeTab(tab.key)}>
+                  {tab.label[locale]}
+                </button>
+              ))}
+            </nav>
+            <div className="idea-material-toolbar">
+              <form className="idea-material-search" onSubmit={(event) => {
+                event.preventDefault();
+                const formData = new FormData(event.currentTarget);
+                updateFilter("q", String(formData.get("q") ?? "").trim() || null);
+              }}>
+                <input key={query} type="search" name="q" defaultValue={query} aria-label={locale === "ar" ? "ابحث عن خامة" : locale === "fr" ? "Rechercher un matériau" : "Search materials"} placeholder={locale === "ar" ? "ابحث بالاسم أو البراند أو الكود" : locale === "fr" ? "Nom, marque ou référence" : "Search by name, brand or code"} />
+                <button type="submit">{locale === "ar" ? "بحث" : locale === "fr" ? "Rechercher" : "Search"}</button>
+                <label className="idea-material-sort"><span className="sr-only">{locale === "ar" ? "ترتيب المنتجات" : locale === "fr" ? "Trier les produits" : "Sort materials"}</span>
+                  <select value={sort} onChange={(event) => updateFilter("sort", event.target.value)}>
+                    <option value="source">{locale === "ar" ? "ترتيب الكتالوج" : locale === "fr" ? "Ordre du catalogue" : "Catalogue order"}</option>
+                    <option value="az">A–Z</option><option value="za">Z–A</option>
+                  </select>
+                </label>
+              </form>
+              <div className="idea-material-filter-row" aria-label={locale === "ar" ? "تصفية الخامات" : locale === "fr" ? "Filtrer les matériaux" : "Filter materials"}>
+                <span className="idea-material-filter-label">{locale === "ar" ? "تصفية حسب" : locale === "fr" ? "Filtrer par" : "Filter by"}{activeFilters > 0 ? ` · ${activeFilters}` : ""}</span>
+                {filterGroup(locale === "ar" ? "العلامة التجارية" : locale === "fr" ? "Marque" : "Brand", "brand", brand, facets.brands)}
+                {filterGroup(locale === "ar" ? "الخامة" : locale === "fr" ? "Matériau" : "Material", "type", type, facets.types)}
+                {filterGroup(locale === "ar" ? "النقشة" : locale === "fr" ? "Aspect" : "Texture", "texture", texture, facets.textures)}
+                {filterGroup(t("filters.finish"), "finish", finish, facets.finishes)}
+                {filterGroup(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", "application", application, facets.applications)}
+                {filterGroup(t("filters.size"), "size", size, facets.sizes)}
+                {filterGroup(t("label.usage"), "usage", usage, facets.usages)}
+                {filterGroup(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", "color", color, facets.colors)}
+                {activeFilters > 0 && <button type="button" className="idea-material-reset" onClick={clearFilters}>{t("filters.clear")}</button>}
+              </div>
+            </div>
+            {query && <p className="idea-material-query">{locale === "ar" ? "نتائج البحث عن" : locale === "fr" ? "Résultats pour" : "Results for"} “{query}”</p>}
+            {results.length === 0 ? (
+              <div className="idea-material-empty">
+                <h2>{locale === "ar" ? "لم نعثر على خامات مطابقة" : locale === "fr" ? "Aucun matériau correspondant" : "No matching materials"}</h2>
+                <p>{locale === "ar" ? "جرّب تغيير البحث أو مسح بعض الفلاتر." : locale === "fr" ? "Essayez une autre recherche ou réinitialisez vos filtres." : "Try another search or reset your filters."}</p>
+                <button type="button" onClick={clearFilters}>{t("filters.clear")}</button>
+              </div>
+            ) : (
+              <>
+                <div className="idea-material-resultline" aria-live="polite">
+                  <span>{(page - 1) * PAGE_SIZE + 1}–{Math.min(page * PAGE_SIZE, results.length)} {locale === "ar" ? `من ${results.length}` : locale === "fr" ? `sur ${results.length}` : `of ${results.length}`}</span>
+                </div>
+                <div className="idea-material-grid">
+                  {visibleProducts.map((product) => <MaterialCard key={product.id} product={product} locale={locale} t={t} isFavorite={isFavorite} toggleFavorite={toggleFavorite} toggleCompare={toggleCompare} compare={compare} addToQuote={addToQuote} />)}
+                </div>
+                {pageCount > 1 && (
+                  <nav className="idea-material-pagination" aria-label={locale === "ar" ? "صفحات الخامات" : locale === "fr" ? "Pages des matériaux" : "Material pages"}>
+                    <button type="button" disabled={page <= 1} onClick={() => updateFilter("page", String(page - 1))}>{locale === "ar" ? "السابق" : locale === "fr" ? "Précédent" : "Previous"}</button>
+                    {Array.from({ length: pageCount }, (_, index) => index + 1).filter(number => number === 1 || number === pageCount || Math.abs(number - page) <= 2).map(number => <button key={number} type="button" aria-current={number === page ? "page" : undefined} aria-label={String(number)} onClick={() => updateFilter("page", String(number))}>{number}</button>)}
+                    <button type="button" disabled={page >= pageCount} onClick={() => updateFilter("page", String(page + 1))}>{locale === "ar" ? "التالي" : locale === "fr" ? "Suivant" : "Next"}</button>
+                  </nav>
+                )}
+              </>
+            )}
           </div>
         </div>
       </Container>
     </Section>
+  );
+}
+
+type FeaturedMaterialCardProps = {
+  product: Product;
+  locale: "en" | "ar" | "fr";
+  t: (key: string) => string;
+  addToQuote: (id: string, unit: "sqm" | "pieces") => void;
+};
+
+function FeaturedMaterialCard({ product, locale, t, addToQuote }: FeaturedMaterialCardProps) {
+  const maker = productMaker(product, locale);
+  const image = localMaterialFace(product.id) || product.source?.original?.tiles?.[0] || product.image;
+  const unit = ["ceramics", "porcelain", "marble"].includes(product.collection) ? "sqm" : "pieces";
+
+  return (
+    <article className="idea-material-featured-card">
+      <div className="idea-material-featured-media">
+        <Link to={`/product/${product.slug}`} aria-label={`${product.name[locale]} — ${t("action.viewDetails")}`}>
+          <MaterialOrb src={image} alt="" className="idea-surface-orb--featured" />
+        </Link>
+        {product.finish && <span className="idea-material-featured-finish">{product.finish}</span>}
+      </div>
+      <div className="idea-material-featured-body">
+        <div className="idea-material-featured-maker">
+          <strong>{maker.verified ? maker.value : product.brand}</strong>
+          <small>{locale === "ar" ? "العلامة التجارية" : locale === "fr" ? "Marque" : "Brand"}</small>
+        </div>
+        <Link className="idea-material-featured-name" to={`/product/${product.slug}`} title={product.name[locale]}>
+          {product.name[locale]}
+        </Link>
+        <div className="idea-material-featured-meta">
+          {product.sizes[0] && <span>{product.sizes[0].label}</span>}
+          <span dir="ltr" title={ideaInternalCode(product)}>{ideaInternalCode(product)}</span>
+        </div>
+        <div className="idea-material-featured-footer">
+          <button type="button" className="idea-material-featured-quote" onClick={() => addToQuote(product.id, unit)}>
+            <FileText size={14} />{t("action.requestPrice")}
+          </button>
+          <Link className="idea-material-featured-visualize" to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}>
+            <Sparkles size={15} />{locale === "ar" ? "جرّب الخامة" : locale === "fr" ? "Essayer" : "Try in AI"}
+          </Link>
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -255,9 +328,7 @@ function MaterialCard({ product, locale, t, isFavorite, toggleFavorite, toggleCo
     <article className="idea-material-card">
       <div className="idea-material-card-media">
         <Link to={`/product/${product.slug}`} aria-label={`${product.name[locale]} — ${t("action.viewDetails")}`}>
-          <span className="idea-material-orb">
-            <img src={image} alt={product.name[locale]} loading="lazy" decoding="async" />
-          </span>
+          <MaterialOrb src={image} alt="" className="idea-surface-orb--catalogue" />
         </Link>
         <div className="idea-material-card-actions">
           <button type="button" aria-label={t("action.favorite")} aria-pressed={favorite} onClick={() => toggleFavorite(product.id)}><Heart size={16} fill={favorite ? "currentColor" : "none"} /></button>
