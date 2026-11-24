@@ -149,7 +149,7 @@ export function SurfaceStyles() {
     <>
       {/* ── Hero intro ──────────────────────────────────────────────────── */}
       <div style={{
-        background: "var(--idea-bg)",
+        background: "var(--idea-page-background)",
         borderBottom: "var(--idea-hairline)",
         padding: "var(--idea-space-9) var(--idea-space-7) var(--idea-space-8)",
         maxWidth: "var(--idea-content-max)",

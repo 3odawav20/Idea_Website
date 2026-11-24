@@ -98,7 +98,7 @@
 /* ═══ Dark mode — neutral charcoal/graphite, never navy ═══════════════ */
 [data-theme='dark'] {
   --idea-bg: #101010;
-  --idea-page-background: #101010;
+  --idea-page-background: url("/images/night-marble-theme.jpg") center / cover fixed, #101010;
   --idea-bg-2: #191919;
   --idea-surface: #202020;
   --idea-surface-2: #292929;
