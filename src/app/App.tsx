@@ -8,7 +8,7 @@ import { BackendProvider } from "./backend/db";
 import { useBackend, type Role } from "./backend/db";
 import { Layout } from "./components/Layout";
 import { Home } from "./pages/Home";
-import { Products } from "./pages/Products";
+import { MaterialCatalogue } from "./pages/MaterialCatalogue";
 import { Collections, CollectionDetail } from "./pages/Collections";
 import { ProductDetail } from "./pages/ProductDetail";
 import { Favorites } from "./pages/Favorites";
@@ -72,7 +72,7 @@ export default function App() {
             <Route element={<Layout />}>
               {/* Storefront */}
               <Route index element={<Home />} />
-              <Route path="/products" element={<Products />} />
+              <Route path="/products" element={<MaterialCatalogue />} />
               <Route path="/collections" element={<Collections />} />
               <Route path="/collections/:slug" element={<CollectionDetail />} />
               <Route path="/product/:slug" element={<ProductDetail />} />
