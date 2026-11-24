@@ -1,0 +1,3 @@
+## Regression reconciliation (2026-11-24)
+
+Legacy Supabase schema assertions remain intact. Frontend assertions now verify the migrated PHP/MySQL calls and tracked PHP authorization, rather than requiring obsolete table names in React. Separate multi-offer CRUD, creative upload/validation and external campaign fee/spend are not implemented in the tracked PHP contract; they are explicitly unavailable in the UI, not accepted as feature-complete. Public header remains unchanged; staged announcement editor is not proof of live publishing. Company sales and ad history now send company-scoped IDs from server bootstrap. PHP core and real database remain necessary for production acceptance. No migration, deployment or secret changes.

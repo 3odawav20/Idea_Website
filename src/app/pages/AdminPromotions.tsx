@@ -99,6 +99,7 @@ export function AdminPromotions() {
           {ar
             ? "حماية الأسعار تتم على خادم PHP/MySQL عبر صلاحيات الجلسة و CSRF. لإضافة أو تعديل سعر منتج خاص بشركة، استخدم شاشة الشركات والمنتجات."
             : "Pricing privacy is enforced server-side in PHP/MySQL. To update a company's private product price, use Companies & Products."}
+          {" "}{ar ? "إدارة العروض المتعددة المنفصلة غير متاحة بعد." : "Separate multi-offer management is not available yet."}
         </span>
       </div>
 

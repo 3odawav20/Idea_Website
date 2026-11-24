@@ -74,7 +74,10 @@ test('TSX tab components wire idea-glass-tab classes without opaque inline overr
   assert.match(subsTsx, /className=\{`idea-glass-tab\$\{interval === x \? " is-active" : ""\}`\}/);
 
   const dashTsx = read('src/app/components/dash.tsx');
-  assert.match(dashTsx, /className=\{\x60idea-dash-nav idea-dash-rail-nav idea-glass-tablist idea-glass-tablist--vertical\$\{\s*mobileOpen \? " is-open" : ""/);
+  assert.match(dashTsx, /className=\{\x60idea-dash-rail\$\{mobileOpen \? " is-open" : ""/);
+  assert.match(dashTsx, /className="idea-dash-nav idea-glass-tablist idea-glass-tablist--vertical"/);
+  assert.match(dashTsx, /aria-expanded=\{mobileOpen\}/);
+  assert.match(read('src/app/components/DashShell.css'), /\.idea-dash-rail:not\(\.is-open\) \.idea-dash-nav/);
   assert.match(dashTsx, /idea-glass-tab idea-dash-tab/);
 
   const adminTsx = read('src/app/pages/Admin.tsx');
