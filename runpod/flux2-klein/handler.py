@@ -353,6 +353,31 @@ def _validate_mask(mask: np.ndarray) -> float:
     return area
 
 
+def _decode_input_mask(value: Any, size: tuple[int, int]) -> np.ndarray:
+    """White permits edits; black protects pixels. Never resize a supplied mask."""
+    if not isinstance(value, str) or not value.startswith("data:image/png;base64,") or len(value) > math.ceil(MAX_IMAGE_BYTES * 4 / 3) + 64:
+        raise WorkerError("mask_invalid", "input_mask must be a bounded binary PNG data URI")
+    try:
+        raw = base64.b64decode(value.partition(",")[2], validate=True)
+        if not raw or len(raw) > MAX_IMAGE_BYTES:
+            raise ValueError("size")
+        with Image.open(io.BytesIO(raw)) as opened:
+            if opened.format != "PNG" or opened.size != size:
+                raise ValueError("geometry")
+            rgba = np.asarray(opened.convert("RGBA"))
+            if not np.all(rgba[:, :, 3] == 255):
+                raise ValueError("alpha")
+            rgb = rgba[:, :, :3]
+            white = np.all(rgb == 255, axis=2)
+            black = np.all(rgb == 0, axis=2)
+            if not np.all(white | black):
+                raise ValueError("nonbinary")
+    except (ValueError, OSError, binascii.Error) as exc:
+        raise WorkerError("mask_invalid", "input_mask must match room dimensions and contain opaque black/white pixels") from exc
+    _validate_mask(white)
+    return white
+
+
 def _png_data_uri(image: Image.Image) -> str:
     output = io.BytesIO()
     image.save(output, format="PNG", optimize=True)
@@ -378,13 +403,19 @@ def process(event: dict[str, Any], runtime: Runtime | None = None) -> dict[str, 
     if output_width != room.width or output_height != room.height:
         raise WorkerError("geometry_mismatch", "Output dimensions must equal the original room dimensions")
 
+    input_mask = None
+    if payload.get("input_mask") is not None:
+        input_mask = _decode_input_mask(payload["input_mask"], room.size)
     active_runtime = runtime or _load_runtime()
-    masks, _protected = _semantic_masks(room, active_runtime)
+    masks, protected = _semantic_masks(room, active_runtime)
     requested_surface = payload.get("target_surface", "floor")
     selected = ("floor", "walls") if requested_surface == "both" else (("floor",) if requested_surface == "floor" else ("walls",))
     if requested_surface not in ("floor", "walls", "both"):
         raise WorkerError("invalid_surface", "target_surface must be floor, walls, or both")
-    surface_masks = {name: masks[name] for name in selected}
+    surface_masks = {
+        name: masks[name] & ~protected & (input_mask if input_mask is not None else True)
+        for name in selected
+    }
     if requested_surface == "both":
         union = surface_masks["floor"] | surface_masks["walls"]
     else:
@@ -408,9 +439,12 @@ def process(event: dict[str, Any], runtime: Runtime | None = None) -> dict[str, 
         raise WorkerError("geometry_mismatch", "The final composite changed the original dimensions")
 
     mask_image = Image.fromarray((union.astype(np.uint8) * 255), mode="L").convert("RGB")
+    mask_uri = _png_data_uri(mask_image)
     output = {
-        "image": _jpeg_data_uri(result),
-        "mask": _png_data_uri(mask_image),
+        "contract": contract,
+        "image": _png_data_uri(result),
+        "mask": mask_uri,
+        "edit_mask": mask_uri,
         "model": MODEL_ID,
         "worker_contract": contract,
         "quality": {
@@ -419,6 +453,7 @@ def process(event: dict[str, Any], runtime: Runtime | None = None) -> dict[str, 
             "protected_pixels_preserved": True,
             "depth_guided_texture_projection": True,
             "reference_images_independent": 2,
+            "input_mask_applied": input_mask is not None,
             "surface_mask_fraction": total_area,
             "surface_mask_fractions": areas,
             "inference_steps": 4,
