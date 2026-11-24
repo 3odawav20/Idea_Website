@@ -28,7 +28,10 @@ import {
 } from "./pages/Business";
 import { SubscriptionsHome, SubscriptionsCustomers, SubscriptionsBusinesses, AccountSubscription } from "./pages/Subscriptions";
 import { AdminLayout, AdminOverview, AdminSubscriptions, AdminPayments } from "./pages/Admin";
-import { AdminStudioLayout, AdminStudioHome, AdminProducts, AdminQuality, AdminOperations, AdminSettings, AdminVisualizer } from "./pages/AdminStudio";
+import {
+  AdminStudioLayout, AdminStudioHome, AdminUsers, AdminVerifications, AdminRfqs,
+  AdminProducts, AdminQuality, AdminOperations, AdminSettings, AdminVisualizer,
+} from "./pages/AdminStudio";
 import { AdminPromotions } from "./pages/AdminPromotions";
 import { Checkout } from "./pages/Checkout";
 const Room3DStudio = lazy(() => import("./pages/Room3DStudio").then(module => ({ default: module.Room3DStudio })));
@@ -40,7 +43,14 @@ import { SurfaceStyles } from "./pages/SurfaceStyles";
 import { LegalDocumentPage, LegalHubPage } from "./pages/Legal";
 
 function ProtectedRoute({ roles }: { roles?: Role[] }) {
-  const { session } = useBackend();
+  const { session, loading } = useBackend();
+  if (loading) {
+    return (
+      <div style={{ minHeight: "55vh", display: "grid", placeItems: "center", padding: 32, color: "var(--idea-text-muted)" }} aria-busy="true">
+        Loading session…
+      </div>
+    );
+  }
   if (!session) return <Navigate to={roles?.includes("admin") ? "/admin/login" : roles?.includes("business") ? "/business/login" : "/login"} replace />;
   if (roles && !roles.includes(session.role)) return <Navigate to="/" replace />;
   return <Outlet />;
@@ -159,6 +169,9 @@ export default function App() {
               <Route element={<ProtectedRoute roles={["admin"]} />}>
               <Route path="/admin" element={<AdminStudioLayout />}>
                 <Route index element={<AdminStudioHome />} />
+                <Route path="users" element={<AdminUsers />} />
+                <Route path="verifications" element={<AdminVerifications />} />
+                <Route path="rfqs" element={<AdminRfqs />} />
                 <Route path="catalogue" element={<AdminProducts />} />
                 <Route path="companies" element={<CompanyControlCenter mode="admin" />} />
                 <Route path="sales" element={<CompanyRevenueReport mode="admin" />} />

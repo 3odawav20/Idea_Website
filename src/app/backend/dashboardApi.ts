@@ -1,6 +1,7 @@
 import { getPhpSession, PHP_ACCOUNT_API, PHP_PLATFORM_API, type PhpSession } from "./phpAccounts";
 
 export const PHP_MARKETPLACE_API = "/api/marketplace.php";
+export const PHP_QUOTES_API = "/api/quotes-api.php";
 
 export class DashboardApiError extends Error {
   status: number;
@@ -1173,3 +1174,76 @@ export async function searchMarketplaceCatalogue(q: string): Promise<{
     similar: Array.isArray(raw.similar) ? (raw.similar as MarketplaceProduct[]) : [],
   };
 }
+
+export type RfqDeadlineFilter = "all" | "urgent24h" | "open" | "expired";
+
+export function filterSupplierRfqs(
+  requests: LiveRfq[],
+  options: {
+    status?: string;
+    deadline?: RfqDeadlineFilter;
+    governorate?: string;
+    query?: string;
+    sortBy?: "deadline" | "newest";
+    now?: number;
+  }
+): LiveRfq[] {
+  const now = options.now ?? Date.now();
+  const statusNeedle = (options.status || "all").toLowerCase();
+  const govNeedle = (options.governorate || "all").toLowerCase();
+  const q = (options.query || "").trim().toLowerCase();
+  const deadlineMode = options.deadline || "all";
+
+  const filtered = requests.filter((rfq) => {
+    if (statusNeedle !== "all") {
+      const effectiveStatus = (rfq.supplierResponseStatus || rfq.status || "").toLowerCase();
+      if (effectiveStatus !== statusNeedle && rfq.status.toLowerCase() !== statusNeedle) {
+        return false;
+      }
+    }
+    if (govNeedle !== "all" && rfq.governorate.toLowerCase() !== govNeedle) {
+      return false;
+    }
+    if (deadlineMode !== "all" && rfq.deadlineAt > 0) {
+      const diffMs = rfq.deadlineAt - now;
+      if (deadlineMode === "urgent24h" && (diffMs <= 0 || diffMs > 24 * 3600_000)) return false;
+      if (deadlineMode === "open" && diffMs <= 0) return false;
+      if (deadlineMode === "expired" && diffMs > 0) return false;
+    }
+    if (q) {
+      const hay = [rfq.reference, rfq.id, rfq.productTitle, rfq.variantLabel, rfq.governorate, rfq.destination, rfq.category || ""]
+        .join(" ")
+        .toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+
+  const sorted = [...filtered];
+  if (options.sortBy === "deadline") {
+    sorted.sort((a, b) => (a.deadlineAt || Number.MAX_SAFE_INTEGER) - (b.deadlineAt || Number.MAX_SAFE_INTEGER));
+  } else {
+    sorted.sort((a, b) => b.createdAt - a.createdAt);
+  }
+  return sorted;
+}
+
+export async function fetchSupplierRfqsFromQuotesApi(): Promise<{
+  requests: LiveRfq[];
+  quotes: LiveQuote[];
+  source: "quotes-api" | "mailbox";
+}> {
+  try {
+    const raw = await phpGet(PHP_QUOTES_API, "supplier-rfqs");
+    const mailbox = normalizeMailboxPayload(raw);
+    return { requests: mailbox.requests, quotes: mailbox.quotes, source: "quotes-api" };
+  } catch (err) {
+    // Only fall back to /api/accounts.php?action=mailbox if quotes-api.php is not separately routed (404 / non-JSON).
+    if (err instanceof DashboardApiError && (err.status === 404 || err.code === "PHP_API_NON_JSON" || err.code === "UNKNOWN_ACTION")) {
+      const mailbox = await fetchLiveMailbox();
+      return { requests: mailbox.requests, quotes: mailbox.quotes, source: "mailbox" };
+    }
+    throw err;
+  }
+}
+

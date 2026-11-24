@@ -97,24 +97,33 @@ export function EmptyState({ title, sub, action }: { title: string; sub?: string
 
 export function DashBanner({
   tone = "info",
+  title,
+  body,
   children,
 }: {
-  tone?: "info" | "warn" | "error" | "ok";
-  children: ReactNode;
+  tone?: "info" | "warn" | "warning" | "error" | "ok";
+  title?: string;
+  body?: string;
+  children?: ReactNode;
 }) {
-  const Icon = tone === "error" || tone === "warn" ? AlertCircle : tone === "ok" ? CheckCircle2 : Info;
+  const normalized = tone === "warning" ? "warn" : tone;
+  const Icon = normalized === "error" || normalized === "warn" ? AlertCircle : normalized === "ok" ? CheckCircle2 : Info;
   const cls =
-    tone === "error"
+    normalized === "error"
       ? "idea-dash-banner idea-dash-banner--error"
-      : tone === "warn"
+      : normalized === "warn"
       ? "idea-dash-banner idea-dash-banner--warn"
-      : tone === "ok"
+      : normalized === "ok"
       ? "idea-dash-banner idea-dash-banner--ok"
       : "idea-dash-banner";
   return (
-    <div className={cls} role={tone === "error" ? "alert" : "status"}>
+    <div className={cls} role={normalized === "error" ? "alert" : "status"}>
       <Icon size={17} style={{ flexShrink: 0, marginTop: 2 }} aria-hidden="true" />
-      <div style={{ minWidth: 0 }}>{children}</div>
+      <div style={{ minWidth: 0 }}>
+        {title && <strong style={{ display: "block", marginBottom: body || children ? 2 : 0 }}>{title}</strong>}
+        {body && <span>{body}</span>}
+        {children}
+      </div>
     </div>
   );
 }
@@ -160,7 +169,7 @@ export function DashLayout({
   return (
     <Container className="idea-dash-shell">
       <div className="idea-dash-wrap">
-        <aside className="idea-dash-rail">
+        <aside className={`idea-dash-rail${mobileOpen ? " is-open" : ""}`}>
           <div className="idea-dash-rail-head">
             <div>
               <div className="idea-display idea-dash-rail-title">{title}</div>
@@ -179,9 +188,7 @@ export function DashLayout({
             </button>
           </div>
           <nav
-            className={`idea-dash-nav idea-dash-rail-nav idea-glass-tablist idea-glass-tablist--vertical${
-              mobileOpen ? " is-open" : ""
-            }`}
+            className="idea-dash-nav idea-glass-tablist idea-glass-tablist--vertical"
             aria-label={title}
           >
             {links.map((l) => (

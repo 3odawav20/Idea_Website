@@ -5,13 +5,18 @@
    ========================================================================== */
 
 .idea-dash-shell {
-  padding: clamp(28px, 4vw, 52px) clamp(16px, 3vw, 32px);
+  padding: clamp(24px, 4vw, 52px) clamp(14px, 3vw, 32px);
+  max-width: 100%;
+  overflow-x: clip;
+  box-sizing: border-box;
 }
 
 .idea-dash-wrap {
   display: flex;
   gap: clamp(20px, 3vw, 36px);
   align-items: flex-start;
+  width: 100%;
+  max-width: 100%;
 }
 
 .idea-dash-rail {
@@ -58,11 +63,18 @@
 }
 
 .idea-dash-main {
-  flex: 1;
+  flex: 1 1 0%;
+  width: 100%;
+  max-width: 100%;
   min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.idea-dash-main > * {
+  max-width: 100%;
+  min-width: 0;
 }
 
 .idea-dash-header {
@@ -180,16 +192,20 @@
   color: var(--idea-text);
   font: inherit;
   font-size: 13px;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .idea-dash-toolbar .idea-dash-search {
   flex: 1 1 220px;
-  min-width: 180px;
+  min-width: 0;
 }
 
 .idea-dash-table-wrap {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border-radius: var(--idea-radius-md);
   border: 1px solid var(--idea-border);
   background: var(--idea-surface);
@@ -274,7 +290,7 @@
   .idea-dash-mobile-toggle {
     display: inline-flex;
   }
-  .idea-dash-rail-nav:not(.is-open) {
+  .idea-dash-rail:not(.is-open) .idea-dash-nav {
     display: none;
   }
 }

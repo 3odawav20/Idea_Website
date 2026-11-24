@@ -256,6 +256,8 @@
 [data-theme="light"] .ids-root .ids-hero h1 em,
 [data-theme="light"] .ids-root .ids-hero-kicker{color:#815725}
 [data-theme="light"] .ids-root .ids-hero p{color:#545454}
+[data-theme="light"] .ids-root .ids-pill-ok{color:#14532d;background:#dcfce7;border-color:#86efac}
+[data-theme="light"] .ids-root .ids-pill-warn{color:#92400e;background:#fef3c7;border-color:#fcd34d}
 [data-theme="light"] .ids-root .ids-stat,
 [data-theme="light"] .ids-root .ids-panel{
   background:linear-gradient(160deg,#fff,#f9f9f9);border-color:var(--ids-line);

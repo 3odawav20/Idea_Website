@@ -1,9 +1,9 @@
-import { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router";
+import { ShieldAlert } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
-import { useBackend, type Plan, type PaymentMethodConfig } from "../backend/db";
+import { useBackend } from "../backend/db";
 import { Container, Section, SectionHeader, Button } from "../components/ui";
-import { Panel, StatusBadge, Field, inputStyle } from "../components/dash";
+import { Panel, StatusBadge, DashBanner } from "../components/dash";
 
 export function AdminLayout() {
   const { t } = useI18n();
@@ -14,9 +14,15 @@ export function AdminLayout() {
       <Section style={{ paddingTop: "var(--idea-space-8)" }}>
         <Container style={{ maxWidth: 440, textAlign: "center" }}>
           <Panel>
-            <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)" }}>Administrator area</div>
-            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", margin: "10px 0 16px" }}>Administrator access is assigned and verified by the production backend.</p>
-            <Button variant="outline" onClick={() => nav("/login")}>Sign in</Button>
+            <div className="idea-display" style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-lg)" }}>
+              Administrator area
+            </div>
+            <p style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)", margin: "10px 0 16px" }}>
+              Administrator access is assigned and verified by the production PHP/MySQL backend.
+            </p>
+            <Button variant="outline" onClick={() => nav("/admin/login")}>
+              Sign in
+            </Button>
           </Panel>
         </Container>
       </Section>
@@ -47,108 +53,114 @@ export function AdminLayout() {
 }
 
 export function AdminOverview() {
-  const { db, api } = useBackend();
-  const stats = [
-    { label: "Products", value: "475" },
-    { label: "Suppliers", value: db.businesses.length },
-    { label: "Requests", value: db.requests.length },
-    { label: "Offers", value: db.offers.length },
-    { label: "Orders", value: db.orders.length },
-    { label: "Subscriptions", value: db.subscriptions.filter((s) => s.status === "active").length },
-  ];
+  const { locale } = useI18n();
+  const ar = locale === "ar";
   return (
-    <>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(140px,1fr))", gap: "var(--idea-space-3)", marginBottom: "var(--idea-space-5)" }}>
-        {stats.map((s) => <Panel key={s.label} style={{ textAlign: "center" }}><div className="idea-display" style={{ fontSize: "var(--idea-text-2xl)", color: "var(--idea-gold-bright)" }}>{s.value}</div><div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{s.label}</div></Panel>)}
-      </div>
-      <Panel style={{ marginBottom: "var(--idea-space-4)" }}>
-        <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 10 }}>Supplier verification</div>
-        {db.businesses.map((b) => (
-          <div key={b.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderTop: "var(--idea-hairline)" }}>
-            <span style={{ color: "var(--idea-text)", fontSize: "var(--idea-text-sm)" }}>{b.publicName} <span style={{ color: "var(--idea-text-faint)" }}>· {b.governorate}</span></span>
-            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-              <StatusBadge text={b.status} tone={b.status === "Verified" ? "green" : b.status === "Rejected" ? "red" : "gold"} />
-              {b.status !== "Verified" && <Button size="sm" variant="outline" onClick={() => api.updateBusinessStatus(b.id, "Verified")}>Verify</Button>}
-              {b.status === "Verified" && <Button size="sm" variant="ghost" onClick={() => api.updateBusinessStatus(b.id, "Suspended")}>Suspend</Button>}
-            </div>
-          </div>
-        ))}
-      </Panel>
-      <Panel>
-        <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 10 }}>Audit log (latest {Math.min(db.audit.length, 12)})</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 4, fontFamily: "var(--idea-font-body)", fontSize: 12, color: "var(--idea-text-muted)" }}>
-          {db.audit.slice(0, 12).map((a) => <div key={a.id}>{new Date(a.at).toLocaleTimeString()} · {a.action} · {a.detail}</div>)}
-          {!db.audit.length && <span>No events yet.</span>}
-        </div>
-      </Panel>
-    </>
+    <DashBanner
+      tone="info"
+      title={ar ? "تم دمج لوحة الإدارة في المساحة الموحدة" : "Consolidated into Unified Admin Console"}
+      body={
+        ar
+          ? "استخدم القائمة الجانبية في /admin للوصول إلى المستخدمين، توثيق الشركات، طلبات التسعير، والمبيعات المؤكدة عبر PHP/MySQL."
+          : "Use the unified /admin sidebar for Users, Company Verifications, RFQs, and Confirmed Sales backed by PHP/MySQL."
+      }
+    />
   );
 }
 
 export function AdminSubscriptions() {
-  const { db, api } = useBackend();
-  const [edit, setEdit] = useState<Plan | null>(null);
+  const { db } = useBackend();
+  const { locale } = useI18n();
+  const ar = locale === "ar";
   return (
     <>
-      <SectionHeader eyebrow="Configuration" title="Subscription Plans" sub="All prices (EGP), intervals and limits are editable here. Nothing is hard-coded." />
-      <div style={{ display: "grid", gap: 8 }}>
+      <SectionHeader
+        eyebrow={ar ? "الاشتراكات" : "Subscriptions"}
+        title={ar ? "خطط الاشتراك المرجعية" : "Subscription Plans"}
+        sub={
+          ar
+            ? "عرض مرجعي لخطط الاشتراك. تعديل الأسعار أو تفعيل الفوترة المتكررة يتطلب ربط نقطة نهاية فوترة موثقة على خادم PHP/MySQL."
+            : "Reference view of subscription tiers. Plan mutations and recurring billing remain locked until a dedicated PHP/MySQL billing endpoint is deployed."
+        }
+      />
+      <DashBanner
+        tone="warning"
+        title={ar ? "وضع القراءة فقط — لا يوجد حفظ وهمي محلي" : "Read-only — local simulated writes disabled"}
+        body={
+          ar
+            ? "تم تعطيل التعديل المحلي في المتصفح لمنع حفظ تغييرات غير حقيقية لا تصل إلى قاعدة بيانات MySQL."
+            : "Browser-local plan edits have been disabled so administrators are never shown unsaved or fake billing changes."
+        }
+      />
+      <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
         {db.plans.map((p) => (
           <Panel key={p.id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
-            <div><span style={{ color: "var(--idea-gold-bright)" }}>{p.audience}</span> · <span style={{ color: "var(--idea-text)" }}>{p.name}</span>
-              <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>{p.monthly} EGP/mo · {p.annual} EGP/yr · trial {p.trialDays}d</div></div>
-            <Button size="sm" variant="outline" onClick={() => setEdit(p)}>Edit</Button>
+            <div>
+              <span style={{ color: "var(--idea-gold-bright)" }}>{p.audience}</span> ·{" "}
+              <span style={{ color: "var(--idea-text)", fontWeight: 600 }}>{p.name}</span>
+              <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>
+                {p.monthly} EGP/mo · {p.annual} EGP/yr · {ar ? "فترة تجريبية" : "trial"} {p.trialDays}d
+              </div>
+            </div>
+            <StatusBadge text={ar ? "يتطلب API فوترة" : "Requires billing API"} tone="muted" />
           </Panel>
         ))}
       </div>
-      {edit && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,.6)", display: "grid", placeItems: "center", zIndex: 100, padding: 20 }} onClick={() => setEdit(null)}>
-          <Panel style={{ maxWidth: 420, width: "100%" }} >
-            <div onClick={(e) => e.stopPropagation()}>
-              <div className="idea-display" style={{ color: "var(--idea-text)", marginBottom: 12 }}>Edit {edit.name}</div>
-              <Field label="Monthly (EGP)"><input type="number" style={inputStyle} value={edit.monthly} onChange={(e) => setEdit({ ...edit, monthly: Number(e.target.value) })} /></Field>
-              <Field label="Annual (EGP)"><input type="number" style={inputStyle} value={edit.annual} onChange={(e) => setEdit({ ...edit, annual: Number(e.target.value) })} /></Field>
-              <Field label="Trial days"><input type="number" style={inputStyle} value={edit.trialDays} onChange={(e) => setEdit({ ...edit, trialDays: Number(e.target.value) })} /></Field>
-              <div style={{ display: "flex", gap: 8 }}>
-                <Button size="sm" onClick={() => { api.updatePlan(edit); setEdit(null); }}>Save</Button>
-                <Button size="sm" variant="ghost" onClick={() => setEdit(null)}>Cancel</Button>
-              </div>
-            </div>
-          </Panel>
-        </div>
-      )}
     </>
   );
 }
 
 export function AdminPayments() {
-  const { db, api } = useBackend();
-  const label: Record<string, string> = { card: "Card (Visa · Mastercard · Meeza)", fawry: "Fawry Pay", wallet: "Mobile Wallet", applepay: "Apple Pay", bank: "Bank / Instant Transfer" };
-  const set = (cfg: PaymentMethodConfig, patch: Partial<PaymentMethodConfig>) => api.updatePayment({ ...cfg, ...patch });
+  const { db } = useBackend();
+  const { locale } = useI18n();
+  const ar = locale === "ar";
+  const label: Record<string, string> = {
+    card: "Card (Visa · Mastercard · Meeza)",
+    fawry: "Fawry Pay",
+    wallet: "Mobile Wallet",
+    applepay: "Apple Pay",
+    bank: "Bank / Instant Transfer",
+  };
   return (
     <>
-      <SectionHeader eyebrow="Configuration" title="Payment Settings" sub="Currency: Egyptian Pound (EGP). Production keys are never stored client-side. A method cannot be enabled for production until sandbox tests and webhook validation pass." />
-      <div style={{ display: "grid", gap: 10 }}>
+      <SectionHeader
+        eyebrow={ar ? "بوابات الدفع" : "Payment Gateways"}
+        title={ar ? "إعدادات الدفع (محمية على الخادم)" : "Payment Configuration (Server-Managed)"}
+        sub={
+          ar
+            ? "العملة: الجنيه المصري (EGP). مفاتيح التاجر واختبارات الـWebhook تُضبط حصريًا في بيئة خادم cPanel/PHP ولا تُحفظ أو تُحاكي داخل المتصفح."
+            : "Currency: EGP. Merchant secrets, live/sandbox modes, and webhook verification are configured strictly server-side on cPanel/PHP — never simulated in the browser."
+        }
+      />
+      <DashBanner
+        tone="warning"
+        title={ar ? "لا توجد أزرار محاكاة للدفع" : "Simulated dev credentials & sandbox tests removed"}
+        body={
+          ar
+            ? "تفعيل أي بوابة دفع إنتاجية يتطلب إعداد مفاتيح Paymob / Fawry الحقيقية على الخادم وتأكيد استقبال Webhook موقّع."
+            : "Enabling any payment method requires real server-side Paymob / Fawry credentials and verified webhook signatures in PHP."
+        }
+      />
+      <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
         {db.payments.map((p) => (
           <Panel key={p.key}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 10 }}>
               <div>
-                <div className="idea-display" style={{ color: "var(--idea-text)" }}>{label[p.key]}</div>
-                <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>{p.provider} · {p.currency}</div>
+                <div className="idea-display" style={{ color: "var(--idea-text)" }}>
+                  {label[p.key] || p.key}
+                </div>
+                <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)" }}>
+                  {p.provider} · {p.currency}
+                </div>
               </div>
               <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-                <StatusBadge text={p.merchantConfigured ? "Merchant set" : "No credentials"} tone={p.merchantConfigured ? "green" : "muted"} />
-                <StatusBadge text={p.webhookOk ? "Webhook OK" : "Webhook pending"} tone={p.webhookOk ? "green" : "muted"} />
-                <select style={{ ...inputStyle, width: "auto", padding: "6px 10px" }} value={p.mode} onChange={(e) => set(p, { mode: e.target.value as "sandbox" | "production" })}>
-                  <option value="sandbox">Sandbox</option><option value="production">Production</option>
-                </select>
-                <Button size="sm" variant="ghost" onClick={() => set(p, { merchantConfigured: !p.merchantConfigured })}>{p.merchantConfigured ? "Clear creds" : "Set creds (dev)"}</Button>
-                <Button size="sm" variant="outline" onClick={() => api.testPayment(p.key)}>Run test</Button>
-                <label style={{ display: "flex", gap: 6, alignItems: "center", color: "var(--idea-text-muted)", fontSize: "var(--idea-text-sm)" }}>
-                  <input type="checkbox" checked={p.enabled} disabled={p.mode === "production" && !p.webhookOk} onChange={(e) => set(p, { enabled: e.target.checked })} /> Enabled
-                </label>
+                <StatusBadge text={ar ? "إعداد الخادم مطلوب" : "Server config required"} tone="muted" />
+                <StatusBadge text={ar ? "Webhook غير مؤكد" : "Webhook unverified"} tone="gold" />
+                <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, color: "var(--idea-text-muted)" }}>
+                  <ShieldAlert size={14} /> {ar ? "غير مفعل للإنتاج" : "Not enabled"}
+                </span>
               </div>
             </div>
-            {p.lastTest && <div style={{ color: "var(--idea-text-faint)", fontSize: "var(--idea-text-xs)", marginTop: 8 }}>Last test {new Date(p.lastTest).toLocaleString()} {p.lastFailure ? `· ${p.lastFailure}` : "· OK"}</div>}
           </Panel>
         ))}
       </div>
