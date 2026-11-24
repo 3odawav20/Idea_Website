@@ -624,3 +624,18 @@ html[data-theme='dark'] :is(main, section, article, aside, div)[style*="backgrou
   }
   html[data-theme='dark'] body { position: relative; z-index: 1; }
 }
+
+
+/* Subtle theme-aware text separation across the storefront; keep glyphs crisp. */
+:root {
+  --idea-readable-text-shadow: 0 1px 1px rgba(0, 0, 0, .09);
+}
+html[data-theme='dark'] {
+  --idea-readable-text-shadow: 0 1px 2px rgba(0, 0, 0, .52), 0 0 .45px rgba(255, 255, 255, .08);
+}
+body :where(h1, h2, h3, h4, h5, h6, p, a, button, label, li, small, strong, em, span, summary, figcaption, dt, dd, th, td, legend, blockquote, input, textarea, select) {
+  text-shadow: var(--idea-readable-text-shadow);
+}
+body :where(input, textarea, select)::placeholder {
+  text-shadow: var(--idea-readable-text-shadow);
+}
