@@ -255,7 +255,9 @@ function MaterialCard({ product, locale, t, isFavorite, toggleFavorite, toggleCo
     <article className="idea-material-card">
       <div className="idea-material-card-media">
         <Link to={`/product/${product.slug}`} aria-label={`${product.name[locale]} — ${t("action.viewDetails")}`}>
-          <img src={image} alt={product.name[locale]} loading="lazy" decoding="async" />
+          <span className="idea-material-orb">
+            <img src={image} alt={product.name[locale]} loading="lazy" decoding="async" />
+          </span>
         </Link>
         <div className="idea-material-card-actions">
           <button type="button" aria-label={t("action.favorite")} aria-pressed={favorite} onClick={() => toggleFavorite(product.id)}><Heart size={16} fill={favorite ? "currentColor" : "none"} /></button>
@@ -264,11 +266,13 @@ function MaterialCard({ product, locale, t, isFavorite, toggleFavorite, toggleCo
         {product.finish && <span className="idea-material-finish">{product.finish}</span>}
       </div>
       <div className="idea-material-card-body">
+        <Link className="idea-material-name-pill" to={`/product/${product.slug}`} title={product.name[locale]}>
+          <span>{product.name[locale]}</span>
+        </Link>
         <div className="idea-material-maker">
           <span>{maker.verified ? maker.value : product.brand}</span>
           <small>{maker.verified ? maker.label : (locale === "ar" ? "علامة تجارية" : locale === "fr" ? "Marque" : "Brand")}</small>
         </div>
-        <Link className="idea-material-name" to={`/product/${product.slug}`}>{product.name[locale]}</Link>
         <div className="idea-material-meta">
           {product.sizes[0] && <span>{product.sizes[0].label}</span>}
           <span dir="ltr" title={ideaInternalCode(product)}>{ideaInternalCode(product)}</span>
