@@ -81,3 +81,12 @@ test("Runpod polling is ownership scoped, bounded and fails closed", () => {
   assert.match(mysql, /RUNPOD_VERIFICATION_FAILED/);
   assert.match(mysql, /state='failed'/);
 });
+
+test("stale Runpod reservations are reconciled before quota is reported", () => {
+  assert.match(mysql, /function platformAiReconcileStaleJobs/);
+  assert.match(mysql, /platformAiReconcileStaleJobs\(\$u\)/);
+  assert.match(mysql, /updated_at<\? ORDER BY updated_at ASC LIMIT 3/);
+  assert.match(mysql, /in_array\(\$code,\[404,410\],true\)/);
+  assert.match(mysql, /RUNPOD_JOB_EXPIRED/);
+  assert.match(mysql, /RUNPOD_JOB_STALE/);
+});
