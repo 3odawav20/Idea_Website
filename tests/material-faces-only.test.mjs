@@ -15,7 +15,8 @@ test("AI catalogue only shows supplier-original product face images", () => {
 test("model receives the chosen original tile face, not a room/lifestyle photograph", () => {
   assert.match(studio, /fetch\(selectedFaceImage,/);
   assert.doesNotMatch(studio, /fetch\(selectedProduct\.image,/);
-  assert.match(studio, /form\.append\("material", reference,/);
+  assert.match(studio, /material: materialData/);
+  assert.match(studio, /const reference = await materialBlob\(controller\.signal\)/);
   assert.match(studio, /setFaceIndex\(index\)/);
   assert.match(studio, /selectedFaceImage \? <img src=\{selectedFaceImage\}/);
 });
