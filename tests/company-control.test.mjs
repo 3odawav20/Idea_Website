@@ -163,10 +163,11 @@ test("ad package prices are administrator-editable and remain unpublished until 
   assert.match(growth,/نشر السعر/);
 });
 test("logins route verified platform admin and supplier to appropriate workspaces",()=>{
-  const content=read("src/app/pages/Auth.tsx");
-  assert.match(content,/from\("user_roles"\)\.select\("role"\)/);
-  assert.match(content,/verifiedRole\?\.role === "admin" \? "\/admin"/);
-  assert.match(content,/verifiedRole\?\.role === "supplier" \? "\/business"/);
+  const content=read("src/app/pages/AccountEntry.tsx");
+  assert.match(content,/await authenticatePhp\(/);
+  assert.match(content,/await refresh\(\)/);
+  assert.match(content,/verifiedSession\.role!==expectedRole/);
+  assert.ok(content.includes('navigate(role==="admin"?"/admin":role==="supplier"?"/business":"/account")'));
 });
 test("company ad request can never self-authorize public media",()=>{
   assert.match(sql,/media_url is null or public\.is_admin\(\)/);
