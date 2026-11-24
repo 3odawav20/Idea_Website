@@ -43,3 +43,19 @@ test("sphere fallbacks, both themes, responsive cards and reduced-motion support
   assert.ok(catalogueCss.includes("repeat(2, minmax(0, 1fr))"));
   assert.ok(catalogueCss.includes("prefers-reduced-motion: reduce"));
 });
+
+
+test("catalogue follows the reference layout and places finish, brand, name, size and code under each sphere", () => {
+  assert.ok(catalogue.includes("idea-material-main-layout"));
+  assert.ok(catalogue.includes("idea-material-catalogue-intro"));
+  assert.ok(catalogue.includes("idea-material-search-field"));
+  assert.ok(catalogue.includes("idea-material-category-filter"));
+  assert.ok(catalogue.includes("bestPriceLabel(locale)"));
+  assert.ok(catalogue.includes("tryInAiLabel(locale)"));
+  const card = catalogue.slice(catalogue.indexOf("function MaterialCard("));
+  assert.ok(card.indexOf("idea-material-finish") < card.indexOf("idea-material-maker"));
+  assert.ok(card.indexOf("idea-material-maker") < card.indexOf("idea-material-name"));
+  assert.ok(card.indexOf("idea-material-name") < card.indexOf("idea-material-meta"));
+  assert.ok(catalogueCss.includes("grid-template-columns: repeat(4, minmax(0, 1fr))"));
+  assert.ok(catalogueCss.includes("background: transparent"));
+});
