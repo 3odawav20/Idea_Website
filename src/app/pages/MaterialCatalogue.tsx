@@ -128,7 +128,7 @@ export function MaterialCatalogue() {
   );
 
   return (
-    <Section style={{ paddingTop: "var(--idea-space-7)", background: "var(--idea-bg)" }}>
+    <Section style={{ paddingTop: "var(--idea-space-5)", background: "var(--idea-bg)" }}>
       <Container className="idea-material-catalogue">
         <header className="idea-material-heading">
           <div className="idea-material-breadcrumb">
