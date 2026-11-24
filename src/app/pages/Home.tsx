@@ -65,7 +65,10 @@ export function Home() {
           const image = ["ceramics", "porcelain", "marble"].includes(product.collection) ? product.source?.original?.tiles?.[0] : product.image;
           return <article className="idea-home-featured-card" key={product.id}>
             <Link className="idea-home-featured-photo" to={`/product/${product.slug}`} aria-label={product.name[locale]}>
-              <img src={image || product.image} alt={product.name[locale]} loading="lazy" decoding="async" />
+              <span className="idea-home-material-sphere" aria-hidden="true">
+                <img src={image || product.image} alt="" loading="lazy" decoding="async" />
+              </span>
+              <span className="sr-only">{product.name[locale]}</span>
             </Link>
             <div className="idea-home-featured-card-copy">
               <span>{maker.verified ? maker.value : product.brand}</span>
