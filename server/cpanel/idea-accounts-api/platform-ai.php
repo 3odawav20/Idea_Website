@@ -28,8 +28,20 @@ function platformAiLimit(array $u): ?int{
  if($role==='buyer'){accountCustomer($u);return 5;}
  accountError(403,'AI_ACCOUNT_REQUIRED');
 }
+function platformAiReconcileStaleJobs(array $u): void{
+ // Processing jobs older than the worker's 15-minute timeout must not reserve quota forever.
+ // Poll a small bounded batch; if Runpod cannot confirm the job state, leave it reserved.
+ if(($u['role']??'')!=='buyer')return;
+ $cutoff=platformNow()-2100000;
+ $rows=accountQuery("SELECT id FROM idea_ai_jobs WHERE user_id=? AND state='processing' AND updated_at<? ORDER BY updated_at ASC LIMIT 3",[$u['id'],$cutoff])->fetchAll();
+ foreach($rows as $row){
+  try{platformAiPollJob($u,(string)$row['id']);}
+  catch(Throwable $error){ /* Keep the reservation when provider status is uncertain. */ }
+ }
+}
 function platformAiQuota(array $u): array{
  $limit=platformAiLimit($u);
+ if(($u['role']??'')==='buyer')platformAiReconcileStaleJobs($u);
  $used=(int)accountQuery("SELECT COUNT(*) FROM idea_ai_jobs WHERE user_id=? AND state IN ('queued','processing','completed') AND settings NOT LIKE ?",[$u['id'],'%"quota_companion":true%'])->fetchColumn();
  return ['role'=>$u['role'],'unlimited'=>$limit===null,'limit'=>$limit,'used'=>$used,
    'remaining'=>$limit===null?null:max(0,$limit-$used),
@@ -127,9 +139,21 @@ function platformAiPollJob(array $u,string $id): array{
    ||platformSecret('RUNPOD_WORKER_CONTRACT')!=='idea-qwen-mask-v1')
    accountError(503,'RUNPOD_WORKER_NOT_VERIFIED');
  [$code,$response]=platformAiProviderStatus($endpoint,$providerId);
+ if(in_array($code,[404,410],true)){
+  accountQuery("UPDATE idea_ai_jobs SET state='failed',error_code='RUNPOD_JOB_EXPIRED',updated_at=? WHERE id=? AND user_id=? AND state='processing'",
+    [platformNow(),$id,$u['id']]);
+  return platformAiJob($u,$id);
+ }
  if($code!==200||!is_array($response))return $job;
  $status=strtoupper((string)($response['status']??''));
- if(in_array($status,['IN_QUEUE','IN_PROGRESS'],true))return $job;
+ if(in_array($status,['IN_QUEUE','IN_PROGRESS'],true)){
+  if(platformNow()-(int)($job['updated_at']??0)>2100000){
+   accountQuery("UPDATE idea_ai_jobs SET state='failed',error_code='RUNPOD_JOB_STALE',updated_at=? WHERE id=? AND user_id=? AND state='processing'",
+     [platformNow(),$id,$u['id']]);
+   return platformAiJob($u,$id);
+  }
+  return $job;
+ }
  if($status==='COMPLETED'){
   try{
   $out=$response['output']??null;
