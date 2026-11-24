@@ -20,6 +20,7 @@ class FakeRuntime:
     def __init__(self):
         self.width = 256
         self.height = 256
+        self.device = "cpu"
         self.cv2 = SimpleNamespace(
             MORPH_ELLIPSE=1,
             CC_STAT_AREA=4,
