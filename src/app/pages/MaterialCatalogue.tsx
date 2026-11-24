@@ -6,6 +6,7 @@ import { COLLECTIONS } from "../data/catalog";
 import { isColourLabel, matchesApplication } from "../data/discovery";
 import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
+import { localMaterialFace } from "../data/localMaterialFace";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Container, Section } from "../components/ui";
@@ -220,7 +221,7 @@ type MaterialCardProps = {
 
 function MaterialCard({ product, locale, t, isFavorite, toggleFavorite, toggleCompare, compare, addToQuote }: MaterialCardProps) {
   const maker = productMaker(product, locale);
-  const image = product.source?.original?.tiles?.[0] || product.image;
+  const image = localMaterialFace(product.id) || product.source?.original?.tiles?.[0] || product.image;
   const unit = ["ceramics", "porcelain", "marble"].includes(product.collection) ? "sqm" : "pieces";
   const favorite = isFavorite(product.id);
   const inCompare = compare.includes(product.id);
