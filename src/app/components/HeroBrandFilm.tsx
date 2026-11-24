@@ -10,13 +10,13 @@ const SOURCES = {
   images: ["/media/hero/idea-light-porcelain.webp", "/media/hero/idea-light-marble.webp"],
 };
 
-// Owner-supplied film shared by both themes; stills follow the selected theme.
+// Owner-approved day and night video assets follow the selected theme.
 export function HeroBrandFilm() {
   const { locale } = useI18n();
   const { mode } = useTheme();
   const sources = mode === "dark" ? {
-    desktop: "/media/hero/idea-owner-20261112.mp4",
-    mobile: "/media/hero/idea-owner-20261112-mobile.mp4",
+    desktop: "/media/hero/idea-dark-desktop.mp4",
+    mobile: "/media/hero/idea-dark-mobile.mp4",
     poster: "/media/hero/idea-dark-porcelain.webp",
     images: ["/media/hero/idea-dark-porcelain.webp", "/media/hero/idea-dark-marble.webp"],
   } : SOURCES;

@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync,statSync} from "node:fs";
 const component=readFileSync("src/app/components/HeroBrandFilm.tsx","utf8");
 const styles=readFileSync("src/app/components/HeroBrandFilm.css","utf8");
 const home=readFileSync("src/app/pages/Home.tsx","utf8");
@@ -16,7 +16,10 @@ test("both desktop and mobile films use IDEA-owned media URLs",()=>{
  assert.match(component,/media="\(max-width: 767px\)"/);
  assert.match(component,/idea-light-porcelain\.webp/);
 });
-test("both themes use the supplied film with theme-specific image fallbacks",()=>{
+test("light and dark themes select distinct original desktop/mobile films and matching fallbacks",()=>{
+ assert.match(component,/const SOURCES = \{\s*desktop: "\/media\/hero\/idea-owner-20261112\.mp4",\s*mobile: "\/media\/hero\/idea-owner-20261112-mobile\.mp4"/);
+ assert.match(component,/mode === "dark" \? \{\s*desktop: "\/media\/hero\/idea-dark-desktop\.mp4",\s*mobile: "\/media\/hero\/idea-dark-mobile\.mp4"/);
+ for(const file of ["idea-owner-20261112.mp4","idea-owner-20261112-mobile.mp4","idea-dark-desktop.mp4","idea-dark-mobile.mp4"]) assert.ok(statSync("public/media/hero/"+file).size>100000);
  assert.match(component,/mode === "dark"/);
  assert.match(component,/idea-dark-porcelain\.webp/);
  assert.match(component,/idea-dark-marble\.webp/);
