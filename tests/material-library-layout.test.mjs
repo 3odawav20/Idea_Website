@@ -26,7 +26,7 @@ test("material browsing keeps URL filters, tabs, pagination and responsive layou
     'params.get("brand")',
     '<details className="idea-material-facet"',
     "<summary>{label}",
-    "aria-current={number === page}",
+    "aria-current={number === page ? "page" : undefined}",
   ]) assert.ok(src.includes(name), name);
   assert.ok(src.includes('<input type="checkbox" checked={value === item}'), "filter options remain selectable");
   assert.ok(css.includes(".idea-material-catalogue-layout"), "catalogue layout remains responsive");
