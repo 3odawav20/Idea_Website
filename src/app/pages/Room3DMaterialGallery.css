@@ -37,7 +37,7 @@
   overflow-x:auto;overflow-y:auto;scrollbar-gutter:stable;
   overscroll-behavior:contain;touch-action:pan-x pan-y;
   border:1px solid var(--idea-border);border-radius:12px;
-  background:var(--idea-bg);padding:12px;
+  background:var(--idea-page-background);padding:12px;
   scrollbar-width:auto;
 }
 .idea-room3d-material-viewport:focus-visible{outline:2px solid var(--idea-gold);outline-offset:2px}

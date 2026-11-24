@@ -7,9 +7,11 @@ const admin = readFileSync("src/app/pages/AdminStudio.css", "utf8");
 const studio = readFileSync("src/app/pages/AiVisualizerStudio.css", "utf8");
 const theme = readFileSync("src/app/theme/theme.tsx", "utf8");
 
-test("global IDEA theme uses true white in light mode and neutral charcoal in dark", () => {
-  assert.match(globals, /:root\s*\{[\s\S]*?--idea-bg:\s*#ffffff;/);
-  assert.match(globals, /\[data-theme='dark'\]\s*\{[\s\S]*?--idea-bg:\s*#101010;/);
+test("global IDEA theme uses the day texture in light mode and neutral charcoal in dark", () => {
+  assert.match(globals, /:root\s*\{[\s\S]*?--idea-page-background:\s*url\("https:\/\/hebbkx1anhila5yf\.public\.blob\.vercel-storage\.com\/image-66YvOc3I2H3FbZ6vZLPreQDDKeisya\.png"\)/);
+  assert.match(globals, /\[data-theme='dark'\]\s*\{[\s\S]*?--idea-page-background:\s*#101010;/);
+  assert.match(globals, /html\s*\{[\s\S]*?background:\s*var\(--idea-page-background\)/);
+  assert.match(globals, /body\s*\{[\s\S]*?background:\s*var\(--idea-page-background\)/);
   assert.doesNotMatch(globals, /--idea-gold-sheen:\s*#d9e2ff/i);
   assert.match(theme, /document\.documentElement\.setAttribute\("data-theme", mode\)/);
 });

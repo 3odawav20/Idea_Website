@@ -6,7 +6,8 @@
 
 :root {
   /* ── Color: surfaces (dark, layered) ── */
-  --idea-bg: #ffffff;
+  --idea-bg: #f5f1e7;
+  --idea-page-background: url("https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-66YvOc3I2H3FbZ6vZLPreQDDKeisya.png") center / cover fixed, #f5f1e7;
   --idea-bg-2: #f4f4f4;
   --idea-surface: #ffffff;
   --idea-surface-2: #f4f4f4;
@@ -97,6 +98,7 @@
 /* ═══ Dark mode — neutral charcoal/graphite, never navy ═══════════════ */
 [data-theme='dark'] {
   --idea-bg: #101010;
+  --idea-page-background: #101010;
   --idea-bg-2: #191919;
   --idea-surface: #202020;
   --idea-surface-2: #292929;
@@ -135,7 +137,7 @@
 
 /* ── Base element styling bound to the tokens ── */
 html {
-  background: var(--idea-bg);
+  background: var(--idea-page-background);
   transition: background 0.3s ease;
 }
 
@@ -148,7 +150,7 @@ html {
 body {
   margin: 0;
   overflow-x: clip;
-  background: var(--idea-bg);
+  background: var(--idea-page-background);
   color: var(--idea-text);
   font-family: var(--idea-font-body);
   font-size: var(--idea-text-base);
