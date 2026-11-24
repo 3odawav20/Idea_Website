@@ -1,0 +1,27 @@
+{
+  "endpointId": "5lvjvfqqbkw3c7",
+  "name": "idea-dh-qwen-mask-v1",
+  "image": "ghcr.io/3odawav20/idea-dh-qwen-mask:20261115-v3",
+  "gpu": {
+    "pools": [
+      "AMPERE_80"
+    ],
+    "count": 1,
+    "minCudaVersion": "12.0"
+  },
+  "workers": {
+    "min": 0,
+    "max": 1,
+    "idleTimeout": 10
+  },
+  "previousDataCenterIds": [
+    "US-KS-2",
+    "US-MO-1"
+  ],
+  "dataCenterIds": [
+    "US-KS-2",
+    "US-MO-1",
+    "US-MD-1"
+  ],
+  "reason": "A100 SXM availability returned LOW in US-MD-1 and none in the two currently selected centers; retain same GPU pool, US geography, and scaling; no secrets."
+}
