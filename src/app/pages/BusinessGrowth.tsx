@@ -65,6 +65,8 @@ export function CompanyRevenueReport({ mode }: { mode: "admin" | "supplier" }) {
   const isAdmin = mode === "admin" && session?.role === "admin";
 
   const [report, setReport] = useState<MarketplaceSalesReport | null>(null);
+  const [salesCompanies, setSalesCompanies] = useState<MarketplaceCompany[]>([]);
+  const [salesCompany, setSalesCompany] = useState("");
   const [period, setPeriod] = useState(new Date().toISOString().slice(0, 7));
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -74,15 +76,23 @@ export function CompanyRevenueReport({ mode }: { mode: "admin" | "supplier" }) {
     setLoading(true);
     setError("");
     try {
-      const data = await fetchConfirmedSales(period);
-      setReport(data);
+      if (isAdmin) {
+        setReport(await fetchConfirmedSales(period));
+      } else {
+        const boot = await fetchMarketplaceBootstrap();
+        const companies = boot.companies || [];
+        setSalesCompanies(companies);
+        const companyId = companies.find((c) => c.id === salesCompany)?.id || companies[0]?.id;
+        if (!companyId) { setReport(null); return; }
+        setReport(await fetchConfirmedSales(period, companyId));
+      }
     } catch (e) {
       setError(describeDashboardError(e, locale));
       setReport(null);
     } finally {
       setLoading(false);
     }
-  }, [period, session?.id, locale]);
+  }, [period, session?.id, isAdmin, salesCompany, locale]);
 
   useEffect(() => {
     void load();
@@ -115,6 +125,13 @@ export function CompanyRevenueReport({ mode }: { mode: "admin" | "supplier" }) {
       </header>
 
       <div className="ibg-period">
+        {!isAdmin && salesCompanies.length > 0 && (
+          <label>{ar ? "الشركة" : "Company"}
+            <select value={salesCompany || salesCompanies[0]?.id || ""} onChange={(e) => setSalesCompany(e.target.value)} aria-label={ar ? "الشركة" : "Company"}>
+              {salesCompanies.map((c) => <option key={c.id} value={c.id}>{c.public_name}</option>)}
+            </select>
+          </label>
+        )}
         <label>
           <CalendarDays size={17} /> {ar ? "الشهر" : "Month"}
           <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} />
@@ -157,7 +174,7 @@ export function CompanyRevenueReport({ mode }: { mode: "admin" | "supplier" }) {
             </div>
           );
         })}
-        {!rows.length && !loading && (
+        {!rows.length && !loading && !error && (
           <p className="ibg-no-data">
             {ar
               ? "لا توجد سجلات مبيعات مدفوعة مؤكدة في الشهر المحدد. لا يتم اختلاق أرقام من عروض الأسعار."
@@ -384,21 +401,21 @@ export function BusinessAdvertising({ mode }: { mode: "admin" | "supplier" }) {
     if (!session) return;
     setError("");
     try {
-      const [boot, adReqs] = await Promise.all([
-        fetchMarketplaceBootstrap(),
-        fetchMarketplaceAdRequests(),
-      ]);
+      const boot = await fetchMarketplaceBootstrap();
       const cos = boot.companies || [];
       const pkgs = boot.packages || [];
+      const companyId = cos.find((c) => c.id === selectedCompany)?.id || cos[0]?.id;
+      const adReqs = isAdmin ? await fetchMarketplaceAdRequests() : companyId ? await fetchMarketplaceAdRequests(companyId) : [];
       setCompanies(cos);
       setPackages(pkgs);
       setCampaigns(adReqs);
       setSelectedCompany((old) => (cos.some((c) => c.id === old) ? old : cos[0]?.id || ""));
       setPackageId((old) => (pkgs.some((p) => p.id === old) ? old : pkgs[0]?.id || ""));
     } catch (e) {
+      setCampaigns([]);
       setError(describeDashboardError(e, locale));
     }
-  }, [session?.id, locale]);
+  }, [session?.id, isAdmin, selectedCompany, locale]);
 
   useEffect(() => {
     void load();
@@ -614,6 +631,7 @@ export function BusinessAdvertising({ mode }: { mode: "admin" | "supplier" }) {
         {ar
           ? "تتم مراجعة جميع الطلبات الإعلانية يدويًا من إدارة IDEA قبل التشغيل. لا يتم خصم أي مبالغ تلقائيًا عند تقديم الطلب."
           : "All ad submissions are manually reviewed by IDEA administrators before launch. Submitting a request incurs no automatic charges."}
+              {" "}{ar ? "رفع المواد الإعلانية والإنفاق على الحملات الخارجية غير متاحين حاليًا." : "Creative upload and external campaign spending are not enabled."}
       </div>
       {!isAdmin && (
         <div className="ibg-note">
