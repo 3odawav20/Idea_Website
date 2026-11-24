@@ -8,7 +8,7 @@
   border-radius: 50%;
   isolation: isolate;
   background: transparent;
-  filter: drop-shadow(0 13px 18px rgba(35, 28, 18, .2));
+  filter: drop-shadow(0 15px 20px rgba(35, 28, 18, .24));
   transform: translateZ(0);
 }
 
@@ -29,30 +29,29 @@
   border-radius: inherit;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 29% 19%, rgba(255, 255, 255, .3), transparent 30%),
-    radial-gradient(ellipse at 76% 86%, rgba(0, 0, 0, .32), transparent 57%),
-    linear-gradient(135deg, rgba(255, 255, 255, .13), transparent 47%, rgba(0, 0, 0, .16));
-  mix-blend-mode: soft-light;
+    radial-gradient(ellipse at 27% 18%, rgba(255, 255, 255, .48) 0%, rgba(255, 255, 255, .15) 15%, transparent 34%),
+    radial-gradient(ellipse at 76% 85%, rgba(0, 0, 0, .34) 0%, rgba(0, 0, 0, .13) 36%, transparent 62%),
+    linear-gradient(135deg, rgba(255, 255, 255, .14) 0%, transparent 43%, rgba(0, 0, 0, .16) 100%);
   box-shadow:
-    inset 8px 8px 17px rgba(255, 255, 255, .12),
-    inset -12px -14px 22px rgba(0, 0, 0, .22);
+    inset 0 0 0 1px rgba(255, 255, 255, .18),
+    inset 0 -12px 22px rgba(0, 0, 0, .1);
 }
 
 [data-theme="dark"] .idea-material-orb {
   filter:
-    drop-shadow(0 15px 24px rgba(0, 0, 0, .58))
-    drop-shadow(0 0 10px rgba(255, 255, 255, .075));
+    drop-shadow(0 16px 26px rgba(0, 0, 0, .62))
+    drop-shadow(0 0 12px rgba(255, 255, 255, .085));
 }
 
 [data-theme="dark"] .idea-material-orb-light {
-  border-color: rgba(255, 255, 255, .22);
+  border-color: rgba(255, 255, 255, .24);
   background:
-    radial-gradient(ellipse at 28% 18%, rgba(255, 255, 255, .4), transparent 29%),
-    radial-gradient(ellipse at 76% 87%, rgba(0, 0, 0, .5), transparent 59%),
-    linear-gradient(135deg, rgba(255, 255, 255, .18), transparent 46%, rgba(0, 0, 0, .25));
+    radial-gradient(ellipse at 28% 18%, rgba(255, 255, 255, .38) 0%, rgba(255, 255, 255, .12) 15%, transparent 33%),
+    radial-gradient(ellipse at 76% 86%, rgba(0, 0, 0, .52) 0%, rgba(0, 0, 0, .2) 37%, transparent 63%),
+    linear-gradient(135deg, rgba(255, 255, 255, .18) 0%, transparent 45%, rgba(0, 0, 0, .24) 100%);
   box-shadow:
-    inset 9px 9px 19px rgba(255, 255, 255, .13),
-    inset -14px -16px 25px rgba(0, 0, 0, .4);
+    inset 0 0 0 1px rgba(255, 255, 255, .16),
+    inset 0 -14px 24px rgba(0, 0, 0, .3);
 }
 
 @media (prefers-reduced-motion: reduce) {
