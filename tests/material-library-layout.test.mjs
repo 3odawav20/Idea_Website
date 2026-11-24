@@ -13,3 +13,15 @@ test("material browsing keeps URL formats, usage, texture, brand and accessible 
   assert.ok(css.includes("repeat(2,minmax(0,1fr))"));
   assert.ok(css.includes('[data-theme="dark"]'));
 });
+test("material cards preserve reference text order and keep actions intact",()=>{
+  const card=src.slice(src.indexOf("function MaterialCard("));
+  const maker=card.indexOf('<div className="idea-material-maker">');
+  const name=card.indexOf('<Link className="idea-material-name-pill"');
+  const meta=card.indexOf('<div className="idea-material-meta">');
+  const quote=card.indexOf('className="idea-material-quote"');
+  const visualize=card.indexOf('className="idea-material-visualize"');
+  assert.ok(maker>=0 && maker<name && name<meta && meta<quote && quote<visualize,"brand, name, dimensions/reference and both actions remain in the requested order");
+});
+test("material swatches have restrained 3D depth, motion and reduced-motion support in both themes",()=>{
+  for(const token of ["idea-material-orb-float","idea-material-orb-shine","perspective:1100px","translate3d(0,-7px,16px)",'[data-theme="dark"] .idea-material-orb','[data-theme="light"] .idea-material-orb','prefers-reduced-motion:reduce']) assert.ok(css.includes(token),token);
+});
