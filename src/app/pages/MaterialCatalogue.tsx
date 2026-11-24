@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Heart, GitCompare, Sparkles, FileText, SlidersHorizontal, ChevronDown } from "lucide-react";
+import { Heart, GitCompare, Sparkles, FileText, ChevronDown } from "lucide-react";
 import type { CollectionSlug, Product } from "../data/types";
 import { COLLECTIONS } from "../data/catalog";
 import { isColourLabel, isUsageLabel, isLargeFormat, isOutdoor20mm, matchesApplication } from "../data/discovery";
@@ -41,7 +41,6 @@ export function MaterialCatalogue() {
   const brand = params.get("brand");
   const usage = params.get("usage");
   const format = params.get("format");
-  const [filtersOpen, setFiltersOpen] = useState(false);
   const activeFilters = [type, texture, brand, finish, application, size, usage, color, format].filter(Boolean).length;
   const sort = params.get("sort") ?? "source";
 
@@ -132,7 +131,7 @@ export function MaterialCatalogue() {
   });
 
   const filterGroup = (label: string, key: string, value: string | null, values: string[]) => (values.length > 0 || value) && (
-    <details className="idea-material-facet" open key={key}>
+    <details className="idea-material-facet" key={key}>
       <summary>{label}<ChevronDown size={15} aria-hidden="true" /></summary>
       <div className="idea-material-facet-options">
         {[...new Set([...values, ...(value ? [value] : [])])].map((item) => (
@@ -173,19 +172,6 @@ export function MaterialCatalogue() {
         </nav>
 
         <div className="idea-material-layout">
-          <button type="button" className="idea-material-mobile-filters" aria-expanded={filtersOpen} aria-controls="idea-material-filters" onClick={() => setFiltersOpen(!filtersOpen)}><SlidersHorizontal size={17} />{t("filters.title")}{activeFilters > 0 ? " (" + activeFilters + ")" : ""}</button>
-          <aside id="idea-material-filters" className={"idea-material-sidebar" + (filtersOpen ? " is-open" : "")}>
-            <div className="idea-material-sidebar-heading"><strong>{t("filters.title")}</strong><button type="button" className="idea-material-reset" onClick={clearFilters}>{t("filters.clear")}</button></div>
-            {filterGroup(locale === "ar" ? "العلامة التجارية" : locale === "fr" ? "Marque" : "Brand", "brand", brand, facets.brands)}
-            {filterGroup(locale === "ar" ? "الخامة" : locale === "fr" ? "Matériau" : "Material", "type", type, facets.types)}
-            {filterGroup(locale === "ar" ? "النقشة" : locale === "fr" ? "Aspect" : "Texture", "texture", texture, facets.textures)}
-            {filterGroup(t("filters.finish"), "finish", finish, facets.finishes)}
-            {filterGroup(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", "application", application, facets.applications)}
-            {filterGroup(t("filters.size"), "size", size, facets.sizes)}
-            {filterGroup(t("label.usage"), "usage", usage, facets.usages)}
-            {filterGroup(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", "color", color, facets.colors)}
-            <button type="button" className="idea-material-mobile-filters idea-material-apply" onClick={() => setFiltersOpen(false)}>{locale === "ar" ? "عرض النتائج" : locale === "fr" ? "Afficher les résultats" : "Show results"}</button>
-          </aside>
           <div className="idea-material-results">
           <div className="idea-material-toolbar">
           <form className="idea-material-search" onSubmit={(event) => {
@@ -202,6 +188,18 @@ export function MaterialCatalogue() {
               </select>
             </label>
           </form>
+          <div className="idea-material-filter-row" aria-label={locale === "ar" ? "تصفية الخامات" : locale === "fr" ? "Filtrer les matériaux" : "Filter materials"}>
+            <span className="idea-material-filter-label">{locale === "ar" ? "تصفية حسب" : locale === "fr" ? "Filtrer par" : "Filter by"}{activeFilters > 0 ? ` · ${activeFilters}` : ""}</span>
+            {filterGroup(locale === "ar" ? "العلامة التجارية" : locale === "fr" ? "Marque" : "Brand", "brand", brand, facets.brands)}
+            {filterGroup(locale === "ar" ? "الخامة" : locale === "fr" ? "Matériau" : "Material", "type", type, facets.types)}
+            {filterGroup(locale === "ar" ? "النقشة" : locale === "fr" ? "Aspect" : "Texture", "texture", texture, facets.textures)}
+            {filterGroup(t("filters.finish"), "finish", finish, facets.finishes)}
+            {filterGroup(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", "application", application, facets.applications)}
+            {filterGroup(t("filters.size"), "size", size, facets.sizes)}
+            {filterGroup(t("label.usage"), "usage", usage, facets.usages)}
+            {filterGroup(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", "color", color, facets.colors)}
+            {activeFilters > 0 && <button type="button" className="idea-material-reset" onClick={clearFilters}>{t("filters.clear")}</button>}
+          </div>
         </div>
 
         {query && <p className="idea-material-query">{locale === "ar" ? "نتائج البحث عن" : locale === "fr" ? "Résultats pour" : "Results for"} “{query}”</p>}
