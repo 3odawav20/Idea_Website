@@ -33,15 +33,20 @@ function ideaVizReadiness(): array {
   foreach(['curl','gd','fileinfo','mbstring'] as $ext) {
     if(!extension_loaded($ext))$missing[]=$ext;
   }
+  $workerVerified=false;
+  try {
+    $workerVerified=(int)accountQuery("SELECT COUNT(*) FROM idea_ai_jobs WHERE state='completed' AND updated_at>=? AND settings LIKE ?",
+      [platformNow()-86400000,'%provider_jobs%'])->fetchColumn()>0;
+  } catch(Throwable $error) { /* Keep status conservative if job history cannot be read. */ }
   return [
     'provider'=>'runpod',
     'model'=>'Qwen/Qwen-Image-Edit-2511',
     'configured'=>$configured,
     'runtime_ready'=>count($missing)===0,
     'missing_extensions'=>$missing,
-    'worker_verified'=>false,
-    'integration'=>$configured&&count($missing)===0
-      ?'configuration_present_unverified':'configuration_required',
+    'worker_verified'=>$workerVerified,
+    'integration'=>$workerVerified?'worker_verified':($configured&&count($missing)===0
+      ?'configuration_present_unverified':'configuration_required'),
   ];
 }
 function ideaVizImageSelftest(): bool {
