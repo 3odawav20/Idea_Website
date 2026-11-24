@@ -270,7 +270,7 @@ function MaterialCard({ product, locale, t, isFavorite, toggleFavorite, toggleCo
           <span>{maker.verified ? maker.value : product.brand}</span>
           <small>{maker.verified ? maker.label : (locale === "ar" ? "علامة تجارية" : locale === "fr" ? "Marque" : "Brand")}</small>
         </div>
-        <Link className="idea-material-name-pill" to={`/product/${product.slug}`} title={product.name[locale]}>
+        <Link className="idea-material-name" to={`/product/${product.slug}`} title={product.name[locale]}>
           <span>{product.name[locale]}</span>
         </Link>
         <div className="idea-material-meta">

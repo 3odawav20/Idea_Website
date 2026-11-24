@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { ArrowRight, Layers, FileText, Users, MapPin, Play, FolderOpen, Download } from "lucide-react";
+import { ArrowRight, Layers, FileText, Sparkles, Users, MapPin, Play, FolderOpen, Download } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
@@ -8,7 +8,8 @@ import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
 import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
-import { productMaker } from "../data/ideaProductIdentity";
+import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
+import { localMaterialFace } from "../data/localMaterialFace";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import "./Home.css";
@@ -26,7 +27,7 @@ const BATH_SLUGS = ["bathroom-sets", "bathroom-units", "faucets", "shower-units"
 
 export function Home() {
   const { locale, t } = useI18n();
-  const { products } = useStore();
+  const { products, addToQuote } = useStore();
   // Public home cards show one design per source maker, never repetitive variants.
   const featuredProducts = distinctStorefrontProducts(products).slice(0, 8);
   const destinations = useCollectionDestinations();
@@ -62,23 +63,37 @@ export function Home() {
         </nav>
         <div className="idea-home-featured-grid">{featuredProducts.map((product) => {
           const maker = productMaker(product, locale);
-          const image = ["ceramics", "porcelain", "marble"].includes(product.collection) ? product.source?.original?.tiles?.[0] : product.image;
+          const isSurface = ["ceramics", "porcelain", "marble"].includes(product.collection);
+          const image = localMaterialFace(product.id) || (isSurface ? product.source?.original?.tiles?.[0] : product.image) || product.image;
+          const unit = isSurface ? "sqm" : "pieces";
           return <article className="idea-home-featured-card" key={product.id}>
             <Link className="idea-home-featured-photo" to={`/product/${product.slug}`} aria-label={product.name[locale]}>
               <span className="idea-home-material-sphere" aria-hidden="true">
-                <img src={image || product.image} alt="" loading="lazy" decoding="async" />
+                <img src={image} alt="" loading="lazy" decoding="async" />
               </span>
               <span className="sr-only">{product.name[locale]}</span>
             </Link>
             <div className="idea-home-featured-card-copy">
-              <Link
-                className="idea-material-name-pill"
-                to={`/product/${product.slug}`}
-                title={product.name[locale]}
-              >
-                <span>{product.name[locale]}</span>
+              {product.finish && <span className="idea-home-featured-finish">{product.finish}</span>}
+              <div className="idea-home-featured-maker">
+                <strong>{maker.verified ? maker.value : product.brand}</strong>
+                <small>{maker.verified ? maker.label : text("Brand", "العلامة التجارية", "Marque")}</small>
+              </div>
+              <Link className="idea-home-featured-name" to={`/product/${product.slug}`} title={product.name[locale]}>
+                {product.name[locale]}
               </Link>
-              <span className="idea-home-material-maker">{maker.verified ? maker.value : product.brand}</span>
+              <div className="idea-home-featured-meta">
+                {product.sizes[0] && <span>{product.sizes[0].label}</span>}
+                <code dir="ltr">{ideaInternalCode(product)}</code>
+              </div>
+              <div className="idea-home-featured-actions">
+                <button type="button" onClick={() => addToQuote(product.id, unit)}>
+                  <FileText size={14} /> {t("action.requestPrice")}
+                </button>
+                <Link to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}>
+                  <Sparkles size={15} /> {text("Try in AI", "جرّب بالذكاء الاصطناعي", "Essayer avec l’IA")}
+                </Link>
+              </div>
             </div>
           </article>;
         })}</div>

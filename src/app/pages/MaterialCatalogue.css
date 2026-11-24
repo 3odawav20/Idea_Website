@@ -327,3 +327,46 @@
     animation:none !important; transition:none !important; transform:none !important;
   }
 }
+
+
+/* Match the supplied catalogue reference: plain product name, not an orange pill. */
+.idea-material-card-body .idea-material-name {
+  align-self:flex-start;
+  display:block;
+  width:fit-content;
+  max-width:100%;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--idea-text);
+  font-size:17px;
+  font-weight:500;
+  line-height:1.35;
+  text-align:start;
+  text-decoration:none;
+  overflow-wrap:anywhere;
+}
+.idea-material-card-body .idea-material-name:hover {
+  color:var(--idea-text);
+  text-decoration:none;
+}
+.idea-material-finish {
+  border-color:var(--mc-rim);
+  border-radius:3px;
+  background:var(--idea-surface);
+  color:var(--idea-text);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.2;
+}
+[data-theme="dark"] .idea-material-finish {
+  border-color:rgba(255,255,255,.38);
+  background:rgba(12,12,12,.78);
+  color:#fff;
+}
+@media(max-width:560px) {
+  .idea-material-card-body .idea-material-name { font-size:14px; }
+}

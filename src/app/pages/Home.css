@@ -170,60 +170,140 @@
 @media (prefers-reduced-motion:reduce) { .idea-home-material-sphere img { transition:none; } }
 
 
-/* Orange glass product-name labels, centered directly under each homepage orb. */
+/* Homepage product cards mirror the supplied catalogue reference in both themes. */
 .idea-home-featured-card-copy {
-  display:flex;
-  flex-direction:column;
+  display:grid;
+  align-items:start;
+  gap:7px;
+  padding:12px 1px 0;
+  text-align:start;
+}
+.idea-home-featured-card-copy .idea-home-featured-finish {
+  display:inline-flex;
+  justify-self:start;
   align-items:center;
-  gap:8px;
-  padding:14px 2px 0;
-  text-align:center;
+  min-height:22px;
+  padding:3px 7px;
+  border:1px solid var(--idea-border-neutral);
+  border-radius:3px;
+  background:var(--idea-surface);
+  color:var(--idea-text);
+  font-size:10px;
+  font-weight:500;
+  line-height:1.2;
+  letter-spacing:0;
+  text-transform:none;
 }
-.idea-home-featured-card-copy .idea-material-name-pill {
-  max-width:min(100%, 250px);
-  font-size:13px;
+.idea-home-featured-maker {
+  display:flex;
+  align-items:baseline;
+  flex-wrap:wrap;
+  gap:7px;
+  min-width:0;
   line-height:1.3;
-  text-decoration:none;
 }
-.idea-home-featured-card-copy .idea-material-name-pill:hover {
-  text-decoration:none;
+.idea-home-featured-maker strong {
+  color:var(--idea-text);
+  font-size:12px;
+  font-weight:700;
 }
-.idea-home-featured-card-copy .idea-home-material-maker {
-  max-width:100%;
+.idea-home-featured-maker small {
   color:var(--idea-text-muted);
   font-size:10px;
-  font-weight:600;
-  letter-spacing:.08em;
+  font-weight:400;
+}
+.idea-home-featured-card-copy .idea-home-featured-name {
+  display:block;
+  width:fit-content;
+  max-width:100%;
+  margin:0;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:none;
+  color:var(--idea-text);
+  font-size:16px;
+  font-weight:500;
   line-height:1.35;
-  text-align:center;
-  text-transform:uppercase;
+  text-align:start;
+  text-decoration:none;
   overflow-wrap:anywhere;
 }
-.idea-home-material-sphere {
+.idea-home-featured-card-copy .idea-home-featured-name:hover {
+  color:var(--idea-text);
+  text-decoration:none;
+}
+.idea-home-featured-meta {
+  display:flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  gap:8px;
+  min-width:0;
+  padding-bottom:9px;
+  border-bottom:1px solid var(--idea-border-neutral);
+  color:var(--idea-text-muted);
+  font-size:11px;
+  line-height:1.35;
+}
+.idea-home-featured-meta > span { flex:none; white-space:nowrap; }
+.idea-home-featured-meta code {
+  min-width:0;
+  color:var(--idea-text-muted);
+  font:500 10px/1.35 var(--idea-font-body);
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.idea-home-featured-actions {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  min-width:0;
+}
+.idea-home-featured-actions button,
+.idea-home-featured-actions a {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  min-width:0;
+  min-height:36px;
+  padding:0 2px;
+  border:0;
   background:transparent;
-  box-shadow:
-    inset -22px -24px 32px rgba(17,20,24,.42),
-    inset 9px 9px 18px rgba(255,255,255,.24),
-    0 15px 25px rgba(13,16,20,.24),
-    0 4px 9px rgba(13,16,20,.14);
-  filter:drop-shadow(0 9px 12px rgba(0,0,0,.16));
+  color:var(--idea-text);
+  font:inherit;
+  font-size:11px;
+  font-weight:500;
+  line-height:1.3;
+  text-decoration:none;
+  white-space:nowrap;
+  cursor:pointer;
 }
-.idea-home-material-sphere::after {
-  background:
-    radial-gradient(ellipse at 27% 18%, rgba(255,255,255,.42), transparent 33%),
-    radial-gradient(ellipse at 75% 82%, transparent 16%, rgba(8,12,18,.24) 58%, rgba(8,12,18,.56) 100%);
-}
-.idea-home-featured-photo::after {
-  bottom:8%;
-  width:62%;
-  height:10%;
-  background:rgba(8,10,14,.38);
-  filter:blur(17px);
+.idea-home-featured-actions a { color:var(--idea-gold); }
+.idea-home-featured-actions button:hover,
+.idea-home-featured-actions a:hover { color:var(--idea-gold); }
+.idea-home-material-sphere {
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,.24);
 }
 [data-theme="dark"] .idea-home-material-sphere {
-  filter:drop-shadow(0 13px 17px rgba(0,0,0,.48));
+  box-shadow:
+    inset -22px -24px 32px rgba(0,0,0,.46),
+    inset 9px 9px 18px rgba(255,255,255,.2),
+    0 17px 27px rgba(0,0,0,.5);
 }
 @media (max-width:480px) {
-  .idea-home-featured-card-copy { gap:7px; padding-top:11px; }
-  .idea-home-featured-card-copy .idea-material-name-pill { max-width:min(100%,220px); }
+  .idea-home-featured-card-copy { gap:6px; padding-top:9px; }
+  .idea-home-featured-card-copy .idea-home-featured-name { font-size:13px; }
+  .idea-home-featured-maker strong { font-size:11px; }
+  .idea-home-featured-maker small { font-size:9px; }
+  .idea-home-featured-meta { gap:5px; font-size:10px; }
+  .idea-home-featured-meta code { font-size:9px; }
+  .idea-home-featured-actions { gap:4px; }
+  .idea-home-featured-actions button,
+  .idea-home-featured-actions a { gap:4px; font-size:9px; }
+  .idea-home-featured-actions svg { width:13px; height:13px; }
 }
