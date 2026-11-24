@@ -1,4 +1,4 @@
-import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 import { Link, useNavigate } from "react-router";
 import {
   ArrowLeft, ArrowRight, Building2, Check, CheckCircle2, ChevronDown,
@@ -11,7 +11,9 @@ import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import { SocialAuth } from "../components/SocialAuth";
 import { useBackend } from "../backend/db";
-import { authenticatePhp, uploadBusinessDocument } from "../backend/phpAccounts";
+import { authenticateGoogleBusiness, googleBusinessReadiness, authenticatePhp, uploadBusinessDocument } from "../backend/phpAccounts";
+import { requestGoogleIdToken } from "../backend/googleIdentity";
+import { GoogleBrandIcon } from "../components/SocialAuthIcons";
 import "./AccountEntry.css";
 
 type Audience = "customer" | "business" | "admin";
@@ -97,6 +99,8 @@ export function AccountEntry({audience, mode="register", googleLoginSlot}:{audie
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [notice,setNotice]=useState("");
+  const [businessGoogle,setBusinessGoogle]=useState<string|null>(null);
+  useEffect(()=>{let active=true;if(isBusiness)googleBusinessReadiness().then(x=>{if(active)setBusinessGoogle(x.ready?x.clientId:null)}).catch(()=>{if(active)setBusinessGoogle(null)});return()=>{active=false};},[isBusiness]);
   const selectedTitle=useMemo(()=>{
     if(isAdmin)return tr("دخول الإدارة","Admin access");
     if(isBusiness)return isRegister?tr("تسجيل حساب شركة","Register a company"):tr("دخول حساب الشركة","Business sign in");
@@ -182,6 +186,24 @@ export function AccountEntry({audience, mode="register", googleLoginSlot}:{audie
       };
       setError(messages[reason]||reason);
     }finally{setBusy(false);}
+  };
+  const onBusinessGoogle=async()=>{
+    if(!isBusiness||!businessGoogle||busy)return;
+    setError("");setNotice("");
+    if(isRegister&&(!company.trim()||!name.trim()||!phone.trim()||!businessKind||!country||!city.trim()||!license.trim()||!consent||!docs.length)){
+      setError(tr("أكمل بيانات الشركة والمستندات ووافق على الشروط قبل التسجيل بجوجل.","Complete company details, documents and consent before Google registration."));return;
+    }
+    setBusy(true);
+    try{
+      const credential=await requestGoogleIdToken(businessGoogle);
+      const category=businessKind==="marble"?"marble":"ceramic";
+      const activity=businessKind==="factory"?"manufacturer":businessKind==="ceramic"?"retailer":"wholesaler";
+      const account=await authenticateGoogleBusiness({credential,mode:isRegister?"register":"login",consent,display_name:name.trim(),company_name:company.trim(),phone:dial+phone.trim(),business_profile:{primary_category:category,company_type:activity,governorate:city.trim(),service_areas:country,commercial_registration:license.trim()}});
+      const verified=await refresh();
+      if(account.user?.role!=="supplier"||!verified||verified.role!=="business"||verified.id!==String(account.user.id))throw new Error("ACCOUNT_SESSION_MISSING");
+      if(isRegister){try{for(const file of docs)await uploadBusinessDocument(file,"commercial_registration");}catch{setError(tr("الحساب أُنشئ، لكن رفع المستندات لم يكتمل. سجّل الدخول لاستكمال التحقق.","Account created, but documents are incomplete. Sign in to finish verification."));return;}}
+      navigate("/business");
+    }catch(err){const code=err instanceof Error?err.message:"";setError(code==="ACCOUNT_EXISTS"?tr("البريد مسجل بالفعل. استخدم طريقة الدخول الأصلية.","Email already registered. Use the original sign-in method."):tr("تعذر تسجيل الدخول بجوجل. تأكد من الحساب وحاول مرة أخرى.","Google sign-in failed. Check your account and retry.")+" ("+code+")");}finally{setBusy(false);}
   };
   const onDocuments=(files:FileList|null)=>{
     const list=Array.from(files||[]);
@@ -314,6 +336,7 @@ export function AccountEntry({audience, mode="register", googleLoginSlot}:{audie
               {isRegister?tr("لديك حساب بالفعل؟","Already have an account?"):tr("ليس لديك حساب؟","Need an account?")}
               {" "}<Link to={isRegister?isBusiness?"/business/login":"/login":goto}>{isRegister?tr("تسجيل الدخول","Sign in"):tr("إنشاء حساب جديد","Create an account")}</Link>
             </p>}
+            {isBusiness&&businessGoogle&&<button type="button" className="idea-auth-submit" disabled={busy} onClick={()=>void onBusinessGoogle()}><GoogleBrandIcon/> {isRegister?tr("التسجيل بجوجل","Register with Google"):tr("الدخول بجوجل","Sign in with Google")}</button>}
             {isCustomer&&googleLoginSlot}
             {isCustomer&&<SocialAuth mode={isRegister?"register":"login"} redirectTo="/account"/>}
           </div>

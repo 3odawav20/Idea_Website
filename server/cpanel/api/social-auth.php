@@ -118,7 +118,7 @@ function socialCheckRateLimit(string $bucket, int $maxHits, int $windowSeconds):
     $rows = accountQuery(
         'SELECT hits, window_start FROM idea_social_rate_limits WHERE bucket_key = ? LIMIT 1',
         [$bucket]
-    );
+    )->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$rows) {
         accountQuery(
@@ -631,7 +631,7 @@ function socialResolveOrCreateBuyer(
           WHERE si.provider = ? AND si.provider_subject = ?
           LIMIT 1',
         [$provider, $providerSubject]
-    );
+    )->fetchAll(PDO::FETCH_ASSOC);
 
     if ($linked) {
         $user = $linked[0];
@@ -660,7 +660,7 @@ function socialResolveOrCreateBuyer(
         $rows = accountQuery(
             'SELECT id, name, email, phone, role FROM idea_users WHERE LOWER(email) = ? LIMIT 1',
             [$cleanEmail]
-        );
+        )->fetchAll(PDO::FETCH_ASSOC);
         if ($rows) {
             $existingUser = $rows[0];
         }
@@ -668,7 +668,7 @@ function socialResolveOrCreateBuyer(
         $rows = accountQuery(
             'SELECT id, name, email, phone, role FROM idea_users WHERE phone = ? LIMIT 1',
             [$cleanPhone]
-        );
+        )->fetchAll(PDO::FETCH_ASSOC);
         if ($rows) {
             $existingUser = $rows[0];
         }
@@ -762,6 +762,7 @@ function socialEstablishBuyerSession(array $buyer, string $provider): void
     if (session_status() === PHP_SESSION_ACTIVE) {
         session_regenerate_id(true);
     }
+    $_SESSION['uid']                = $buyer['id'];
     $_SESSION['idea_user_id']       = $buyer['id'];
     $_SESSION['user_id']            = $buyer['id'];
     $_SESSION['idea_user_role']     = 'buyer';
@@ -795,8 +796,79 @@ if ($action === 'providers') {
         'providers'      => socialProviderStatusMap(),
         'googleMode'     => $hasFullGoogleOAuth ? 'oauth' : ($googleClientId !== '' ? 'gis' : null),
         'googleClientId' => $googleClientId !== '' ? $googleClientId : null,
+        'businessGoogle' => $googleClientId !== '' && (string) platformSecret('IDEA_BUSINESS_GOOGLE_ENABLED') === '1',
     ]);
     exit;
+}
+
+// Company Google registration/login is opt-in until the deployed schema is verified.
+if ($action === 'google-business') {
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') accountError(405, 'METHOD_NOT_ALLOWED');
+    if ((string) platformSecret('IDEA_BUSINESS_GOOGLE_ENABLED') !== '1') accountError(503, 'PROVIDER_NOT_CONFIGURED');
+    socialVerifyCsrfFromHeader();
+    if (!socialCheckRateLimit('google-business:' . socialClientIpHash(), 12, 600)) accountError(429, 'RATE_LIMITED');
+    $body = json_decode((string) file_get_contents('php://input'), true);
+    if (!is_array($body) || !in_array($body['mode'] ?? '', ['login','register'], true)) accountError(422, 'INVALID_FIELDS');
+    $credential = $body['credential'] ?? '';
+    if (!is_string($credential) || strlen($credential) > 16000 || substr_count($credential, '.') !== 2) accountError(400, 'ID_TOKEN_MALFORMED');
+    $clientId = socialGooglePublicClientId();
+    if ($clientId === '') accountError(503, 'PROVIDER_NOT_CONFIGURED');
+    try {
+        $claims = socialVerifyOidcIdToken($credential, 'google', 'https://www.googleapis.com/oauth2/v3/certs', $clientId, ['https://accounts.google.com','accounts.google.com'], '');
+        $subject = (string) ($claims['sub'] ?? '');
+        $email = strtolower(trim((string) ($claims['email'] ?? '')));
+        if ($subject === '' || strlen($subject)>191 || ($claims['email_verified'] ?? false) !== true || !filter_var($email,FILTER_VALIDATE_EMAIL) || strlen($email)>190) throw new RuntimeException('GOOGLE_EMAIL_UNVERIFIED');
+        $db = accountDb();
+        $db->beginTransaction();
+        try {
+            $user = accountQuery("SELECT u.id,u.name,u.email,u.phone,u.role FROM idea_social_identities s JOIN idea_users u ON u.id=s.user_id WHERE s.provider='google' AND s.provider_subject=? LIMIT 1", [$subject])->fetch(PDO::FETCH_ASSOC);
+            if ($user) {
+                if ($user['role'] !== 'supplier') throw new RuntimeException('ACCOUNT_ROLE_PROTECTED');
+                if (!accountQuery('SELECT id FROM idea_companies WHERE owner_id=? LIMIT 1',[$user['id']])->fetch()) throw new RuntimeException('COMPANY_REQUIRED');
+                accountQuery("UPDATE idea_social_identities SET last_login_at=?,updated_at=? WHERE provider='google' AND provider_subject=?", [platformNow(),platformNow(),$subject]);
+            } else {
+                // Never silently attach Google to a pre-existing password account or change roles.
+                if (accountQuery('SELECT id FROM idea_users WHERE LOWER(email)=? LIMIT 1',[$email])->fetch()) throw new RuntimeException('ACCOUNT_EXISTS');
+                if ($body['mode'] !== 'register') throw new RuntimeException('BUSINESS_ACCOUNT_REQUIRED');
+                if (($body['consent'] ?? false) !== true) throw new RuntimeException('INVALID_FIELDS');
+                $name = accountString($body,'display_name',120,true);
+                $company = accountString($body,'company_name',200,true);
+                $phone = accountString($body,'phone',40,true);
+                $profile = $body['business_profile'] ?? null;
+                if (!is_array($profile)) throw new RuntimeException('INVALID_FIELDS');
+                $category = $profile['primary_category'] ?? '';
+                $activity = $profile['company_type'] ?? '';
+                if (!in_array($category,['ceramic','porcelain','marble','granite','sanitary','faucets'],true) || !in_array($activity,['retailer','wholesaler','manufacturer','importer','contractor'],true)) throw new RuntimeException('INVALID_FIELDS');
+                $details = ['categories'=>[$category],'primary_category'=>$category,'contract_volume'=>'prefer_not_to_say','company_type'=>$activity];
+                foreach (['governorate','service_areas','commercial_registration'] as $key) $details[$key]=accountString($profile,$key,200,true);
+                $id=bin2hex(random_bytes(16)); $now=platformNow();
+                accountQuery('INSERT INTO idea_users(id,email,name,password_hash,role,phone,created_at) VALUES(?,?,?,?,?,?,?)',[$id,$email,$name,password_hash(bin2hex(random_bytes(32)),PASSWORD_DEFAULT),'supplier',$phone,$now]);
+                accountQuery("INSERT INTO idea_companies(id,owner_id,public_name,legal_name,email,phone,description,status,business_details,created_at) VALUES(?,?,?,?,?,?,?,'submitted',?,?)",[bin2hex(random_bytes(16)),$id,$company,$company,$email,$phone,'',json_encode($details,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),$now]);
+                accountQuery("INSERT INTO idea_memberships(user_id,audience,billing_interval,status,updated_at) VALUES(?,'business','monthly','requested',?)",[$id,$now]);
+                accountQuery("INSERT INTO idea_social_identities(id,user_id,provider,provider_subject,provider_email,email_verified,created_at,updated_at,last_login_at) VALUES(?,?,'google',?,?,1,?,?,?)",[bin2hex(random_bytes(16)),$id,$subject,$email,$now,$now,$now]);
+                $user=['id'=>$id,'name'=>$name,'email'=>$email,'phone'=>$phone,'role'=>'supplier'];
+            }
+            $db->commit();
+        } catch (Throwable $e) {
+            if ($db->inTransaction()) $db->rollBack();
+            throw $e;
+        }
+        accountSession();
+        session_regenerate_id(true);
+        $_SESSION['uid']=$user['id'];
+        $_SESSION['idea_user_id']=$user['id'];
+        $_SESSION['user_id']=$user['id'];
+        $_SESSION['idea_user_role']='supplier';
+        $_SESSION['idea_auth_provider']='google';
+        $_SESSION['csrf']=bin2hex(random_bytes(32));
+        $_SESSION['csrf_token']=$_SESSION['csrf'];
+        platformJson(['ok'=>true,'user'=>$user]);
+        exit;
+    } catch (Throwable $e) {
+        $code=$e->getMessage();
+        $allowed=['ACCOUNT_ROLE_PROTECTED','ACCOUNT_EXISTS','BUSINESS_ACCOUNT_REQUIRED','COMPANY_REQUIRED','INVALID_FIELDS','GOOGLE_EMAIL_UNVERIFIED'];
+        accountError(in_array($code,$allowed,true)?403:401,in_array($code,$allowed,true)?$code:'GOOGLE_BUSINESS_AUTH_FAILED');
+    }
 }
 
 // 1b. Google Identity Services (GIS) RS256 ID Token verification (POST + CSRF, zero ModSecurity 406 query issues)
@@ -1002,7 +1074,7 @@ if ($action === 'callback') {
           WHERE state_hash = ? AND provider = ?
           LIMIT 1',
         [$stateHash, $provider]
-    );
+    )->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$rows) {
         socialRedirectError('login', 'STATE_INVALID', $provider);
@@ -1387,7 +1459,7 @@ if ($action === 'whatsapp-verify') {
           ORDER BY created_at DESC
           LIMIT 1',
         [$phoneHash]
-    );
+    )->fetchAll(PDO::FETCH_ASSOC);
 
     if (!$rows) {
         accountError(400, 'OTP_EXPIRED');
