@@ -7,8 +7,8 @@ import { HeroBrandFilm } from "../components/HeroBrandFilm";
 import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
 import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
-import { ProductCard } from "../components/ProductCard";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
+import { productMaker } from "../data/ideaProductIdentity";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import "./Home.css";
@@ -28,7 +28,7 @@ export function Home() {
   const { locale, t } = useI18n();
   const { products } = useStore();
   // Public home cards show one design per source maker, never repetitive variants.
-  const featuredProducts = distinctStorefrontProducts(products).slice(0, 4);
+  const featuredProducts = distinctStorefrontProducts(products).slice(0, 8);
   const destinations = useCollectionDestinations();
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   return (
@@ -42,6 +42,39 @@ export function Home() {
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={22}/><span>{item.title}<small>{item.sub}</small></span></Link>)}</div>
       <div className="idea-home-finder-scene"><HeroSearchPanel /></div>
       <FeaturedCollectionStrip />
+      {featuredProducts.length > 0 && <section className="idea-home-section idea-home-product-section" aria-labelledby="featured-surfaces-title">
+        <div className="idea-home-featured-heading">
+          <div>
+            <p className="idea-home-featured-eyebrow">{text("IDEA MATERIAL LIBRARY", "مكتبة خامات IDEA", "MATÉRIAUX IDEA")}</p>
+            <h2 id="featured-surfaces-title">{t("home.featured")}</h2>
+            <p>{text("Explore distinctive tiles and surfaces from our curated catalogue.", "اكتشف بلاطات وخامات مميزة من كتالوجنا المختار.", "Explorez des carreaux et surfaces sélectionnés dans notre catalogue.")}</p>
+          </div>
+          <Link className="idea-home-featured-all" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link>
+        </div>
+        <nav className="idea-home-surface-filters" aria-label={text("Browse surface types", "تصفح أنواع الخامات", "Parcourir les matériaux")}>
+          {[
+            { label: text("All surfaces", "كل الخامات", "Toutes les surfaces"), to: "/products" },
+            { label: text("Tiles", "بلاط", "Carrelage"), to: "/products?material=tiles" },
+            { label: text("Ceramics", "سيراميك", "Céramiques"), to: "/collections/ceramics" },
+            { label: text("Porcelain", "بورسلين", "Porcelaine"), to: "/collections/porcelain" },
+            { label: text("Marble", "رخام", "Marbre"), to: "/products?material=marble" },
+          ].map((item, index) => <Link key={item.label} className={index === 0 ? "is-active" : ""} to={item.to}>{item.label}</Link>)}
+        </nav>
+        <div className="idea-home-featured-grid">{featuredProducts.map((product) => {
+          const maker = productMaker(product, locale);
+          const image = ["ceramics", "porcelain", "marble"].includes(product.collection) ? product.source?.original?.tiles?.[0] : product.image;
+          return <article className="idea-home-featured-card" key={product.id}>
+            <Link className="idea-home-featured-photo" to={`/product/${product.slug}`} aria-label={product.name[locale]}>
+              <img src={image || product.image} alt={product.name[locale]} loading="lazy" decoding="async" />
+            </Link>
+            <div className="idea-home-featured-card-copy">
+              <span>{maker.verified ? maker.value : product.brand}</span>
+              <Link to={`/product/${product.slug}`}>{product.name[locale]}</Link>
+            </div>
+          </article>;
+        })}</div>
+        <div className="idea-home-center"><Link className="idea-home-text-link" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link></div>
+      </section>}
       <SponsoredCollectionCards />
       <section className="idea-home-section">
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
@@ -77,11 +110,6 @@ export function Home() {
           </Link>;
         })}</div>
       </section>
-      {featuredProducts.length > 0 && <section className="idea-home-section">
-        <h2 className="idea-home-centered-title">{t("home.featured")}</h2>
-        <div className="idea-home-products">{featuredProducts.map((p) => <ProductCard key={p.id} product={p} />)}</div>
-        <div className="idea-home-center"><Link className="idea-home-text-link" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link></div>
-      </section>}
       <section className="idea-home-section idea-home-quote"><h2>{text("Request a private quote", "اطلب عرض سعر خاص", "Demandez un devis privé")}</h2><p>{t("home.bestPriceBody")}</p>
         <Link className="idea-home-text-link" to="/request-quote/new">{t("action.requestPrice")} <ArrowRight size={16} /></Link>
       </section>
