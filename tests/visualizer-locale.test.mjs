@@ -24,5 +24,5 @@ test('selected locale persists across routes',()=>{
 
 test('a recent completed Runpod job is shown as verified, not unverified',()=>{
  assert.match(page,/integration === "worker_verified"/);
- assert.match(css,/idea-studio-provider\\.verified/);
+ assert.match(css,/idea-studio-provider\.verified/);
 });
