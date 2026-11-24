@@ -23,7 +23,7 @@ export function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="idea-product-card idea-material-sheet" style={{
-      background: "var(--idea-page-background)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
+      background: "var(--idea-bg)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
       overflow: "hidden", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
     }}
       onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}

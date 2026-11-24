@@ -93,7 +93,7 @@
 .idea-material-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:28px 18px}
 .idea-material-card{overflow:visible;border:0;border-radius:0;background:transparent;box-shadow:none}
 .idea-material-card:hover{border-color:transparent;box-shadow:none}
-.idea-material-card-media{aspect-ratio:1.12;border:1px solid color-mix(in srgb,var(--mc-rim) 70%,transparent);border-radius:3px;background:linear-gradient(145deg,var(--idea-surface-2),var(--idea-surface));}
+.idea-material-card-media{aspect-ratio:1.12;border:0;border-radius:0;background:transparent;}
 .idea-material-card-media>a{display:grid;place-items:center}
 .idea-material-card-media img{width:78%;height:auto;aspect-ratio:1;border:1px solid #ffffffaa;border-radius:50%;object-fit:cover;box-shadow:0 12px 24px #0002,0 2px 7px #0002;transition:transform .35s ease,box-shadow .35s ease}
 .idea-material-card:hover .idea-material-card-media img{transform:translateY(-3px);box-shadow:0 17px 28px #0003,0 3px 8px #0002}

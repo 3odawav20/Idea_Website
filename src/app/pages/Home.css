@@ -122,3 +122,17 @@
   filter: saturate(1.12) contrast(1.045) brightness(1.02);
   -webkit-filter: saturate(1.12) contrast(1.045) brightness(1.02);
 }
+
+.idea-home-product-section {
+  width: 100%;
+  margin: 0;
+  padding-inline: max(24px, calc((100vw - 1280px) / 2));
+  background: var(--idea-bg);
+}
+
+@media (max-width: 800px) {
+  .idea-home-product-section {
+    width: 100%;
+    padding: 48px 20px;
+  }
+}
