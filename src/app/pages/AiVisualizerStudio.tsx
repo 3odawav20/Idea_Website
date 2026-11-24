@@ -191,7 +191,7 @@ export function AiVisualizerStudio() {
     floor: emptySelection(surface === "floor" ? searchParams.get("product") : null),
   }));
   const [drawingArea, setDrawingArea] = useState(false);
-  const [maskAvailable, setMaskAvailable] = useState(false);
+  const [maskAvailable, setMaskAvailable] = useState<string | null>(null);
   const targets: MaterialSurface[] = surface === "both" ? ["walls", "floor"] : [surface];
   const surfaceLabel = (value: MaterialSurface) => value === "walls"
     ? tr("الحيطان", "Walls", "Murs") : tr("الأرضية", "Floor", "Sol");
@@ -318,7 +318,7 @@ export function AiVisualizerStudio() {
   function clearResult() {
     setResult(null);
     setQuality(null);
-    setMaskAvailable(false);
+    setMaskAvailable(null);
     setJobId(null);
     setViewMode("original");
     setStage("idle");
@@ -405,14 +405,32 @@ export function AiVisualizerStudio() {
     return current.csrf;
   }
 
+  async function privatePost(action: "job" | "asset", id: string, token: string, signal: AbortSignal, asset?: "result" | "mask") {
+    const body = new FormData();
+    body.append("action", action);
+    body.append("job", id);
+    if (asset) body.append("asset", asset);
+    return fetch("/api/visualize.php", { method: "POST", credentials: "same-origin", headers: { "X-CSRF-Token": token }, body, cache: "no-store", signal });
+  }
+
+  async function privatePng(id: string, asset: "result" | "mask", token: string, signal: AbortSignal): Promise<string> {
+    const response = await privatePost("asset", id, token, signal, asset);
+    if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || "IMAGE_NOT_READY");
+    const blob = await response.blob();
+    if (blob.type !== "image/png" || blob.size < 8 || blob.size > 42000000) throw new Error("VERIFIED_IMAGE_UNREADABLE");
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result));
+      reader.onerror = () => reject(new Error("VERIFIED_IMAGE_UNREADABLE"));
+      reader.readAsDataURL(blob);
+    });
+  }
+
   async function pollJob(id: string, controller: AbortController) {
+    const token = await csrfToken();
     for (let attempt = 0; attempt < POLL_LIMIT; attempt++) {
       await wait(POLL_INTERVAL, controller.signal);
-      const response = await fetch(`/api/visualize.php?job=${encodeURIComponent(id)}`, {
-        credentials: "same-origin",
-        cache: "no-store",
-        signal: controller.signal,
-      });
+      const response = await privatePost("job", id, token, controller.signal);
       const data = await response.json().catch(() => null) as JobResponse | null;
       if (!response.ok || !data) throw new Error(data?.error || tr("استجابة غير صالحة من خدمة التصور.", "The visualization service returned an invalid response."));
       if (data.quota) setQuota(data.quota);
@@ -422,8 +440,10 @@ export function AiVisualizerStudio() {
         if (data.image !== secureResult && !/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(data.image)) {
           throw new Error(tr("تعذر قراءة النتيجة.", "The result could not be read."));
         }
-        setResult(data.image);
-        setMaskAvailable(data.maskAvailable === true);
+        const image = data.image === secureResult ? await privatePng(id, "result", token, controller.signal) : data.image;
+        const mask = data.maskAvailable === true ? await privatePng(id, "mask", token, controller.signal) : null;
+        setResult(image);
+        setMaskAvailable(mask);
         setQuality(data.quality || null);
         setCompare(50);
         setViewMode("compare");
@@ -654,7 +674,7 @@ export function AiVisualizerStudio() {
                 ) : viewMode === "mask" && jobId ? (
                   <>
                     <img className="idea-studio-single-image" src={safePhotoUrl} alt={tr("الغرفة الأصلية", "Original room")} />
-                    <img className="idea-studio-single-image idea-studio-mask-image" src={"/api/visualize.php?job=" + encodeURIComponent(jobId) + "&asset=mask"}
+                    <img className="idea-studio-single-image idea-studio-mask-image" src={maskAvailable || undefined}
                       alt={tr("مساحات الحيطان والأرضية اللي اتغيرت", "Wall and floor areas accepted for editing")} />
                   </>
                 ) : viewMode === "compare" && result ? (

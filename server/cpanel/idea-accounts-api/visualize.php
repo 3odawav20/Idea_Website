@@ -182,6 +182,7 @@ try{
     ideaVizReply([
       'ok'=>true,'api'=>'idea-visualize-php-mysql-v1',
       'auth'=>'IDEASESSID','image_input'=>['jpeg','png','webp'],'independent_surfaces'=>2,
+      'private_assets_method'=>'POST',
       'image_codec_test_passed'=>ideaVizImageSelftest(),
       'provider'=>$ready,
     ]);
@@ -197,7 +198,9 @@ try{
     $id=accountString($_GET,'job',32,true);
     if(!preg_match('/^[a-f0-9]{32}$/D',$id))accountError(422,'INVALID_JOB');
     $asset=accountString($_GET,'asset',12);
-    if($asset!=='')ideaVizServeAsset($id,$asset,$user);
+    if($asset!=='')accountError(405,'USE_POST');
+    $known=platformAiJob($user,$id);
+    if(($known['settings']['edit_version']??null)===2)accountError(405,'USE_POST');
     session_write_close();
     ideaVizReply(ideaVizGetJob($id,$user));
   }
@@ -208,6 +211,13 @@ try{
   if((int)($_SERVER['CONTENT_LENGTH']??0)>24000000)accountError(413,'PAYLOAD_TOO_LARGE');
   $user=ideaVizAccount();
   accountCsrf();
+  if(in_array($action,['job','asset'],true)){
+    $id=accountString($_POST,'job',32,true);
+    if(!preg_match('/^[a-f0-9]{32}$/D',$id))accountError(422,'INVALID_JOB');
+    if($action==='asset')ideaVizServeAsset($id,accountString($_POST,'asset',12,true),$user);
+    session_write_close();
+    ideaVizReply(ideaVizGetJob($id,$user));
+  }
   if($action==='cancel'){
     accountError(409,'CANCEL_VIA_RUNPOD_NOT_IMPLEMENTED');
   }
