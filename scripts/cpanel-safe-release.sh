@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# IDEA: stage a tested release; promote frontend only after explicit approval.
+# IDEA: stage a tested release; promote with private opt-in or per-SHA approval.
 # Never deploy PHP, overwrite server configuration, run SQL or delete live files.
 set -Eeuo pipefail
 umask 077
@@ -24,7 +24,7 @@ printf 'IDEA_SOURCE_SHA=%s\n' "$SHA"
 [[ -x "$NODE22/node" && -x "$NODE22/corepack" ]] || fail 'Node.js 22 runtime is not available at the expected path.'
 export PATH="$NODE22:$PATH"
 [[ $(node -p 'process.versions.node.split(".")[0]') == 22 ]] || fail 'Node.js 22 is required.'
-for bin in corepack php python3 curl rsync; do command -v "$bin" >/dev/null || fail "$bin is missing."; done
+for bin in corepack php python3 curl git flock tar; do command -v "$bin" >/dev/null || fail "$bin is missing."; done
 # Build outside the checkout so generated files cannot block later git updates.
 BUILD_DIR=$(mktemp -d "$ROOT/build_${SHA:0:12}_XXXXXXXX")
 git archive "$SHA" | tar -x -C "$BUILD_DIR"
@@ -43,79 +43,13 @@ corepack pnpm@10.34.9 run build:cpanel
 RELEASE=$(mktemp -d "$ROOT/release_${SHA:0:12}_XXXXXXXX")
 cp -a dist/. "$RELEASE/"
 printf 'IDEA_STAGE_SUCCESS=1\nIDEA_STAGE_RELEASE_DIR=%s\n' "$RELEASE"
-# Per-commit approval is deliberately outside Git and outside the public document root.
-if [[ ! -f "$APPROVAL" ]] || [[ $(tr -d '\r\n' < "$APPROVAL") != "$SHA" ]]; then
+# Automatic publishing is enabled only by a private, operator-owned marker.
+if [[ ! -f "$ROOT/automatic-frontend-enabled" ]] && { [[ ! -f "$APPROVAL" ]] || [[ $(tr -d '\r\n' < "$APPROVAL") != "$SHA" ]]; }; then
   printf 'IDEA_PROMOTION=WAITING_FOR_REVIEW\n'
   exit 0
 fi
-# Do not replace a hand-patched live HTML shell with an incompatible GitHub shell.
-# Only Vite entry filenames may differ; all custom tags/markup must match.
-python3 - "$LIVE/index.html" "$RELEASE/index.html" <<'PY'
-import re, sys
-from pathlib import Path
-pat = re.compile(rb'(/assets/index-)[A-Za-z0-9_-]+(\.(?:js|css))')
-def normalized(path):
-    return pat.sub(rb'\g<1>BUILD\g<2>', Path(path).read_bytes())
-if normalized(sys.argv[1]) != normalized(sys.argv[2]):
-    sys.exit('IDEA_PROMOTION_BLOCKED: live HTML shell differs beyond Vite entry hashes; reconcile live custom tags before promotion.')
-PY
-# Check actual live PHP/MySQL connectivity before publishing frontend files.
-health() {
-  curl --fail --silent --show-error --max-time 20 -A "$UA" -H 'Cache-Control: no-cache' "$BASE/api/accounts.php?action=health" | python3 -c 'import json,sys; d=json.load(sys.stdin); sys.exit(0 if d.get("ok") is True and d.get("backend")=="php-mysql" else 1)'
-}
-health || fail 'Live PHP/MySQL health check failed.'
-# Refuse changed collisions and missing new public files: only assets can be added.
-python3 - "$RELEASE" "$LIVE" <<'PY'
-import sys, filecmp
-from pathlib import Path
-stage, live = map(Path, sys.argv[1:])
-for p in stage.rglob('*'):
-    if p.is_symlink(): sys.exit(f'Unexpected symlink: {p}')
-    if not p.is_file(): continue
-    rel = p.relative_to(stage)
-    if rel.parts[0] == 'assets':
-        q = live / rel
-        if q.exists() and (not q.is_file() or not filecmp.cmp(p,q,shallow=False)):
-            sys.exit(f'IDEA_PROMOTION_BLOCKED: conflicting live asset {rel}')
-    elif rel.parts[0] != 'api' and rel.as_posix() not in ('index.html','.htaccess'):
-        q = live / rel
-        if not q.is_file() or not filecmp.cmp(p,q,shallow=False):
-            sys.exit(f'IDEA_PROMOTION_BLOCKED: non-asset public file requires separate review: {rel}')
-PY
-BACKUP=$(mktemp -d "$ROOT/live_backup_${SHA:0:12}_XXXXXXXX")
-cp -p "$LIVE/index.html" "$BACKUP/index.html"
-printf '%s\n' "$SHA" > "$BACKUP/new-release-sha"
-printf 'IDEA_BACKUP=%s\n' "$BACKUP"
-# Old hashed assets are retained for cached browsers and rollback.
-rsync -r --ignore-existing --chmod=Du=rwx,Dgo=rx,Fu=rw,Fgo=r "$RELEASE/assets/" "$LIVE/assets/"
-TMP=$(mktemp "$LIVE/.idea-index-XXXXXXXX")
-rollback() {
-  rc=$?
-  trap - ERR INT TERM
-  printf 'IDEA_PROMOTION_FAILED: restoring original index.html\n' >&2
-  if [[ -f "$BACKUP/index.html" ]]; then
-    cp -p "$BACKUP/index.html" "$TMP" && mv -f "$TMP" "$LIVE/index.html" || printf 'IDEA_ROLLBACK_ERROR: manual restore from %s required\n' "$BACKUP" >&2
-  fi
-  exit "${rc:-1}"
-}
-trap rollback ERR INT TERM
-cp "$RELEASE/index.html" "$TMP"
-chmod --reference="$BACKUP/index.html" "$TMP"
-mv -f "$TMP" "$LIVE/index.html"
-# Verify fresh public HTML and protected backend health. Failure restores old entrypoint.
-for route in / /login /account /business /admin; do
-  curl --fail --silent --show-error --max-time 20 -A "$UA" -H 'Cache-Control: no-cache' "$BASE$route?idea_release=$SHA" -o "$BACKUP/response.html"
-  python3 - "$RELEASE/index.html" "$BACKUP/response.html" <<'PY'
-import re,sys
-from pathlib import Path
-pattern=rb'/assets/index-[A-Za-z0-9_-]+\.js'
-expected=re.findall(pattern,Path(sys.argv[1]).read_bytes())
-actual=Path(sys.argv[2]).read_bytes()
-if not expected or not all(x in actual for x in expected): sys.exit('Live HTML does not reference the approved new bundle.')
-PY
-done
-health
-trap - ERR INT TERM
-rm -f "$BACKUP/response.html"
+python3 "$BUILD_DIR/scripts/cpanel-publish-frontend.py" "$SHA" "$RELEASE"
 printf 'IDEA_FRONTEND_PROMOTION_SUCCESS=1\nIDEA_SOURCE_SHA=%s\n' "$SHA"
-printf 'PHP, MySQL, live settings, and existing assets were not replaced. Authenticated browser tests are still required.\n'
+# Only discard this invocation's temporary build/package after verified publication.
+case "$BUILD_DIR" in "$ROOT"/build_*) rm -rf -- "$BUILD_DIR";; esac
+case "$RELEASE" in "$ROOT"/release_*) rm -rf -- "$RELEASE";; esac
