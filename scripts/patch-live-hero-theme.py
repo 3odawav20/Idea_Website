@@ -41,7 +41,7 @@ def main():
             if sha(data)!=EXPECTED[name]: raise SystemExit("Live source changed: "+name)
         for name, expected in MEDIA.items():
             path=LIVE/"media/hero"/name
-            if subprocess.check_output(["git","hash-object",str(path)],text=True).strip()!=expected:
+            if subprocess.check_output(["git","hash-object",str(path)],universal_newlines=True).strip()!=expected:
                 raise SystemExit("Media differs from approved GitHub asset: "+name)
         js=raw[OLD_JS]
         # Require the two old video URLs in the same object immediately before
