@@ -538,3 +538,87 @@ html[data-theme='dark'] .idea-home-editorial {
   html[data-theme='dark'] body { min-height: 100vh; }
   html[data-theme='dark']::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: -1; background: #101010 url('/images/backgrounds/idea-dark-marble-13473200.jpg') center / cover no-repeat; }
 }
+
+/* IDEA optical marble glass — dark mode only.
+   Keep the approved wallpaper visible through UI surfaces. Never blur product
+   photos, canvas content, or text: backdrop-filter affects only the background. */
+html[data-theme='dark'] {
+  --idea-marble-glass: rgba(20, 20, 20, .20);
+  --idea-marble-glass-panel: rgba(20, 20, 20, .28);
+  --idea-gt-blur: 3px;
+  --idea-gt-tray-blur: 4px;
+  --idea-gt-input-blur: 3px;
+  --idea-gt-tray-bg: rgba(255, 255, 255, .045);
+  --idea-glass-card-bg: rgba(255, 255, 255, .055);
+  --idea-glass-card-bg-hover: rgba(255, 255, 255, .095);
+}
+
+/* Unpaint full-page wrappers so the one continuous marble slab is visible. */
+html[data-theme='dark'] :is(
+  .idea-home-editorial, .idea-catalogue-detail, .idea-studio, .idea-room3d,
+  .ids-root, .idea-contact-page
+) {
+  background-color: transparent !important;
+}
+
+/* Full-width section glass, including Featured Collections and Materials. */
+html[data-theme='dark'] :is(
+  .idea-featured, .idea-materials, .idea-usp, .idea-editorial-footer,
+  .idea-footer-promo, .idea-product-photo-gallery, .idea-product-formats-section,
+  .idea-home-finder-scene
+) {
+  background: var(--idea-marble-glass) !important;
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+/* The finder used an independent decorative stone image and an opaque gradient. */
+html[data-theme='dark'] .idea-home-finder-scene::before,
+html[data-theme='dark'] .idea-home-finder-scene::after {
+  background: none !important;
+}
+
+/* Clear glass panels, navigation and cards. Preserve media-specific backdrops,
+   product swatches, colour controls, modal scrims and branding accents. */
+html[data-theme='dark'] :is(
+  .idea-home-newsletter, .idea-home-resource-grid > a,
+  .idea-resource-list > article, .idea-service-status,
+  .idea-sponsored-collections article, .idea-featured-play,
+  .idea-discovery-search, .idea-discovery-nav, .idea-discovery-menu,
+  .idea-dash-kpi, .idea-dash-banner, .idea-dash-table-wrap,
+  .idea-studio-rail, .idea-studio-library, .idea-studio-analysis,
+  .idea-room3d-side, .idea-room3d-main, .idea-room3d-fixture-properties,
+  .ids-topbar, .ids-settings-links > a
+) {
+  background-color: var(--idea-marble-glass-panel) !important;
+  -webkit-backdrop-filter: blur(4px) !important;
+  backdrop-filter: blur(4px) !important;
+}
+html[data-theme='dark'] :is(
+  .idea-reference-header, .idea-reference-header.is-menu-open,
+  .idea-navigation-drawer, .glass-card
+) {
+  -webkit-backdrop-filter: blur(4px) !important;
+  backdrop-filter: blur(4px) !important;
+}
+html[data-theme='dark'] .idea-discovery-search :is(input, select) {
+  -webkit-backdrop-filter: blur(3px) !important;
+  backdrop-filter: blur(3px) !important;
+}
+
+/* Common inline token-based panels on storefront/account routes. */
+html[data-theme='dark'] :is(main, section, article, aside, div)[style*="background: var(--idea-bg-2)"],
+html[data-theme='dark'] :is(main, section, article, aside, div)[style*="background: var(--idea-surface)"] {
+  background-color: var(--idea-marble-glass-panel) !important;
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+/* No fixed-background scrolling workaround that stretches the marble to the
+   entire document height. Keep the fixed wallpaper behind mobile glass too. */
+@media (max-width: 768px) {
+  html[data-theme='dark'] { background-image: none; }
+  html[data-theme='dark']::before {
+    z-index: 0;
+  }
+  html[data-theme='dark'] body { position: relative; z-index: 1; }
+}
