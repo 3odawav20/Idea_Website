@@ -1,9 +1,9 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Link, useSearchParams } from "react-router";
-import { Heart, GitCompare, Sparkles, FileText } from "lucide-react";
+import { Heart, GitCompare, Sparkles, FileText, SlidersHorizontal, ChevronDown } from "lucide-react";
 import type { CollectionSlug, Product } from "../data/types";
 import { COLLECTIONS } from "../data/catalog";
-import { isColourLabel, matchesApplication } from "../data/discovery";
+import { isColourLabel, isUsageLabel, isLargeFormat, isOutdoor20mm, matchesApplication } from "../data/discovery";
 import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
 import { localMaterialFace } from "../data/localMaterialFace";
@@ -12,7 +12,7 @@ import { useStore } from "../store/store";
 import { Container, Section } from "../components/ui";
 import "./MaterialCatalogue.css";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 36;
 const SURFACE_TABS: { key: "all" | "tiles" | CollectionSlug; label: Record<"en" | "ar" | "fr", string> }[] = [
   { key: "all", label: { en: "All materials", ar: "كل الخامات", fr: "Tous les matériaux" } },
   { key: "tiles", label: { en: "Tiles", ar: "بلاط", fr: "Carrelage" } },
@@ -37,14 +37,22 @@ export function MaterialCatalogue() {
   const color = params.get("color");
   const application = params.get("application");
   const type = params.get("type");
+  const texture = params.get("texture");
+  const brand = params.get("brand");
+  const usage = params.get("usage");
+  const format = params.get("format");
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const activeFilters = [type, texture, brand, finish, application, size, usage, color, format].filter(Boolean).length;
   const sort = params.get("sort") ?? "source";
 
   const baseProducts = useMemo(() => products.filter((product) => {
     if (category && product.collection !== category) return false;
+    if (format === "large" && !isLargeFormat(product)) return false;
+    if (format === "outdoor20" && !isOutdoor20mm(product)) return false;
     if (material === "tiles" && !["ceramics", "porcelain"].includes(product.collection)) return false;
     if (material === "marble" && product.texture?.toLowerCase() !== "marble" && product.type?.toLowerCase() !== "marble") return false;
     return true;
-  }), [products, category, material]);
+  }), [products, category, material, format]);
 
   const facets = useMemo(() => ({
     finishes: unique(baseProducts.map((product) => product.finish)),
@@ -52,6 +60,9 @@ export function MaterialCatalogue() {
     colors: unique(baseProducts.flatMap((product) => product.colors ?? []).filter(isColourLabel)),
     applications: unique(baseProducts.map((product) => product.application)),
     types: unique(baseProducts.map((product) => product.type)),
+    textures: unique(baseProducts.map((product) => product.texture)),
+    brands: unique(baseProducts.map((product) => product.brand)),
+    usages: unique(baseProducts.flatMap((product) => product.usage ?? []).filter(isUsageLabel)),
   }), [baseProducts]);
 
   const results = useMemo(() => {
@@ -61,8 +72,11 @@ export function MaterialCatalogue() {
       if (size && !product.sizes.some((item) => item.label === size)) return false;
       if (color && !(product.colors ?? []).includes(color)) return false;
       if (type && product.type !== type) return false;
+      if (texture && product.texture !== texture) return false;
+      if (brand && product.brand !== brand) return false;
+      if (usage && !(product.usage ?? []).includes(usage)) return false;
       if (query) {
-        const searchable = [product.name[locale], product.name.en, product.brand, product.manufacturer, product.model, product.code, product.collection, product.origin, ...(product.colors ?? []), ...product.sizes.map((item) => item.label)].join(" ").toLowerCase();
+        const searchable = [product.name[locale], product.name.en, product.brand, product.manufacturer, product.model, product.code, ideaInternalCode(product), product.collection, product.origin, ...(product.colors ?? []), ...product.sizes.map((item) => item.label)].join(" ").toLowerCase();
         if (!searchable.includes(query)) return false;
       }
       return true;
@@ -73,7 +87,7 @@ export function MaterialCatalogue() {
       : sort === "za"
         ? [...distinct].sort((a, b) => b.name[locale].localeCompare(a.name[locale]))
         : distinct;
-  }, [baseProducts, application, finish, size, color, type, query, locale, sort]);
+  }, [baseProducts, application, finish, size, color, type, texture, brand, usage, query, locale, sort]);
 
   const pageCount = Math.max(1, Math.ceil(results.length / PAGE_SIZE));
   const rawPage = Number.parseInt(params.get("page") ?? "1", 10);
@@ -86,7 +100,7 @@ export function MaterialCatalogue() {
     if (key === "marble") return products.some((product) => product.texture?.toLowerCase() === "marble" || product.type?.toLowerCase() === "marble");
     return products.some((product) => product.collection === key);
   });
-  const title = category
+  const title = format === "large" ? (locale === "ar" ? "بلاط كبير المقاس" : locale === "fr" ? "Grand format" : "Large-format tiles") : format === "outdoor20" ? (locale === "ar" ? "بلاط خارجي 20 مم" : locale === "fr" ? "Carrelage extérieur 20 mm" : "20 mm outdoor tiles") : category
     ? COLLECTIONS.find((item) => item.slug === category)?.title[locale]
     : material === "tiles"
       ? SURFACE_TABS[1].label[locale]
@@ -104,7 +118,7 @@ export function MaterialCatalogue() {
 
   const changeTab = (key: string) => setParams((current) => {
     const next = new URLSearchParams(current);
-    ["category", "material", "finish", "size", "color", "application", "type", "page"].forEach((filter) => next.delete(filter));
+    ["category", "material", "format", "finish", "size", "color", "application", "type", "texture", "brand", "usage", "page"].forEach((filter) => next.delete(filter));
     if (key === "tiles") next.set("material", "tiles");
     else if (key === "marble") next.set("material", "marble");
     else if (key !== "all") next.set("category", key);
@@ -113,23 +127,27 @@ export function MaterialCatalogue() {
 
   const clearFilters = () => setParams((current) => {
     const next = new URLSearchParams(current);
-    ["category", "material", "finish", "size", "color", "application", "type", "q", "page"].forEach((key) => next.delete(key));
+    ["finish", "size", "color", "application", "type", "texture", "brand", "usage", "format", "q", "page"].forEach((key) => next.delete(key));
     return next;
   });
 
-  const filterSelect = (label: string, key: string, value: string | null, values: string[]) => values.length > 1 && (
-    <label className="idea-material-filter" key={key}>
-      <span>{value ?? label}</span>
-      <select aria-label={label} value={value ?? ""} onChange={(event) => updateFilter(key, event.target.value || null)}>
-        <option value="">{label}</option>
-        {values.map((item) => <option key={item} value={item}>{item}</option>)}
-      </select>
-    </label>
+  const filterGroup = (label: string, key: string, value: string | null, values: string[]) => (values.length > 0 || value) && (
+    <details className="idea-material-facet" open key={key}>
+      <summary>{label}<ChevronDown size={15} aria-hidden="true" /></summary>
+      <div className="idea-material-facet-options">
+        {[...new Set([...values, ...(value ? [value] : [])])].map((item) => (
+          <label key={item} className="idea-material-option">
+            <input type="checkbox" checked={value === item} onChange={() => updateFilter(key, value === item ? null : item)} />
+            <span>{item}</span>
+          </label>
+        ))}
+      </div>
+    </details>
   );
 
   return (
-    <Section style={{ paddingTop: "var(--idea-space-7)", background: "var(--idea-bg)" }}>
-      <Container className="idea-material-catalogue">
+    <Section style={{ paddingTop: "var(--idea-space-7)" }}>
+      <Container className="idea-material-catalogue" style={{ maxWidth: 1800 }}>
         <header className="idea-material-heading">
           <div className="idea-material-breadcrumb">
             <Link to="/">IDEA</Link><span aria-hidden="true">/</span><span>{locale === "ar" ? "المواد" : locale === "fr" ? "MATÉRIAUX" : "MATERIALS"}</span>
@@ -154,15 +172,22 @@ export function MaterialCatalogue() {
           ))}
         </nav>
 
-        <div className="idea-material-toolbar">
-          <div className="idea-material-filter-row">
-            {filterSelect(locale === "ar" ? "الخامة" : locale === "fr" ? "Matériau" : "Material", "type", type, facets.types)}
-            {filterSelect(t("filters.finish"), "finish", finish, facets.finishes)}
-            {filterSelect(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", "application", application, facets.applications)}
-            {filterSelect(t("filters.size"), "size", size, facets.sizes)}
-            {filterSelect(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", "color", color, facets.colors)}
-            <button type="button" className="idea-material-reset" onClick={clearFilters}>{locale === "ar" ? "مسح الفلاتر" : locale === "fr" ? "Réinitialiser" : "Reset filters"}</button>
-          </div>
+        <div className="idea-material-layout">
+          <button type="button" className="idea-material-mobile-filters" aria-expanded={filtersOpen} aria-controls="idea-material-filters" onClick={() => setFiltersOpen(!filtersOpen)}><SlidersHorizontal size={17} />{t("filters.title")}{activeFilters > 0 ? " (" + activeFilters + ")" : ""}</button>
+          <aside id="idea-material-filters" className={"idea-material-sidebar" + (filtersOpen ? " is-open" : "")}>
+            <div className="idea-material-sidebar-heading"><strong>{t("filters.title")}</strong><button type="button" className="idea-material-reset" onClick={clearFilters}>{t("filters.clear")}</button></div>
+            {filterGroup(locale === "ar" ? "العلامة التجارية" : locale === "fr" ? "Marque" : "Brand", "brand", brand, facets.brands)}
+            {filterGroup(locale === "ar" ? "الخامة" : locale === "fr" ? "Matériau" : "Material", "type", type, facets.types)}
+            {filterGroup(locale === "ar" ? "النقشة" : locale === "fr" ? "Aspect" : "Texture", "texture", texture, facets.textures)}
+            {filterGroup(t("filters.finish"), "finish", finish, facets.finishes)}
+            {filterGroup(locale === "ar" ? "الاستخدام" : locale === "fr" ? "Application" : "Application", "application", application, facets.applications)}
+            {filterGroup(t("filters.size"), "size", size, facets.sizes)}
+            {filterGroup(t("label.usage"), "usage", usage, facets.usages)}
+            {filterGroup(locale === "ar" ? "اللون" : locale === "fr" ? "Couleur" : "Colour", "color", color, facets.colors)}
+            <button type="button" className="idea-material-mobile-filters idea-material-apply" onClick={() => setFiltersOpen(false)}>{locale === "ar" ? "عرض النتائج" : locale === "fr" ? "Afficher les résultats" : "Show results"}</button>
+          </aside>
+          <div className="idea-material-results">
+          <div className="idea-material-toolbar">
           <form className="idea-material-search" onSubmit={(event) => {
             event.preventDefault();
             const formData = new FormData(event.currentTarget);
@@ -197,12 +222,14 @@ export function MaterialCatalogue() {
             {pageCount > 1 && (
               <nav className="idea-material-pagination" aria-label={locale === "ar" ? "صفحات الخامات" : locale === "fr" ? "Pages des matériaux" : "Material pages"}>
                 <button type="button" disabled={page <= 1} onClick={() => updateFilter("page", String(page - 1))}>{locale === "ar" ? "السابق" : locale === "fr" ? "Précédent" : "Previous"}</button>
-                <span>{locale === "ar" ? `صفحة ${page} من ${pageCount}` : locale === "fr" ? `Page ${page} sur ${pageCount}` : `Page ${page} of ${pageCount}`}</span>
+                {Array.from({ length: pageCount }, (_, index) => index + 1).filter(number => number === 1 || number === pageCount || Math.abs(number - page) <= 2).map(number => <button key={number} type="button" aria-current={number === page ? "page" : undefined} aria-label={String(number)} onClick={() => updateFilter("page", String(number))}>{number}</button>)}
                 <button type="button" disabled={page >= pageCount} onClick={() => updateFilter("page", String(page + 1))}>{locale === "ar" ? "التالي" : locale === "fr" ? "Suivant" : "Next"}</button>
               </nav>
             )}
           </>
         )}
+          </div>
+        </div>
       </Container>
     </Section>
   );
@@ -241,18 +268,17 @@ function MaterialCard({ product, locale, t, isFavorite, toggleFavorite, toggleCo
       <div className="idea-material-card-body">
         <div className="idea-material-maker">
           <span>{maker.verified ? maker.value : product.brand}</span>
-          <small>{maker.verified ? maker.label : (locale === "ar" ? "العلامة التجارية · المصنع قيد التوثيق" : locale === "fr" ? "Marque · fabricant à vérifier" : "Brand · maker unverified")}</small>
+          <small>{maker.verified ? maker.label : (locale === "ar" ? "علامة تجارية" : locale === "fr" ? "Marque" : "Brand")}</small>
         </div>
         <Link className="idea-material-name" to={`/product/${product.slug}`}>{product.name[locale]}</Link>
         <div className="idea-material-meta">
           {product.sizes[0] && <span>{product.sizes[0].label}</span>}
-          <span dir="ltr">{ideaInternalCode(product)}</span>
+          <span dir="ltr" title={ideaInternalCode(product)}>{ideaInternalCode(product)}</span>
         </div>
         <div className="idea-material-card-footer">
-          <span>{t("price.hidden")}</span>
           <button type="button" className="idea-material-quote" onClick={() => addToQuote(product.id, unit)}><FileText size={14} />{t("action.requestPrice")}</button>
+          <Link className="idea-material-visualize" to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}><Sparkles size={15} />{locale === "ar" ? "جرّب الخامة" : locale === "fr" ? "Essayer" : "Try in AI"}</Link>
         </div>
-        <Link className="idea-material-visualize" to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}><Sparkles size={15} />{locale === "ar" ? "جرّبه في شقتك" : locale === "fr" ? "Essayez-le chez vous" : "Try it in your home"}</Link>
       </div>
     </article>
   );
