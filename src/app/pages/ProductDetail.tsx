@@ -126,7 +126,7 @@ export function ProductDetail() {
   const isTile = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble";
   const unit = isTile ? "sqm" : "pieces";
   const fav = isFavorite(product.id);
-  const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? product.collection.replaceAll("-", " ");
+  const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? String(product.collection).replaceAll("-", " ");
 
   const applicationGroups = (() => {
     if (!isTile) {
