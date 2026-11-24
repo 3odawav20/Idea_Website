@@ -518,3 +518,23 @@ html[lang] :where(h1, h2, h3, h4) {
     cursor: not-allowed;
   }
 }
+
+/* Global dark-mode marble wallpaper, one continuous slab. Light mode is unchanged. */
+html[data-theme='dark'] {
+  background-color: #101010;
+  background-image: url('/images/backgrounds/idea-dark-marble-13473200.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+html[data-theme='dark'] body,
+html[data-theme='dark'] #root > div,
+html[data-theme='dark'] .idea-home-editorial {
+  background-color: transparent !important;
+}
+@media (max-width: 768px) {
+  html[data-theme='dark'] { background-attachment: scroll; background-size: 100% auto; }
+  html[data-theme='dark'] body { min-height: 100vh; }
+  html[data-theme='dark']::before { content: ''; position: fixed; inset: 0; pointer-events: none; z-index: -1; background: #101010 url('/images/backgrounds/idea-dark-marble-13473200.jpg') center / cover no-repeat; }
+}
