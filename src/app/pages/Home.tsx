@@ -28,7 +28,7 @@ export function Home() {
   const { locale, t } = useI18n();
   const { products } = useStore();
   // Public home cards show one design per source maker, never repetitive variants.
-  const featuredProducts = distinctStorefrontProducts(products).slice(0, 4);
+  const featuredProducts = distinctStorefrontProducts(products).slice(0, 8);
   const destinations = useCollectionDestinations();
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   return (
@@ -42,6 +42,11 @@ export function Home() {
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={22}/><span>{item.title}<small>{item.sub}</small></span></Link>)}</div>
       <div className="idea-home-finder-scene"><HeroSearchPanel /></div>
       <FeaturedCollectionStrip />
+      {featuredProducts.length > 0 && <section className="idea-home-section idea-home-product-section">
+        <h2 className="idea-home-centered-title">{t("home.featured")}</h2>
+        <div className="idea-home-products">{featuredProducts.map((p) => <ProductCard key={p.id} product={p} />)}</div>
+        <div className="idea-home-center"><Link className="idea-home-text-link" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link></div>
+      </section>}
       <SponsoredCollectionCards />
       <section className="idea-home-section">
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
@@ -77,11 +82,6 @@ export function Home() {
           </Link>;
         })}</div>
       </section>
-      {featuredProducts.length > 0 && <section className="idea-home-section">
-        <h2 className="idea-home-centered-title">{t("home.featured")}</h2>
-        <div className="idea-home-products">{featuredProducts.map((p) => <ProductCard key={p.id} product={p} />)}</div>
-        <div className="idea-home-center"><Link className="idea-home-text-link" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link></div>
-      </section>}
       <section className="idea-home-section idea-home-quote"><h2>{text("Request a private quote", "اطلب عرض سعر خاص", "Demandez un devis privé")}</h2><p>{t("home.bestPriceBody")}</p>
         <Link className="idea-home-text-link" to="/request-quote/new">{t("action.requestPrice")} <ArrowRight size={16} /></Link>
       </section>
