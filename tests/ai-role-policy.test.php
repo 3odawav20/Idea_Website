@@ -14,6 +14,7 @@ function accountCustomer(array $user): void {
 function accountCompany(array $user): void {
     throw new RuntimeException('Supplier/company authorization should NEVER be reached by the AI adapter');
 }
+function platformNow(): int { return 1795550000000; }
 function accountQuery(string $sql, array $params = []): object {
     if (str_contains($sql, "SELECT id FROM idea_ai_jobs WHERE user_id=? AND state='processing'")) {
         return new class {
