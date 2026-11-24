@@ -42,9 +42,66 @@ const POLL_INTERVAL = 2500;
 const POLL_LIMIT = 240;
 const STAGE_ORDER: JobStage[] = ["uploading", "validating", "queued", "generating", "ready"];
 
-function fileUrl(file: File | undefined): string | null {
-  if (!file || !ALLOWED.includes(file.type) || file.size > MAX_BYTES || file.size === 0) return null;
-  return URL.createObjectURL(file);
+const MAX_PIXELS = 12_000_000;
+const MAX_EDGE = 8192;
+
+// Keep the full frame and normalize oversized camera images before PHP validation.
+async function prepareUpload(file: File): Promise<{ file: File; width: number; height: number }> {
+  if (!file.size || !ALLOWED.includes(file.type)) throw new Error("unsupported_format");
+  let image: ImageBitmap | HTMLImageElement;
+  let sourceUrl: string | null = null;
+  try {
+    try {
+      image = await createImageBitmap(file);
+    } catch {
+      sourceUrl = URL.createObjectURL(file);
+      const element = new Image();
+      await new Promise<void>((resolve, reject) => {
+        element.onload = () => resolve();
+        element.onerror = () => reject(new Error("invalid_image"));
+        element.src = sourceUrl!;
+      });
+      image = element;
+    }
+    try {
+      const w = image instanceof HTMLImageElement ? image.naturalWidth : image.width;
+      const h = image instanceof HTMLImageElement ? image.naturalHeight : image.height;
+      if (w < 256 || h < 256) throw new Error("invalid_dimensions");
+      if (w * h <= MAX_PIXELS && Math.max(w, h) <= MAX_EDGE && file.size <= MAX_BYTES) {
+        return { file, width: w, height: h };
+      }
+      const scale = Math.min(1, Math.sqrt(MAX_PIXELS / (w * h)), MAX_EDGE / Math.max(w, h));
+      let width = Math.floor(w * scale);
+      let height = Math.floor(h * scale);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("invalid_image");
+      try {
+        for (let attempt = 0; attempt < 8; attempt++) {
+          if (width < 256 || height < 256) throw new Error("invalid_dimensions");
+          canvas.width = width;
+          canvas.height = height;
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, width, height);
+          ctx.imageSmoothingQuality = "high";
+          ctx.drawImage(image, 0, 0, width, height);
+          const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.92));
+          if (blob && blob.type === "image/jpeg" && blob.size > 0 && blob.size <= MAX_BYTES) {
+            return { file: new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: blob.type }), width, height };
+          }
+          width = Math.floor(width * 0.85);
+          height = Math.floor(height * 0.85);
+        }
+        throw new Error("invalid_image");
+      } finally {
+        canvas.width = canvas.height = 1;
+      }
+    } finally {
+      if ("close" in image) image.close();
+    }
+  } finally {
+    if (sourceUrl) URL.revokeObjectURL(sourceUrl);
+  }
 }
 function safeBlobUrl(value: string | null): string | null {
   if (!value) return null;
@@ -232,22 +289,14 @@ export function AiVisualizerStudio() {
 
   async function onRoomFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
+    event.target.value = "";
     if (!file) return;
-    const url = fileUrl(file);
-    if (!url) {
-      setError(tr("استخدم صورة JPG أو PNG أو WebP بحجم لا يزيد عن 12 ميجابايت.", "Use a JPG, PNG or WebP image no larger than 12 MB."));
-      return;
-    }
     setStage("validating");
     try {
-      const bitmap = await createImageBitmap(file);
-      if (bitmap.width < 256 || bitmap.height < 256 || bitmap.width * bitmap.height > 12_000_000) {
-        bitmap.close();
-        throw new Error(tr("أبعاد الصورة غير مناسبة. الحد من 256 بكسل وحتى 12 ميجابكسل.", "Image dimensions must be at least 256px and no more than 12 megapixels."));
-      }
-      setPhotoMeta({ width: bitmap.width, height: bitmap.height, megapixels: (bitmap.width * bitmap.height / 1_000_000).toFixed(1) });
-      bitmap.close();
-      setPhoto(file);
+      const prepared = await prepareUpload(file);
+      const url = URL.createObjectURL(prepared.file);
+      setPhotoMeta({ width: prepared.width, height: prepared.height, megapixels: (prepared.width * prepared.height / 1_000_000).toFixed(1) });
+      setPhoto(prepared.file);
       setPhotoUrl(url);
       setResult(null);
       setQuality(null);
@@ -256,25 +305,30 @@ export function AiVisualizerStudio() {
       setError("");
       setStage("idle");
     } catch (cause) {
-      URL.revokeObjectURL(url);
       setStage("failed");
-      setError(cause instanceof Error ? cause.message : tr("تعذر قراءة الصورة.", "The image could not be decoded."));
+      const code = cause instanceof Error ? cause.message : "";
+      setError(code === "invalid_dimensions"
+        ? tr("الصورة صغيرة جدًا أو أبعادها غير مناسبة. اختر صورة لا يقل كل بُعد فيها عن 256 بكسل.", "Choose an image at least 256px on each side.")
+        : code === "unsupported_format"
+          ? tr("اختر صورة JPG أو PNG أو WebP.", "Choose a JPG, PNG or WebP image.")
+          : tr("تعذر تجهيز الصورة. جرّب صورة أخرى.", "The image could not be prepared. Try another image."));
     }
   }
 
-  function onMaterialFile(event: ChangeEvent<HTMLInputElement>) {
+  async function onMaterialFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
+    event.target.value = "";
     if (!file) return;
-    const url = fileUrl(file);
-    if (!url) {
-      setError(tr("صورة الخامة يجب أن تكون JPG أو PNG أو WebP وأقل من 12 ميجابايت.", "The material reference must be JPG, PNG or WebP under 12 MB."));
-      return;
+    try {
+      const prepared = await prepareUpload(file);
+      setMaterial(prepared.file);
+      setMaterialUrl(URL.createObjectURL(prepared.file));
+      setResult(null);
+      setQuality(null);
+      setError("");
+    } catch {
+      setError(tr("تعذر تجهيز صورة الخامة. اختر صورة JPG أو PNG أو WebP بأبعاد لا تقل عن 256 بكسل.", "Choose a readable JPG, PNG or WebP reference at least 256px on each side."));
     }
-    setMaterial(file);
-    setMaterialUrl(url);
-    setResult(null);
-    setQuality(null);
-    setError("");
   }
 
   function chooseProduct(id: string) {
