@@ -109,6 +109,10 @@ function platformAiPollJob(array $u,string $id): array{
  $job=platformAiJob($u,$id);
  if(($job['state']??'')!=='processing')return $job;
  $settings=is_array($job['settings']??null)?$job['settings']:[];
+ if(($settings['edit_version']??null)===2){
+  require_once __DIR__.'/platform-ai-surfaces.php';
+  return platformAiSurfacePoll($u,$job);
+ }
  $providerId=$settings['_runpod_job_id']??null;
  if(!is_string($providerId)||!preg_match('/^[A-Za-z0-9_-]{8,128}$/D',$providerId)){
   if((int)($job['updated_at']??0)>0 && (int)$job['updated_at']<platformNow()-180000){
