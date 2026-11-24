@@ -58,7 +58,7 @@
   width:auto;height:auto;display:flex;flex-direction:column;
   padding:20px 24px;overflow:hidden;
   border:1px solid var(--idea-gold);border-radius:20px;
-  background:var(--idea-surface);
+  background:var(--idea-page-background);
   box-shadow:0 0 0 9000px rgba(0,0,0,.72),0 32px 80px rgba(0,0,0,.45);
 }
 .idea-room3d-material-catalog.is-expanded .idea-room3d-material-viewport{

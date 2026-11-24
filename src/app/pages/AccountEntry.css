@@ -1425,7 +1425,7 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 }
 .idea-auth-scene.idea-auth-scene--light .idea-wa-otp-select,
 .idea-auth-scene.idea-auth-scene--light .idea-wa-otp-input{
-  background:#ffffff;
+  background:var(--idea-page-background);
   border-color:rgba(20,32,24,.24);
   color:#141a16;
 }
