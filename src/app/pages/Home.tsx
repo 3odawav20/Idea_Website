@@ -10,6 +10,7 @@ import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
 import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
 import { localMaterialFace } from "../data/localMaterialFace";
+import { MaterialSphere } from "../components/MaterialSphere";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import "./Home.css";
@@ -68,9 +69,12 @@ export function Home() {
           const unit = isSurface ? "sqm" : "pieces";
           return <article className="idea-home-featured-card" key={product.id}>
             <Link className="idea-home-featured-photo" to={`/product/${product.slug}`} aria-label={product.name[locale]}>
-              <span className="idea-home-material-sphere" aria-hidden="true">
-                <img src={image} alt="" loading="lazy" decoding="async" />
-              </span>
+              <MaterialSphere
+                className="idea-home-material-sphere"
+                src={image}
+                alt=""
+                loading="lazy"
+              />
               <span className="sr-only">{product.name[locale]}</span>
             </Link>
             <div className="idea-home-featured-card-copy">

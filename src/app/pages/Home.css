@@ -307,3 +307,42 @@
   .idea-home-featured-actions a { gap:4px; font-size:9px; }
   .idea-home-featured-actions svg { width:13px; height:13px; }
 }
+
+
+/* Homepage material samples use the same shaded spherical render as the catalogue. */
+.idea-home-material-sphere.idea-material-sphere-render > img {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0;
+  width: 100% !important;
+  height: 100% !important;
+  opacity: 1;
+}
+.idea-home-material-sphere.idea-material-sphere-render > canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+.idea-home-material-sphere.idea-material-sphere-render[data-rendered="true"] > img { opacity: 0; }
+.idea-home-material-sphere.idea-material-sphere-render[data-rendered="true"] > canvas { opacity: 1; }
+.idea-home-material-sphere.idea-material-sphere-render {
+  transform-style: preserve-3d;
+  transition: transform .5s cubic-bezier(.2,.8,.2,1), filter .5s ease;
+}
+@media (hover:hover) and (pointer:fine) {
+  .idea-home-featured-photo:hover .idea-home-material-sphere {
+    transform: translate3d(0,-7px,15px) rotateX(2deg) rotateY(-2deg) scale(1.025);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .idea-home-material-sphere.idea-material-sphere-render,
+  .idea-home-material-sphere.idea-material-sphere-render > img,
+  .idea-home-material-sphere.idea-material-sphere-render > canvas {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}

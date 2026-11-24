@@ -1,0 +1,40 @@
+.idea-material-sphere-render {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 50%;
+  isolation: isolate;
+  transform-style: preserve-3d;
+}
+.idea-material-sphere-render > img {
+  position: absolute !important;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none;
+  border-radius: inherit;
+  object-fit: cover !important;
+  object-position: center;
+  opacity: 1;
+  transition: opacity .22s ease, transform .55s cubic-bezier(.2,.8,.2,1);
+}
+.idea-material-sphere-render > canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .22s ease;
+}
+.idea-material-sphere-render[data-rendered="true"] > img { opacity: 0; }
+.idea-material-sphere-render[data-rendered="true"] > canvas { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .idea-material-sphere-render > img,
+  .idea-material-sphere-render > canvas { transition: none !important; }
+}
