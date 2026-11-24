@@ -10,6 +10,7 @@ import { localMaterialFace } from "../data/localMaterialFace";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { Container, Section } from "../components/ui";
+import { MaterialOrb } from "../components/MaterialOrb";
 import "./MaterialCatalogue.css";
 
 const PAGE_SIZE = 36;
@@ -255,7 +256,7 @@ function MaterialCard({ product, locale, t, isFavorite, toggleFavorite, toggleCo
     <article className="idea-material-card">
       <div className="idea-material-card-media">
         <Link to={`/product/${product.slug}`} aria-label={`${product.name[locale]} — ${t("action.viewDetails")}`}>
-          <img src={image} alt={product.name[locale]} loading="lazy" decoding="async" />
+          <MaterialOrb src={image} alt={product.name[locale]} className="idea-material-catalogue-orb" />
         </Link>
         <div className="idea-material-card-actions">
           <button type="button" aria-label={t("action.favorite")} aria-pressed={favorite} onClick={() => toggleFavorite(product.id)}><Heart size={16} fill={favorite ? "currentColor" : "none"} /></button>
