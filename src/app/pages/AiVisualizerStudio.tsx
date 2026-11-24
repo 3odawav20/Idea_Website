@@ -562,8 +562,8 @@ export function AiVisualizerStudio() {
           <span><b>IDEA</b><small>{tr("محرك حماية المشهد", "IMMUTABLE SCENE ENGINE")}</small></span>
         </div>
         <div className="idea-studio-command-status">
-          <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : ""}`}>
-            <i /> {integration === "configuration_present_unverified" ? tr("Runpod جاهز للاختبار", "Runpod configuration unverified") : tr("حالة Runpod غير مؤكدة", "Runpod status unavailable")}
+          <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : integration === "worker_verified" ? "verified" : ""}`}>
+            <i /> {integration === "worker_verified" ? tr("تم التحقق من عامل Runpod", "Runpod worker verified") : integration === "configuration_present_unverified" ? tr("Runpod جاهز للاختبار", "Runpod configuration unverified") : tr("حالة Runpod غير مؤكدة", "Runpod status unavailable")}
           </span>
           <span className="idea-studio-quota">
             <ShieldCheck size={15} />
