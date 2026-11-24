@@ -1,7 +1,5 @@
 ---
-# cPanel Git Version Control for https://idea-dh.com
-# This deploys only to a private staging directory and NEVER overwrites production.
-# The live PHP/MySQL account platform must be checked separately before promotion.
+# IDEA: validated staging and explicitly approved frontend promotion.
 deployment:
   tasks:
-    - /bin/bash /home/lsenet5/repositories/Idea_Website/scripts/cpanel-stage-release.sh
+    - /bin/bash /home/lsenet5/repositories/Idea_Website/scripts/cpanel-safe-release.sh
