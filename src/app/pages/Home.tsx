@@ -71,8 +71,14 @@ export function Home() {
               <span className="sr-only">{product.name[locale]}</span>
             </Link>
             <div className="idea-home-featured-card-copy">
-              <span>{maker.verified ? maker.value : product.brand}</span>
-              <Link to={`/product/${product.slug}`}>{product.name[locale]}</Link>
+              <Link
+                className="idea-material-name-pill"
+                to={`/product/${product.slug}`}
+                title={product.name[locale]}
+              >
+                <span>{product.name[locale]}</span>
+              </Link>
+              <span className="idea-home-material-maker">{maker.verified ? maker.value : product.brand}</span>
             </div>
           </article>;
         })}</div>
