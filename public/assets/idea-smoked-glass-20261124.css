@@ -14,28 +14,45 @@ html[data-theme="dark"] {
   --idea-glass-rim: inset 0 1px 0 rgba(255, 255, 255, .13), inset 0 0 0 1px var(--idea-glass-edge);
   --idea-glass-depth: 0 5px 18px rgba(0, 0, 0, .25);
 }
-/* Full-width footer is a darker, distinct sheet, not another marble image. */
+/* Restore the original solid charcoal logo/navigation/copyright footer.
+   Keep the promo and all other site sections on the existing marble glass. */
 html[data-theme="dark"] .idea-editorial-footer {
-  background: rgba(5, 6, 8, .63) !important;
-  -webkit-backdrop-filter: blur(5px) !important;
-  backdrop-filter: blur(5px) !important;
-  border-top: 1px solid rgba(235, 238, 242, .25);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 -5px 18px rgba(0,0,0,.28);
+  background: transparent !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  border-top: 1px solid var(--idea-border);
+  box-shadow: none;
+  overflow: clip;
 }
-/* Keep promo photo untouched; distinguish the promo from the footer links. */
 html[data-theme="dark"] .idea-footer-promo {
   background: rgba(12, 13, 15, .20) !important;
   box-shadow: inset 0 -1px 0 var(--idea-glass-edge);
 }
+html[data-theme="dark"] .idea-footer-body {
+  position: relative;
+  isolation: isolate;
+  background: #191919;
+}
+html[data-theme="dark"] .idea-footer-body::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  inset-inline: -100vw;
+  background: #191919;
+  z-index: -1;
+  pointer-events: none;
+}
 html[data-theme="dark"] .idea-footer-bottom {
-  background-color: rgba(0, 0, 0, .26);
-  border-top: 1px solid var(--idea-glass-edge);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.045);
+  background: #191919 !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  border-top: 1px solid var(--idea-border);
+  box-shadow: none;
 }
 html[data-theme="dark"] .idea-footer-group a,
 html[data-theme="dark"] .idea-footer-brand > p,
 html[data-theme="dark"] .idea-footer-bottom,
-html[data-theme="dark"] .idea-footer-legal-bar a { color: rgba(255,255,255,.84); }
+html[data-theme="dark"] .idea-footer-legal-bar a { color: var(--idea-text-muted); }
 html[data-theme="dark"] :is(.idea-footer-group a,.idea-footer-legal-bar a):hover { color: var(--idea-gold); }
 
 /* Edges are inset so they remain visible without shifting any panel geometry. */
