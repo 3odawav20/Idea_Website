@@ -598,3 +598,83 @@
 @media(max-width:880px){.idea-material-hero-layout{grid-template-columns:1fr}.idea-material-hero-photo{aspect-ratio:1.4}.idea-material-hero-content h1{font-size:clamp(34px,7vw,55px)}}
 @media(max-width:540px){.idea-material-hero{padding:20px 0 34px}.idea-material-hero-photo{aspect-ratio:1;padding:12px}.idea-material-summary{grid-template-columns:1fr}.idea-product-catalogue-sheet .idea-technical-grid{grid-template-columns:1fr}.idea-material-hero-actions a,.idea-material-hero-actions button{width:100%}.idea-material-lightbox-stage img{max-width:94%;max-height:82%}}
 @media(prefers-reduced-motion:reduce){.idea-material-hero-photo img,.idea-material-lightbox-stage img{transition:none!important}}
+
+/* Product detail must inherit the storefront's selected day/night theme.
+   The material-first layout above intentionally keeps its light editorial palette;
+   these scoped overrides prevent that palette from leaking into the dark storefront. */
+html[data-theme="light"] .idea-catalogue-detail {
+  color-scheme: light;
+}
+html[data-theme="dark"] .idea-catalogue-detail {
+  color-scheme: dark;
+}
+html[data-theme="dark"] .idea-material-hero {
+  background: var(--idea-surface);
+  color: var(--idea-text);
+  border-bottom: 1px solid var(--idea-border-neutral);
+}
+html[data-theme="dark"] .idea-material-hero-photo {
+  background: var(--idea-bg-2);
+  border-color: var(--idea-border-neutral);
+}
+html[data-theme="dark"] .idea-material-face-selector button {
+  background: var(--idea-surface-2);
+  border-color: var(--idea-border-neutral);
+}
+html[data-theme="dark"] .idea-material-face-selector button.active {
+  border-color: var(--idea-gold-bright);
+}
+html[data-theme="dark"] .idea-material-image-note,
+html[data-theme="dark"] .idea-material-brand,
+html[data-theme="dark"] .idea-material-hero-content > p,
+html[data-theme="dark"] .idea-material-hero-content > small {
+  color: var(--idea-text-muted);
+}
+html[data-theme="dark"] .idea-material-overline {
+  color: var(--idea-gold-bright);
+}
+html[data-theme="dark"] .idea-material-hero-content h1 {
+  color: var(--idea-text);
+}
+html[data-theme="dark"] .idea-material-summary {
+  border-top-color: var(--idea-border-neutral);
+}
+html[data-theme="dark"] .idea-material-summary > div {
+  border-bottom-color: var(--idea-border-neutral);
+}
+html[data-theme="dark"] .idea-material-summary dt {
+  color: var(--idea-text-faint);
+}
+html[data-theme="dark"] .idea-material-summary dd {
+  color: var(--idea-text);
+}
+html[data-theme="dark"] .idea-material-hero-actions a {
+  color: var(--idea-on-gold);
+  background: var(--idea-gold);
+  border-color: var(--idea-gold);
+}
+html[data-theme="dark"] .idea-material-hero-actions button {
+  color: var(--idea-text);
+  background: rgba(255,255,255,.025);
+  border-color: var(--idea-border);
+}
+html[data-theme="dark"] .idea-material-hero-actions a:hover,
+html[data-theme="dark"] .idea-material-hero-actions button:hover {
+  filter: brightness(1.12);
+}
+html[data-theme="dark"] .idea-material-hero .idea-admin-price {
+  color: var(--idea-text);
+  background: var(--idea-bg-2);
+  border-color: var(--idea-gold);
+}
+html[data-theme="dark"] .idea-material-hero .idea-admin-price span {
+  color: var(--idea-text-muted);
+}
+html[data-theme="dark"] .idea-product-catalogue-sheet .idea-technical-panel {
+  color: var(--idea-text);
+  background: var(--idea-surface);
+  border-color: var(--idea-border-neutral);
+}
+html[data-theme="dark"] .idea-product-catalogue-sheet .idea-technical-grid > div {
+  border-bottom-color: var(--idea-border-neutral);
+}
