@@ -165,3 +165,80 @@
   .idea-home-featured-card-copy a { font-size:13px; }
 }
 @media (prefers-reduced-motion:reduce) { .idea-home-featured-photo img { transition:none; } }
+
+
+/* Floating catalogue orbs on the homepage — no tile, card, or plate behind each sphere. */
+.idea-home-material-orbs { padding-block: clamp(44px, 6vw, 76px); }
+.idea-home-material-orbs-heading { margin: 0 auto clamp(28px, 4vw, 44px); text-align: center; }
+.idea-home-material-orbs-heading .idea-home-kicker { margin-bottom: 12px; }
+.idea-home-material-orbs-heading .idea-home-centered-title { margin-bottom: 10px; }
+.idea-home-material-orbs-subtitle {
+  max-width: 680px;
+  margin: 0 auto;
+  color: var(--idea-text-muted);
+  font-size: 15px;
+  line-height: 1.75;
+  text-wrap: balance;
+}
+.idea-home-material-orbs-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: start;
+  gap: clamp(16px, 3vw, 36px);
+  max-width: 1120px;
+  margin: 0 auto;
+}
+.idea-home-material-orb-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--idea-text);
+  text-align: center;
+  text-decoration: none;
+}
+.idea-home-material-orb-card .idea-home-material-orb {
+  width: min(100%, 164px);
+  transition: transform .35s cubic-bezier(.22, 1, .36, 1), filter .35s ease;
+}
+.idea-home-material-orb-card:hover .idea-home-material-orb {
+  transform: translateY(-5px) scale(1.025);
+  filter: drop-shadow(0 18px 26px rgba(0, 0, 0, .25));
+}
+[data-theme="dark"] .idea-home-material-orb-card:hover .idea-home-material-orb {
+  filter: drop-shadow(0 19px 28px rgba(0, 0, 0, .68)) drop-shadow(0 0 12px rgba(255, 255, 255, .09));
+}
+.idea-home-material-orb-card > span:not(.idea-material-orb) {
+  max-width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.45;
+  text-wrap: balance;
+}
+.idea-home-material-orb-card > small {
+  max-width: 100%;
+  color: var(--idea-text-muted);
+  font-size: 11px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.idea-home-material-orb-card:focus-visible {
+  outline: 2px solid var(--idea-gold);
+  outline-offset: 6px;
+  border-radius: 8px;
+}
+@media (max-width: 900px) {
+  .idea-home-material-orbs-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 20px; }
+  .idea-home-material-orb-card .idea-home-material-orb { width: min(100%, 156px); }
+}
+@media (max-width: 560px) {
+  .idea-home-material-orbs { padding-block: 42px; }
+  .idea-home-material-orbs-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 16px; }
+  .idea-home-material-orbs-subtitle { font-size: 13px; }
+  .idea-home-material-orb-card .idea-home-material-orb { width: min(100%, 148px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .idea-home-material-orb-card .idea-home-material-orb { transition: none; }
+  .idea-home-material-orb-card:hover .idea-home-material-orb { transform: none; }
+}
