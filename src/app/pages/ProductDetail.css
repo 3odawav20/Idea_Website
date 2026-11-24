@@ -558,14 +558,14 @@
 
 
 /* IDEA MATERIAL-FIRST PRODUCT DETAIL — manufacturer face photography, not room renders */
-.idea-material-hero{background:var(--idea-page-background);color:#242424;border-bottom:1px solid #e2dfd7;padding:clamp(28px,4vw,72px) 0}
+.idea-material-hero{background:#faf9f6;color:#242424;border-bottom:1px solid #e2dfd7;padding:clamp(28px,4vw,72px) 0}
 .idea-material-hero-layout{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(310px,.94fr);gap:clamp(25px,5vw,88px);align-items:start}
 .idea-material-hero-media,.idea-material-hero-content{min-width:0}
-.idea-material-hero-photo{display:block;position:relative;width:100%;aspect-ratio:1.04;border:1px solid #e6e1d9;padding:clamp(14px,2.4vw,38px);background:var(--idea-page-background);cursor:zoom-in;overflow:hidden}
+.idea-material-hero-photo{display:block;position:relative;width:100%;aspect-ratio:1.04;border:1px solid #e6e1d9;padding:clamp(14px,2.4vw,38px);background:#fff;cursor:zoom-in;overflow:hidden}
 .idea-material-hero-photo img{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
 .idea-material-zoom-hint{position:absolute;right:18px;bottom:18px;display:flex;align-items:center;gap:8px;padding:9px 13px;background:rgba(20,23,22,.9);color:#fff;font-size:12px}
 .idea-material-face-selector{display:flex;gap:10px;overflow-x:auto;padding:14px 0 4px}
-.idea-material-face-selector button{flex:0 0 clamp(64px,7vw,92px);height:86px;background:var(--idea-page-background);border:1px solid #d8d6d0;padding:5px;cursor:pointer}
+.idea-material-face-selector button{flex:0 0 clamp(64px,7vw,92px);height:86px;background:#fff;border:1px solid #d8d6d0;padding:5px;cursor:pointer}
 .idea-material-face-selector button.active{border:2px solid #ae8245}
 .idea-material-face-selector img{display:block;width:100%;height:100%;object-fit:contain}
 .idea-material-image-note{font-size:11px;color:#666b68;line-height:1.6;margin:9px 0 0}
