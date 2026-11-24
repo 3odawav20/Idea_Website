@@ -46,3 +46,16 @@ test("server PHP stays outside the static Vite public directory", () => {
   assert.equal(existsSync("public/api/visualize.php"), false);
   assert.equal(existsSync("server/cpanel/api/visualize.php"), true);
 });
+
+test("oversized mobile images are normalized before upload without cropping or relaxing PHP limits", () => {
+  assert.match(page, /Math\.sqrt\(MAX_PIXELS \/ \(w \* h\)\)/);
+  assert.match(page, /Math\.floor\(w \* scale\)/);
+  assert.match(page, /Math\.floor\(h \* scale\)/);
+  assert.match(page, /ctx\.drawImage\(image, 0, 0, width, height\)/);
+  assert.match(page, /blob\.size <= MAX_BYTES/);
+  assert.equal((page.match(/await prepareUpload\(file\)/g) || []).length, 2);
+  assert.match(page, /setPhoto\(prepared\.file\)/);
+  assert.match(page, /setMaterial\(prepared\.file\)/);
+  assert.match(server, /MAX_PIXELS = 12000000/);
+  assert.match(server, /MAX_IMAGE_BYTES = 12 \* 1024 \* 1024/);
+});
