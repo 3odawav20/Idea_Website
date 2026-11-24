@@ -5,7 +5,7 @@
   color:var(--icc-text);font-family:var(--idea-font-body),sans-serif;
 }
 [data-theme="light"] .icc-root,[data-theme="light"] .icc-apply{
-  --icc-bg:#fff;--icc-panel:#fff;--icc-panel2:#f6f6f6;
+  --icc-bg:var(--idea-page-background);--icc-panel:var(--idea-page-background);--icc-panel2:#f6f6f6;
   --icc-border:rgba(24,24,24,.13);--icc-text:#202020;--icc-muted:#606060;
   --icc-accent:#885b2d;--icc-danger:#ae3e3e
 }

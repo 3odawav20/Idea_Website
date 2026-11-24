@@ -1,5 +1,5 @@
 /* IDEA editorial contact experience – scoped, responsive, theme-aware. */
-.idea-contact-page{background:var(--idea-bg);color:var(--idea-text);overflow:hidden}
+.idea-contact-page{background:var(--idea-page-background);color:var(--idea-text);overflow:hidden}
 .idea-contact-hero{position:relative;min-height:clamp(660px,77vh,880px);isolation:isolate;display:flex;align-items:center;overflow:hidden;background:#27211c;color:#fff}
 .idea-contact-hero-image{position:absolute;inset:0;z-index:-2;background-image:url('/images/auth/customer-day.webp');background-position:center;background-size:cover;transform:scale(1.012)}
 [data-theme="dark"] .idea-contact-hero-image{background-image:url('/images/auth/customer-night.webp')}

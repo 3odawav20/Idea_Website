@@ -1,5 +1,5 @@
 .idea-catalogue-detail {
-  background: var(--idea-bg);
+  background: var(--idea-page-background);
   color: var(--idea-text);
 }
 
@@ -117,7 +117,7 @@
   top: 0;
   z-index: 20;
   border-bottom: var(--idea-hairline);
-  background: color-mix(in srgb, var(--idea-surface) 92%, transparent);
+  background: var(--idea-page-background);
   backdrop-filter: blur(16px);
 }
 
@@ -341,7 +341,7 @@
 .idea-product-formats-section {
   padding-block: var(--idea-space-8);
   border-top: var(--idea-hairline);
-  background: var(--idea-bg);
+  background: var(--idea-page-background);
 }
 
 .idea-product-gallery-stage {
@@ -349,7 +349,7 @@
   aspect-ratio: 16 / 9;
   margin-inline: auto;
   overflow: hidden;
-  background: var(--idea-surface);
+  background: var(--idea-page-background);
   box-shadow: var(--idea-shadow-sm);
 }
 

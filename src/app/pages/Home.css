@@ -1,4 +1,4 @@
-.idea-home-editorial { background:var(--idea-bg); color:var(--idea-text); }
+.idea-home-editorial { background:var(--idea-page-background); color:var(--idea-text); }
 .idea-home-section { width:min(1280px, calc(100% - 64px)); margin:0 auto; padding:72px 0; }
 .idea-home-kicker { text-align:center; text-transform:uppercase; letter-spacing:.16em; font-size:12px; font-weight:600; margin:0 0 48px; color:var(--idea-text-muted); }
 .idea-home-story { display:grid; grid-template-columns:1.3fr 1fr; align-items:center; gap:clamp(32px,6vw,100px); margin-bottom:80px; }

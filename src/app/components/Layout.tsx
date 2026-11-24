@@ -21,7 +21,7 @@ export function Layout() {
   }, [pathname, navigationType, reduce]);
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--idea-bg)" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--idea-page-background)" }}>
       {/* Reading progress — thin gold sweep pinned to the very top */}
       <motion.div
         aria-hidden

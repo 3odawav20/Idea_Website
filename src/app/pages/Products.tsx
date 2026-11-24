@@ -146,7 +146,7 @@ export function Products({ fixedCollection }: { fixedCollection?: CollectionSlug
           <button onClick={() => setMobileOpen(true)}
             style={{
               display: "inline-flex", alignItems: "center", gap: 8, padding: "10px 18px",
-              background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)",
+              background: "var(--idea-page-background)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-full)",
               color: "var(--idea-text)", cursor: "pointer", fontFamily: "var(--idea-font-body)", fontSize: "var(--idea-text-sm)",
             }}>
             <SlidersHorizontal size={16} color="var(--idea-gold)" />

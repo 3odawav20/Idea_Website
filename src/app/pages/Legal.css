@@ -7,7 +7,7 @@
 .idea-legal-page {
   padding: clamp(44px, 6vw, 76px) 0 clamp(68px, 8vw, 108px);
   color: var(--idea-text);
-  background: var(--idea-bg);
+  background: var(--idea-page-background);
 }
 
 .idea-legal-container {

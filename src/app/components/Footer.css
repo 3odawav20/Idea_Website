@@ -1,5 +1,5 @@
 /* Premium architectural footer. IDEA's own logo and app routes are preserved. */
-.idea-editorial-footer{background:var(--idea-bg-2);color:var(--idea-text);margin-top:0;border-top:1px solid var(--idea-border)}
+.idea-editorial-footer{background:var(--idea-page-background);color:var(--idea-text);margin-top:0;border-top:1px solid var(--idea-border)}
 .idea-footer-promo{max-width:100%;display:grid;grid-template-columns:1fr 1fr;min-height:460px;overflow:hidden;background:#201e1c;color:#fff}
 .idea-footer-promo-copy{padding:clamp(48px,6vw,95px) max(32px,calc((100vw - 1260px)/2));padding-inline-end:40px;align-self:center}
 .idea-footer-kicker{display:inline-flex;gap:12px;align-items:center;color:#ffb380;font-size:11px;letter-spacing:.16em;font-weight:650}

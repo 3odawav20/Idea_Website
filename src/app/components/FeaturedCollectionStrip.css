@@ -1,8 +1,8 @@
-.idea-featured { padding:64px 0; background:var(--idea-bg-2); color:var(--idea-text); overflow:hidden; }
+.idea-featured { padding:64px 0; background:var(--idea-page-background); color:var(--idea-text); overflow:hidden; }
 .idea-featured-heading { position:relative; max-width:1280px; margin:0 auto 34px; padding:0 32px; text-align:center; }
 .idea-featured-heading h2 { margin:0 0 16px; font-family:var(--idea-font-body); font-size:clamp(28px,2.8vw,40px); font-weight:600; line-height:1.2; letter-spacing:-.025em; }
 .idea-featured-heading p { margin:0; font-size:15px; line-height:1.6; color:var(--idea-text-muted); }
-.idea-featured-play { display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; margin-top:16px; border:var(--idea-hairline); border-radius:50%; background:var(--idea-surface); color:var(--idea-text); cursor:pointer; }
+.idea-featured-play { display:inline-flex; align-items:center; justify-content:center; width:36px; height:36px; margin-top:16px; border:var(--idea-hairline); border-radius:50%; background:var(--idea-page-background); color:var(--idea-text); cursor:pointer; }
 .idea-featured-stage { position:relative; width:min(1280px,calc(100% - 64px)); margin-inline:auto; }
 .idea-featured-rail { display:flex; gap:24px; overflow-x:auto; overscroll-behavior-x:contain; scroll-snap-type:x mandatory; scrollbar-width:none; padding:0; scroll-padding-inline:0; -webkit-overflow-scrolling:touch; }
 .idea-featured-rail::-webkit-scrollbar { display:none; }

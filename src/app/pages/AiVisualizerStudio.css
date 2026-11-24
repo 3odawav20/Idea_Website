@@ -139,18 +139,16 @@
 /* Neutral theme: real #fff in daylight, charcoal/graphite at night.
    Material photos remain unfiltered; this only changes UI chrome. */
 [data-theme="dark"] .idea-studio{
-  --studio-bg:#0c0c0c;--studio-panel:#191919;--studio-panel-2:#242424;
+  --studio-bg:var(--idea-page-background);--studio-panel:#191919;--studio-panel-2:#242424;
   --studio-line:rgba(255,255,255,.14);--studio-ivory:#f2f2f2;--studio-muted:#b8b8b8;
   color-scheme:dark;
 }
-[data-theme="dark"] .idea-studio-commandbar{background:rgba(12,12,12,.95)}
-[data-theme="dark"] .idea-studio-intro{
-  background:radial-gradient(circle at 82% 28%,rgba(217,170,108,.11),transparent 30%),
-             linear-gradient(115deg,#101010,#1d1d1d 54%,#101010);
-}
-[data-theme="dark"] .idea-studio-canvas{background:#111}
-[data-theme="dark"] .idea-studio-stage{background:radial-gradient(circle at center,#292929,#0b0b0b 73%)}
-[data-theme="dark"] .idea-studio-library{background:linear-gradient(135deg,#212121,#111)}
+[data-theme="dark"] .idea-studio-commandbar,
+[data-theme="dark"] .idea-studio-intro,
+[data-theme="dark"] .idea-studio-canvas,
+[data-theme="dark"] .idea-studio-stage,
+[data-theme="dark"] .idea-studio-library,
+[data-theme="dark"] .idea-studio-product-image{background:var(--idea-page-background)}
 [data-theme="dark"] .idea-studio .idea-studio-library{color-scheme:dark}
 
 [data-theme="light"] .idea-studio{
