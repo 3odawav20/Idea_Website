@@ -59,7 +59,7 @@ export function Home() {
               const image = localMaterialFace(product.id) || product.source?.original?.tiles?.[0] || product.image;
               return (
                 <Link key={product.id} className="idea-home-material-orb-card" to={`/product/${product.slug}`}>
-                  <MaterialOrb src={image} alt={product.name[locale]} className="idea-home-material-orb" />
+                  <MaterialOrb src={image} alt={product.name[locale]} className="idea-home-material-orb" loading="eager" />
                   <span>{product.name[locale]}</span>
                   <small>{product.brand}</small>
                 </Link>
