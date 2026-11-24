@@ -29,7 +29,6 @@ function accountQuery(string $sql, array $params = []): object {
     };
 }
 function platformFeatures(): array { return ['payments' => ['configured' => false]]; }
-function platformNow(): int { return 2000000000; }
 
 require_once __DIR__ . '/../server/cpanel/idea-accounts-api/platform-ai.php';
 
