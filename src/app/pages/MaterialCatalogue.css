@@ -112,3 +112,35 @@
 @media(max-width:850px){.idea-material-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.idea-material-filter-row{margin-inline:-4px;padding-inline:4px}.idea-material-card-actions{opacity:1}}
 @media(max-width:560px){.idea-material-title-row h1{font-size:32px}.idea-material-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 12px}.idea-material-card-media{aspect-ratio:1.04}.idea-material-card-media img{width:76%}.idea-material-search input{max-width:none}.idea-material-filter-label{display:none}.idea-material-tabs{gap:20px}.idea-material-card-actions{inset-block-start:7px;inset-inline-end:7px}.idea-material-card-actions button{width:30px;height:30px}}
 @media(prefers-reduced-motion:reduce){.idea-material-card-media img,.idea-material-facet summary svg,.idea-material-card-actions{transition:none}}
+
+
+/* Floating material orbs: the square media tile is intentionally transparent. */
+.idea-material-card-media {
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.idea-material-card-media > a {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.idea-material-card-media .idea-material-catalogue-orb {
+  width: min(78%, 220px);
+  max-width: 100%;
+}
+.idea-material-card-media .idea-material-catalogue-orb > img {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+  border: 0;
+  object-fit: cover;
+}
+@media (max-width: 560px) {
+  .idea-material-card-media .idea-material-catalogue-orb { width: 76%; }
+}
