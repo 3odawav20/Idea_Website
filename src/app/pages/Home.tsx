@@ -9,6 +9,8 @@ import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { ProductCard } from "../components/ProductCard";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
+import { localMaterialFace } from "../data/localMaterialFace";
+import { MaterialOrb } from "../components/MaterialOrb";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import "./Home.css";
@@ -29,6 +31,9 @@ export function Home() {
   const { products } = useStore();
   // Public home cards show one design per source maker, never repetitive variants.
   const featuredProducts = distinctStorefrontProducts(products).slice(0, 4);
+  const featuredMaterials = distinctStorefrontProducts(products)
+    .filter((product) => ["ceramics", "porcelain", "marble"].includes(product.collection))
+    .slice(0, 6);
   const destinations = useCollectionDestinations();
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   return (
@@ -42,6 +47,30 @@ export function Home() {
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={22}/><span>{item.title}<small>{item.sub}</small></span></Link>)}</div>
       <div className="idea-home-finder-scene"><HeroSearchPanel /></div>
       <FeaturedCollectionStrip />
+      {featuredMaterials.length > 0 && (
+        <section className="idea-home-section idea-home-material-orbs" aria-label={text("Featured material finishes", "خامات وتشطيبات مميزة", "Finitions à découvrir")}>
+          <header className="idea-home-material-orbs-heading">
+            <p className="idea-home-kicker">{text("REAL MATERIALS · REAL FINISHES", "خامات حقيقية · تشطيبات فعلية", "MATIÈRES RÉELLES · FINITIONS AUTHENTIQUES")}</p>
+            <h2 className="idea-home-centered-title">{text("Explore materials in a new dimension", "اكتشف الخامات بشكل جديد", "Explorez les matières autrement")}</h2>
+            <p className="idea-home-material-orbs-subtitle">{text("A closer look at selected surfaces from the IDEA catalogue.", "شوف تفاصيل مختارة من خامات كتالوج IDEA عن قرب.", "Découvrez de près une sélection de surfaces du catalogue IDEA.")}</p>
+          </header>
+          <div className="idea-home-material-orbs-grid">
+            {featuredMaterials.map((product) => {
+              const image = localMaterialFace(product.id) || product.source?.original?.tiles?.[0] || product.image;
+              return (
+                <Link key={product.id} className="idea-home-material-orb-card" to={`/product/${product.slug}`}>
+                  <MaterialOrb src={image} alt={product.name[locale]} className="idea-home-material-orb" />
+                  <span>{product.name[locale]}</span>
+                  <small>{product.brand}</small>
+                </Link>
+              );
+            })}
+          </div>
+          <div className="idea-home-center">
+            <Link className="idea-home-text-link" to="/products">{text("Explore all materials", "اكتشف كل الخامات", "Explorer toutes les matières")} <ArrowRight size={16} /></Link>
+          </div>
+        </section>
+      )}
       <SponsoredCollectionCards />
       <section className="idea-home-section">
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
