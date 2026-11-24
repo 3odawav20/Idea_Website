@@ -25,9 +25,9 @@ test("Localized controls and headings can reflow without text overflow", () => {
   assert.match(styles, /max-width: 100%/);
 });
 
-test("The hero remains the owner's genuine video directly below the compact header", () => {
-  assert.match(header, /\.idea-reference-header--home\{margin-bottom:0\}/);
-  assert.match(header, /--idea-header-height:52px/);
+test("The hero remains the owner's genuine video behind the compact overlay header", () => {
+  assert.match(header, /\.idea-reference-header--overlay\s*\{\s*margin-bottom:\s*calc\(-1 \* var\(--idea-header-height\)\)/);
+  assert.match(header, /--idea-header-height:\s*52px/);
   assert.match(film, /idea-owner-20261112\.mp4/);
   assert.match(film, /idea-owner-20261112-mobile\.mp4/);
   assert.match(film, /autoPlay/);

@@ -14,7 +14,7 @@ test('all 6 official brand SVG icons exist without text fallback placeholders', 
     'WhatsAppBrandIcon',
     'FacebookBrandIcon',
     'AppleBrandIcon',
-    'TwitterXBrandIcon',
+    'XBrandIcon',
   ]) {
     assert.ok(icons.includes(`export function ${fn}`), `SocialAuthIcons must export ${fn}`);
   }
@@ -30,7 +30,12 @@ test('AccountEntry uses live PHP/MySQL accounts API and server-verified SocialAu
   const entry = read('src/app/pages/AccountEntry.tsx');
   assert.match(entry, /authenticatePhp/);
   assert.match(entry, /uploadBusinessDocument/);
-  assert.match(entry, /<SocialAuth variant="glass"/);
+  assert.match(entry, /\{isCustomer&&<SocialAuth mode=\{isRegister\?"register":"login"\} redirectTo="\/account"\/>/);
+  assert.match(entry, /await authenticatePhp\(isRegister\?"register":"login",payload\)/);
+  assert.match(entry, /await uploadBusinessDocument\(file, "commercial_registration"\)/);
+  assert.match(entry, /const verifiedSession=await refresh\(\)/);
+  assert.match(entry, /verifiedSession\.role!==expectedRole/);
+  assert.doesNotMatch(entry, /VITE_IDEA_ACCOUNT_API/);
   assert.doesNotMatch(entry, /idea-apple-mark|idea-google-mark/);
 });
 
