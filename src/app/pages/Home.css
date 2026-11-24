@@ -141,9 +141,12 @@
 .idea-home-surface-filters a.is-active:after { position:absolute; inset-inline:0; bottom:-1px; height:2px; background:var(--idea-gold); content:""; }
 .idea-home-featured-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:26px 20px; }
 .idea-home-featured-card { min-width:0; }
-.idea-home-featured-photo { display:block; aspect-ratio:1.06; overflow:hidden; background:var(--idea-surface-2); }
-.idea-home-featured-photo img { display:block; width:100%; height:100%; object-fit:cover; transition:transform .55s ease; }
-.idea-home-featured-photo:hover img { transform:scale(1.035); }
+.idea-home-featured-photo { position:relative; display:grid; place-items:center; aspect-ratio:1.06; overflow:hidden; isolation:isolate; background:radial-gradient(ellipse at 50% 42%, color-mix(in srgb, var(--idea-surface-2) 42%, transparent), transparent 68%); }
+.idea-home-material-sphere { position:relative; z-index:1; display:block; width:76%; aspect-ratio:1; border-radius:50%; background:var(--idea-surface-2); box-shadow:inset -20px -22px 30px rgba(17,20,24,.38), inset 9px 9px 18px rgba(255,255,255,.22), 0 12px 20px rgba(13,16,20,.2); }
+.idea-home-material-sphere::after { position:absolute; inset:0; border-radius:inherit; background:radial-gradient(ellipse at 29% 20%, rgba(255,255,255,.36), transparent 34%), radial-gradient(ellipse at 72% 78%, transparent 20%, rgba(8,12,18,.22) 63%, rgba(8,12,18,.52) 100%); content:""; pointer-events:none; }
+.idea-home-material-sphere img { display:block; width:100%; height:100%; border-radius:inherit; object-fit:cover; transition:transform .55s ease; }
+.idea-home-featured-photo::after { position:absolute; z-index:0; bottom:10%; left:50%; width:58%; height:9%; border-radius:50%; background:rgba(11,14,19,.32); content:""; filter:blur(14px); transform:translateX(-50%); }
+.idea-home-featured-photo:hover .idea-home-material-sphere img { transform:scale(1.035); }
 .idea-home-featured-card-copy { display:grid; gap:7px; padding:13px 1px 0; }
 .idea-home-featured-card-copy span { color:var(--idea-text-muted); font-size:10px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; }
 .idea-home-featured-card-copy a { color:var(--idea-text); font-size:14px; line-height:1.45; text-decoration:none; }
@@ -164,4 +167,4 @@
   .idea-home-featured-card-copy { padding-top:10px; }
   .idea-home-featured-card-copy a { font-size:13px; }
 }
-@media (prefers-reduced-motion:reduce) { .idea-home-featured-photo img { transition:none; } }
+@media (prefers-reduced-motion:reduce) { .idea-home-material-sphere img { transition:none; } }
