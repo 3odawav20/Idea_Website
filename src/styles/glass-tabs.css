@@ -9,19 +9,20 @@
 
 :root,
 [data-theme="light"] {
-  --idea-gt-blur: 20px;
-  --idea-gt-tray-blur: 24px;
-  --idea-gt-input-blur: 18px;
+  --idea-gt-blur: 11px;
+  --idea-gt-tray-blur: 14px;
+  --idea-gt-input-blur: 10px;
 
-  /* Light glass uses a quiet warm edge so every tab remains visible on marble. */
-  --idea-gt-tray-bg: rgba(255, 255, 255, 0.32);
+  /* Clear, gently lifted glass keeps the tile texture visible beneath each tab. */
+  --idea-gt-tray-bg: rgba(255, 255, 255, 0.19);
   --idea-gt-tray-shadow:
-    0 12px 32px rgba(18, 24, 32, 0.11),
-    0 2px 8px rgba(18, 24, 32, 0.06),
-    inset 0 0 0 1px rgba(78, 62, 43, 0.12);
+    0 14px 34px rgba(36, 32, 27, 0.14),
+    0 3px 9px rgba(36, 32, 27, 0.08),
+    inset 0 0 0 1px rgba(255,  255, 255, 0.42);
 
-  --idea-gt-bg: rgba(255, 255, 255, 0.30);
-  --idea-gt-bg-hover: rgba(255, 255, 255, 0.60);
+  --idea-gt-bg: rgba(255, 255, 255, 0.16);
+  --idea-gt-bg-hover: rgba(255, 255, 255, 0.34);
+  --idea-gt-tab-border-color: rgba(78, 62, 43, 0.22);
   --idea-gt-bg-active: linear-gradient(
     136deg,
     rgba(253, 118, 28, 0.25) 0%,
@@ -77,6 +78,7 @@
 }
 
 [data-theme="dark"] {
+  --idea-gt-tab-border-color: rgba(255, 255, 255, 0.18);
   --idea-gt-tray-bg: rgba(255, 255, 255, 0.035);
   --idea-gt-tray-shadow:
     0 14px 36px rgba(0, 0, 0, 0.32),
@@ -388,7 +390,7 @@
   isolation: isolate;
   overflow: hidden;
   background: var(--idea-gt-bg);
-  border: 0;
+  border: 1px solid var(--idea-gt-tab-border-color);
   color: var(--idea-gt-text);
   box-shadow: var(--idea-gt-tab-shadow, none);
   -webkit-backdrop-filter: blur(var(--idea-gt-blur)) saturate(1.55);

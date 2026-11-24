@@ -519,7 +519,39 @@ html[lang] :where(h1, h2, h3, h4) {
   }
 }
 
-/* Global dark-mode marble wallpaper, one continuous slab. Light mode is unchanged. */
+/* Daytime tile wallpaper: a single continuous ceramic surface behind the site. */
+html[data-theme='light'] {
+  background-color: #eceae6;
+  background-image: url('/images/backgrounds/idea-day-tile-wallpaper.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+html[data-theme='light'] body,
+html[data-theme='light'] #root > div,
+html[data-theme='light'] .idea-home-editorial,
+html[data-theme='light'] .idea-catalogue-detail,
+html[data-theme='light'] .idea-studio,
+html[data-theme='light'] .idea-room3d,
+html[data-theme='light'] .ids-root,
+html[data-theme='light'] .idea-contact-page {
+  background-color: transparent !important;
+}
+@media (max-width: 768px) {
+  html[data-theme='light'] { background-image: none; background-attachment: scroll; }
+  html[data-theme='light']::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: #eceae6 url('/images/backgrounds/idea-day-tile-wallpaper.png') center / cover no-repeat;
+  }
+  html[data-theme='light'] body { position: relative; z-index: 1; min-height: 100vh; }
+}
+
+/* Global dark-mode marble wallpaper, one continuous slab. */
 html[data-theme='dark'] {
   background-color: #101010;
   background-image: url('/images/backgrounds/idea-dark-marble-13473200.jpg');
