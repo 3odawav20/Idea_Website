@@ -21,17 +21,24 @@ cd "$REPO"
 [[ -z $(git status --porcelain) ]] || fail 'Repository has local changes; preserve and review them first.'
 SHA=$(git rev-parse HEAD)
 printf 'IDEA_SOURCE_SHA=%s\n' "$SHA"
-[[ -x "$NODE22/node" && -x "$NODE22/npm" ]] || fail 'Node.js 22 runtime is not available at the expected path.'
+[[ -x "$NODE22/node" && -x "$NODE22/corepack" ]] || fail 'Node.js 22 runtime is not available at the expected path.'
 export PATH="$NODE22:$PATH"
 [[ $(node -p 'process.versions.node.split(".")[0]') == 22 ]] || fail 'Node.js 22 is required.'
-for bin in npm php python3 curl rsync; do command -v "$bin" >/dev/null || fail "$bin is missing."; done
-npm ci --no-audit --no-fund
+for bin in corepack php python3 curl rsync; do command -v "$bin" >/dev/null || fail "$bin is missing."; done
+# Build outside the checkout so generated files cannot block later git updates.
+BUILD_DIR=$(mktemp -d "$ROOT/build_${SHA:0:12}_XXXXXXXX")
+git archive "$SHA" | tar -x -C "$BUILD_DIR"
+cd "$BUILD_DIR"
+export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+corepack pnpm@10.34.9 install --frozen-lockfile --reporter=append-only
+corepack pnpm@10.34.9 exec tsc --noEmit
+corepack pnpm@10.34.9 exec tsx --test tests/*.test.ts src/app/backend/authValidation.test.ts
 node --test tests/*.test.mjs
 php tests/ai-role-policy.test.php
 php tests/tile-physical-size.test.php
 php tests/ai-mask-preservation.test.php
 for f in server/cpanel/api/visualize.php server/cpanel/api/social-auth.php server/cpanel/api/ask-idea.php server/cpanel/api/marketplace.php server/cpanel/api/tile-dimensions.php server/cpanel/idea-accounts-api/platform-ai.php; do php -l "$f"; done
-npm run build:cpanel
+corepack pnpm@10.34.9 run build:cpanel
 [[ -s dist/index.html && -d dist/assets && -s dist/api/visualize.php && -f dist/.htaccess ]] || fail 'Incomplete cPanel bundle.'
 RELEASE=$(mktemp -d "$ROOT/release_${SHA:0:12}_XXXXXXXX")
 cp -a dist/. "$RELEASE/"
