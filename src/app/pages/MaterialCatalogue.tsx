@@ -498,6 +498,7 @@ export function MaterialCatalogue() {
                   </div>
                   <a
                     className="idea-material-featured-cta"
+                    aria-label={`${copy.cta} (${products.length.toLocaleString(locale)})`}
                     href="#idea-material-catalogue-grid"
                     onClick={(event) => {
                       const target = document.getElementById("idea-material-catalogue-grid");
