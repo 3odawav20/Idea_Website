@@ -49,7 +49,9 @@ test("catalogue follows the reference layout and places finish, brand, name, siz
   assert.ok(catalogue.includes("idea-material-main-layout"));
   assert.ok(catalogue.includes("idea-material-catalogue-intro"));
   assert.ok(catalogue.includes("idea-material-search-field"));
-  assert.ok(catalogue.includes("idea-material-category-filter"));
+  assert.ok(catalogue.includes("idea-filter-chips"));
+  assert.ok(catalogue.includes("selectMaterialCategory(item.key)"));
+  assert.ok(catalogue.includes("aria-pressed={isActive}"));
   assert.ok(catalogue.includes("bestPriceLabel(locale)"));
   assert.ok(catalogue.includes("tryInAiLabel(locale)"));
   const card = catalogue.slice(catalogue.indexOf("function MaterialCard("));

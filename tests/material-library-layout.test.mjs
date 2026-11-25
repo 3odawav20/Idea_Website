@@ -7,8 +7,10 @@ test("material browsing retains sourced faces and marketplace actions",()=>{
   for(const name of ["localMaterialFace(product.id)","product.source?.original?.tiles?.[0]","toggleFavorite(product.id)","toggleCompare(product.id)","addToQuote(product.id, unit)","/ai-room-visualizer?product=","distinctStorefrontProducts(filtered)"]) assert.ok(src.includes(name),name);
 });
 test("material browsing keeps URL formats, usage, texture, brand and accessible filter disclosures",()=>{
-  for(const name of ["isLargeFormat(product)","isOutdoor20mm(product)","params.get(\"usage\")","params.get(\"texture\")","params.get(\"brand\")","<details className=\"idea-material-facet\"","<summary>{label}","aria-current={number === page"]) assert.ok(src.includes(name),name);
-  assert.ok(src.includes("<input type=\"checkbox\" checked={value === item}"),"filter options remain selectable with native checkboxes");
+  const filters=readFileSync(new URL("../src/lib/catalogue-filters.ts",import.meta.url),"utf8");
+  for(const name of ["isLargeFormat(product)","isOutdoor20mm(product)"]) assert.ok(filters.includes(name),name);
+  for(const name of ["filterCatalogueProduct(product,","params.get(\"usage\")","params.get(\"texture\")","params.get(\"brand\")","aria-current={number === page","idea-filter-panel","role=\"group\"","aria-pressed={isActive}","selectMaterialCategory(item.key)","updateFilter(\"format\","]) assert.ok(src.includes(name),name);
+  assert.match(src, /<button\s+[^>]*type="button"[^>]*idea-filter-chip[^>]*aria-pressed=\{isActive\}/s, "filter chips remain keyboard-operable toggle buttons");
   assert.ok(src.includes("idea-material-main-layout"),"the reference catalogue uses a left intro and right results layout");
   assert.ok(css.includes("grid-template-columns: minmax(245px, .82fr) minmax(0, 3.18fr)"),"desktop catalogue keeps the reference two-column layout");
   assert.ok(css.includes("repeat(2,minmax(0,1fr))"));
@@ -18,7 +20,7 @@ test("material cards preserve reference text order and keep actions intact",()=>
   const card=src.slice(src.indexOf("function MaterialCard("));
   const finish=card.indexOf('className="idea-material-finish"');
   const maker=card.indexOf('<div className="idea-material-maker">');
-  const name=card.indexOf('<Link className="idea-material-name"');
+  const name=card.search(/<Link\s+className="idea-material-name"/);
   const meta=card.indexOf('<div className="idea-material-meta">');
   const quote=card.indexOf('className="idea-material-quote"');
   const visualize=card.indexOf('className="idea-material-visualize"');
@@ -56,7 +58,7 @@ test("reference toolbar includes a working grid/list view switch and the full-wi
 });
 
 test("catalogue CTA reports the full source catalogue count rather than deduplicated storefront cards", () => {
-  assert.ok(src.includes("products.length.toLocaleString(locale)"));
+  assert.match(src, /aria-label=\{\x60\$\{copy\.cta\} \(\$\{products\.length\.toLocaleString\(locale\)\}\)\x60\}/);
   assert.ok(!src.includes("results.length.toLocaleString(locale)"));
 });
 
