@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Outlet, useLocation, useNavigationType } from "react-router";
 import { motion, useScroll, useSpring, useReducedMotion, AnimatePresence } from "motion/react";
 import { Header } from "./Header";
@@ -10,13 +10,15 @@ export function Layout() {
   const { pathname } = useLocation();
   const navigationType = useNavigationType();
   const reduce = useReducedMotion();
+  const prevPathnameRef = useRef(pathname);
   const { scrollYProgress } = useScroll();
   const progress = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.3 });
 
   useEffect(() => {
-    // Do not override the browser's own restored scroll position when the user
-    // returns with Back/Forward (especially important on Safari for iPhone).
-    if (navigationType === "POP") return;
+    const pathnameChanged = prevPathnameRef.current !== pathname;
+    prevPathnameRef.current = pathname;
+    // Only scroll to top when navigating to a different route (not when updating filter query params on the same page).
+    if (!pathnameChanged || navigationType === "POP") return;
     window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
   }, [pathname, navigationType, reduce]);
 

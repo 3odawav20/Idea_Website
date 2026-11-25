@@ -158,7 +158,11 @@ export function HeroBrandFilm() {
           <source src={sources.desktop} type="video/mp4" />
         </video>
         <div className="idea-film-caption-scrim" aria-hidden="true" />
-        <div key={`${mode}-${activeSlide}-${locale}`} className="idea-film-caption" dir={locale === "ar" ? "rtl" : "ltr"}>
+        <div
+          key={`${mode}-${activeSlide}-${locale}`}
+          className={`idea-film-caption${locale !== "ar" ? " comic-neue-bold" : ""}`}
+          dir={locale === "ar" ? "rtl" : "ltr"}
+        >
           <p className="idea-film-eyebrow">{locale === "ar" ? "إيديا" : "IDEA"}</p>
           <h1 aria-label={`${captions[activeSlide][0]} ${captions[activeSlide][1]}`}>
             <span className="idea-film-line idea-film-line--white" aria-hidden="true">

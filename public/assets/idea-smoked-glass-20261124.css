@@ -1,18 +1,18 @@
-/* IDEA smoked-glass edges — dark mode only. One continuous marble background.
-   No borders on photographs, swatches or canvas previews. No layout changes. */
+/* IDEA smoked-glass edges — dark mode only. Header-matched frosted optical cards.
+   Retains solid charcoal logo/navigation/copyright footer. */
 html[data-theme="dark"] {
-  --idea-marble-glass: rgba(11, 12, 14, .39);
-  --idea-marble-glass-panel: rgba(13, 14, 16, .48);
-  --idea-gt-tray-bg: rgba(10, 11, 13, .36);
-  --idea-gt-bg: rgba(12, 13, 15, .33);
-  --idea-gt-bg-hover: rgba(50, 52, 55, .38);
-  --idea-gt-input-bg: rgba(10, 11, 13, .36);
-  --idea-gt-input-bg-focus: rgba(23, 24, 26, .48);
-  --idea-glass-card-bg: rgba(13, 14, 16, .40);
-  --idea-glass-card-bg-hover: rgba(23, 24, 26, .48);
-  --idea-glass-edge: rgba(235, 238, 242, .22);
-  --idea-glass-rim: inset 0 1px 0 rgba(255, 255, 255, .13), inset 0 0 0 1px var(--idea-glass-edge);
-  --idea-glass-depth: 0 5px 18px rgba(0, 0, 0, .25);
+  --idea-marble-glass: rgba(255, 255, 255, .055);
+  --idea-marble-glass-panel: rgba(255, 255, 255, .072);
+  --idea-gt-tray-bg: rgba(0, 0, 0, .30);
+  --idea-gt-bg: rgba(255, 255, 255, .055);
+  --idea-gt-bg-hover: rgba(255, 255, 255, .12);
+  --idea-gt-input-bg: rgba(255, 255, 255, .075);
+  --idea-gt-input-bg-focus: rgba(255, 255, 255, .12);
+  --idea-glass-card-bg: rgba(255, 255, 255, .068);
+  --idea-glass-card-bg-hover: rgba(255, 255, 255, .102);
+  --idea-glass-edge: rgba(255, 255, 255, .17);
+  --idea-glass-rim: inset 0 1px 0 rgba(255, 255, 255, .16), inset 0 0 0 1px var(--idea-glass-edge);
+  --idea-glass-depth: 0 8px 24px rgba(0, 0, 0, .34), 0 2px 6px rgba(0, 0, 0, .20);
 }
 /* Restore the original solid charcoal logo/navigation/copyright footer.
    Keep the promo and all other site sections on the existing marble glass. */
@@ -57,16 +57,17 @@ html[data-theme="dark"] :is(.idea-footer-group a,.idea-footer-legal-bar a):hover
 
 /* Edges are inset so they remain visible without shifting any panel geometry. */
 html[data-theme="dark"] :is(
-  .idea-featured, .idea-materials, .idea-usp, .idea-product-photo-gallery,
-  .idea-product-formats-section, .idea-home-finder-scene,
-  .idea-home-newsletter, .idea-home-resource-grid > a,
+  .idea-usp > a, .idea-home-newsletter, .idea-home-resource-grid > a,
+  .idea-destination-grid > a, .idea-home-journal > a, .idea-home-featured-card,
+  .idea-featured-card, .idea-home-bath-card, .idea-collection-card,
+  .idea-material-featured-card, .idea-material-card, .idea-product-card, .idea-plan-card,
   .idea-resource-list > article, .idea-service-status,
   .idea-sponsored-collections article, .idea-featured-play,
   .idea-discovery-search, .idea-discovery-nav, .idea-discovery-menu,
   .idea-dash-kpi, .idea-dash-banner, .idea-dash-table-wrap,
   .idea-studio-rail, .idea-studio-library, .idea-studio-analysis,
   .idea-room3d-side, .idea-room3d-main, .idea-room3d-fixture-properties,
-  .ids-topbar, .ids-settings-links > a, .glass-card,
+  .ids-topbar, .ids-settings-links > a, .ids-panel, .ids-kpi, .glass-card,
   .idea-navigation-drawer, .idea-product-section-nav,
   .idea-glass-tablist, [role="tablist"], .idea-discovery-tabs,
   .idea-studio-view-tabs, .idea-studio-choice, .idea-atlas-categories,
@@ -91,19 +92,19 @@ html[data-theme="dark"] :is(
   .idea-lighting-segments button, .idea-navigation-tools a,
   .idea-dash-nav a, .idea-admin-tabs a, .ids-navlink,
   .icc-brands > button, .icc-company, .ibg-package
-) { box-shadow: inset 0 0 0 1px rgba(235,238,242,.17); }
+) { box-shadow: inset 0 0 0 1px rgba(255,255,255,.13); }
 html[data-theme="dark"] :is(
   .idea-glass-tab, [role="tab"], .idea-chip, .idea-dash-nav a, .idea-admin-tabs a,
   .ids-navlink, .icc-brands > button, .idea-studio-choice button,
   .idea-discovery-tabs button, .idea-room3d-material-tabs button
 ):is([aria-selected="true"],[aria-pressed="true"],[aria-current="page"],.active,.is-active,.selected,.chosen) {
-  box-shadow: inset 0 0 0 1px rgba(253,118,28,.55), 0 3px 12px rgba(0,0,0,.23);
+  box-shadow: inset 0 0 0 1.5px rgba(253,118,28,.78), 0 4px 14px rgba(0,0,0,.30);
 }
 html[data-theme="dark"] :is(
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]),
   textarea, select
 ):not(.idea-auth-input-wrap input):not(.idea-auth-input-wrap select):not(.idea-navigation-content input) {
-  box-shadow: inset 0 0 0 1px var(--idea-glass-edge), 0 2px 8px rgba(0,0,0,.16);
+  box-shadow: inset 0 0 0 1px var(--idea-glass-edge), 0 2px 6px rgba(0,0,0,.20);
 }
 html[data-theme="dark"] :is(input,textarea,select):focus-visible {
   outline: 2px solid var(--idea-gold-bright, #fd6401);

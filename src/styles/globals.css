@@ -78,7 +78,7 @@
   /* ── Typography families ── */
   --idea-font-display: 'Ubuntu', Arial, sans-serif;
   --idea-font-body: 'Ubuntu', Arial, sans-serif;
-  --idea-font-arabic: 'Cairo', Arial, sans-serif;
+  --idea-font-arabic: "Fustat", "Cairo", sans-serif;
 
   /* ── Type scale ── */
   --idea-text-xs: 12px;
@@ -471,7 +471,11 @@ html[lang="ar"] input[type="tel"], html[lang="ar"] input[type="number"] {
   html[lang] .idea-home-section { width: min(100% - 32px, 1280px); }
 }
 
-html[lang="ar"] body, html[lang="ar"] body * { font-family: "Cairo", Arial, sans-serif !important; }
+html[lang="ar"] body, html[lang="ar"] body * {
+  font-family: "Fustat", "Cairo", sans-serif !important;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
 html[lang] :where(p, h1, h2, h3, h4, label, button, td, th) { overflow-wrap: anywhere; min-width: 0; }
 
 /* Locale-specific typography: do not force 100-weight; preserve real hierarchy. */

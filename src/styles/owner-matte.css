@@ -1,81 +1,547 @@
-/* IDEA — owner approved matte themes, typography and defined glass edges. */
+/* IDEA — unified header-matched frosted optical glass cards, visible borders, inner tabs, and balanced symmetry. */
 @import url('https://fonts.googleapis.com/css2?family=Fustat:wght@200..800&family=Ubuntu+Condensed&display=swap');
+
 html[data-theme="light"] {
- --idea-bg:#fff;--idea-page-background:#fff;--idea-bg-2:#f5f5f5;--idea-surface:#fff;--idea-surface-2:#f3f3f3;
- --idea-text:#111;--idea-text-muted:#111;--idea-text-faint:#222;
- --idea-border:#bcbcbc;--idea-border-neutral:#d0d0d0;
- --idea-glass-edge:rgba(0,0,0,.28);--idea-glass-rim:inset 0 0 0 1px var(--idea-glass-edge),inset 0 1px 0 #fff;
- --idea-glass-depth:0 4px 14px #0000000e;--idea-glass-card-bg:rgba(255,255,255,.38);
- --idea-glass-card-bg-hover:#eee;--idea-gt-tray-bg:rgba(255,255,255,.32);--idea-gt-bg:rgba(255,255,255,.45);
- --idea-gt-bg-hover:#eee;--idea-gt-input-bg:#fafafa;--idea-gt-input-bg-focus:#fff;--idea-gt-text:#111;
- --idea-gt-text-hover:#000;--idea-gt-text-active:#963a00;--idea-panel-fill:#fafafa;--idea-tab-fill:#fff;
+  --idea-bg: #f6f7f9;
+  --idea-page-background: #f6f7f9;
+  --idea-bg-2: #eff1f5;
+  --idea-surface: rgba(255, 255, 255, 0.80);
+  --idea-surface-2: rgba(240, 243, 248, 0.78);
+  --idea-text: #14171c;
+  --idea-text-muted: #2d343e;
+  --idea-text-faint: #4c5563;
+  --idea-border: rgba(15, 23, 36, 0.16);
+  --idea-border-neutral: rgba(15, 23, 36, 0.11);
+
+  /* Header-matched optical frosted glass tokens — Light/Day mode */
+  --idea-card-blur: 22px;
+  --idea-card-sat: 1.35;
+  --idea-glass-edge: rgba(15, 23, 36, 0.15);
+  --idea-glass-edge-hover: rgba(15, 23, 36, 0.24);
+  --idea-glass-rim: inset 0 0 0 1px var(--idea-glass-edge), inset 0 1px 0 rgba(255, 255, 255, 0.96);
+  --idea-glass-rim-hover: inset 0 0 0 1px var(--idea-glass-edge-hover), inset 0 1px 0 #ffffff;
+  --idea-glass-depth: 0 6px 20px rgba(15, 23, 36, 0.065), 0 1px 3px rgba(15, 23, 36, 0.04);
+  --idea-glass-depth-hover: 0 12px 28px rgba(15, 23, 36, 0.095), 0 2px 6px rgba(15, 23, 36, 0.055);
+  --idea-glass-card-bg: rgba(255, 255, 255, 0.78);
+  --idea-glass-card-bg-hover: rgba(255, 255, 255, 0.90);
+
+  /* Inner tab tray & tabs — recessed frosted contrast inside cards */
+  --idea-gt-tray-bg: rgba(15, 23, 36, 0.052);
+  --idea-gt-tray-rim: inset 0 0 0 1px rgba(15, 23, 36, 0.13), inset 0 1px 2px rgba(15, 23, 36, 0.045);
+  --idea-gt-bg: rgba(255, 255, 255, 0.64);
+  --idea-gt-edge: rgba(15, 23, 36, 0.11);
+  --idea-gt-bg-hover: rgba(255, 255, 255, 0.92);
+  --idea-gt-bg-active: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 241, 228, 0.94) 100%);
+  --idea-gt-active-rim: inset 0 0 0 1.5px rgba(253, 100, 1, 0.72), 0 3px 10px rgba(253, 100, 1, 0.13);
+  --idea-gt-text: #1c2128;
+  --idea-gt-text-hover: #0a0d12;
+  --idea-gt-text-active: #963a00;
+
+  /* Inner inputs & selects */
+  --idea-gt-input-bg: rgba(255, 255, 255, 0.88);
+  --idea-gt-input-bg-focus: #ffffff;
+  --idea-gt-input-rim: inset 0 0 0 1px rgba(15, 23, 36, 0.16), 0 1px 3px rgba(15, 23, 36, 0.04);
+  --idea-gt-input-rim-focus: inset 0 0 0 1.5px #fd6401, 0 0 0 3px rgba(253, 100, 1, 0.14);
+
+  --idea-panel-fill: rgba(255, 255, 255, 0.82);
+  --idea-tab-fill: #ffffff;
 }
+
 html[data-theme="dark"] {
- --idea-bg:#101010;--idea-page-background:#101010;--idea-bg-2:#171717;--idea-surface:#1d1d1d;--idea-surface-2:#262626;
- --idea-text:#fff;--idea-text-muted:#fff;--idea-text-faint:#e7e7e7;
- --idea-border:#555;--idea-border-neutral:#454545;
- --idea-marble-glass:#171717;--idea-marble-glass-panel:#1d1d1d;
- --idea-glass-edge:rgba(255,255,255,.35);--idea-glass-rim:inset 0 0 0 1px var(--idea-glass-edge),inset 0 1px 0 #ffffff15;
- --idea-glass-depth:0 5px 18px #0005;--idea-glass-card-bg:rgba(255,255,255,.055);--idea-glass-card-bg-hover:#282828;
- --idea-gt-tray-bg:rgba(255,255,255,.045);--idea-gt-bg:rgba(255,255,255,.065);--idea-gt-bg-hover:#303030;--idea-gt-input-bg:#1a1a1a;--idea-gt-input-bg-focus:#252525;
- --idea-gt-text:#fff;--idea-gt-text-hover:#fff;--idea-panel-fill:#1d1d1d;--idea-tab-fill:#252525;
+  --idea-bg: #101010;
+  --idea-page-background: #101010;
+  --idea-bg-2: #161719;
+  --idea-surface: rgba(255, 255, 255, 0.068);
+  --idea-surface-2: rgba(255, 255, 255, 0.095);
+  --idea-text: #ffffff;
+  --idea-text-muted: #e4e7ec;
+  --idea-text-faint: #c6ccd4;
+  --idea-border: rgba(255, 255, 255, 0.18);
+  --idea-border-neutral: rgba(255, 255, 255, 0.13);
+  --idea-marble-glass: rgba(255, 255, 255, 0.055);
+  --idea-marble-glass-panel: rgba(255, 255, 255, 0.072);
+
+  /* Header-matched optical frosted glass tokens — Dark/Night mode */
+  --idea-card-blur: 22px;
+  --idea-card-sat: 1.35;
+  --idea-glass-edge: rgba(255, 255, 255, 0.17);
+  --idea-glass-edge-hover: rgba(255, 255, 255, 0.27);
+  --idea-glass-rim: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 0 0 1px var(--idea-glass-edge);
+  --idea-glass-rim-hover: inset 0 1px 0 rgba(255, 255, 255, 0.24), inset 0 0 0 1px var(--idea-glass-edge-hover);
+  --idea-glass-depth: 0 8px 24px rgba(0, 0, 0, 0.34), 0 2px 6px rgba(0, 0, 0, 0.20);
+  --idea-glass-depth-hover: 0 14px 32px rgba(0, 0, 0, 0.44), 0 3px 8px rgba(0, 0, 0, 0.26);
+  --idea-glass-card-bg: rgba(255, 255, 255, 0.068);
+  --idea-glass-card-bg-hover: rgba(255, 255, 255, 0.102);
+
+  /* Inner tab tray & tabs — clearly recessed inside dark frosted cards */
+  --idea-gt-tray-bg: rgba(0, 0, 0, 0.30);
+  --idea-gt-tray-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --idea-gt-bg: rgba(255, 255, 255, 0.055);
+  --idea-gt-edge: rgba(255, 255, 255, 0.13);
+  --idea-gt-bg-hover: rgba(255, 255, 255, 0.12);
+  --idea-gt-bg-active: linear-gradient(135deg, rgba(253, 118, 28, 0.30) 0%, rgba(253, 118, 28, 0.15) 100%);
+  --idea-gt-active-rim: inset 0 0 0 1.5px rgba(253, 118, 28, 0.78), 0 4px 14px rgba(0, 0, 0, 0.30), 0 0 12px rgba(253, 100, 1, 0.16);
+  --idea-gt-text: #eceff4;
+  --idea-gt-text-hover: #ffffff;
+  --idea-gt-text-active: #fff4e6;
+
+  /* Inner inputs & selects */
+  --idea-gt-input-bg: rgba(255, 255, 255, 0.075);
+  --idea-gt-input-bg-focus: rgba(255, 255, 255, 0.12);
+  --idea-gt-input-rim: inset 0 0 0 1px rgba(255, 255, 255, 0.17), 0 2px 6px rgba(0, 0, 0, 0.20);
+  --idea-gt-input-rim-focus: inset 0 0 0 1.5px #fd760c, 0 0 0 3px rgba(253, 118, 28, 0.20);
+
+  --idea-panel-fill: rgba(255, 255, 255, 0.07);
+  --idea-tab-fill: rgba(255, 255, 255, 0.08);
 }
-html[data-theme],html[data-theme] body {background:var(--idea-page-background)!important;}
-html[data-theme="dark"]::before {content:none!important;display:none!important;background:none!important;}
-html[data-theme] :is(.idea-home-editorial,.idea-home-product-section,.idea-catalogue-detail,.idea-contact-page) {background:var(--idea-page-background)!important;}
-html[data-theme] .idea-material-featured {background:var(--idea-bg-2)!important;}
-html[data-theme] .idea-material-featured::before {display:none!important;}
-html[data-theme] .idea-home-finder-scene {background:var(--idea-bg)!important;}
-html[data-theme] .idea-home-finder-scene::before,html[data-theme] .idea-home-finder-scene::after {background:none!important;}
-html[data-theme] :is(.idea-usp,.idea-featured,.idea-materials,.idea-home-newsletter,.idea-home-resource-grid>a,.idea-resource-list>article,.idea-service-status,.idea-sponsored-collections article,.idea-featured-play,.idea-discovery-search,.idea-discovery-nav,.idea-discovery-menu,.idea-dash-kpi,.idea-dash-banner,.idea-dash-table-wrap,.idea-studio-rail,.idea-studio-library,.idea-studio-analysis,.idea-room3d-side,.idea-room3d-main,.idea-room3d-fixture-properties,.ids-topbar,.ids-settings-links>a,.glass-card) {
- box-shadow:var(--idea-glass-rim),var(--idea-glass-depth)!important;
- background:var(--idea-glass-card-bg)!important;
- backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+
+html[data-theme], html[data-theme] body { background: var(--idea-page-background) !important; }
+html[data-theme="dark"]::before { content: none !important; display: none !important; background: none !important; }
+html[data-theme] :is(.idea-home-editorial, .idea-home-product-section, .idea-catalogue-detail, .idea-contact-page) {
+  background: var(--idea-page-background) !important;
 }
-html[data-theme] :is(.idea-glass-tablist,[role="tablist"],.idea-discovery-tabs,.idea-studio-view-tabs,.idea-studio-choice,.idea-atlas-categories,.idea-room3d-material-tabs,.idea-room3d-pills,.idea-room3d-selected-surfaces,.idea-lighting-segments,.idea-dash-nav,.idea-admin-tabs,.ids-nav,.icc-brands,.idea-product-section-nav,.idea-home-surface-filters,.idea-material-view-toggle) {
- box-shadow:var(--idea-glass-rim),var(--idea-glass-depth)!important;
- background:var(--idea-gt-tray-bg)!important;
- backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+
+/* Soft tonal depth behind Hero Search so the frosted glass visibly refracts in both themes */
+html[data-theme="light"] .idea-home-finder-scene {
+  background: linear-gradient(135deg, #e7ebf0 0%, #f3f5f8 48%, #e4e9ef 100%) !important;
 }
-html[data-theme] :is(.idea-glass-tab,[role="tab"],.idea-discovery-tabs button,.idea-chip,.idea-catalogue-pagination button,.idea-product-section-nav a:not(.idea-product-nav-visualizer),.idea-material-face-selector button,.idea-studio-view-tabs button,.idea-studio-choice button,.idea-atlas-categories button,.idea-room3d-material-tabs button,.idea-room3d-pills button,.idea-room3d-selected-surfaces button,.idea-room3d-fixture-chips button,.idea-lighting-segments button,.idea-dash-nav a,.idea-admin-tabs a,.ids-navlink,.icc-brands>button,.idea-material-facet summary,.idea-material-category-filter select,.idea-material-more-filters summary,.idea-home-surface-filters a) {
- box-shadow:inset 0 0 0 1px var(--idea-glass-edge)!important;
- border-radius:8px; color:var(--idea-gt-text);
+html[data-theme="light"] .idea-home-finder-scene::before { opacity: 0.16 !important; }
+html[data-theme="light"] .idea-home-finder-scene::after {
+  background: radial-gradient(ellipse at 18% 20%, rgba(255, 255, 255, 0.72), transparent 52%),
+              radial-gradient(ellipse at 86% 78%, rgba(165, 178, 192, 0.22), transparent 56%) !important;
 }
-html[data-theme] :is(.idea-glass-tab,[role="tab"],.idea-chip,.idea-discovery-tabs button,.idea-studio-view-tabs button,.idea-studio-choice button,.idea-dash-nav a,.idea-admin-tabs a,.ids-navlink,.idea-home-surface-filters a,.idea-material-view-toggle button):is([aria-selected="true"],[aria-pressed="true"],[aria-current="page"],.active,.is-active,.selected,.chosen) {
- box-shadow:inset 0 0 0 1px #fd760c!important;background:var(--idea-gt-bg-active)!important;color:var(--idea-gt-text-active)!important;
+html[data-theme="dark"] .idea-home-finder-scene {
+  background: linear-gradient(130deg, #1b1e23 0%, #111316 52%, #1d2025 100%) !important;
 }
-html[data-theme] .idea-home-surface-filters {padding:6px;gap:6px;border-radius:10px;}
-html[data-theme] .idea-home-surface-filters a {padding:9px 14px;}
-html[data-theme] .idea-home-surface-filters a::after {display:none;}
-html[data-theme] :is(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]),textarea,select):not(.idea-material-search-field input):not(.idea-auth-input-wrap input):not(.idea-navigation-content input) {box-shadow:inset 0 0 0 1px var(--idea-glass-edge)!important;}
-html[data-theme] :is(.idea-material-search-field,.idea-dash-table-wrap) {box-shadow:var(--idea-glass-rim),var(--idea-glass-depth)!important;}
-html[data-theme] :is(.idea-home-editorial,.idea-dash-table-wrap,.ids-root,.idea-material-catalogue) table {border-collapse:collapse;border:1px solid var(--idea-border);}
-html[data-theme] :is(.idea-home-editorial,.idea-dash-table-wrap,.ids-root,.idea-material-catalogue) :is(th,td) {border-bottom:1px solid var(--idea-border-neutral);}
-html[data-theme] :is(.idea-home-editorial,.idea-dash-table-wrap,.ids-root) th {background:var(--idea-surface-2);}
-html[data-theme] :is(.idea-home-featured-card,.idea-material-featured-card,.idea-material-card,.idea-destination-grid>a,.idea-home-bath-card,.idea-home-journal>a) {
- border-radius:10px;box-shadow:var(--idea-glass-rim);padding:8px;min-width:0;
+html[data-theme="dark"] .idea-home-finder-scene::before { opacity: 0.14 !important; }
+html[data-theme="dark"] .idea-home-finder-scene::after {
+  background: radial-gradient(ellipse at 18% 18%, rgba(255, 255, 255, 0.06), transparent 52%),
+              radial-gradient(ellipse at 85% 78%, rgba(253, 118, 28, 0.06), transparent 56%) !important;
 }
-html[data-theme] :is(.idea-home-featured-card,.idea-material-featured-card,.idea-material-card):hover {box-shadow:var(--idea-glass-rim),var(--idea-glass-depth);}
-html[lang="en"],html[lang="fr"] {--idea-font-display:'Ubuntu Condensed','Fustat',Arial,sans-serif;--idea-font-body:var(--idea-font-display);--idea-font-arabic:'Fustat',Arial,sans-serif;}
-html[lang="ar"] {--idea-font-display:'Fustat','Ubuntu Condensed',Arial,sans-serif;--idea-font-body:var(--idea-font-display);--idea-font-arabic:var(--idea-font-display);}
-html[lang] body,html[lang] body * {font-family:var(--idea-font-body)!important;}
-html[lang] :is(code,pre,kbd,samp) {font-family:ui-monospace,Consolas,monospace!important;}
-html[lang="ar"] :is(h1,h2,h3,h4,.idea-display) {font-weight:700;letter-spacing:0;}
-html[lang="ar"] :is(p,label,small,button,input,select,textarea,td,th) {letter-spacing:0;}
-html[lang="en"] :is(h1,h2,h3,h4,.idea-display),html[lang="fr"] :is(h1,h2,h3,h4,.idea-display) {font-weight:400;}
-html[lang] .idea-editorial-hero.idea-film-ready .idea-film-caption h1 {font-family:var(--idea-font-display)!important;}
-html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption h1 {font-weight:700;}
-html[lang] .idea-editorial-hero.idea-film-ready .idea-film-eyebrow {color:var(--idea-gold)!important;font-family:var(--idea-font-body)!important;}
-html[lang] .idea-editorial-hero.idea-film-ready .idea-film-eyebrow::first-letter {color:#fff!important;}
-html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-eyebrow {font-weight:700;}
-html[data-theme] .idea-editorial-hero.idea-film-ready .idea-film-caption .idea-film-line--white {color:#fff;}
-html[data-theme] .idea-editorial-hero.idea-film-ready .idea-film-caption .idea-film-line--orange {color:var(--idea-gold);}
-html[lang] :is(.idea-home-featured-name,.idea-material-featured-name,.idea-material-name) {white-space:normal;overflow-wrap:anywhere;}
-html[lang] :is(.idea-home-featured-meta,.idea-material-featured-meta,.idea-material-meta) {flex-wrap:wrap;}
-html[data-theme] :is(a,button,input,textarea,select,summary):focus-visible {outline:2px solid #fd760c;outline-offset:3px;}
-@media(max-width:760px) {
- html[data-theme] :is(.idea-home-featured-card,.idea-material-featured-card,.idea-material-card) {padding:6px;}
- html[lang] .idea-home-surface-filters a {padding:8px 10px;}
+
+/* Keep full-width catalogue featured shelf clean & softly separated, not flat heavy box */
+html[data-theme] .idea-material-featured {
+  background: var(--idea-bg-2) !important;
+  border-block: 1px solid var(--idea-border-neutral);
+}
+html[data-theme] .idea-material-featured::before { display: none !important; }
+
+/* Keep full-width USP strip seamless; style each USP item as a symmetrical glass card */
+html[data-theme] .idea-usp {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid var(--idea-border-neutral);
+  gap: 16px;
+}
+html[data-theme] .idea-usp > a {
+  padding: 14px 16px;
+  border-radius: 14px;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+/* Unified Header-Glass Card System — Hero/Home & ALL other pages */
+html[data-theme] :is(
+  .glass-card,
+  .idea-usp > a,
+  .idea-discovery-search,
+  .idea-home-featured-card,
+  .idea-home-resource-grid > a,
+  .idea-destination-grid > a,
+  .idea-home-journal > a,
+  .idea-home-newsletter,
+  .idea-sponsored-collections article,
+  .idea-featured-play,
+  .idea-material-featured-card,
+  .idea-material-card,
+  .idea-material-facet-options,
+  .idea-material-more-filters-content,
+  .idea-material-empty,
+  .idea-product-card,
+  .idea-plan-card,
+  .idea-technical-panel,
+  .idea-product-swatch,
+  .idea-legal-hub-card,
+  .idea-legal-nav-box,
+  .idea-legal-contact-card,
+  .idea-cookie-notice,
+  .idea-contact-card,
+  .idea-resource-list > article,
+  .idea-service-status,
+  .idea-dash-kpi,
+  .idea-dash-banner,
+  .idea-dash-table-wrap,
+  .idea-studio-rail,
+  .idea-studio-library,
+  .idea-studio-analysis,
+  .idea-room3d-side,
+  .idea-room3d-main,
+  .idea-room3d-fixture-properties,
+  .ids-topbar,
+  .ids-settings-links > a,
+  .ids-panel,
+  .ids-kpi,
+  .ids-operations-card,
+  .icc-side,
+  .icc-main,
+  .icc-stats > div,
+  .icc-product,
+  .icc-apply-card,
+  .ibg-period,
+  .ibg-sale-list,
+  .ibg-list,
+  .ibg-form,
+  .ibg-rates,
+  .ibg-package,
+  .idea-ask-panel
+) {
+  background: var(--idea-glass-card-bg) !important;
+  border-color: transparent !important;
+  box-shadow: var(--idea-glass-rim), var(--idea-glass-depth) !important;
+  -webkit-backdrop-filter: blur(var(--idea-card-blur)) saturate(var(--idea-card-sat));
+  backdrop-filter: blur(var(--idea-card-blur)) saturate(var(--idea-card-sat));
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.22s ease;
+}
+
+/* Smooth balanced hover lift on interactive glass cards */
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme] :is(
+    .glass-card,
+    .idea-usp > a,
+    .idea-home-featured-card,
+    .idea-home-resource-grid > a,
+    .idea-destination-grid > a,
+    .idea-home-journal > a,
+    .idea-sponsored-collections article,
+    .idea-material-featured-card,
+    .idea-material-card,
+    .idea-product-card,
+    .idea-plan-card,
+    .idea-legal-hub-card,
+    .idea-legal-contact-card,
+    .ids-settings-links > a,
+    .icc-product
+  ):hover {
+    background: var(--idea-glass-card-bg-hover) !important;
+    box-shadow: var(--idea-glass-rim-hover), var(--idea-glass-depth-hover) !important;
+    transform: translateY(-2px);
+  }
+}
+
+/* Photo-led cards: crisp frosted edge & subtle elevation without muting photography */
+html[data-theme] :is(.idea-featured-card, .idea-home-bath-card, .idea-collection-card) {
+  border-radius: 14px !important;
+  border: 0 !important;
+  box-shadow: var(--idea-glass-rim), var(--idea-glass-depth) !important;
+  overflow: hidden;
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme] :is(.idea-featured-card, .idea-home-bath-card, .idea-collection-card):hover {
+    box-shadow: var(--idea-glass-rim-hover), var(--idea-glass-depth-hover) !important;
+    transform: translateY(-2px);
+  }
+}
+/* Header-glass captions on photographic cards */
+html[data-theme] :is(.idea-featured-label, .idea-home-bath-card span) {
+  background: rgba(16, 18, 22, 0.42) !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.22), 0 4px 14px rgba(0, 0, 0, 0.24) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.35) !important;
+  backdrop-filter: blur(18px) saturate(1.35) !important;
+  border-radius: 10px !important;
+  color: #ffffff !important;
+}
+html[data-theme] .idea-collection-card-caption {
+  background: rgba(16, 18, 22, 0.48);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  backdrop-filter: blur(18px) saturate(1.35);
+  color: #ffffff;
+}
+html[data-theme] .idea-collection-card-caption .idea-display { color: #ffffff !important; }
+html[data-theme] .idea-collection-card-caption .idea-collection-card-blurb { color: rgba(255, 255, 255, 0.86) !important; }
+
+/* Active/current plan highlight */
+html[data-theme] .idea-plan-card.is-current {
+  box-shadow: inset 0 0 0 1.5px var(--idea-gold), var(--idea-glass-depth-hover) !important;
+}
+
+/* Symmetrical geometry for grid cards across Hero/Home & Catalogue */
+html[data-theme] :is(.idea-home-featured-card, .idea-material-featured-card, .idea-material-card) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 14px;
+  padding: 12px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+html[data-theme] .idea-home-featured-card-copy {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+html[data-theme] .idea-home-featured-actions { margin-top: auto; }
+html[data-theme] :is(.idea-destination-grid > a, .idea-home-journal > a) {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  border-radius: 14px;
+  padding: 10px 10px 14px;
+  min-width: 0;
+  box-sizing: border-box;
+}
+html[data-theme] :is(.idea-destination-grid > a img, .idea-home-journal > a img) {
+  border-radius: 10px;
+}
+html[data-theme] .idea-home-resource-grid > a {
+  border-radius: 14px;
+  height: 100%;
+  box-sizing: border-box;
+}
+html[data-theme] .idea-discovery-search {
+  border-radius: 20px !important;
+}
+html[data-theme] .idea-home-newsletter {
+  border-radius: 18px !important;
+}
+
+/* ==========================================================================
+   Inner Tab Trays & Tab Buttons (Always visibly separated inside any card)
+   ========================================================================== */
+html[data-theme] :is(
+  .idea-glass-tablist,
+  [role="tablist"],
+  .idea-discovery-tabs,
+  .idea-studio-view-tabs,
+  .idea-studio-choice,
+  .idea-atlas-categories,
+  .idea-room3d-material-tabs,
+  .idea-room3d-pills,
+  .idea-room3d-selected-surfaces,
+  .idea-lighting-segments,
+  .idea-dash-nav,
+  .idea-admin-tabs,
+  .ids-nav,
+  .icc-brands,
+  .idea-home-surface-filters,
+  .idea-material-view-toggle
+) {
+  background: var(--idea-gt-tray-bg) !important;
+  box-shadow: var(--idea-gt-tray-rim) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(1.35);
+  backdrop-filter: blur(18px) saturate(1.35);
+}
+
+html[data-theme] :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-discovery-tabs button,
+  .idea-chip,
+  .idea-catalogue-pagination button,
+  .idea-product-section-nav a:not(.idea-product-nav-visualizer),
+  .idea-material-face-selector button,
+  .idea-studio-view-tabs button,
+  .idea-studio-choice button,
+  .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-room3d-pills button,
+  .idea-room3d-selected-surfaces button,
+  .idea-room3d-fixture-chips button,
+  .idea-lighting-segments button,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button,
+  .idea-material-facet summary,
+  .idea-material-category-filter select,
+  .idea-material-more-filters summary,
+  .idea-home-surface-filters a,
+  .idea-material-view-toggle button
+) {
+  background: var(--idea-gt-bg) !important;
+  box-shadow: inset 0 0 0 1px var(--idea-gt-edge) !important;
+  border-radius: 10px;
+  color: var(--idea-gt-text);
+  transition: background 0.2s ease, box-shadow 0.2s ease, color 0.18s ease, transform 0.2s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html[data-theme] :is(
+    .idea-glass-tab,
+    [role="tab"],
+    .idea-discovery-tabs button,
+    .idea-chip,
+    .idea-catalogue-pagination button,
+    .idea-product-section-nav a:not(.idea-product-nav-visualizer),
+    .idea-material-face-selector button,
+    .idea-studio-view-tabs button,
+    .idea-studio-choice button,
+    .idea-atlas-categories button,
+    .idea-room3d-material-tabs button,
+    .idea-room3d-pills button,
+    .idea-room3d-selected-surfaces button,
+    .idea-room3d-fixture-chips button,
+    .idea-lighting-segments button,
+    .idea-dash-nav a,
+    .idea-admin-tabs a,
+    .ids-navlink,
+    .icc-brands > button,
+    .idea-material-facet summary,
+    .idea-material-more-filters summary,
+    .idea-home-surface-filters a,
+    .idea-material-view-toggle button
+  ):not(:disabled):hover {
+    background: var(--idea-gt-bg-hover) !important;
+    color: var(--idea-gt-text-hover) !important;
+    box-shadow: inset 0 0 0 1px var(--idea-glass-edge-hover) !important;
+  }
+}
+
+html[data-theme] :is(
+  .idea-glass-tab,
+  [role="tab"],
+  .idea-chip,
+  .idea-discovery-tabs button,
+  .idea-studio-view-tabs button,
+  .idea-studio-choice button,
+  .idea-atlas-categories button,
+  .idea-room3d-material-tabs button,
+  .idea-room3d-pills button,
+  .idea-lighting-segments button,
+  .idea-dash-nav a,
+  .idea-admin-tabs a,
+  .ids-navlink,
+  .icc-brands > button,
+  .idea-home-surface-filters a,
+  .idea-material-view-toggle button
+):is([aria-selected="true"], [aria-pressed="true"], [aria-current="page"], .active, .is-active, .selected, .chosen) {
+  background: var(--idea-gt-bg-active) !important;
+  box-shadow: var(--idea-gt-active-rim) !important;
+  color: var(--idea-gt-text-active) !important;
+  font-weight: 600;
+}
+
+html[data-theme] .idea-home-surface-filters {
+  padding: 6px;
+  gap: 6px;
+  border-radius: 14px;
+  border-bottom: 0;
+  width: fit-content;
+  max-width: 100%;
+}
+html[data-theme] .idea-home-surface-filters a { padding: 8px 14px; }
+html[data-theme] .idea-home-surface-filters a::after { display: none; }
+
+/* Inner Form Inputs & Search Fields — clearly framed inside glass cards */
+html[data-theme] :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]),
+  textarea,
+  select
+):not(.idea-material-search-field input):not(.idea-auth-input-wrap input):not(.idea-navigation-content input) {
+  background: var(--idea-gt-input-bg) !important;
+  box-shadow: var(--idea-gt-input-rim) !important;
+  border-radius: 10px;
+}
+html[data-theme] :is(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]),
+  textarea,
+  select
+):not(.idea-material-search-field input):not(.idea-auth-input-wrap input):not(.idea-navigation-content input):focus {
+  background: var(--idea-gt-input-bg-focus) !important;
+  box-shadow: var(--idea-gt-input-rim-focus) !important;
+}
+html[data-theme] .idea-material-search-field {
+  background: var(--idea-gt-input-bg) !important;
+  box-shadow: var(--idea-gt-input-rim) !important;
+  border-radius: 12px;
+}
+html[data-theme] .idea-material-search-field:focus-within {
+  background: var(--idea-gt-input-bg-focus) !important;
+  box-shadow: var(--idea-gt-input-rim-focus) !important;
+}
+
+html[data-theme] :is(.idea-home-editorial, .idea-dash-table-wrap, .ids-root, .idea-material-catalogue) table {
+  border-collapse: collapse;
+  border: 1px solid var(--idea-border);
+}
+html[data-theme] :is(.idea-home-editorial, .idea-dash-table-wrap, .ids-root, .idea-material-catalogue) :is(th, td) {
+  border-bottom: 1px solid var(--idea-border-neutral);
+}
+html[data-theme] :is(.idea-home-editorial, .idea-dash-table-wrap, .ids-root) th {
+  background: var(--idea-surface-2);
+}
+
+/* Typography & Hero Caption preservation */
+html[lang="en"], html[lang="fr"] {
+  --idea-font-display: 'Ubuntu Condensed', "Fustat", Arial, sans-serif;
+  --idea-font-body: var(--idea-font-display);
+  --idea-font-arabic: "Fustat", "Cairo", sans-serif;
+}
+html[lang="ar"] {
+  --idea-font-display: "Fustat", "Cairo", sans-serif;
+  --idea-font-body: "Fustat", "Cairo", sans-serif;
+  --idea-font-arabic: "Fustat", "Cairo", sans-serif;
+}
+html[lang] body, html[lang] body * { font-family: var(--idea-font-body) !important; }
+html[lang="ar"] body, html[lang="ar"] body * { font-optical-sizing: auto; font-style: normal; }
+html[lang] :is(code, pre, kbd, samp) { font-family: ui-monospace, Consolas, monospace !important; }
+html[lang="ar"] :is(h1, h2, h3, h4, .idea-display) { font-weight: 700; letter-spacing: 0; }
+html[lang="ar"] :is(p, label, small, button, input, select, textarea, td, th) { letter-spacing: 0; }
+html[lang="en"] :is(h1, h2, h3, h4, .idea-display), html[lang="fr"] :is(h1, h2, h3, h4, .idea-display) { font-weight: 400; }
+html[lang="en"] .idea-editorial-hero.idea-film-ready .idea-film-caption,
+html[lang="en"] .idea-editorial-hero.idea-film-ready .idea-film-caption *,
+html[lang="fr"] .idea-editorial-hero.idea-film-ready .idea-film-caption,
+html[lang="fr"] .idea-editorial-hero.idea-film-ready .idea-film-caption * {
+  font-family: "Comic Neue", cursive !important;
+  font-weight: 700;
+  font-style: normal;
+}
+html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption,
+html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption * {
+  font-family: "Fustat", "Cairo", sans-serif !important;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption h1 { font-weight: 700; }
+html[lang] .idea-editorial-hero.idea-film-ready .idea-film-eyebrow { color: var(--idea-gold) !important; }
+html[lang] .idea-editorial-hero.idea-film-ready .idea-film-eyebrow::first-letter { color: #fff !important; }
+html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-eyebrow { font-weight: 700; }
+html[data-theme] .idea-editorial-hero.idea-film-ready .idea-film-caption .idea-film-line--white { color: #fff; }
+html[data-theme] .idea-editorial-hero.idea-film-ready .idea-film-caption .idea-film-line--orange { color: var(--idea-gold); }
+html[lang] :is(.idea-home-featured-name, .idea-material-featured-name, .idea-material-name) { white-space: normal; overflow-wrap: anywhere; }
+html[lang] :is(.idea-home-featured-meta, .idea-material-featured-meta, .idea-material-meta) { flex-wrap: wrap; }
+html[data-theme] :is(a, button, input, textarea, select, summary):focus-visible { outline: 2px solid #fd760c; outline-offset: 3px; }
+
+@media (max-width: 760px) {
+  html[data-theme] :is(.idea-home-featured-card, .idea-material-featured-card, .idea-material-card) { padding: 8px; }
+  html[lang] .idea-home-surface-filters a { padding: 8px 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme] :is(
+    .glass-card,
+    .idea-usp > a,
+    .idea-home-featured-card,
+    .idea-home-resource-grid > a,
+    .idea-destination-grid > a,
+    .idea-home-journal > a,
+    .idea-featured-card,
+    .idea-home-bath-card,
+    .idea-collection-card,
+    .idea-material-featured-card,
+    .idea-material-card,
+    .idea-product-card,
+    .idea-plan-card
+  ) {
+    transition: none !important;
+    transform: none !important;
+  }
 }
 
 /* IDEA responsive symmetry: catalogue only; keep original sphere rendering, textures and themes. */
@@ -84,98 +550,966 @@ html[data-theme] :is(a,button,input,textarea,select,summary):focus-visible {outl
   --mc-gap: clamp(14px, 2vw, 30px);
   --mc-orb: clamp(112px, calc((100svh - 530px) / 2), 204px);
   --mc-media: calc(var(--mc-orb) + 16px);
-  min-width:0;
+  min-width: 0;
 }
-.idea-material-catalogue :is(.idea-material-featured,.idea-material-main-layout) {
-  box-sizing:border-box; width:100%; max-width:none; margin-inline:auto;
-  grid-template-columns:minmax(0,var(--mc-side)) minmax(0,1fr);
-  gap:var(--mc-gap); padding-inline:clamp(12px,2vw,28px);
+.idea-material-catalogue :is(.idea-material-featured, .idea-material-main-layout) {
+  box-sizing: border-box; width: 100%; max-width: none; margin-inline: auto;
+  grid-template-columns: minmax(0, var(--mc-side)) minmax(0, 1fr);
+  gap: var(--mc-gap); padding-inline: clamp(12px, 2vw, 28px);
 }
 .idea-material-catalogue .idea-material-featured {
-  min-height:0; padding-block:10px; margin-block-end:16px; align-items:center;
+  min-height: 0; padding-block: 14px; margin-block-end: 18px; align-items: center;
 }
 .idea-material-catalogue .idea-material-featured-copy {
-  transform:none; max-width:100%; min-width:0;
+  transform: none; max-width: 100%; min-width: 0;
 }
-.idea-material-catalogue :is(.idea-material-featured-grid,.idea-material-grid:not(.is-list)) {
-  display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:18px 14px; align-items:stretch;
+.idea-material-catalogue :is(.idea-material-featured-grid, .idea-material-grid:not(.is-list)) {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 18px 14px; align-items: stretch;
 }
-.idea-material-catalogue :is(.idea-material-featured-card,.idea-material-grid:not(.is-list) .idea-material-card) {
-  display:flex; flex-direction:column; min-width:0; height:100%;
+.idea-material-catalogue :is(.idea-material-featured-card, .idea-material-grid:not(.is-list) .idea-material-card) {
+  display: flex; flex-direction: column; min-width: 0; height: 100%;
 }
-.idea-material-catalogue :is(.idea-material-featured-visual,.idea-material-grid:not(.is-list) .idea-material-card-media) {
-  height:var(--mc-media); min-height:0; aspect-ratio:auto; flex:none;
+.idea-material-catalogue :is(.idea-material-featured-visual, .idea-material-grid:not(.is-list) .idea-material-card-media) {
+  height: var(--mc-media); min-height: 0; aspect-ratio: auto; flex: none;
 }
-.idea-material-catalogue :is(.idea-material-featured-orb,.idea-material-grid:not(.is-list) .idea-material-orb) {
-  width:min(88%,var(--mc-orb)); height:auto; aspect-ratio:1; max-width:100%;
+.idea-material-catalogue :is(.idea-material-featured-orb, .idea-material-grid:not(.is-list) .idea-material-orb) {
+  width: min(88%, var(--mc-orb)); height: auto; aspect-ratio: 1; max-width: 100%;
 }
-.idea-material-catalogue :is(.idea-material-featured-card-body,.idea-material-grid:not(.is-list) .idea-material-card-body) {
-  display:flex; flex-direction:column; flex:1; gap:4px; min-width:0; padding:3px 2px 0;
+.idea-material-catalogue :is(.idea-material-featured-card-body, .idea-material-grid:not(.is-list) .idea-material-card-body) {
+  display: flex; flex-direction: column; flex: 1; gap: 4px; min-width: 0; padding: 6px 2px 0;
 }
-.idea-material-catalogue :is(.idea-material-featured-finish,.idea-material-finish) {align-self:flex-start; min-height:20px;}
-.idea-material-catalogue :is(.idea-material-featured-name,.idea-material-card-body .idea-material-name) {
-  white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere;
-  min-height:1.35em; line-height:1.35; font-size:14px; font-weight:600;
+.idea-material-catalogue :is(.idea-material-featured-finish, .idea-material-finish) { align-self: flex-start; min-height: 20px; }
+.idea-material-catalogue :is(.idea-material-featured-name, .idea-material-card-body .idea-material-name) {
+  white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere;
+  min-height: 1.35em; line-height: 1.35; font-size: 14px; font-weight: 600;
 }
-.idea-material-catalogue :is(.idea-material-featured-meta,.idea-material-card-body .idea-material-meta) {
-  flex-wrap:wrap; gap:2px 6px; padding-bottom:5px; line-height:1.3; min-width:0;
+.idea-material-catalogue :is(.idea-material-featured-meta, .idea-material-card-body .idea-material-meta) {
+  flex-wrap: wrap; gap: 2px 6px; padding-bottom: 5px; line-height: 1.3; min-width: 0;
 }
-.idea-material-catalogue :is(.idea-material-featured-meta code,.idea-material-card-body .idea-material-meta > span:last-child) {
-  white-space:normal; overflow:visible; text-overflow:clip; overflow-wrap:anywhere; flex:1 1 100%;
+.idea-material-catalogue :is(.idea-material-featured-meta code, .idea-material-card-body .idea-material-meta > span:last-child) {
+  white-space: normal; overflow: visible; text-overflow: clip; overflow-wrap: anywhere; flex: 1 1 100%;
 }
-.idea-material-catalogue :is(.idea-material-featured-actions,.idea-material-card-footer) {
-  display:flex; flex-wrap:wrap; margin-top:auto; gap:2px 6px; justify-content:space-between; align-items:stretch;
+.idea-material-catalogue :is(.idea-material-featured-actions, .idea-material-card-footer) {
+  display: flex; flex-wrap: wrap; margin-top: auto; gap: 2px 6px; justify-content: space-between; align-items: stretch;
 }
-.idea-material-catalogue :is(.idea-material-featured-actions button,.idea-material-featured-actions a,.idea-material-quote,.idea-material-visualize) {
-  white-space:normal; min-height:32px; font-size:11px; line-height:1.25; text-align:start; overflow-wrap:anywhere;
+.idea-material-catalogue :is(.idea-material-featured-actions button, .idea-material-featured-actions a, .idea-material-quote, .idea-material-visualize) {
+  white-space: normal; min-height: 32px; font-size: 11px; line-height: 1.25; text-align: start; overflow-wrap: anywhere;
 }
-.idea-material-catalogue :is(.idea-material-featured-actions,.idea-material-card-footer) svg {flex-shrink:0;}
-.idea-material-catalogue .idea-material-catalogue-intro {padding-top:44px; min-width:0;}
-.idea-material-catalogue .idea-material-results {padding-top:0; min-width:0;}
-.idea-material-catalogue .idea-material-toolbar {gap:8px; margin-bottom:6px; flex-wrap:wrap;}
-.idea-material-catalogue .idea-material-search {min-width:0; flex:1 1 260px;}
-.idea-material-catalogue .idea-material-filter-row {min-width:0; max-width:100%; flex-wrap:wrap; overflow:visible; gap:5px;}
-.idea-material-catalogue .idea-material-search-field {min-height:40px;}
-.idea-material-catalogue .idea-material-search-field input {min-height:38px; max-width:none;}
-.idea-material-catalogue .idea-material-grid.is-list .idea-material-card {min-width:0;}
-@media (min-width:1001px) {
-  .idea-material-catalogue .idea-material-featured-copy h2 {font-size:clamp(24px,1.9vw,30px);}
-  .idea-material-catalogue .idea-material-catalogue-intro h1 {font-size:clamp(26px,2vw,34px);}
-  .idea-material-catalogue :is(.idea-material-featured-description,.idea-material-subtitle) {margin-bottom:12px; line-height:1.5;}
+.idea-material-catalogue :is(.idea-material-featured-actions, .idea-material-card-footer) svg { flex-shrink: 0; }
+.idea-material-catalogue .idea-material-catalogue-intro { padding-top: 44px; min-width: 0; }
+.idea-material-catalogue .idea-material-results { padding-top: 0; min-width: 0; }
+.idea-material-catalogue .idea-material-toolbar { gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+.idea-material-catalogue .idea-material-search { min-width: 0; flex: 1 1 260px; }
+.idea-material-catalogue .idea-material-filter-row { min-width: 0; max-width: 100%; flex-wrap: wrap; overflow: visible; gap: 5px; }
+.idea-material-catalogue .idea-material-search-field { min-height: 40px; }
+.idea-material-catalogue .idea-material-search-field input { min-height: 38px; max-width: none; }
+.idea-material-catalogue .idea-material-grid.is-list .idea-material-card { min-width: 0; }
+@media (min-width: 1001px) {
+  .idea-material-catalogue .idea-material-featured-copy h2 { font-size: clamp(24px, 1.9vw, 30px); }
+  .idea-material-catalogue .idea-material-catalogue-intro h1 { font-size: clamp(26px, 2vw, 34px); }
+  .idea-material-catalogue :is(.idea-material-featured-description, .idea-material-subtitle) { margin-bottom: 12px; line-height: 1.5; }
+}
+@media (min-width: 1001px) and (max-height: 760px) {
+  .idea-material-catalogue { --mc-orb: clamp(100px, calc((100svh - 540px) / 2), 144px); }
+  .idea-material-catalogue .idea-material-featured { padding-block: 10px; margin-block-end: 10px; }
+  .idea-material-catalogue .idea-material-featured-copy::after { display: none !important; }
+}
+@media (max-width: 1000px) {
+  .idea-material-catalogue { --mc-orb: clamp(105px, 19vw, 188px); --mc-gap: 16px; }
+  .idea-material-catalogue :is(.idea-material-featured, .idea-material-main-layout) { grid-template-columns: minmax(0, 1fr); padding-inline: 12px; }
+  .idea-material-catalogue .idea-material-catalogue-intro { padding-top: 0; }
+  .idea-material-catalogue .idea-material-featured-copy { max-width: none; }
+  .idea-material-catalogue .idea-material-featured-copy h2 { max-width: none; }
+  .idea-material-catalogue .idea-material-grid:not(.is-list) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .idea-material-catalogue { --mc-orb: clamp(102px, 32vw, 176px); --mc-media: calc(var(--mc-orb) + 12px); }
+  .idea-material-catalogue :is(.idea-material-featured-grid, .idea-material-grid:not(.is-list)) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 10px; }
+  .idea-material-catalogue .idea-material-featured { padding: 14px 10px; }
+  .idea-material-catalogue .idea-material-main-layout { padding-inline: 10px; }
+  .idea-material-catalogue .idea-material-toolbar { align-items: stretch; }
+  .idea-material-catalogue .idea-material-search { flex: 1 1 100%; }
+  .idea-material-catalogue .idea-material-filter-row { position: static; width: 100%; justify-content: flex-start; }
+  .idea-material-catalogue :is(.idea-material-featured-actions, .idea-material-card-footer) { flex-direction: column; align-items: stretch; gap: 2px; }
+  .idea-material-catalogue :is(.idea-material-featured-actions button, .idea-material-featured-actions a, .idea-material-quote, .idea-material-visualize) { flex: auto; min-height: 34px; justify-content: flex-start; border-inline-end: 0; font-size: 11px; }
+  .idea-material-catalogue :is(.idea-material-featured-meta, .idea-material-card-body .idea-material-meta, .idea-material-featured-meta code) { font-size: 10px; }
+  .idea-material-catalogue .idea-material-more-filters-content { position: fixed; inset: auto 12px 16px; width: auto; max-height: 65svh; overflow: auto; z-index: 100; }
+  .idea-material-catalogue .idea-material-facet-options { width: min(220px, 70vw); }
+  .idea-material-catalogue .idea-material-card-actions { opacity: 1; }
+}
+@media (max-width: 320px) {
+  .idea-material-catalogue :is(.idea-material-featured-grid, .idea-material-grid:not(.is-list)) { grid-template-columns: minmax(0, 1fr); }
+}
 
+/* Crisp readable card copy across both light and dark modes */
+html[data-theme] :is(.idea-home-featured-card, .idea-material-featured-card, .idea-material-card) :is(.idea-material-name, .idea-home-featured-name, .idea-material-featured-name) {
+  color: var(--idea-text) !important;
 }
-@media (min-width:1001px) and (max-height:760px) {
-  .idea-material-catalogue {--mc-orb:clamp(100px,calc((100svh - 540px)/2),144px);}
-  .idea-material-catalogue .idea-material-featured {padding-block:10px;margin-block-end:10px;}
-  .idea-material-catalogue .idea-material-featured-copy::after {display:none !important;}
-}
-@media (max-width:1000px) {
-  .idea-material-catalogue {--mc-orb:clamp(105px,19vw,188px);--mc-gap:16px;}
-  .idea-material-catalogue :is(.idea-material-featured,.idea-material-main-layout) {grid-template-columns:minmax(0,1fr);padding-inline:12px;}
-  .idea-material-catalogue .idea-material-catalogue-intro {padding-top:0;}
-  .idea-material-catalogue .idea-material-featured-copy {max-width:none;}
-  .idea-material-catalogue .idea-material-featured-copy h2 {max-width:none;}
-  .idea-material-catalogue .idea-material-grid:not(.is-list) {grid-template-columns:repeat(3,minmax(0,1fr));}
-}
-@media (max-width:760px) {
-  .idea-material-catalogue {--mc-orb:clamp(102px,32vw,176px);--mc-media:calc(var(--mc-orb) + 12px);}
-  .idea-material-catalogue :is(.idea-material-featured-grid,.idea-material-grid:not(.is-list)) {grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 10px;}
-  .idea-material-catalogue .idea-material-featured {padding:14px 10px;}
-  .idea-material-catalogue .idea-material-main-layout {padding-inline:10px;}
-  .idea-material-catalogue .idea-material-toolbar {align-items:stretch;}
-  .idea-material-catalogue .idea-material-search {flex:1 1 100%;}
-  .idea-material-catalogue .idea-material-filter-row {position:static; width:100%; justify-content:flex-start;}
-  .idea-material-catalogue :is(.idea-material-featured-actions,.idea-material-card-footer) {flex-direction:column; align-items:stretch;gap:2px;}
-  .idea-material-catalogue :is(.idea-material-featured-actions button,.idea-material-featured-actions a,.idea-material-quote,.idea-material-visualize) {flex:auto; min-height:34px; justify-content:flex-start; border-inline-end:0; font-size:11px;}
-  .idea-material-catalogue :is(.idea-material-featured-meta,.idea-material-card-body .idea-material-meta,.idea-material-featured-meta code) {font-size:10px;}
-  .idea-material-catalogue .idea-material-more-filters-content {position:fixed; inset: auto 12px 16px; width:auto; max-height:65svh; overflow:auto; z-index:100;}
-  .idea-material-catalogue .idea-material-facet-options {width:min(220px,70vw);}
-  .idea-material-catalogue .idea-material-card-actions {opacity:1;}
-}
-@media (max-width:320px) {
- .idea-material-catalogue :is(.idea-material-featured-grid,.idea-material-grid:not(.is-list)) {grid-template-columns:minmax(0,1fr);}
+html[data-theme] :is(.idea-home-featured-card, .idea-material-featured-card, .idea-material-card) :is(.idea-material-meta, .idea-home-featured-meta, .idea-material-featured-meta) {
+  color: var(--idea-text-muted) !important;
 }
 
-/* Transparent surfaces: do not dim content or alter media. */
-html[data-theme] :is(.idea-home-featured-card,.idea-material-featured-card,.idea-material-card,.glass-card,.idea-dash-kpi,.idea-dash-table-wrap) {background:var(--idea-glass-card-bg)!important;box-shadow:var(--idea-glass-rim),var(--idea-glass-depth)!important;}
-html[data-theme] :is(.idea-home-featured-card,.idea-material-featured-card,.idea-material-card) :is(.idea-material-name,.idea-material-meta,.idea-home-featured-name,.idea-home-featured-meta,.idea-material-featured-name,.idea-material-featured-meta) {color:var(--idea-text)!important;}
+/* /products translucent dark-glass GlareCard product group */
+html[data-theme] :is(.idea-material-featured-card, .idea-material-card).idea-glare-product-card,
+html[data-theme] :is(.idea-material-featured-card, .idea-material-card).idea-glare-product-card:hover {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+  transform: none !important;
+}
+.idea-glare-product-card .idea-glare-glass-base {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.13) 0%, rgba(255, 255, 255, 0.03) 34%, transparent 56%, rgba(255, 255, 255, 0.04) 100%),
+    linear-gradient(160deg, rgba(26, 26, 31, 0.72) 0%, rgba(14, 14, 18, 0.64) 100%);
+}
+html[data-theme="dark"] .idea-glare-product-card .idea-glare-glass-base {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.11) 0%, rgba(255, 255, 255, 0.025) 34%, transparent 56%, rgba(255, 255, 255, 0.035) 100%),
+    linear-gradient(160deg, rgba(24, 24, 29, 0.56) 0%, rgba(12, 12, 16, 0.48) 100%);
+}
+.idea-glare-product-card .idea-glare-product-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 13px;
+  box-sizing: border-box;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+.idea-material-grid.is-list .idea-glare-product-card {
+  display: block !important;
+}
+.idea-material-grid.is-list .idea-glare-product-card .idea-glare-product-inner {
+  display: grid;
+  grid-template-columns: minmax(150px, 210px) minmax(0, 1fr);
+  align-items: center;
+  gap: 18px;
+  padding: 14px 18px;
+}
+html[data-theme] .idea-glare-product-card .idea-material-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-card-footer, .idea-material-featured-actions) {
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  margin-top: auto !important;
+  padding-top: 6px !important;
+  border-top: 0 !important;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-quote, .idea-material-visualize, .idea-material-featured-actions button, .idea-material-featured-actions a) {
+  flex: 0 1 auto !important;
+  border-inline-end: 0 !important;
+  padding: 0 !important;
+  min-height: 32px !important;
+  white-space: nowrap !important;
+  font-size: 11px !important;
+}
+@media (max-width: 760px) {
+  html[data-theme] .idea-glare-product-card :is(.idea-material-card-footer, .idea-material-featured-actions) {
+    flex-wrap: wrap !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 2px !important;
+  }
+  html[data-theme] .idea-glare-product-card :is(.idea-material-quote, .idea-material-visualize, .idea-material-featured-actions button, .idea-material-featured-actions a) {
+    justify-content: flex-start !important;
+    white-space: normal !important;
+  }
+}
+@media (max-width: 560px) {
+  .idea-glare-product-card .idea-glare-product-inner {
+    padding: 9px;
+  }
+  .idea-material-grid.is-list .idea-glare-product-card .idea-glare-product-inner {
+    grid-template-columns: minmax(100px, 118px) minmax(0, 1fr);
+    gap: 10px;
+    padding: 10px;
+  }
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-name, .idea-material-featured-name) {
+  color: #fd6401 !important;
+  font-weight: 700;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-name:hover, .idea-material-featured-name:hover) {
+  color: #ff7c24 !important;
+  text-shadow: 0 0 14px rgba(253, 100, 1, 0.42);
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-maker > span, .idea-material-featured-maker strong) {
+  color: rgba(255, 255, 255, 0.92) !important;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-maker > small, .idea-material-featured-maker small, .idea-material-meta, .idea-material-featured-meta, .idea-material-featured-meta code) {
+  color: rgba(255, 255, 255, 0.66) !important;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-meta, .idea-material-featured-meta) {
+  border-bottom-color: rgba(255, 255, 255, 0.12) !important;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-finish, .idea-material-featured-finish) {
+  position: static !important;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 9px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  color: rgba(255, 255, 255, 0.88) !important;
+  font-size: 10.5px;
+  font-weight: 500;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-quote, .idea-material-featured-actions button) {
+  color: rgba(255, 255, 255, 0.92) !important;
+  transition: color 0.18s ease;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-quote:hover, .idea-material-featured-actions button:hover) {
+  color: #fd6401 !important;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-visualize, .idea-material-featured-actions a) {
+  color: #fd6401 !important;
+  font-weight: 500;
+  transition: color 0.18s ease, text-shadow 0.18s ease;
+}
+html[data-theme] .idea-glare-product-card :is(.idea-material-visualize:hover, .idea-material-featured-actions a:hover) {
+  color: #ff7c24 !important;
+  text-shadow: 0 0 12px rgba(253, 100, 1, 0.38);
+}
+html[data-theme] .idea-glare-product-card .idea-material-card-actions {
+  z-index: 5;
+}
+
+/* /products architectural IDEA showroom backdrop, unified Ubuntu/Fustat type & #fd6401 brand orange */
+html[lang="en"] .idea-products-showroom-section,
+html[lang="en"] .idea-products-showroom-section *:not(code):not(pre),
+html[lang="fr"] .idea-products-showroom-section,
+html[lang="fr"] .idea-products-showroom-section *:not(code):not(pre) {
+  font-family: "Ubuntu", "Fustat", Arial, sans-serif !important;
+}
+html[lang="ar"] .idea-products-showroom-section,
+html[lang="ar"] .idea-products-showroom-section *:not(code):not(pre) {
+  font-family: "Fustat", "Cairo", sans-serif !important;
+}
+
+.idea-products-showroom-section {
+  position: relative;
+  overflow-x: clip;
+  isolation: isolate;
+}
+.idea-products-showroom-bg {
+  position: absolute;
+  inset: 0 0 auto 0;
+  width: 100%;
+  height: clamp(660px, 78svh, 760px);
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: #0d0f12;
+}
+.idea-products-showroom-bg img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: -24px top;
+  user-select: none;
+}
+.idea-products-showroom-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.14) 0%, rgba(0, 0, 0, 0.08) 28%, rgba(11, 13, 17, 0.24) 48%, rgba(11, 13, 17, 0.42) 100%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.14) 0%, transparent 18%, rgba(11, 13, 17, 0.18) 68%, var(--idea-bg) 100%);
+}
+html[data-theme] .idea-products-showroom-section .idea-material-featured {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible;
+}
+html[data-theme] .idea-products-showroom-section .idea-material-featured::before {
+  display: none !important;
+}
+
+/* Keep showroom architectural framing on physical left on desktop so the IDEA wall logo stays unobstructed in both LTR and RTL */
+@media (min-width: 1001px) {
+  [dir="rtl"] .idea-products-showroom-section .idea-material-featured,
+  [dir="rtl"] .idea-products-showroom-section .idea-material-main-layout {
+    direction: ltr;
+  }
+  [dir="rtl"] .idea-products-showroom-section .idea-material-featured-stage,
+  [dir="rtl"] .idea-products-showroom-section .idea-material-catalogue-aside,
+  [dir="rtl"] .idea-products-showroom-section .idea-material-results {
+    direction: rtl;
+  }
+}
+
+@media (min-width: 1180px) {
+  .idea-products-showroom-section .idea-material-catalogue {
+    --mc-side: clamp(276px, 23vw, 344px);
+  }
+}
+
+/* Featured section: uncluttered right-stage header above the 4 featured cards */
+.idea-material-featured-spacer {
+  min-width: 0;
+  pointer-events: none;
+}
+.idea-material-featured-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+.idea-material-featured-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.idea-products-showroom-section .idea-material-featured-copy {
+  max-width: 680px !important;
+  padding-top: 0 !important;
+  transform: none !important;
+}
+
+/* Unified store section eyebrow, heading & subtitle scale (identical across Featured & Catalogue) */
+.idea-products-showroom-section .idea-material-featured-copy .idea-material-featured-eyebrow,
+.idea-products-showroom-section .idea-material-catalogue-intro .idea-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+  color: #fd6401 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.16em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.55);
+}
+.idea-products-showroom-section .idea-material-featured-copy .idea-material-featured-eyebrow::before,
+.idea-products-showroom-section .idea-material-catalogue-intro .idea-eyebrow::before {
+  content: "";
+  width: 18px;
+  height: 2px;
+  border-radius: 999px;
+  background: #fd6401;
+  box-shadow: 0 0 10px rgba(253, 100, 1, 0.65);
+  flex: 0 0 auto;
+}
+[dir="rtl"] .idea-products-showroom-section .idea-material-featured-copy .idea-material-featured-eyebrow,
+[dir="rtl"] .idea-products-showroom-section .idea-material-catalogue-intro .idea-eyebrow {
+  letter-spacing: 0;
+  font-size: 13px !important;
+}
+
+.idea-products-showroom-section .idea-material-featured-copy h2,
+.idea-products-showroom-section .idea-material-catalogue-intro h1 {
+  max-width: none !important;
+  margin: 0 0 8px;
+  font-size: clamp(24px, 2vw, 30px) !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em;
+  line-height: 1.18 !important;
+}
+[dir="rtl"] .idea-products-showroom-section .idea-material-featured-copy h2,
+[dir="rtl"] .idea-products-showroom-section .idea-material-catalogue-intro h1 {
+  letter-spacing: 0;
+}
+.idea-products-showroom-section .idea-material-featured-copy h2 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.72);
+}
+
+.idea-products-showroom-section .idea-material-featured-description,
+.idea-products-showroom-section .idea-material-catalogue-intro .idea-material-subtitle {
+  margin: 0 !important;
+  font-size: 14px !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+}
+.idea-products-showroom-section .idea-material-featured-description {
+  max-width: 560px !important;
+  color: rgba(255, 255, 255, 0.84) !important;
+  text-shadow: 0 1px 10px rgba(0, 0, 0, 0.72);
+}
+
+/* Signature brand-orange Explore Featured CTA — exact #fd6401 logo orange + specular light-sweep effect */
+@keyframes idea-cta-sheen {
+  0% {
+    transform: translateX(-140%) skewX(-22deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.75;
+  }
+  42% {
+    transform: translateX(240%) skewX(-22deg);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(240%) skewX(-22deg);
+    opacity: 0;
+  }
+}
+
+.idea-products-showroom-section .idea-material-featured-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 184, 134, 0.42);
+  background: linear-gradient(180deg, #fd6401 0%, #e45700 100%);
+  color: #ffffff !important;
+  font-size: 13.5px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
+  text-decoration: none;
+  box-shadow:
+    0 8px 24px rgba(253, 100, 1, 0.36),
+    0 0 0 1px rgba(253, 100, 1, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+  transition:
+    transform 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.24s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.22s ease,
+    filter 0.22s ease;
+}
+[dir="rtl"] .idea-products-showroom-section .idea-material-featured-cta {
+  letter-spacing: 0;
+  font-size: 14px !important;
+}
+.idea-products-showroom-section .idea-material-featured-cta::before {
+  content: "";
+  position: absolute;
+  inset: -4px auto -4px 0;
+  width: 44%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.14) 30%,
+    rgba(255, 255, 255, 0.52) 50%,
+    rgba(255, 255, 255, 0.14) 70%,
+    transparent 100%
+  );
+  transform: translateX(-140%) skewX(-22deg);
+  pointer-events: none;
+  animation: idea-cta-sheen 4.8s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+.idea-products-showroom-section .idea-material-featured-cta svg {
+  flex: 0 0 auto;
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.idea-products-showroom-section .idea-material-featured-cta:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 214, 182, 0.68);
+  filter: brightness(1.04);
+  box-shadow:
+    0 12px 30px rgba(253, 100, 1, 0.52),
+    0 0 18px rgba(253, 100, 1, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.48);
+}
+.idea-products-showroom-section .idea-material-featured-cta:hover::before {
+  animation: none;
+  transform: translateX(250%) skewX(-22deg);
+  opacity: 0.9;
+  transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.2s ease;
+}
+.idea-products-showroom-section .idea-material-featured-cta:hover svg {
+  transform: translateX(4px);
+}
+[dir="rtl"] .idea-products-showroom-section .idea-material-featured-cta:hover svg {
+  transform: rotate(180deg) translateX(4px);
+}
+.idea-products-showroom-section .idea-material-featured-cta:active {
+  transform: translateY(0) scale(0.985);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .idea-products-showroom-section .idea-material-featured-cta::before {
+    animation: none !important;
+    display: none;
+  }
+}
+
+/* Desktop layout: stretch aside to full product-grid height so the sticky filter travels smoothly up & down */
+@media (min-width: 1001px) {
+  .idea-products-showroom-section .idea-material-featured {
+    align-items: start !important;
+    padding-top: 20px !important;
+    padding-bottom: 18px !important;
+    margin-block-end: 8px !important;
+  }
+  .idea-products-showroom-section .idea-material-main-layout {
+    align-items: stretch !important;
+  }
+  .idea-products-showroom-section .idea-material-catalogue-aside {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    gap: 18px;
+    min-width: 0;
+    padding-top: clamp(118px, 14vh, 158px);
+  }
+  .idea-products-showroom-section .idea-material-catalogue-intro {
+    padding-top: 0 !important;
+  }
+}
+
+/* Smooth anchor landing below the fixed navbar */
+#idea-material-catalogue-grid {
+  scroll-margin-top: 92px;
+}
+
+/* Product Catalogue left intro sits cleanly below the showroom floor fade */
+html[data-theme="dark"] .idea-products-showroom-section .idea-material-catalogue-intro h1 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+}
+html[data-theme="dark"] .idea-products-showroom-section .idea-material-catalogue-intro .idea-material-subtitle {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+html[data-theme="light"] .idea-products-showroom-section .idea-material-catalogue-intro {
+  padding: 0 !important;
+  background: transparent;
+  border: 0;
+}
+html[data-theme="light"] .idea-products-showroom-section .idea-material-catalogue-intro .idea-eyebrow {
+  text-shadow: none;
+}
+html[data-theme="light"] .idea-products-showroom-section .idea-material-catalogue-intro h1 {
+  color: #181512 !important;
+  text-shadow: 0 1px 10px rgba(255, 255, 255, 0.72);
+}
+html[data-theme="light"] .idea-products-showroom-section .idea-material-catalogue-intro .idea-material-subtitle {
+  color: #4b453e !important;
+}
+
+/* Sticky frosted dark sidebar filter panel — smoothly follows scrolling up & down the catalogue */
+.idea-filter-panel {
+  position: sticky;
+  top: 82px;
+  max-height: calc(100dvh - 100px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(253, 100, 1, 0.42) transparent;
+  padding: 20px 18px 68px;
+  border-radius: 18px;
+  border: 1px solid rgba(253, 100, 1, 0.3);
+  background: rgba(16, 18, 22, 0.9);
+  backdrop-filter: blur(18px) saturate(1.25);
+  -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: #f3f1ed;
+}
+.idea-filter-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+.idea-filter-panel-title-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.idea-filter-panel-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+.idea-filter-active-count {
+  display: inline-grid;
+  place-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: #fd6401;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.idea-filter-panel-header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.idea-filter-clear-btn {
+  padding: 4px 2px;
+  border: 0;
+  background: transparent;
+  color: #fd6401;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.18s ease, opacity 0.18s ease;
+}
+.idea-filter-clear-btn:hover:not(:disabled) {
+  color: #ff7c24;
+}
+.idea-filter-clear-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.idea-filter-close-btn {
+  display: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  cursor: pointer;
+}
+.idea-filter-group {
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+.idea-filter-group:last-of-type {
+  padding-bottom: 0;
+  margin-bottom: 0;
+  border-bottom: 0;
+}
+.idea-filter-group-label {
+  margin-bottom: 10px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+[dir="rtl"] .idea-filter-group-label {
+  letter-spacing: 0;
+  font-size: 12px;
+}
+.idea-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.idea-filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 6px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.025);
+  color: rgba(255, 255, 255, 0.88);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.2;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.18s ease, background-color 0.18s ease, color 0.18s ease, box-shadow 0.18s ease, transform 0.15s ease;
+}
+.idea-filter-chip:hover {
+  border-color: rgba(253, 100, 1, 0.65);
+  background: rgba(253, 100, 1, 0.12);
+  color: #ffffff;
+}
+.idea-filter-chip.is-active {
+  border-color: #fd6401;
+  background: rgba(253, 100, 1, 0.22);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 0 0 1px rgba(253, 100, 1, 0.34), 0 4px 12px rgba(253, 100, 1, 0.18);
+}
+.idea-filter-chip.is-empty:not(.is-active) {
+  opacity: 0.62;
+  border-style: dashed;
+}
+.idea-filter-chip--size {
+  font-variant-numeric: tabular-nums;
+}
+.idea-filter-chip-count {
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 10.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.idea-filter-chip.is-active .idea-filter-chip-count {
+  color: #ffc299;
+}
+.idea-filter-color-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  flex: 0 0 auto;
+}
+.idea-filter-mobile-apply {
+  display: none;
+  width: 100%;
+  margin-top: 18px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 184, 134, 0.4);
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fd6401 0%, #e45700 100%);
+  color: #ffffff;
+  font: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(253, 100, 1, 0.32);
+}
+
+/* Streamlined catalogue toolbar — equal 44px heights across search, filters, sort & view toggle */
+.idea-products-showroom-section .idea-material-search-field {
+  height: 44px !important;
+  min-height: 44px !important;
+  border-radius: 999px !important;
+  padding-inline: 14px !important;
+}
+.idea-products-showroom-section .idea-material-search-field input {
+  height: 42px !important;
+  min-height: 42px !important;
+  font-size: 13px !important;
+}
+.idea-material-toolbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 0 auto;
+}
+.idea-mobile-filter-trigger {
+  display: none;
+  align-items: center;
+  gap: 7px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--mc-rim);
+  border-radius: 999px;
+  background: var(--idea-surface);
+  color: var(--idea-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.idea-material-sort-select select {
+  height: 44px !important;
+  min-height: 44px !important;
+  padding-inline: 16px 30px;
+  border: 1px solid var(--mc-rim);
+  border-radius: 999px !important;
+  background: var(--idea-surface);
+  color: var(--idea-text);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+[data-theme="dark"] .idea-material-sort-select select {
+  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(22, 24, 28, 0.85);
+}
+.idea-products-showroom-section .idea-material-view-toggle {
+  display: inline-flex;
+  align-items: center;
+  height: 44px;
+  min-height: 44px;
+  padding: 3px;
+  gap: 4px;
+  border-radius: 999px !important;
+}
+.idea-products-showroom-section .idea-material-view-toggle button {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border-radius: 999px !important;
+}
+
+/* Active filter chips & result bar */
+.idea-active-filter-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 10px;
+}
+.idea-active-filter-summary {
+  color: var(--idea-text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-inline-end: 4px;
+  font-variant-numeric: tabular-nums;
+}
+.idea-active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 32px;
+  padding: 4px 12px;
+  border: 1px solid rgba(253, 100, 1, 0.5);
+  border-radius: 999px;
+  background: rgba(253, 100, 1, 0.14);
+  color: var(--idea-text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.16s ease, border-color 0.16s ease;
+}
+.idea-active-chip:hover {
+  background: rgba(253, 100, 1, 0.24);
+  border-color: #fd6401;
+}
+.idea-active-filter-clear {
+  padding: 4px 6px;
+  border: 0;
+  background: transparent;
+  color: #fd6401;
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.idea-material-resultline-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 8px 0 12px;
+  color: var(--idea-text-muted);
+  font-size: 12px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Empty state helpful actions */
+.idea-material-empty-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+.idea-material-empty-actions button.is-primary,
+.idea-empty-quote-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 44px;
+  min-height: 44px;
+  padding: 0 20px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.idea-material-empty-actions button.is-primary {
+  border: 1px solid rgba(255, 184, 134, 0.4);
+  background: linear-gradient(180deg, #fd6401 0%, #e45700 100%);
+  color: #ffffff;
+  box-shadow: 0 8px 20px rgba(253, 100, 1, 0.3);
+}
+.idea-empty-quote-link {
+  border: 1px solid rgba(253, 100, 1, 0.6);
+  color: #fd6401;
+  background: transparent;
+}
+
+/* Responsive behavior (tablet & mobile drawer) */
+.idea-sidebar-scrim {
+  display: none;
+}
+@media (max-width: 1000px) {
+  .idea-products-showroom-bg {
+    height: clamp(460px, 68svh, 620px);
+  }
+  .idea-material-featured-spacer {
+    display: none;
+  }
+  .idea-products-showroom-section .idea-material-featured {
+    padding-top: 18px !important;
+  }
+  .idea-products-showroom-section .idea-material-catalogue-aside {
+    padding-top: 0;
+  }
+  .idea-mobile-filter-trigger {
+    display: inline-flex;
+  }
+  .idea-sidebar-scrim {
+    display: block;
+    position: fixed;
+    inset: 64px 0 0 0;
+    z-index: 120;
+    background: rgba(0, 0, 0, 0.62);
+    backdrop-filter: blur(4px);
+  }
+  .idea-filter-panel {
+    position: fixed;
+    top: 64px;
+    bottom: 0;
+    inset-inline-start: 0;
+    z-index: 125;
+    width: min(88vw, 356px);
+    max-height: calc(100dvh - 64px);
+    border-radius: 0 18px 18px 0;
+    transform: translate3d(-105%, 0, 0);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.26s ease;
+  }
+  [dir="rtl"] .idea-filter-panel {
+    border-radius: 18px 0 0 18px;
+    transform: translate3d(105%, 0, 0);
+  }
+  .idea-filter-panel.is-open {
+    transform: translate3d(0, 0, 0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .idea-filter-close-btn {
+    display: inline-grid;
+  }
+  .idea-filter-mobile-apply {
+    display: block;
+  }
+}
+
+
+

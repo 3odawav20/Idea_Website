@@ -25,12 +25,12 @@ export function Collections() {
               <div className="idea-eyebrow" style={{ marginBottom: "var(--idea-space-4)" }}>{g.label}</div>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "var(--idea-space-4)" }}>
                 {items.map((c) => (
-                  <Link key={c.slug} to={`/collections/${c.slug}`} style={{ position: "relative", aspectRatio: "4/3", borderRadius: "var(--idea-radius-lg)", overflow: "hidden", border: "var(--idea-hairline)", display: "block" }}>
+                  <Link key={c.slug} to={`/collections/${c.slug}`} className="idea-collection-card" style={{ position: "relative", aspectRatio: "4/3", borderRadius: 14, overflow: "hidden", display: "block" }}>
                     <img className="idea-vivid-image" src={c.image} alt={c.title[locale]} loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    <div style={{ position: "absolute", inset: 0, background: "var(--idea-image-overlay-soft)" }} />
-                    <div style={{ position: "absolute", bottom: 0, padding: "var(--idea-space-4)" }}>
-                      <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{c.title[locale]}</div>
-                      <div style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)", marginTop: 4 }}>{c.blurb[locale]}</div>
+                    <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(0,0,0,0.02) 38%, rgba(0,0,0,0.44) 100%)" }} />
+                    <div className="idea-collection-card-caption" style={{ position: "absolute", insetInline: 10, bottom: 10, padding: "12px 14px", borderRadius: 10 }}>
+                      <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)" }}>{c.title[locale]}</div>
+                      <div className="idea-collection-card-blurb" style={{ fontSize: "var(--idea-text-xs)", marginTop: 4 }}>{c.blurb[locale]}</div>
                     </div>
                   </Link>
                 ))}
