@@ -4,9 +4,9 @@ html[data-theme="light"] {
  --idea-bg:#fff;--idea-page-background:#fff;--idea-bg-2:#f5f5f5;--idea-surface:#fff;--idea-surface-2:#f3f3f3;
  --idea-text:#111;--idea-text-muted:#111;--idea-text-faint:#222;
  --idea-border:#bcbcbc;--idea-border-neutral:#d0d0d0;
- --idea-glass-edge:rgba(0,0,0,.25);--idea-glass-rim:inset 0 0 0 1px var(--idea-glass-edge),inset 0 1px 0 #fff;
- --idea-glass-depth:0 4px 14px #0000000e;--idea-glass-card-bg:rgba(245,245,245,.88);
- --idea-glass-card-bg-hover:#eee;--idea-gt-tray-bg:#f4f4f4;--idea-gt-bg:#fff;
+ --idea-glass-edge:rgba(0,0,0,.28);--idea-glass-rim:inset 0 0 0 1px var(--idea-glass-edge),inset 0 1px 0 #fff;
+ --idea-glass-depth:0 4px 14px #0000000e;--idea-glass-card-bg:rgba(255,255,255,.38);
+ --idea-glass-card-bg-hover:#eee;--idea-gt-tray-bg:rgba(255,255,255,.32);--idea-gt-bg:rgba(255,255,255,.45);
  --idea-gt-bg-hover:#eee;--idea-gt-input-bg:#fafafa;--idea-gt-input-bg-focus:#fff;--idea-gt-text:#111;
  --idea-gt-text-hover:#000;--idea-gt-text-active:#963a00;--idea-panel-fill:#fafafa;--idea-tab-fill:#fff;
 }
@@ -15,9 +15,9 @@ html[data-theme="dark"] {
  --idea-text:#fff;--idea-text-muted:#fff;--idea-text-faint:#e7e7e7;
  --idea-border:#555;--idea-border-neutral:#454545;
  --idea-marble-glass:#171717;--idea-marble-glass-panel:#1d1d1d;
- --idea-glass-edge:rgba(255,255,255,.32);--idea-glass-rim:inset 0 0 0 1px var(--idea-glass-edge),inset 0 1px 0 #ffffff15;
- --idea-glass-depth:0 5px 18px #0005;--idea-glass-card-bg:rgba(29,29,29,.94);--idea-glass-card-bg-hover:#282828;
- --idea-gt-tray-bg:#1b1b1b;--idea-gt-bg:#252525;--idea-gt-bg-hover:#303030;--idea-gt-input-bg:#1a1a1a;--idea-gt-input-bg-focus:#252525;
+ --idea-glass-edge:rgba(255,255,255,.35);--idea-glass-rim:inset 0 0 0 1px var(--idea-glass-edge),inset 0 1px 0 #ffffff15;
+ --idea-glass-depth:0 5px 18px #0005;--idea-glass-card-bg:rgba(255,255,255,.055);--idea-glass-card-bg-hover:#282828;
+ --idea-gt-tray-bg:rgba(255,255,255,.045);--idea-gt-bg:rgba(255,255,255,.065);--idea-gt-bg-hover:#303030;--idea-gt-input-bg:#1a1a1a;--idea-gt-input-bg-focus:#252525;
  --idea-gt-text:#fff;--idea-gt-text-hover:#fff;--idea-panel-fill:#1d1d1d;--idea-tab-fill:#252525;
 }
 html[data-theme],html[data-theme] body {background:var(--idea-page-background)!important;}
@@ -29,11 +29,13 @@ html[data-theme] .idea-home-finder-scene {background:var(--idea-bg)!important;}
 html[data-theme] .idea-home-finder-scene::before,html[data-theme] .idea-home-finder-scene::after {background:none!important;}
 html[data-theme] :is(.idea-usp,.idea-featured,.idea-materials,.idea-home-newsletter,.idea-home-resource-grid>a,.idea-resource-list>article,.idea-service-status,.idea-sponsored-collections article,.idea-featured-play,.idea-discovery-search,.idea-discovery-nav,.idea-discovery-menu,.idea-dash-kpi,.idea-dash-banner,.idea-dash-table-wrap,.idea-studio-rail,.idea-studio-library,.idea-studio-analysis,.idea-room3d-side,.idea-room3d-main,.idea-room3d-fixture-properties,.ids-topbar,.ids-settings-links>a,.glass-card) {
  box-shadow:var(--idea-glass-rim),var(--idea-glass-depth)!important;
- background-color:var(--idea-glass-card-bg)!important;
+ background:var(--idea-glass-card-bg)!important;
+ backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
 }
 html[data-theme] :is(.idea-glass-tablist,[role="tablist"],.idea-discovery-tabs,.idea-studio-view-tabs,.idea-studio-choice,.idea-atlas-categories,.idea-room3d-material-tabs,.idea-room3d-pills,.idea-room3d-selected-surfaces,.idea-lighting-segments,.idea-dash-nav,.idea-admin-tabs,.ids-nav,.icc-brands,.idea-product-section-nav,.idea-home-surface-filters,.idea-material-view-toggle) {
  box-shadow:var(--idea-glass-rim),var(--idea-glass-depth)!important;
- background-color:var(--idea-gt-tray-bg)!important;
+ background:var(--idea-gt-tray-bg)!important;
+ backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
 }
 html[data-theme] :is(.idea-glass-tab,[role="tab"],.idea-discovery-tabs button,.idea-chip,.idea-catalogue-pagination button,.idea-product-section-nav a:not(.idea-product-nav-visualizer),.idea-material-face-selector button,.idea-studio-view-tabs button,.idea-studio-choice button,.idea-atlas-categories button,.idea-room3d-material-tabs button,.idea-room3d-pills button,.idea-room3d-selected-surfaces button,.idea-room3d-fixture-chips button,.idea-lighting-segments button,.idea-dash-nav a,.idea-admin-tabs a,.ids-navlink,.icc-brands>button,.idea-material-facet summary,.idea-material-category-filter select,.idea-material-more-filters summary,.idea-home-surface-filters a) {
  box-shadow:inset 0 0 0 1px var(--idea-glass-edge)!important;
@@ -173,3 +175,7 @@ html[data-theme] :is(a,button,input,textarea,select,summary):focus-visible {outl
 @media (max-width:320px) {
  .idea-material-catalogue :is(.idea-material-featured-grid,.idea-material-grid:not(.is-list)) {grid-template-columns:minmax(0,1fr);}
 }
+
+/* Transparent surfaces: do not dim content or alter media. */
+html[data-theme] :is(.idea-home-featured-card,.idea-material-featured-card,.idea-material-card,.glass-card,.idea-dash-kpi,.idea-dash-table-wrap) {background:var(--idea-glass-card-bg)!important;box-shadow:var(--idea-glass-rim),var(--idea-glass-depth)!important;}
+html[data-theme] :is(.idea-home-featured-card,.idea-material-featured-card,.idea-material-card) :is(.idea-material-name,.idea-material-meta,.idea-home-featured-name,.idea-home-featured-meta,.idea-material-featured-name,.idea-material-featured-meta) {color:var(--idea-text)!important;}
