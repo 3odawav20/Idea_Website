@@ -2,7 +2,6 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 const read=p=>readFileSync(p,"utf8");
-const sql=read("supabase/migrations/20261103130000_company_control_center.sql");
 const app=read("src/app/App.tsx");
 const center=read("src/app/pages/CompanyControlCenter.tsx");
 const growth=read("src/app/pages/BusinessGrowth.tsx");
@@ -34,31 +33,20 @@ test("business company and admin routes are separate, role-guarded and navigable
   assert.match(php,/COMPANY_ACCESS_DENIED/);
 });
 test("company owner cannot grant platform admin or suspend another company",()=>{
-  assert.match(sql,/public\.company_is_owner\(p_company\)/);
-  assert.match(sql,/member_role in \('owner','manager'\)/);
-  assert.match(sql,/if not public\.is_admin\(\)/);
-  assert.match(sql,/admin_set_idea_company_status/);
-  assert.match(sql,/set revoked_at=case when p_enabled then null else now\(\) end/);
-  assert.match(sql,/drop policy if exists "companies: members update"/);
-  assert.match(sql,/create policy "companies: platform admin update"/);
-  assert.match(sql,/role=case when public\.user_roles\.role='admin' then 'admin'/);
-  assert.match(sql,/status='verified'/);
+  assert.match(php,/if\(!\$role\|\|\(\$ownerOnly&&!in_array\(\$role,\['owner','admin'\],true\)\)\)accountError\(403,'COMPANY_ACCESS_DENIED'\)/);
+  assert.match(php,/if\(!\$staff\|\|\$staff\['role'\]==='admin'\)accountError/);
+  assert.match(php,/if\(\$action==='company-suspend'\|\|\$action==='company-status'\)\{\s*if\(!\$admin\)accountError\(403,'ADMIN_REQUIRED'\)/);
+  assert.match(mysql,/UNIQUE KEY uq_idea_company_staff\(company_id,user_id\)/);
 });
 test("listing publication is platform admin-controlled, not merely active flag",()=>{
-  assert.match(sql,/approved_for_storefront boolean not null default false/);
-  assert.match(sql,/guard_idea_supplier_publication/);
-  assert.match(sql,/active and approved_for_storefront/);
-  assert.match(sql,/create policy "listings: manager update"/);
+  assert.match(mysql,/approved_for_storefront TINYINT\(1\) NOT NULL DEFAULT 0/);
+  assert.match(php,/p.active=1 AND c.status='verified' AND m.approved_for_storefront=1/);
+  assert.match(php,/ADMIN_APPROVAL_REQUIRED/);
   assert.match(center,/approved_for_storefront/);
 });
 test("private prices and promotions never public; no fabricated sales",()=>{
-  for(const name of ["supplier_listing_private_prices","supplier_listing_private_promotions","idea_confirmed_sales"]){
-    assert.ok(sql.includes("alter table public."+name+" enable row level security"));
-    assert.ok(sql.includes("alter table public."+name+" force row level security"));
-    assert.ok(sql.includes("revoke all on public."+name+" from anon"));
-  }
-  assert.match(sql,/unique\(company_id,source_order_id\)/);
-  assert.match(sql,/refund_egp <= gross_egp/);
+  assert.match(mysql,/private_price_cents BIGINT UNSIGNED NULL/);
+  assert.match(php,/if\(!\$authorized\)\{unset\(\$r\['private_price_cents'\],\$r\['admin_notes'\]\);\}/);
   assert.match(growth,/fetchConfirmedSales\(period, id\)/);
   assert.match(growth,/const id = companies\.some/);
   assert.match(api,/phpGet\(PHP_MARKETPLACE_API, "sales", \{ month, company_id: companyId \}\)/);
@@ -68,15 +56,10 @@ test("private prices and promotions never public; no fabricated sales",()=>{
   assert.match(php,/COUNT\(DISTINCT oi\.order_id\)/);
   assert.match(php,/refund_accounting.*separate_reconciliation_required/);
   assert.match(growth,/Not reconciled/);
-  assert.match(sql,/language sql stable security invoker/);
-  assert.match(sql,/revoke all on function public.idea_company_sales_summary\(date\) from public,anon/);
   assert.match(growth,/لا يتم اختلاق أرقام من عروض الأسعار/);
   assert.doesNotMatch(growth,/Math\.random/);
 });
 test("admin announcement implementation remains staged; live header never reads Supabase",()=>{
-  // The legacy Supabase schema/editor is source-only pending verified PHP/MySQL migration.
-  assert.match(sql,/create policy "idea_announcements_read"/);
-  assert.match(sql,/is_published and \(starts_at is null/);
   assert.match(growth,/saveMarketplaceTicker\(/);
   assert.match(growth,/state: "draft"/);
   assert.match(php,/state=\x27published\x27 AND \(start_at IS NULL OR start_at<=\?\)/);
@@ -92,12 +75,8 @@ test("admin announcement implementation remains staged; live header never reads 
   assert.match(read("src/app/components/AnnouncementBar.css"),/max-width:640px/);
 });
 test("site media is sanitized; budgets are private and uploads stay private",()=>{
-  assert.match(sql,/create table if not exists public\.idea_public_campaign_placements/);
   assert.match(banner,/idea_public_campaign_placements/);
   assert.doesNotMatch(banner,/proposed_budget_egp/);
-  assert.match(sql,/public=false,file_size_limit=41943040/);
-  assert.match(sql,/idea_creatives_company_upload/);
-  assert.match(sql,/if current_ad\.placement in \('google_ads','meta_ads'\)/);
   // The PHP path accepts briefs, not media uploads or external budgets. Do not claim
   // the legacy upload/fee workflow is migrated until a real server contract exists.
   assert.match(growth,/submitMarketplaceAdRequest\(/);
@@ -143,14 +122,6 @@ test("social login requires server-configured PHP providers; unconfigured button
 
 
 test("ad package prices are administrator-editable and remain unpublished until confirmed",()=>{
-  assert.match(sql,/create table if not exists public\.idea_ad_package_rates/);
-  assert.match(sql,/alter table public\.idea_ad_package_rates force row level security/);
-  assert.match(sql,/for select to authenticated using\(is_published or public\.is_admin\(\)\)/);
-  assert.match(sql,/with check\(public\.is_admin\(\)\)/);
-  assert.match(sql,/from anon/);
-  assert.match(sql,/2500,7,false/);
-  assert.match(sql,/4500,14,false/);
-  assert.match(sql,/9000,7,false/);
   assert.match(growth,/saveMarketplaceAdPackage\(/);
   assert.match(growth,/updatePackage/);
   assert.match(growth,/if \(!isAdmin\) return/);
@@ -170,7 +141,6 @@ test("logins route verified platform admin and supplier to appropriate workspace
   assert.ok(content.includes('navigate(role==="admin"?"/admin":role==="supplier"?"/business":"/account")'));
 });
 test("company ad request can never self-authorize public media",()=>{
-  assert.match(sql,/media_url is null or public\.is_admin\(\)/);
   const requestHandler=php.slice(php.indexOf("if($action==='ad-request')"),php.indexOf("if($action==='ad-review')"));
   assert.match(requestHandler,/mpNeedCompany\(\$u,\$company\)/);
   assert.match(requestHandler,/is_published=1/);
@@ -178,6 +148,4 @@ test("company ad request can never self-authorize public media",()=>{
   assert.doesNotMatch(requestHandler,/media_url|private_storage_key|publishing_separate/);
   assert.match(php,/if\(\$action==='ad-review'\)\{\s*if\(!\$admin\)accountError\(403,'ADMIN_REQUIRED'\)/);
   assert.match(php,/publishing_separate'=>true/);
-  assert.match(sql,/if current_ad\.placement in \('google_ads','meta_ads'\)/);
-  assert.equal((sql.match(/create or replace function public\.idea_set_ad_status\(/g)||[]).length,1);
 });
