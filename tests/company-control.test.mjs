@@ -5,8 +5,6 @@ const read=p=>readFileSync(p,"utf8");
 const app=read("src/app/App.tsx");
 const center=read("src/app/pages/CompanyControlCenter.tsx");
 const growth=read("src/app/pages/BusinessGrowth.tsx");
-const ticker=read("src/app/components/AnnouncementBar.tsx");
-const banner=read("src/app/components/SponsoredHeroVideo.tsx");
 const auth=read("src/app/components/SocialAuth.tsx");
 const search=read("src/app/pages/AdminCodeLookup.tsx");
 const php=read("server/cpanel/api/marketplace.php");
@@ -59,24 +57,24 @@ test("private prices and promotions never public; no fabricated sales",()=>{
   assert.match(growth,/لا يتم اختلاق أرقام من عروض الأسعار/);
   assert.doesNotMatch(growth,/Math\.random/);
 });
-test("admin announcement implementation remains staged; live header never reads Supabase",()=>{
-  assert.match(growth,/saveMarketplaceTicker\(/);
+test("public announcements are read from the PHP/MySQL ticker contract",()=>{
+  assert.match(growth,/saveMarketplaceTicker\\(/);
   assert.match(growth,/state: "draft"/);
-  assert.match(php,/state=\x27published\x27 AND \(start_at IS NULL OR start_at<=\?\)/);
-  assert.match(php,/if\(\$action===\x27ticker-save\x27\)\{\s*if\(!\$admin\)accountError\(403,\x27ADMIN_REQUIRED\x27\)/);
-  assert.match(mysql,/state VARCHAR\(24\) NOT NULL DEFAULT \x27draft\x27/);
-  assert.match(ticker,/idea_site_announcements/);
-  assert.match(ticker,/locale==="ar"\?a\.title_ar/);
+  assert.match(php,/state=\\x27published\\x27 AND \\(start_at IS NULL OR start_at<=\\?\\)/);
+  assert.match(php,/if\\(\\$action===\\x27ticker-save\\x27\\)\\{\\s*if\\(!\\$admin\\)accountError\\(403,\\x27ADMIN_REQUIRED\\x27\\)/);
+  assert.match(php,/if\\(\\$action===\\x27ticker\\x27&&\\$method===\\x27GET\\x27\\)/);
+  assert.match(mysql,/CREATE TABLE IF NOT EXISTS idea_marketplace_announcements/);
+  assert.match(api,/export async function fetchPublicMarketplaceTicker/);
+  assert.match(api,/phpGet\\(PHP_MARKETPLACE_API, "ticker"\\)/);
   const header = read("src/app/components/Header.tsx");
+  assert.match(header,/fetchPublicMarketplaceTicker/);
   assert.match(header,/idea-catalogue-announcement/);
-  assert.doesNotMatch(header,/<AnnouncementBar\b|supabase/i);
-  assert.match(read("src/app/components/Header.css"),/position:\s*sticky/);
-  assert.match(read("src/app/components/AnnouncementBar.css"),/prefers-reduced-motion/);
-  assert.match(read("src/app/components/AnnouncementBar.css"),/max-width:640px/);
+  assert.doesNotMatch(header,/supabase/i);
+  assert.match(read("src/app/components/Header.css"),/position:\\s*sticky/);
 });
-test("site media is sanitized; budgets are private and uploads stay private",()=>{
-  assert.match(banner,/idea_public_campaign_placements/);
-  assert.doesNotMatch(banner,/proposed_budget_egp/);
+test("MySQL ad requests remain available without dormant external media placements",()=>{
+  const home = read("src/app/pages/Home.tsx");
+  assert.doesNotMatch(home,/SponsoredHeroVideo|SponsoredCollectionCards/);
   // The PHP path accepts briefs, not media uploads or external budgets. Do not claim
   // the legacy upload/fee workflow is migrated until a real server contract exists.
   assert.match(growth,/submitMarketplaceAdRequest\(/);

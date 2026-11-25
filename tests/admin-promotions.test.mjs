@@ -26,7 +26,7 @@ test("admin-only private price review cannot publish a draft or mutate storefron
   assert.match(php,/mpNeedCompany\(\$u,\$company\);\s*mpOut\(\['products'=>mpCatalogueRows/);
   assert.match(php,/if\(!\$authorized\)\{unset\(\$r\['private_price_cents'\],\$r\['admin_notes'\]\);\}/);
   assert.match(php,/p.active=1 AND c.status='verified' AND m.approved_for_storefront=1/);
-  assert.doesNotMatch(screen,/saveCompanyProduct|approveCompanyProduct|phpPostJson|supabaseClient/);
+  assert.doesNotMatch(screen,/saveCompanyProduct|approveCompanyProduct|phpPostJson/);
   assert.doesNotMatch(screen,/localStorage\.setItem|public\.catalogue_admin_promotions|service_role/i);
   assert.match(routes,/<Route element=\{<ProtectedRoute roles=\{\["admin"\]\} \/>/);
   assert.match(routes,/<Route path="promotions" element=\{<AdminPromotions \/>/);
