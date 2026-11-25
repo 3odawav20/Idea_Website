@@ -46,7 +46,7 @@ function platformAiQuota(array $u): array{
  return ['role'=>$u['role'],'unlimited'=>$limit===null,'limit'=>$limit,'used'=>$used,
    'remaining'=>$limit===null?null:max(0,$limit-$used),
    'period'=>'lifetime','resets_at'=>null,
-   'paid_upgrade_available'=>false,'payment_configured'=>platformFeatures()['payments']['configured']];
+   'paid_upgrade_available'=>false,'payment_configured'=>false];
 }
 
 /** Only byte-encoded image output is accepted: no untrusted remote download URL. */
