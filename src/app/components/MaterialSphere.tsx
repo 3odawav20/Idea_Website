@@ -16,9 +16,9 @@ type MaterialSphereProps = {
 function renderMaterialSphere(source: HTMLImageElement, canvas: HTMLCanvasElement): boolean {
   if (!source.naturalWidth || !source.naturalHeight) return false;
 
-  const size = 384;
-  const textureWidth = 512;
-  const textureHeight = 256;
+  const size = 512;
+  const textureWidth = 768;
+  const textureHeight = 384;
   const textureCanvas = document.createElement("canvas");
   textureCanvas.width = textureWidth;
   textureCanvas.height = textureHeight;
@@ -62,7 +62,7 @@ function renderMaterialSphere(source: HTMLImageElement, canvas: HTMLCanvasElemen
       if (radiusSquared > 1) continue;
 
       const nz = Math.sqrt(1 - radiusSquared);
-      const u = 0.5 + Math.atan2(nx, nz) / (Math.PI * 2);
+      const u = 0.5 + Math.atan2(nx, nz) / Math.PI;
       const v = 0.5 - Math.asin(ny) / Math.PI;
       const textureX = ((Math.floor(u * textureWidth) % textureWidth) + textureWidth) % textureWidth;
       const textureY = Math.min(textureHeight - 1, Math.max(0, Math.floor(v * textureHeight)));
@@ -70,9 +70,9 @@ function renderMaterialSphere(source: HTMLImageElement, canvas: HTMLCanvasElemen
       const targetIndex = (y * size + x) * 4;
 
       const diffuse = Math.max(0, nx * lx + ny * ly + nz * lz);
-      const specular = Math.pow(Math.max(0, nx * hx + ny * hy + nz * hz), 48) * 0.22;
+      const specular = Math.pow(Math.max(0, nx * hx + ny * hy + nz * hz), 48) * 0.055;
       const edgeShade = Math.pow(1 - nz, 2.2);
-      const illumination = (0.56 + diffuse * 0.48) * (1 - edgeShade * 0.10) - edgeShade * 0.055;
+      const illumination = (0.72 + diffuse * 0.37) * (1 - edgeShade * 0.10) - edgeShade * 0.025;
       const edgeCoverage = Math.min(1, Math.max(0, (1 - Math.sqrt(radiusSquared)) * size / 2));
       const alpha = (texture.data[sourceIndex + 3] / 255) * edgeCoverage;
 

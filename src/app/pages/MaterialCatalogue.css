@@ -1457,3 +1457,69 @@
 @media (max-width: 390px) {
   .idea-material-quote, .idea-material-visualize { font-size: 8px; }
 }
+
+/* IDEA REFERENCE COMPOSITION 20261125 */
+
+/* The decorative architecture is cropped directly from the approved day/night reference.
+   Product names, dimensions and spherical textures remain backed by the live catalogue. */
+.idea-material-catalogue { --mc-reference-bg:#faf4ee; --mc-reference-ink:#2b2118; --mc-reference-muted:#57534e; --mc-rim:rgba(78,60,47,.24); max-width:none!important; padding-inline:0!important; color:var(--mc-reference-ink); }
+html[data-theme="dark"] .idea-material-catalogue { --mc-reference-bg:#101010; --mc-reference-ink:#f5f4f3; --mc-reference-muted:#c5c3c1; --mc-rim:rgba(255,255,255,.22); }
+section:has(> .idea-material-catalogue) { background:var(--idea-bg)!important; padding-top:0!important; }
+html[data-theme="light"] section:has(> .idea-material-catalogue) { background:#faf4ee!important; }
+html[data-theme="dark"] section:has(> .idea-material-catalogue) { background:#101010!important; }
+.idea-material-catalogue .idea-material-featured { isolation:isolate; background:radial-gradient(ellipse at 10% 30%,#ead4bd 0,transparent 37%),linear-gradient(105deg,#f4e7d9,#f9f0e8 62%,#f7eee6); border:0; border-radius:0; }
+html[data-theme="dark"] .idea-material-catalogue .idea-material-featured { background:radial-gradient(ellipse at 7% 36%,#211409 0,transparent 38%),linear-gradient(105deg,#090806,#090909 65%,#0d0d0d); }
+.idea-material-catalogue .idea-material-featured::before { inset:0 auto 0 0; width:min(26.32vw,440px); height:100%; border:0; border-radius:0; background:url("/images/catalogue-reference/architectural-scene-light.webp") left center / 100% 100% no-repeat; pointer-events:none; }
+html[data-theme="dark"] .idea-material-catalogue .idea-material-featured::before { background-image:url("/images/catalogue-reference/architectural-scene-dark.webp"); }
+[dir="rtl"] .idea-material-catalogue .idea-material-featured::before { inset:0 0 0 auto; transform:scaleX(-1); }
+.idea-material-catalogue .idea-material-featured-copy h2,.idea-material-catalogue .idea-material-catalogue-intro h1 { font-weight:700; letter-spacing:-.025em; color:var(--mc-reference-ink); }
+html[data-theme="light"] .idea-material-catalogue .idea-material-featured-copy h2,html[data-theme="light"] .idea-material-catalogue .idea-material-catalogue-intro h1 { color:#49301a; }
+.idea-material-catalogue :is(.idea-material-featured-description,.idea-material-subtitle) { color:var(--mc-reference-muted); font-size:16px; line-height:1.5; }
+.idea-material-catalogue :is(.idea-material-featured-eyebrow,.idea-material-catalogue-intro>.idea-eyebrow) { font-size:15px; font-weight:600; letter-spacing:.09em; margin-bottom:13px; }
+.idea-material-catalogue :is(.idea-material-featured-cta,.idea-material-catalogue-cta) { min-height:38px; padding:0 20px; font-size:14px; border:0; box-shadow:none; background:#fd6401; color:#fff; }
+.idea-material-catalogue :is(.idea-material-featured-card,.idea-material-card) { color:var(--mc-reference-ink); font-family:var(--idea-font-body); }
+.idea-material-catalogue :is(.idea-material-featured-finish,.idea-material-finish) { min-height:22px; padding:3px 7px; font-size:11px; color:var(--mc-reference-ink); background:transparent; border-color:var(--mc-rim); }
+.idea-material-catalogue :is(.idea-material-featured-maker strong,.idea-material-card-body .idea-material-maker>span) { font-size:13px; font-weight:700; color:var(--mc-reference-ink); }
+.idea-material-catalogue :is(.idea-material-featured-maker small,.idea-material-card-body .idea-material-maker>small) { font-size:11px; color:var(--mc-reference-muted); }
+.idea-material-catalogue :is(.idea-material-featured-name,.idea-material-card-body .idea-material-name) { font-size:16px; line-height:1.35; font-weight:500; color:var(--mc-reference-ink); }
+.idea-material-catalogue :is(.idea-material-featured-meta,.idea-material-card-body .idea-material-meta,.idea-material-featured-meta code) { font-family:var(--idea-font-body); font-size:11px; color:var(--mc-reference-muted); }
+.idea-material-catalogue :is(.idea-material-featured-actions button,.idea-material-quote) { font-size:12px; color:var(--mc-reference-ink); }
+.idea-material-catalogue :is(.idea-material-featured-actions a,.idea-material-visualize) { font-size:12px; color:#fd6401; }
+.idea-material-catalogue :is(.idea-material-featured-orb,.idea-material-orb) { border:0; box-shadow:none; filter:drop-shadow(0 9px 7px rgba(35,24,14,.16)); }
+html[data-theme="dark"] .idea-material-catalogue :is(.idea-material-featured-orb,.idea-material-orb) { box-shadow:none; filter:drop-shadow(0 8px 8px rgba(0,0,0,.40)); }
+.idea-material-catalogue :is(.idea-material-featured-orb,.idea-material-orb)[data-rendered="true"]::after { background:none; border:0; }
+.idea-material-catalogue :is(.idea-material-featured-visual,.idea-material-card-media)::after { width:81%; height:12%; inset-block-end:0%; filter:blur(11px); background:radial-gradient(ellipse,rgba(42,29,17,.30),rgba(42,29,17,.10) 53%,transparent 76%); }
+html[data-theme="dark"] .idea-material-catalogue :is(.idea-material-featured-visual,.idea-material-card-media)::after { background:radial-gradient(ellipse,rgba(0,0,0,.85),rgba(0,0,0,.32) 53%,transparent 76%); }
+.idea-material-catalogue :is(.idea-material-search-field,.idea-material-category-filter select,.idea-material-facet summary,.idea-material-view-toggle,.idea-material-more-filters summary) { background:transparent; border:1px solid var(--mc-rim); color:var(--mc-reference-ink); }
+html[data-theme="dark"] .idea-material-catalogue :is(.idea-material-search-field,.idea-material-category-filter select,.idea-material-facet summary,.idea-material-view-toggle,.idea-material-more-filters summary) { background:#191919; border-color:rgba(203,132,65,.32); box-shadow:0 0 12px rgba(255,135,33,.11); }
+.idea-material-catalogue .idea-material-search-field { min-height:38px; border-radius:18px; }
+.idea-material-catalogue .idea-material-search-field input { min-height:36px; font-size:14px; }
+.idea-material-catalogue :is(.idea-material-category-filter select,.idea-material-facet summary) { border-radius:16px; min-height:36px; font-size:12px; padding-inline:15px; }
+.idea-material-catalogue .idea-material-view-toggle { border-radius:16px; }
+.idea-material-catalogue .idea-material-view-toggle button[aria-pressed="true"] { background:transparent; color:#fd6401; }
+@media(min-width:1351px) {
+ .idea-material-catalogue .idea-material-featured { grid-template-columns:minmax(0,17.9vw) minmax(0,1fr); gap:0; align-items:start; min-height:25.5vw; padding:1.25vw 3.6vw 1.45vw 9.2vw; margin:0 0 1.6vw; }
+ .idea-material-catalogue .idea-material-featured-copy { transform:none; padding-top:2.1vw; max-width:19vw; }
+ .idea-material-catalogue .idea-material-featured-copy h2 { font-size:clamp(30px,1.96vw,36px); max-width:19vw; margin-bottom:12px; }
+ .idea-material-catalogue .idea-material-featured-grid { gap:1.9vw; }
+ .idea-material-catalogue .idea-material-featured-visual { aspect-ratio:auto; height:14.15vw; place-items:start center; }
+ .idea-material-catalogue .idea-material-featured-orb { width:min(88%,13.7vw); }
+ .idea-material-catalogue .idea-material-featured-card-body { padding:0; gap:7px; }
+ .idea-material-catalogue .idea-material-main-layout { width:92%; max-width:none; margin-inline:auto; grid-template-columns:minmax(0,20.4vw) minmax(0,1fr); gap:2.2vw; }
+ .idea-material-catalogue .idea-material-catalogue-intro { padding-top:2.8vw; }
+ .idea-material-catalogue .idea-material-catalogue-intro h1 { font-size:clamp(32px,2.15vw,39px); text-wrap:initial; max-width:22vw; }
+ .idea-material-catalogue .idea-material-results { padding-top:0; }
+ .idea-material-catalogue .idea-material-toolbar { gap:1.7vw; margin-bottom:1.2vw; }
+ .idea-material-catalogue .idea-material-search { flex:1 1 auto; min-width:200px; }
+ .idea-material-catalogue .idea-material-filter-row { gap:.8vw; }
+ .idea-material-catalogue .idea-material-category-filter select { min-width:105px; }
+ .idea-material-catalogue .idea-material-grid:not(.is-list) { gap:26px 1.9vw; }
+ .idea-material-catalogue .idea-material-grid:not(.is-list) .idea-material-card-media { aspect-ratio:auto; height:12.65vw; }
+ .idea-material-catalogue .idea-material-grid:not(.is-list) .idea-material-card-media>a { place-items:start center; }
+ .idea-material-catalogue .idea-material-grid:not(.is-list) .idea-material-orb { width:min(84%,13vw); }
+ .idea-material-catalogue .idea-material-card-body { padding:0; gap:7px; }
+}
+@media(max-width:1000px) {
+ .idea-material-catalogue .idea-material-featured::before { opacity:.35; }
+ .idea-material-catalogue .idea-material-main-layout { padding-inline:20px; }
+}
