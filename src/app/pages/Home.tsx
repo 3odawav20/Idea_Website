@@ -7,8 +7,6 @@ import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
 import { HeroBrandFilm } from "../components/HeroBrandFilm";
-import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
-import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
 import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
@@ -70,7 +68,6 @@ export function Home() {
   return (
     <div className="idea-home-editorial">
       <HeroBrandFilm />
-      <SponsoredHeroVideo />
       <div className="idea-usp">{[
         {icon:Layers,to:"/products",title:text("Premium surface inspiration","إلهام بخامات فاخرة","Inspiration haut de gamme"),sub:text("Explore materials & finishes","اكتشف الخامات والتشطيبات","Matières & finitions")},
         {icon:FileText,to:"/request-quote/new",title:text("Private quote requests","طلبات عروض أسعار خاصة","Devis privés"),sub:text("Specify your project needs","حدد احتياجات مشروعك","Précisez votre projet")},
@@ -137,7 +134,6 @@ export function Home() {
         })}</div>
         <div className="idea-home-center"><Link className="idea-home-text-link" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link></div>
       </section>}
-      <SponsoredCollectionCards />
       <section className="idea-home-section">
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
         {EDITORIALS.map((item, index) => (
