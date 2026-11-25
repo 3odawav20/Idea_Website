@@ -76,12 +76,12 @@ export function DestinationFan({ cards, locale }: { cards: DestinationCard[]; lo
           );
         })}
       </div>
-      {cards.length > 1 && <div className="flex items-center justify-center gap-4 mt-2">
-        <button type="button" aria-label={labels[0]} onClick={() => step(-1)} className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2" style={{ border: "1px solid var(--idea-border)", color: "var(--idea-text)", background: "var(--idea-surface)" }}><ChevronLeft size={21}/></button>
-        <div className="flex items-center gap-2">
-          {cards.map((card, i) => <button key={card.id} type="button" aria-label={card.label} aria-current={i === center ? "true" : undefined} onClick={() => { setActive(null); setCenter(i); }} className="flex h-7 w-5 items-center justify-center focus-visible:outline focus-visible:outline-2"><span className="block rounded-full" style={{ width: i === center ? 10 : 6, height: i === center ? 10 : 6, background: i === center ? "var(--idea-gold, #ff6800)" : "var(--idea-text-muted)", opacity: i === center ? 1 : .6 }}/></button>)}
+      {cards.length > 1 && <div className="flex items-center justify-center gap-2 mt-2">
+        <button type="button" aria-label={labels[0]} onClick={() => step(-1)} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2" style={{ border: "1px solid var(--idea-border)", color: "var(--idea-text)", background: "var(--idea-surface)" }}><ChevronLeft size={21}/></button>
+        <div className="flex items-center gap-1">
+          {cards.map((card, i) => <button key={card.id} type="button" aria-label={card.label} aria-current={i === center ? "true" : undefined} onClick={() => { setActive(null); setCenter(i); }} className="flex h-7 w-3 items-center justify-center focus-visible:outline focus-visible:outline-2"><span className="block rounded-full" style={{ width: i === center ? 10 : 6, height: i === center ? 10 : 6, background: i === center ? "var(--idea-gold, #ff6800)" : "var(--idea-text-muted)", opacity: i === center ? 1 : .6 }}/></button>)}
         </div>
-        <button type="button" aria-label={labels[1]} onClick={() => step(1)} className="flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2" style={{ border: "1px solid var(--idea-border)", color: "var(--idea-text)", background: "var(--idea-surface)" }}><ChevronRight size={21}/></button>
+        <button type="button" aria-label={labels[1]} onClick={() => step(1)} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2" style={{ border: "1px solid var(--idea-border)", color: "var(--idea-text)", background: "var(--idea-surface)" }}><ChevronRight size={21}/></button>
       </div>}
     </div>
   );
