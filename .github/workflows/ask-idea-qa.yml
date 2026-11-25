@@ -41,7 +41,7 @@ jobs:
         run: |
           pnpm run build:cpanel
           test -s dist/index.html
-          test -s dist/api/ask-idea.php
-          test -s dist/data/idea-catalogue.json
-          test -s dist/api/visualize.php
-          php -l dist/api/ask-idea.php
+          test -d dist/assets
+          test ! -e dist/api/ask-idea.php
+          test ! -e dist/api/visualize.php
+          php -l server/cpanel/api/ask-idea.php
