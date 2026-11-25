@@ -678,3 +678,6 @@ html[data-theme="dark"] .idea-product-catalogue-sheet .idea-technical-panel {
 html[data-theme="dark"] .idea-product-catalogue-sheet .idea-technical-grid > div {
   border-bottom-color: var(--idea-border-neutral);
 }
+
+/* Preserve product detail layout and make secondary text high contrast. */
+html[data-theme] .idea-catalogue-detail :is(.idea-material-image-note, .idea-material-brand, .idea-material-hero-content > p, .idea-material-hero-content > small, .idea-material-summary dt, .idea-material-summary dd) { color: var(--idea-text-muted); font-weight: 600; }

@@ -68,3 +68,16 @@ test("material filter overflow stays icon-only and orb styling avoids an artific
   assert.ok(css.includes(".idea-material-featured::before { width: 10%; }"));
   assert.ok(css.includes("border: 0"));
 });
+
+
+test("both storefront themes use high-contrast small copy and restrained text depth", () => {
+  const globals = readFileSync(new URL("../src/styles/globals.css", import.meta.url), "utf8");
+  assert.match(globals, /--idea-text-muted: #000000;/);
+  assert.match(globals, /--idea-text-faint: #000000;/);
+  assert.match(globals, /--idea-text: #ffffff;/);
+  assert.match(globals, /--idea-text-muted: #ffffff;/);
+  assert.match(globals, /--idea-text-faint: #ffffff;/);
+  assert.match(globals, /--idea-readable-text-shadow: 0 1px 0/);
+  assert.ok(css.includes("Approved high-contrast catalogue typography"));
+  assert.ok(homeCss.includes("Product metadata stays readable"));
+});

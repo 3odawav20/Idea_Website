@@ -346,3 +346,7 @@
     transform: none !important;
   }
 }
+
+/* Product metadata stays readable at small sizes in both themes. */
+html[data-theme] :is(.idea-home-featured-maker small, .idea-home-featured-meta, .idea-home-featured-meta > span, .idea-home-featured-meta code, .idea-home-featured-card-copy .idea-home-featured-finish, .idea-home-featured-maker strong, .idea-home-featured-actions button) { color: var(--idea-text-muted); font-weight: 600; opacity: 1; }
+html[data-theme="dark"] .idea-home-featured-card-copy .idea-home-featured-name { color: #ffffff; }
