@@ -18,7 +18,7 @@ test("technical features remain source-grounded and private quote stays private"
   assert.match(page, /product\.sizes\.map/);
   assert.match(page, /product\.finish/);
   assert.match(page, /addToQuote\(product\.id,unit\)/);
-  assert.match(page, /session\?\.role==="admin"&&adminPrice/);
+  assert.doesNotMatch(page, /supabase|catalogue_admin_prices|adminPrice/i);
   assert.doesNotMatch(page, /1\.44\s?(?:sqm|m²)|31981-31979|9\.8 MM/);
 });
 test("image viewer supports keyboard close, zoom and touch pan", () => {
