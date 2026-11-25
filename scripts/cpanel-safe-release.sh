@@ -37,9 +37,9 @@ node --test tests/*.test.mjs
 php tests/ai-role-policy.test.php
 php tests/tile-physical-size.test.php
 php tests/ai-mask-preservation.test.php
-for f in server/cpanel/api/visualize.php server/cpanel/api/social-auth.php server/cpanel/api/ask-idea.php server/cpanel/api/marketplace.php server/cpanel/api/tile-dimensions.php server/cpanel/idea-accounts-api/platform-ai.php; do php -l "$f"; done
+for f in server/cpanel/api/social-auth.php server/cpanel/api/ask-idea.php server/cpanel/api/marketplace.php server/cpanel/api/tile-dimensions.php server/cpanel/idea-accounts-api/visualize.php server/cpanel/idea-accounts-api/platform-ai.php server/cpanel/idea-accounts-api/platform-ai-surfaces.php; do php -l "$f"; done
 corepack pnpm@10.34.9 run build:cpanel
-[[ -s dist/index.html && -d dist/assets && -s dist/api/visualize.php && -f dist/.htaccess ]] || fail 'Incomplete cPanel bundle.'
+[[ -s dist/index.html && -d dist/assets ]] || fail 'Incomplete cPanel frontend bundle.'
 RELEASE=$(mktemp -d "$ROOT/release_${SHA:0:12}_XXXXXXXX")
 cp -a dist/. "$RELEASE/"
 printf 'IDEA_STAGE_SUCCESS=1\nIDEA_STAGE_RELEASE_DIR=%s\n' "$RELEASE"

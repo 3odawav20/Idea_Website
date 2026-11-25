@@ -12,6 +12,7 @@ const sqlMigrationSrc = readFileSync("server/cpanel/migrations/20261122_social_a
 const apiHtaccessSrc = readFileSync("server/cpanel/api/.htaccess", "utf8");
 const rootHtaccessSrc = readFileSync("server/cpanel/.htaccess", "utf8");
 const buildCpanelSrc = readFileSync("scripts/build-cpanel.mjs", "utf8");
+const publisherSrc = readFileSync("scripts/cpanel-publish-frontend.py", "utf8");
 const envExampleSrc = readFileSync(".env.example", "utf8");
 
 test("official crisp SVG brand icons exist for all 6 required providers", () => {
@@ -157,9 +158,10 @@ test("ModSecurity HTTP 406 exception is narrowly scoped to social-auth.php and n
   assert.match(rootHtaccessSrc, /RewriteRule \^api\/ - \[END\]/);
 });
 
-test("cPanel build script packages social-auth.php and api/.htaccess and .env.example has no secrets", () => {
-  assert.match(buildCpanelSrc, /server\/cpanel\/api\/social-auth\.php/);
-  assert.match(buildCpanelSrc, /server\/cpanel\/api\/\.htaccess/);
+test("cPanel frontend build preserves PHP APIs, data and Apache routing on the host", () => {
+  assert.doesNotMatch(buildCpanelSrc, /server\/cpanel\/api\/social-auth\.php|server\/cpanel\/api\/\.htaccess/);
+  assert.match(publisherSrc, /rel\.parts\[0\] in \("api","data"\)/);
+  assert.match(publisherSrc, /LIVE\/".htaccess"/);
   assert.match(envExampleSrc, /GOOGLE_OAUTH_CREDENTIALS_FILE=/);
   assert.match(envExampleSrc, /VITE_GOOGLE_CLIENT_ID=/);
   assert.match(envExampleSrc, /WHATSAPP_PHONE_NUMBER_ID=/);
