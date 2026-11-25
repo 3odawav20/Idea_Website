@@ -139,11 +139,19 @@ function safeBlobUrl(value: string | null): string | null {
 }
 function wait(ms: number, signal: AbortSignal) {
   return new Promise<void>((resolve, reject) => {
-    const timer = window.setTimeout(resolve, ms);
-    signal.addEventListener("abort", () => {
+    if (signal.aborted) {
+      reject(new DOMException("Aborted", "AbortError"));
+      return;
+    }
+    const abort = () => {
       window.clearTimeout(timer);
       reject(new DOMException("Aborted", "AbortError"));
-    }, { once: true });
+    };
+    const timer = window.setTimeout(() => {
+      signal.removeEventListener("abort", abort);
+      resolve();
+    }, ms);
+    signal.addEventListener("abort", abort, { once: true });
   });
 }
 
@@ -440,8 +448,10 @@ export function AiVisualizerStudio() {
         if (data.image !== secureResult && !/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(data.image)) {
           throw new Error(tr("تعذر قراءة النتيجة.", "The result could not be read."));
         }
-        const image = data.image === secureResult ? await privatePng(id, "result", token, controller.signal) : data.image;
-        const mask = data.maskAvailable === true ? await privatePng(id, "mask", token, controller.signal) : null;
+        const [image, mask] = await Promise.all([
+          data.image === secureResult ? privatePng(id, "result", token, controller.signal) : data.image,
+          data.maskAvailable === true ? privatePng(id, "mask", token, controller.signal) : null,
+        ]);
         setResult(image);
         setMaskAvailable(mask);
         setQuality(data.quality || null);
