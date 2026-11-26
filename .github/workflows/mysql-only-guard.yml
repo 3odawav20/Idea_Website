@@ -24,7 +24,17 @@ jobs:
         run: node scripts/verify-mysql-only.mjs
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-      - name: Run regression tests
-        run: node --test tests/*.test.mjs
+      - name: Run PHP/MySQL architecture regressions
+        run: >-
+          node --test
+          tests/no-legacy-database-directory.test.mjs
+          tests/ai-mysql-runpod-only.test.mjs
+          tests/auth-connection.test.mjs
+          tests/social-auth.test.mjs
+          tests/live-visualizer-contract.test.mjs
+          tests/company-control.test.mjs
+          tests/admin-promotions.test.mjs
+      - name: Verify dashboard PHP/MySQL contracts
+        run: pnpm exec tsx --test tests/dashboards-php-mysql.test.ts
       - name: Build frontend
         run: pnpm run build
