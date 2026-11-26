@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 
 const studio = readFileSync("src/app/pages/AiVisualizerStudio.tsx", "utf8");
 const css = readFileSync("src/app/pages/AiVisualizerStudio.css", "utf8");
@@ -46,6 +46,7 @@ test("all 475 catalogue products have a local material face for the visualizer",
   assert.equal(imported.length, 475);
   assert.equal(Object.keys(localFaces).length, 475);
   assert.ok(imported.every((product) => Boolean(localFaces[product.id])), "every product needs a local material face");
+  assert.ok(Object.values(localFaces).every((face) => existsSync("public" + face)), "every cached local material face must exist");
 });
 
 test("AI visualizer uses IDEA spheres and hides supplier identity", () => {
