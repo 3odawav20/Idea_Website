@@ -80,7 +80,7 @@ test("walls and floor have independent catalogue selections and one logical MySQ
 test("Roomvo Assistant is installed once with the official IDEA widget configuration", () => {
   assert.match(layout, /RoomvoAssistant/);
   assert.match(layout, /RoomvoAssistantPanel/);
-  assert.match(roomvo, /https:\/\/www\\.roomvo\\.com\/static\/scripts\/b2b\/common\/assistant\\.js/);
+  assert.match(roomvo, /https:\/\/www\.roomvo\.com\/static\/scripts\/b2b\/common\/assistant\.js/);
   assert.match(roomvo, /roomvoAssistant/);
   assert.match(roomvo, /data-locale", "ar-eg/);
   assert.match(roomvo, /data-position", "bottom-right/);
