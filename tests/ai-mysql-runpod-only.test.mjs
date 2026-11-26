@@ -55,8 +55,11 @@ test("only the PHP/MySQL visualizer adapter remains and cPanel builds never pack
   const build = read("scripts/build-cpanel.mjs");
   assert.doesNotMatch(build, /server\/cpanel\/api\/visualize\.php|dist\/api\/visualize/);
   const release = read("scripts/cpanel-safe-release.sh");
-  assert.match(release, /server\/cpanel\/idea-accounts-api\/visualize\.php/);
-  assert.doesNotMatch(release, /server\/cpanel\/api\/visualize\.php/);
+  const publisher = read("scripts/cpanel-publish-frontend.py");
+  assert.match(release, /cpanel-publish-frontend\.py/);
+  assert.doesNotMatch(release, /server\/cpanel\/api\/visualize\.php|server\/cpanel\/idea-accounts-api\/visualize\.php/);
+  assert.match(publisher, /rel\.parts\[0\] in \("api","data"\)/);
+  assert.match(publisher, /PROTECTED_PHP_CONFIG_DATA_UNCHANGED=1/);
 });
 test("Runpod generation never blocks an entire image request and polls accepted jobs", () => {
   assert.doesNotMatch(mysql, /\/runsync/);
