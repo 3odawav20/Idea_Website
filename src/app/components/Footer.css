@@ -41,7 +41,7 @@
   --idea-hover-card:#ffffff;
   --idea-hover-ghost:rgba(0,0,0,.14);
   --idea-hover-outline:rgba(253,100,1,.75);
-  --idea-hover-glow:rgba(253,100,1,.16);
+  --idea-hover-glow:rgba(253,100,1,.2);--idea-hover-glow-mid:rgba(253,100,1,.07);
   --idea-hover-stop-1:#fd6401;
   --idea-hover-stop-2:#ff8d43;
   --idea-hover-stop-3:#c9a27a;
@@ -54,14 +54,16 @@
   --idea-hover-card:#121212;
   --idea-hover-ghost:rgba(255,255,255,.12);
   --idea-hover-outline:rgba(253,100,1,.6);
-  --idea-hover-glow:rgba(253,100,1,.2);
+  --idea-hover-glow:rgba(253,100,1,.26);--idea-hover-glow-mid:rgba(253,100,1,.08);
   --idea-hover-stop-1:#fd6401;
   --idea-hover-stop-2:#ffb380;
   --idea-hover-stop-3:#f4e9dc;
   --idea-hover-stop-4:#ff8d43
 }
-.idea-footer-bg-gradient{position:absolute;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(125% 125% at 50% 10%,transparent 50%,var(--idea-hover-glow) 100%)}
+.idea-footer-bg-gradient{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(to top,var(--idea-hover-glow) 0%,var(--idea-hover-glow-mid) 45%,transparent 100%)}
 .idea-hover-footer-inner{position:relative;z-index:2;padding:0 clamp(24px,4vw,56px)}
+.idea-hover-footer .idea-footer-body,[data-theme="dark"] .idea-hover-footer .idea-footer-body,.idea-hover-footer .idea-footer-bottom,[data-theme="dark"] .idea-hover-footer .idea-footer-bottom{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.idea-hover-footer .idea-footer-body::before,[data-theme="dark"] .idea-hover-footer .idea-footer-body::before{content:none!important;display:none!important}
 .idea-hover-footer .idea-footer-body{width:min(1260px,100%);padding:64px 0 48px}
 .idea-hover-footer .idea-footer-bottom{padding:24px 0;padding-inline-end:0;max-width:1260px;margin:0 auto}
 .idea-footer-contact{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-direction:column;gap:13px}
@@ -70,11 +72,11 @@
 .idea-footer-contact a{color:var(--idea-text);text-decoration:none;transition:color .2s ease}
 .idea-footer-contact a:hover{color:var(--idea-gold)}
 .idea-footer-contact a:focus-visible,.idea-footer-group a:focus-visible,.idea-footer-legal-bar a:focus-visible,.idea-footer-mini-links a:focus-visible{outline:2px solid var(--idea-gold);outline-offset:3px;border-radius:2px}
-.idea-hover-footer-wordmark{position:relative;z-index:1;display:flex;height:30rem;margin:-7rem 0 -8rem}
-.idea-hover-wordmark{user-select:none;text-transform:uppercase;cursor:pointer}
+.idea-hover-footer-wordmark{position:relative;z-index:1;display:flex;height:22rem;margin:-3rem 0 -5rem}
+.idea-hover-wordmark{overflow:visible;user-select:none;text-transform:uppercase;cursor:pointer}
 .idea-hover-wordmark text{fill:transparent;font-family:Helvetica,Arial,sans-serif;font-size:72px;font-weight:700}
 .idea-hover-wordmark-ghost{stroke:var(--idea-hover-ghost);transition:opacity .3s ease}
 .idea-hover-wordmark-outline{stroke:var(--idea-hover-outline)}
-@media(max-width:1100px){.idea-hover-footer-wordmark{height:20rem;margin:-4.5rem 0 -5rem}}
-@media(max-width:720px){.idea-hover-footer{margin:16px;border-radius:18px}.idea-hover-footer .idea-footer-body{width:100%;padding:44px 0 32px}.idea-hover-footer-wordmark{height:12rem;margin:-2.5rem 0 -3rem}}
+@media(max-width:1100px){.idea-hover-footer-wordmark{height:15rem;margin:-2rem 0 -3.5rem}}
+@media(max-width:720px){.idea-hover-footer{margin:16px;border-radius:18px}.idea-hover-footer .idea-footer-body{width:100%;padding:44px 0 32px}.idea-hover-footer-wordmark{height:9rem;margin:-1rem 0 -2rem}}
 @media(prefers-reduced-motion:reduce){.idea-footer-contact a,.idea-hover-wordmark-ghost{transition:none}}
