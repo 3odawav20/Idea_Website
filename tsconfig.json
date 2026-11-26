@@ -3,14 +3,13 @@
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": [
-      "ES2020",
+      "ES2021",
       "DOM",
       "DOM.Iterable"
     ],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"
@@ -22,13 +21,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
     "types": [
-      "node"
+      "node",
+      "vite/client"
     ],
     "strict": true,
     "noFallthroughCasesInSwitch": true
   },
   "include": [
-    "src",
+    "src/main.tsx",
     "vite.config.ts",
     "vite.figma.config.ts"
   ]

@@ -32,14 +32,15 @@ export function AdminPromotions() {
   const refresh = useCallback(async () => {
     setState("loading");
     setError("");
+    setRows([]);
     try {
       const boot = await fetchMarketplaceBootstrap();
       const cos = boot.companies || [];
       setCompanies(cos);
-      const sampled = cos.slice(0, 15);
+      const sampled = cos.slice(0, 15); // Explicit bounded review; never report this as a complete register.
       const productLists = await Promise.all(
         sampled.map(async (c) => {
-          const items = await fetchCompanyProducts(c.id).catch(() => [] as MarketplaceProduct[]);
+          const items = await fetchCompanyProducts(c.id);
           return items
             .filter((p) => typeof p.private_price_cents === "number" && p.private_price_cents >= 0)
             .map((product) => ({ companyName: c.public_name, product }));
@@ -113,6 +114,7 @@ export function AdminPromotions() {
       )}
 
       <div className="ids-panel ids-table-panel">
+        {companies.length > 15 && <p className="ids-notice">{ar ? "المراجعة تعرض أول 15 شركة فقط؛ استخدم إدارة الشركات لبقية السجلات." : "This review displays the first 15 companies only; use Manage Companies for the remaining records."}</p>}
         <div className="ids-panel-head ids-flags-head">
           <div>
             <span className="ids-kicker">ADMIN-ONLY REGISTER</span>

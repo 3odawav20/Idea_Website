@@ -11,6 +11,9 @@ test("obsolete external database directory and client must not return",()=>{
   assert.equal(Object.hasOwn(pkg.dependencies||{},"@supabase/supabase-js"),false);
   assert.equal(readFileSync(".env.example","utf8").includes("VITE_SUPABASE"),false);
   assert.equal(readFileSync("pnpm-lock.yaml","utf8").includes("@supabase/"),false);
-  assert.equal(readFileSync("bun.lock","utf8").includes("@supabase/"),false);
+  assert.equal(existsSync("bun.lock"),false);
+  for (const file of ["firebase-applet-config.json","firebase-blueprint.json","firestore.rules","src/lib/firebase-admin.ts","src/middleware/auth.ts","src/db","server.ts","utils/supabase"]) assert.equal(existsSync(file),false,file);
+  assert.doesNotMatch(JSON.stringify(pkg.dependencies),/firebase|supabase/i);
+  assert.doesNotMatch(readFileSync("pnpm-lock.yaml","utf8"),/firebase|supabase/i);
   assert.doesNotMatch(readFileSync("src/app/pages/ProductDetail.tsx","utf8"),/supabase|catalogue_admin_prices/i);
 });
