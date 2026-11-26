@@ -41,7 +41,7 @@ done
 export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
 printf 'IDEA_SOURCE_SHA=%s\n' "$SHA"
-STAGE_LOG="$(mktemp "$STAGE_ROOT/cpanel-stage-$SHORT_SHA-XXXXXX.log")"
+STAGE_LOG="$(mktemp "$STAGE_ROOT/cpanel-stage-$SHORT_SHA-XXXXXX")"
 
 if ! /bin/bash "$REPO/scripts/cpanel-stage-release.sh" >"$STAGE_LOG" 2>&1; then
   cat "$STAGE_LOG" >&2
