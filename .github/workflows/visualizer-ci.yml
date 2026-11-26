@@ -45,3 +45,5 @@ jobs:
         run: php tests/tile-physical-size.test.php && php tests/ai-mask-preservation.test.php
       - name: Check cPanel routing assets
         run: test -s dist/index.html && test -d dist/assets
+      - name: Validate cPanel deployment shell scripts
+        run: bash -n scripts/cpanel-safe-release.sh scripts/cpanel-stage-release.sh scripts/cpanel-auto-sync.sh
