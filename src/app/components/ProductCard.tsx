@@ -22,7 +22,7 @@ export function ProductCard({ product }: { product: Product }) {
   const unit = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble" ? "sqm" : "pieces";
 
   return (
-    <div className="idea-product-card idea-material-sheet" style={{
+    <div className="idea-product-card idea-material-sheet glass-card" style={{
       background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
       overflow: "hidden", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
     }}
