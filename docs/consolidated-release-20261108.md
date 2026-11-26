@@ -26,7 +26,7 @@ Branch: `recovery/idea-consolidated-20261108`. Base: `830a0c813e31b8232b6ee72252
 ## Release boundaries — not completed or certified
 
 - This is a consolidated source/preview release, not proof that the production commerce/AI services work.
-- React authentication/company screens currently use Supabase; the historical deployed account system uses PHP/MySQL. Do not create a parallel user database or migrate real accounts silently. The existing MySQL account entry points, helpers/schema and authorized deployment connection must be recovered and reconciled before this UI is a production account replacement.
+- React authentication and company screens now use the cPanel PHP/MySQL account APIs. Do not create a parallel user database or migrate real accounts silently. Production identity, permissions and workflows still require authenticated end-to-end validation against the live host.
 - PHP/MySQL marketplace and Runpod adapter source is included under `server/cpanel`. Existing `platform.php`/account helper files, real server configuration and approved Runpod worker must be supplied by the existing hosting system. PHP does not execute on a static Vercel deployment.
 - No real authenticated AI edit, server-side quota accounting, supplier isolation, paid subscription, payment webhook, OAuth/WhatsApp sign-in or Google/Meta advertising spend was verified in this recovery release. UI controls and source checks do not establish those behaviors.
 - 475 existing Art Ceramic catalogue records are separate from 643 supplier candidates in quarantine. The latter are not approved stock, real company accounts or verified inventory; do not add the counts together.

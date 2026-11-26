@@ -55,7 +55,7 @@ export const COLLECTIONS: CollectionMeta[] = [
 // NOTE: This is representative sample data used ONLY to demonstrate the store's
 // finish while no real PDF catalogue has been imported yet. Every field here is
 // replaced by verified, admin-approved values once the real PDF import pipeline
-// (Supabase back end) processes uploaded catalogues. No real prices are stored.
+// PHP/MySQL backend processes uploaded catalogues. No real prices are stored.
 export const SAMPLE_PRODUCTS: Product[] = [
   {
     id: "p1", slug: "onyx-noir-porcelain", collection: "porcelain",

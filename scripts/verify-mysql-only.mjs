@@ -7,21 +7,11 @@
  * active Firebase, Supabase, Firestore, or PostgreSQL/Drizzle integrations.
  */
 
-import { existsSync, readdirSync, readFileSync, statSync, unlinkSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, extname } from "node:path";
 
 const ROOT = process.cwd();
 const violations = [];
-
-// If the container runtime generates a transient bun.lock, remove it so pnpm-lock.yaml remains authoritative
-const transientBunLock = join(ROOT, "bun.lock");
-if (existsSync(transientBunLock)) {
-  try {
-    unlinkSync(transientBunLock);
-  } catch {
-    // fall through to PROHIBITED_PATHS check if removal fails
-  }
-}
 
 function reportViolation(filePath, line, reason) {
   violations.push({
@@ -73,11 +63,12 @@ if (!existsSync(AUTHORIZED_VISUALIZER)) {
   );
 }
 
-// 2. Check package.json and .figma/backup/package.json for prohibited dependencies
+// 2. Check the project manifest for prohibited dependencies
 const PROHIBITED_PACKAGES = [
   /^firebase$/i,
   /^firebase-admin$/i,
   /^@firebase\//i,
+  /^@figma\//i,
   /^@supabase\//i,
   /^supabase$/i,
   /^drizzle-orm$/i,
@@ -86,7 +77,7 @@ const PROHIBITED_PACKAGES = [
   /^postgres$/i,
 ];
 
-for (const pkgRel of ["package.json", ".figma/backup/package.json"]) {
+for (const pkgRel of ["package.json"]) {
   const pkgPath = join(ROOT, pkgRel);
   if (!existsSync(pkgPath)) continue;
   try {
@@ -119,6 +110,7 @@ for (const lockRel of ["pnpm-lock.yaml", "package-lock.json"]) {
   const lines = content.split(/\r?\n/);
   const lockPatterns = [
     { rx: /['"]?@supabase\/supabase-js['"]?:/, reason: "Prohibited @supabase/supabase-js dependency in lockfile." },
+    { rx: /['"]?@figma\/[^'"]+['"]?:/, reason: "Retired design SDK dependency in lockfile." },
     { rx: /['"]?@firebase\/eslint-plugin-security-rules['"]?:/, reason: "Prohibited @firebase package in lockfile." },
     { rx: /^\s{2,6}['"]?firebase['"]?:\s*$/, reason: "Prohibited firebase dependency in lockfile." },
     { rx: /['"]?firebase-admin['"]?:/, reason: "Prohibited firebase-admin dependency in lockfile." },
@@ -148,12 +140,20 @@ if (existsSync(envExamplePath)) {
 }
 
 // 5. Recursively scan executable source & configuration files
-const SCAN_DIRS = ["src", "server", "scripts", ".github", ".figma"];
-const ROOT_FILES_TO_SCAN = ["vite.config.ts", "vite.figma.config.ts", "tsconfig.json", "vercel.json", "eslint.config.mjs"];
+const SCAN_DIRS = ["src", "server", "scripts", ".github"];
+const ROOT_FILES_TO_SCAN = ["package.json", "vite.config.ts", "tsconfig.json", "vercel.json", ".env.example"];
 const TEXT_EXTENSIONS = new Set([".ts", ".tsx", ".js", ".mjs", ".cjs", ".php", ".sh", ".py", ".yml", ".yaml", ".json"]);
 const SKIP_DIRS = new Set(["node_modules", ".git", "dist", "build", "out", ".php-runtime", "docs", "reports", "tests"]);
 
 const CODE_RULES = [
+  {
+    rx: /from\s+["']@figma\/[^"']+["']/,
+    reason: "Retired design SDK import.",
+  },
+  {
+    rx: /figma:asset\//i,
+    reason: "Retired design asset import.",
+  },
   {
     rx: /from\s+["'](?:firebase|firebase\/[^"']+|firebase-admin(?:\/[^"']+)?|@firebase\/[^"']+)["']/,
     reason: "Prohibited Firebase SDK import.",
@@ -259,4 +259,4 @@ if (violations.length > 0) {
   process.exit(1);
 }
 
-console.log("IDEA MYSQL-ONLY ARCHITECTURE GUARD PASSED: Zero Firebase, Supabase, Firestore, or PostgreSQL integrations detected.");
+console.log("IDEA PROJECT ARCHITECTURE GUARD PASSED: approved PHP/MySQL backend and project dependencies verified.");

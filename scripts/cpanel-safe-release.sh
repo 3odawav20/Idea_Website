@@ -19,8 +19,10 @@ mkdir -p "$API_TARGET_PATH"
 if [ -f "package.json" ]; then
     echo "Installing dependencies and building..."
     export PATH=$PATH:/usr/local/bin:~/.nvm/versions/node/$(ls ~/.nvm/versions/node 2>/dev/null | tail -n 1)/bin
-    npm install --silent 2>/dev/null || true
-    npm run build --if-present
+    command -v corepack >/dev/null 2>&1 || { echo "Corepack is required; build in CI instead." >&2; exit 1; }
+    node scripts/verify-mysql-only.mjs
+    corepack pnpm install --frozen-lockfile
+    corepack pnpm run build:cpanel
 fi
 
 # تحديد مجلد الإخراج الناتج عن البناء

@@ -41,7 +41,7 @@ validate signed hosts and ownership.
 
 The PHP adapter:
 
-1. Authenticates the Supabase user.
+1. Authenticates the signed-in PHP session and validates user role and ownership through MySQL.
 2. Enforces the five-attempt reservation or administrator bypass.
 3. Verifies original, generated, and mask dimensions match exactly.
 4. Uses the original room as the base image.

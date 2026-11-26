@@ -2,7 +2,7 @@
 
 Production domain: https://idea-dh.com/
 Production document root: /home/lsenet5/idea-dh.com
-Database: MySQL `lsenet5_idealive18`NaN returned HTTP 200; PHP 8.3 and MySQL connection verified | PARTIAL — newer React frontend still depends on Supabase, so do not deploy it over working MySQL UI unadapted |
+Database: MySQL `lsenet5_idealive18`NaN returned HTTP 200; PHP 8.3 and MySQL connection verified | PARTIAL — frontend and PHP/MySQL contracts require authenticated end-to-end validation before release |
 | Buyer registration, login, reset, secure session | MySQL `idea_users`NaN returns 401 | PARTIAL — real login, reset and cross-account session persistence not exercised with credentials |
 | Business onboarding and approval | MySQL `idea_companies` has 2 records | PARTIAL — create/verification/suspension and owner/manager isolation need real-account E2E |
 | Admin rail and per-company access | cPanel marketplace and company role checking exists | PARTIAL — unauthed admin/sales endpoints 401; actual signed-in admin/supplier controls untested |

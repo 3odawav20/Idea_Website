@@ -1,36 +1,30 @@
-# IDEA WEBSITE — PERMANENT MYSQL-ONLY ARCHITECTURE
+# IDEA Website — project instructions
 
-React + TypeScript + Vite frontend paired exclusively with the InMotion cPanel PHP/MySQL backend (`https://idea-dh.com`).
+IDEA is a production React/TypeScript/Vite marketplace paired with its cPanel PHP/MySQL backend.
 
-## 1. Authorized Architecture
+## Architecture
 
-- **Frontend**: React, TypeScript, Vite, Tailwind CSS (`src/`).
-- **Backend**: PHP + MySQL (PDO with prepared statements, server-side sessions, CSRF protection, role-based authorization) in `server/cpanel/`.
-- **AI Visualizer**: Authorized RunPod integration via `server/cpanel/idea-accounts-api/visualize.php`, `server/cpanel/idea-accounts-api/platform-ai.php`, and `server/cpanel/idea-accounts-api/platform-ai-surfaces.php`.
-- **Single Source of Truth**: MySQL is the ONLY authorized database and backend for all business data (accounts, roles, verifications, companies, products, private prices, RFQs, quotations, orders, payments, announcements, ad requests, and AI quotas).
+- Use the existing React application and shared design tokens.
+- Route authentication, account state, permissions and persistent business data through the existing PHP APIs.
+- MySQL is the persistent source of truth. Browser code must never connect directly to a database.
+- Keep RunPod credentials and all server secrets on the PHP server.
+- Enforce role, ownership, CSRF and tenant boundaries on the server; UI checks are not authorization.
+- Preserve current catalogue records, product images, company/customer/admin records, orders, quotations, RFQs and existing integrations.
 
-## 2. Permanently Prohibited Technologies
+## Design and localization
 
-The following technologies are **permanently prohibited** in this repository and must never be installed, imported, configured, generated, or restored:
+- Preserve the approved IDEA visual identity and existing day/night themes.
+- Keep Arabic RTL and English LTR correct independently.
+- Reuse existing components, typography, spacing and color tokens before adding new styles.
+- Keep layouts responsive and accessible, including keyboard focus and reduced-motion behavior.
 
-- Firebase (`firebase`, `firebase-admin`, `@firebase/*`, Firebase Auth, Firestore, Firebase Storage, Realtime Database)
-- Supabase (`@supabase/*`, Supabase Auth, Supabase Storage, Supabase Edge Functions, Supabase Realtime)
-- PostgreSQL and PostgreSQL-based Drizzle ORM adapters (`pg`, `postgres`, `drizzle-orm`, `drizzle-kit`)
+## Verification
 
-Never restore or recreate any of these retired paths:
-- `firebase-applet-config.json`, `firebase-blueprint.json`, `firestore.rules`, `firebase.json`, `.firebaserc`
-- `supabase/`, `utils/supabase/`
-- `src/app/backend/supabaseClient.ts`, `src/app/backend/storage.ts`
-- `src/lib/firebase-admin.ts`, `src/middleware/auth.ts`, `src/db/`
-- `server.ts`, `server/cpanel/api/visualize.php`, `scripts/catalogue/clean_company_sql.py`
+Before committing:
+1. Run `pnpm run verify:mysql`.
+2. Run `pnpm lint`.
+3. Run the production build with `pnpm run build`.
+4. For PHP changes, run PHP syntax checks and the relevant backend tests.
+5. Review the complete diff and confirm no unrelated files or user data changed.
 
-## 3. Mandatory Verification Before Every Build, Export, or GitHub Push
-
-Always run:
-
-```bash
-node scripts/verify-mysql-only.mjs
-node --test tests/*.test.mjs
-```
-
-Read `MYSQL_ONLY_ARCHITECTURE.md` and `guidelines/Guidelines.md` before making any changes.
+Do not deploy to the live domain unless explicitly requested.

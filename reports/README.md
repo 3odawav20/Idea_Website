@@ -1,6 +1,6 @@
 # IDEA product-by-product QA — 2026-10-19
 
-Scope: 475 source-approved Art Ceramic records in the committed src/app/data/artceramic.json, not staged/remote supplier feeds or unknown Supabase production records.
+Scope: 475 source-approved Art Ceramic records in the committed src/app/data/artceramic.json, not staged/remote supplier feeds or unexported production MySQL records.
 
 ## Actual checks
 
@@ -27,8 +27,8 @@ Scope: 475 source-approved Art Ceramic records in the committed src/app/data/art
 2. The 3,434 unique main+supplementary gallery URLs were structurally inspected, but only main source images were fully downloaded and decoded one by one. Extra gallery images were not all individually loaded or visually reviewed.
 3. Dimensional quality is NOT the same as manual artistic composition review. No claim that all 475 images were each art-directed by a person.
 4. Chrome emulation is NOT real iPhone Safari hardware testing. This is NOT a verified cPanel live-domain deployment; images remain externally hosted.
-5. Actual database-driven products cannot be verified without restoring the connected production Supabase.
+5. Actual database-driven products cannot be verified without an authorized read of the production MySQL catalogue.
 
 ## Repeat QA
 
-Run Python scripts in scripts/: audit-catalogue-photos.py, validate-photo-upgrades.py, summarize-photo-qa.py, audit-mobile-products.py (Vite on 127.0.0.1:5174, Selenium and Chrome), and recheck-mobile-issues.py. Run node --test tests/*.test.mjs and npm run build.
+Run Python scripts in scripts/: audit-catalogue-photos.py, validate-photo-upgrades.py, summarize-photo-qa.py, audit-mobile-products.py (Vite on 127.0.0.1:5174, Selenium and Chrome), and recheck-mobile-issues.py. Run node --test tests/*.test.mjs and pnpm run build.

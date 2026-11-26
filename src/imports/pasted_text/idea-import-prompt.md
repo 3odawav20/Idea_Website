@@ -22,7 +22,7 @@ This is a real application-development and data-import task.
 
 Do not generate a visual mockup.
 
-Do not create a static Figma-style presentation.
+Build the real responsive application interface and working product flows, not a static presentation.
 
 Do not create fictional products.
 

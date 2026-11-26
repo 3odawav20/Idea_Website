@@ -1,70 +1,46 @@
-# IDEA WEBSITE — PERMANENT MYSQL-ONLY ARCHITECTURE SPECIFICATION
+# IDEA Website — approved production architecture
 
-## 1. Non-Negotiable Architecture Mandate
+## Production target
 
-- **Repository**: `https://github.com/3odawav20/Idea_Website`
-- **Production Website**: `https://idea-dh.com` (InMotion cPanel hosting)
-- **Authorized Backend**: PHP + MySQL ONLY (`PDO` with prepared statements, server-side PHP sessions, `X-CSRF-Token` verification, server-side RBAC).
+- Website: https://idea-dh.com
+- Hosting: InMotion cPanel
+- Backend: PHP 8.3 and MySQL
+- Frontend: React, TypeScript, Vite and Tailwind CSS
+- Image generation: server-side RunPod integration
+
+## Request flow
 
 ```text
 React / TypeScript / Vite
            |
-     HTTPS / JSON
+       HTTPS / JSON
            |
-       PHP API (/api/*.php)
+        PHP APIs
            |
-         MySQL
+          MySQL
 ```
 
-The browser never connects directly to any database. All authentication (including Google OAuth and social login via `/api/social-auth.php`) and business mutations execute strictly through the PHP/MySQL backend.
+The browser communicates only with the site's PHP APIs. PHP owns authentication, server-side sessions, CSRF validation, authorization, persistence, file access and all privileged operations.
 
-## 2. Permanently Prohibited Technologies
+## Required invariants
 
-Future restoration, installation, import, configuration, or code generation of any of the following is strictly forbidden:
+1. MySQL is the single persistent source of truth for accounts, roles, companies, products, private prices, RFQs, quotations, orders, payments, announcements and AI quotas.
+2. The server verifies the authenticated user, role, record ownership and company scope for every protected operation.
+3. No secret, database credential, RunPod key or privileged token may enter the browser bundle.
+4. File uploads must be validated, stored outside public access where required, and served only after server-side ownership checks.
+5. AI generation must use the authorized PHP adapter and its verified worker contract. The frontend must not call the provider directly.
+6. Existing live data and account identifiers must be preserved. Schema changes require backups, reviewed migrations and explicit release approval.
+7. Preview builds are not evidence of successful production authentication, payments, marketplace transactions or image generation.
 
-1. **Firebase**: `firebase`, `firebase-admin`, `@firebase/*`, Firebase Auth, Firestore, Firebase Storage, Firebase Realtime Database.
-2. **Supabase**: `@supabase/supabase-js`, `@supabase/*`, Supabase Auth, Supabase Storage, Supabase Edge Functions, Supabase Realtime.
-3. **PostgreSQL & Drizzle ORM**: `pg`, `postgres`, `drizzle-orm`, `drizzle-kit`, PostgreSQL schemas or connection pools.
+## Authorized integration points
 
-## 3. Permanently Retired Paths (Must Never Exist)
+- Frontend account/session: `src/app/backend/phpAccounts.ts` and `src/app/backend/db.tsx`
+- Marketplace and dashboard APIs: `src/app/backend/apiClient.ts`, `src/app/backend/dashboardApi.ts`
+- PHP marketplace: `server/cpanel/api/marketplace.php`
+- PHP social authentication: `server/cpanel/api/social-auth.php`
+- PHP AI adapter: `server/cpanel/idea-accounts-api/visualize.php`
+- AI processing: `server/cpanel/idea-accounts-api/platform-ai.php` and `platform-ai-surfaces.php`
 
-- `firebase-applet-config.json`
-- `firebase-blueprint.json`
-- `firestore.rules`
-- `firebase.json`
-- `.firebaserc`
-- `eslint.config.mjs` (Firebase rules plugin configuration)
-- `bun.lock`
-- `supabase/`
-- `utils/supabase/`
-- `src/app/backend/supabaseClient.ts`
-- `src/app/backend/storage.ts`
-- `src/lib/firebase-admin.ts`
-- `src/middleware/auth.ts`
-- `src/db/` (`drizzle.config.ts`, `index.ts`, `schema.ts`, `seed.ts`, `users.ts`)
-- `server.ts`
-- `server/cpanel/api/visualize.php` (retired Supabase visualizer; only `server/cpanel/idea-accounts-api/visualize.php` is authorized)
-- `scripts/catalogue/clean_company_sql.py`
+## Verification
 
-## 4. Authorized PHP/MySQL Contracts
-
-The following files define the active production backend integration and must be preserved:
-
-- `src/app/backend/phpAccounts.ts`
-- `src/app/backend/apiClient.ts`
-- `src/app/backend/dashboardApi.ts`
-- `src/app/backend/db.tsx`
-- `server/cpanel/api/marketplace.php`
-- `server/cpanel/api/social-auth.php`
-- `server/cpanel/api/ask-idea.php`
-- `server/cpanel/api/tile-dimensions.php`
-- `server/cpanel/idea-accounts-api/visualize.php`
-- `server/cpanel/idea-accounts-api/platform-ai.php`
-- `server/cpanel/idea-accounts-api/platform-ai-surfaces.php`
-- `server/cpanel/migrations/`
-
-## 5. Automated Anti-Regression Enforcement
-
-- **Validator Script**: `scripts/verify-mysql-only.mjs` (`pnpm run verify:mysql`)
-- **CI Workflow**: `.github/workflows/mysql-only-guard.yml`
-- **Build & Staging Integration**: `verify:mysql` runs automatically before production builds and cPanel staging. Any reintroduction of Firebase, Supabase, Firestore, or PostgreSQL immediately fails the build with a non-zero exit code.
+Run `pnpm run verify:mysql`, `pnpm lint`, `pnpm run build` and the relevant PHP tests before release. Production acceptance additionally requires authenticated tests against the real cPanel/MySQL environment.
