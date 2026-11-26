@@ -6,8 +6,10 @@ import {
   Eye, Focus, ImagePlus, Layers3, Maximize2, RotateCcw,
   Search, ShieldCheck, Sparkles, UploadCloud, X, ZoomIn, ZoomOut,
 } from "lucide-react";
+import { IdeaLogo } from "../components/IdeaLogo";
+import { MaterialSphere } from "../components/MaterialSphere";
 import { useI18n } from "../i18n/i18n";
-import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
+import { ideaInternalCode } from "../data/ideaProductIdentity";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
 import { getPhpSession } from "../backend/phpAccounts";
@@ -212,7 +214,6 @@ export function AiVisualizerStudio() {
 
   const [search, setSearch] = useState("");
   const [atlasGroup, setAtlasGroup] = useState<"all" | "ceramics" | "porcelain" | "marble" | "marble-look">("all");
-  const [atlasBrand, setAtlasBrand] = useState("");
   const [atlasFinish, setAtlasFinish] = useState("");
   const [atlasSize, setAtlasSize] = useState("");
   const [atlasColor, setAtlasColor] = useState("");
@@ -255,7 +256,6 @@ export function AiVisualizerStudio() {
     const unique = (values: string[]) => [...new Set(values.map((value) => value.trim()).filter(Boolean))]
       .sort((a, b) => a.localeCompare(b));
     return {
-      brands: unique(materialLibrary.map((product) => product.manufacturer || product.brand)),
       finishes: unique(materialLibrary.map((product) => product.finish || "")),
       sizes: unique(materialLibrary.flatMap((product) => product.sizes.map((size) => size.label))),
       colors: unique(materialLibrary.flatMap((product) => product.colors || [])),
@@ -277,23 +277,22 @@ export function AiVisualizerStudio() {
       if (atlasGroup === "ceramics" && product.collection !== "ceramics") return false;
       if (atlasGroup === "porcelain" && product.collection !== "porcelain") return false;
       if (atlasGroup === "marble" && product.collection !== "marble") return false;
-      if (atlasBrand && (product.manufacturer || product.brand) !== atlasBrand) return false;
       if (atlasFinish && product.finish !== atlasFinish) return false;
       if (atlasSize && !product.sizes.some((size) => size.label === atlasSize)) return false;
       if (atlasColor && !product.colors?.includes(atlasColor)) return false;
       if (atlasTexture && (product.texture || product.source?.originalSurface || "") !== atlasTexture) return false;
       return !query || [
-        product.name.en, product.name.ar, product.name.fr, product.brand, product.manufacturer,
+        product.name.en, product.name.ar, product.name.fr,
         product.model, product.code, product.finish, product.collection, product.texture,
         product.type, product.variant, product.source?.originalSurface,
         ...(product.colors || []), ...product.sizes.map((size) => size.label),
       ].some((value) => String(value || "").toLocaleLowerCase().includes(query));
     });
-  }, [materialLibrary, materialSurface, search, atlasGroup, atlasBrand, atlasFinish, atlasSize, atlasColor, atlasTexture]);
-  useEffect(() => setAtlasVisibleCount(24), [search, atlasGroup, atlasBrand, atlasFinish, atlasSize, atlasColor, atlasTexture]);
+  }, [materialLibrary, materialSurface, search, atlasGroup, atlasFinish, atlasSize, atlasColor, atlasTexture]);
+  useEffect(() => setAtlasVisibleCount(24), [search, atlasGroup, atlasFinish, atlasSize, atlasColor, atlasTexture]);
   const visibleAtlasProducts = eligibleProducts.slice(0, atlasVisibleCount);
   const resetAtlas = () => {
-    setSearch(""); setAtlasGroup("all"); setAtlasBrand(""); setAtlasFinish("");
+    setSearch(""); setAtlasGroup("all"); setAtlasFinish("");
     setAtlasSize(""); setAtlasColor(""); setAtlasTexture("");
   };
 
@@ -563,8 +562,8 @@ export function AiVisualizerStudio() {
     <main className="idea-studio" lang={locale} dir={ar ? "rtl" : "ltr"}>
       <header className="idea-studio-commandbar">
         <div>
-          <span className="idea-studio-brandmark"><Layers3 size={19} /></span>
-          <span><b>IDEA</b><small>{tr("محرك حماية المشهد", "IMMUTABLE SCENE ENGINE")}</small></span>
+          <span className="idea-studio-brandmark"><IdeaLogo compact /></span>
+          <span className="idea-studio-brand-copy"><small>{tr("محاكي الخامات", "SURFACE VISUALIZER")}</small></span>
         </div>
         <div className="idea-studio-command-status">
           <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : integration === "worker_verified" ? "verified" : ""}`}>
@@ -778,7 +777,6 @@ export function AiVisualizerStudio() {
           <h3>{productName}</h3>
           {selectedProduct && (
             <>
-              <p>{localizedValue(selectedProduct.manufacturer || selectedProduct.brand, "الشركة المصنعة غير مترجمة", "Manufacturer name not localized")}</p>
               <dl className="idea-studio-product-specs">
                 <div><dt>{tr("الكود", "Code")}</dt><dd>{selectedProduct.code || "—"}</dd></div>
                 <div><dt>{tr("التشطيب", "Finish")}</dt><dd>{localizedValue(selectedProduct.finish, "التشطيب غير محدد", "Finish not specified")}</dd></div>
@@ -820,17 +818,17 @@ export function AiVisualizerStudio() {
       </div>
 
       <section className="idea-studio-library" id="idea-material-atlas" aria-labelledby="idea-atlas-heading">
-        <div className="idea-atlas-overline"><span className="idea-studio-kicker">{tr("IDEA / مكتبة الخامات 2030", "IDEA / MATERIAL ATLAS 2030")}</span><span>{tr("كتالوج مستورد • يتوسع مع كل مورد جديد", "Source-linked catalogue · expanding with supplier imports")}</span></div>
+        <div className="idea-atlas-overline"><span className="idea-studio-kicker">{tr("IDEA / مكتبة المنتجات", "IDEA / PRODUCT LIBRARY")}</span><span>{tr("كتالوج IDEA الكامل • كل المنتجات", "Complete IDEA catalogue · all products")}</span></div>
         <div className="idea-studio-library-head">
           <div>
-            <h2 id="idea-atlas-heading">{tr("اختار خامة", "Choose a material for", "Choisir pour")} <em>{surfaceLabel(materialSurface)}</em></h2>
-            <p>{tr("سيراميك، بورسلين، وتصميمات بتأثير الرخام. اختر بلاطتك الحقيقية وشوفها في غرفتك.", "Ceramic, porcelain and marble-effect designs. Choose an actual catalogue product and visualize it in your own room.")}</p>
+            <h2 id="idea-atlas-heading">{tr("كل المنتجات", "All Products", "Tous les produits")}</h2>
+            <p>{tr("اختار من منتجات IDEA وطبّق الخامة على الأرضية أو الحيطان في صورة غرفتك.", "Choose an IDEA product and apply its material to the floor or walls in your room photo.", "Choisissez un produit IDEA et appliquez-le au sol ou aux murs de votre pièce.")}</p>
           </div>
           <div className="idea-atlas-total" aria-live="polite"><strong>{materialLibrary.length.toLocaleString()}</strong><span>{tr("خامة متاحة حاليًا", "catalogue materials")}</span></div>
         </div>
         <div className="idea-atlas-categories" aria-label={tr("نوع الخامة", "Material categories")}>
           {([
-            ["all", tr("كل الخامات", "All materials")],
+            ["all", tr("كل المنتجات", "All Products", "Tous les produits")],
             ["ceramics", tr("السيراميك", "Ceramic")],
             ["porcelain", tr("البورسلين", "Porcelain")],
             ["marble", tr("الرخام الطبيعي", "Natural marble")],
@@ -844,10 +842,9 @@ export function AiVisualizerStudio() {
         </div>
         <div className="idea-atlas-filterbar">
           <label className="idea-studio-search"><Search size={18} /><input type="search" value={search} onChange={(event) => setSearch(event.target.value)}
-            placeholder={tr("دوّر بالاسم، الكود، الماركة، اللون أو المقاس...", "Search names, SKUs, brands, finishes, colours or sizes...")} /></label>
+            placeholder={tr("ابحث باسم المنتج أو كود IDEA أو اللون أو المقاس...", "Search product name, IDEA reference, finish, colour or size...")} /></label>
           <div className="idea-atlas-facets">
             {([
-              { key: "brand", label: tr("الشركة", "Brand"), value: atlasBrand, set: setAtlasBrand, options: atlasFacets.brands },
               { key: "texture", label: tr("النقشة / الخامة", "Pattern"), value: atlasTexture, set: setAtlasTexture, options: atlasFacets.textures },
               { key: "finish", label: tr("التشطيب", "Finish"), value: atlasFinish, set: setAtlasFinish, options: atlasFacets.finishes },
               { key: "size", label: tr("المقاس", "Size"), value: atlasSize, set: setAtlasSize, options: atlasFacets.sizes },
@@ -871,16 +868,15 @@ export function AiVisualizerStudio() {
             <button type="button" onClick={() => chooseProduct(product.id)}
               aria-pressed={selectedProduct?.id === product.id} className={selectedProduct?.id === product.id ? "selected" : ""}>
               <span className="idea-studio-swatch-image">
-                <img src={materialFaces(product)[0]} alt="" loading="lazy" decoding="async" />
+                <MaterialSphere src={materialFaces(product)[0]} alt={localizedName(product)} className="idea-studio-material-orb" loading="lazy" />
                 <span className="idea-atlas-card-kind">{product.collection === "marble" ? tr("رخام طبيعي", "Natural marble") : isMarbleLook(product) ? tr("تأثير رخامي", "Marble effect") : product.collection === "porcelain" ? tr("بورسلين", "Porcelain") : tr("سيراميك", "Ceramic")}</span>
                 {selectedProduct?.id === product.id && <i><Check size={13} /></i>}
               </span>
               <span className="idea-atlas-card-body">
                 <strong>{localizedName(product)}</strong>
-                <small>{localizedValue(product.manufacturer ? productMaker(product, locale).value : product.brand, "الشركة غير مترجمة", "Maker name not localized")}{product.manufacturer ? "" : tr(" · المصنع غير مؤكد", " · maker unverified")}</small>
                 <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + localizedValue(product.finish, "تشطيب غير محدد", "Finish not specified") : ""}</span>
                 <span className="idea-atlas-card-reference"><span>{tr("كود IDEA", "IDEA reference")}</span><code dir="ltr">{ideaInternalCode(product)}</code></span>
-                <span className="idea-atlas-card-bottom"><span>{sourceSku(product) ? (tr("كود المورد", "Supplier SKU") + ": " + sourceSku(product)) : tr("كود المورد غير موثّق", "Supplier SKU unverified")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
+<span className="idea-atlas-card-bottom"><span>{tr("منتج من كتالوج IDEA", "IDEA catalogue product")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
               </span>
             </button>
             <Link className="idea-studio-product-link" to={`/product/${product.slug}`}>{tr("تفاصيل الخامة", "Material details")}</Link>
