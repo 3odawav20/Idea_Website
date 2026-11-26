@@ -824,7 +824,7 @@ export function AiVisualizerStudio() {
             <h2 id="idea-atlas-heading">{tr("كل المنتجات", "All Products", "Tous les produits")}</h2>
             <p>{tr("اختار من منتجات IDEA وطبّق الخامة على الأرضية أو الحيطان في صورة غرفتك.", "Choose an IDEA product and apply its material to the floor or walls in your room photo.", "Choisissez un produit IDEA et appliquez-le au sol ou aux murs de votre pièce.")}</p>
           </div>
-          <div className="idea-atlas-total" aria-live="polite"><strong>{materialLibrary.length.toLocaleString()}</strong><span>{tr("خامة متاحة حاليًا", "catalogue materials")}</span></div>
+          <div className="idea-atlas-total" aria-live="polite"><strong>{materialLibrary.length.toLocaleString()}</strong><span>{tr("منتج متاح", "products")}</span></div>
         </div>
         <div className="idea-atlas-categories" aria-label={tr("نوع الخامة", "Material categories")}>
           {([
@@ -876,7 +876,7 @@ export function AiVisualizerStudio() {
                 <strong>{localizedName(product)}</strong>
                 <span className="idea-atlas-card-details">{product.sizes[0]?.label || tr("المقاس غير محدد", "Size not specified")}{product.finish ? " · " + localizedValue(product.finish, "تشطيب غير محدد", "Finish not specified") : ""}</span>
                 <span className="idea-atlas-card-reference"><span>{tr("كود IDEA", "IDEA reference")}</span><code dir="ltr">{ideaInternalCode(product)}</code></span>
-<span className="idea-atlas-card-bottom"><span>{tr("منتج من كتالوج IDEA", "IDEA catalogue product")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
+                <span className="idea-atlas-card-bottom"><span>{tr("منتج من كتالوج IDEA", "IDEA catalogue product")}</span><span>{selectedProduct?.id === product.id ? tr("مُختار ✓", "Selected ✓") : tr("جرّب في غرفتك", "Visualize ↗")}</span></span>
               </span>
             </button>
             <Link className="idea-studio-product-link" to={`/product/${product.slug}`}>{tr("تفاصيل الخامة", "Material details")}</Link>
