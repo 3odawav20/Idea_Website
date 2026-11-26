@@ -17,5 +17,12 @@
 @media(max-width:600px) { .idea-featured { padding:40px 0; }.idea-featured-heading { margin-bottom:24px; padding:0 24px; }.idea-featured-stage { width:calc(100% - 40px); }.idea-featured-rail { gap:16px; padding:0; scroll-padding-inline:0; }.idea-featured-card { flex-basis:100%; }.idea-featured-arrow { width:36px; height:48px; }.idea-featured-label { bottom:12px; inset-inline-start:12px; font-size:14px; } }
 @media(prefers-reduced-motion:reduce) { .idea-featured-card img { transition:none; } }
 
+.idea-featured-lens { width:100%; }
+.idea-featured-cta { display:inline-flex; align-items:center; gap:8px; padding:10px 18px; border-radius:999px; background:#fd6401; color:#fff !important; font-size:14px; font-weight:600; text-decoration:none; transition:transform .3s ease, background .3s ease; }
+.idea-featured-cta:hover { background:#e55a00; transform:translateY(-2px); }
+.idea-featured-cta:focus-visible { outline:2px solid var(--idea-text); outline-offset:3px; }
+.idea-featured .clc-title { font-family:var(--idea-font-body); font-size:clamp(30px,3.6vw,56px); }
+.idea-featured .clc-cap { font-size:14px; margin-top:10px; }
+.idea-featured .clc-act { margin-top:14px; }
 .idea-featured-rail { cursor:grab; user-select:none; }
 .idea-featured-rail.is-dragging { cursor:grabbing; scroll-snap-type:none; }
