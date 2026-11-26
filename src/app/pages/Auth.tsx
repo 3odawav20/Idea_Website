@@ -19,7 +19,7 @@ import { AccountEntry } from "./AccountEntry";
 /**
  * Primary "Login with Google" button connected directly to the cPanel PHP/MySQL
  * backend (/api/social-auth.php) using official Google OAuth or Google Identity
- * Services (RS256 ID token verification). Zero Firebase dependencies.
+ * Services (RS256 ID token verification)
  */
 export function LoginWithGoogleButton({
   mode = "login",
