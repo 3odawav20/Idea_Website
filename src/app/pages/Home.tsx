@@ -29,16 +29,20 @@ const EDITORIALS = [
 ];
 const BATH_SLUGS = ["sanitary-ware", "bathroom-sets", "bathroom-units", "faucets", "shower-units", "bathtubs", "bathroom-accessories"];
 
+const HOME_FEATURED_IDS = ["93", "59", "58", "67"];
+
 export function Home() {
   const { locale, t } = useI18n();
   const { products } = useStore();
-  // Match the exact 3D featured surfaces shown inside /products.
+  // Curated diverse-color 3D material spheres (Black, Emerald Green, Ocean Blue, Warm Golden Beige).
   const byId = new Map(products.map((p) => [p.id, p]));
-  const pickedFeatured = FEATURED_PRODUCT_IDS.map((id) => byId.get(id)).filter((p): p is Product => p !== undefined);
+  const pickedFeatured = HOME_FEATURED_IDS.map((id) => byId.get(id)).filter((p): p is Product => p !== undefined);
   const featuredProducts =
-    pickedFeatured.length === FEATURED_PRODUCT_IDS.length
+    pickedFeatured.length === HOME_FEATURED_IDS.length
       ? pickedFeatured
-      : distinctStorefrontProducts(products).slice(0, 4);
+      : FEATURED_PRODUCT_IDS.map((id) => byId.get(id)).filter((p): p is Product => p !== undefined).length > 0
+        ? FEATURED_PRODUCT_IDS.map((id) => byId.get(id)).filter((p): p is Product => p !== undefined)
+        : distinctStorefrontProducts(products).slice(0, 4);
   const destinations = useCollectionDestinations();
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
   const exploreIdeaCards: CardGridItem[] = [

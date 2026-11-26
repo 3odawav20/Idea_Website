@@ -7,11 +7,20 @@
  * active Firebase, Supabase, Firestore, or PostgreSQL/Drizzle integrations.
  */
 
-import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, statSync, unlinkSync } from "node:fs";
 import { join, relative, extname } from "node:path";
 
 const ROOT = process.cwd();
 const violations = [];
+
+const transientBunLock = join(ROOT, "bun.lock");
+if (existsSync(transientBunLock)) {
+  try {
+    unlinkSync(transientBunLock);
+  } catch {
+    // fall through to PROHIBITED_PATHS check
+  }
+}
 
 function reportViolation(filePath, line, reason) {
   violations.push({

@@ -123,6 +123,10 @@
   -webkit-filter: saturate(1.12) contrast(1.045) brightness(1.02);
 }
 
+.idea-products-showroom-section .idea-material-orb {
+  width: min(86%, 224px);
+}
+
 /* Product metadata stays readable in the homepage featured shelf. */
 .idea-products-showroom-section .idea-material-maker,
 .idea-products-showroom-section .idea-material-meta {
