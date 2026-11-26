@@ -1,63 +1,67 @@
-#!/bin/bash
-set -e
+#!/usr/bin/env bash
+# IDEA cPanel pull-deployment entrypoint. cPanel runs this after Deploy HEAD Commit.
+# Build and publish only the frontend; never rsync --delete or replace PHP/MySQL data.
+set -Eeuo pipefail
+umask 077
 
-echo "=== Starting Automated Deployment ==="
+REPO="/home/lsenet5/repositories/Idea_Website"
+STAGE_ROOT="/home/lsenet5/idea_release_staging"
+NODE22="/opt/alt/alt-nodejs22/root/usr/bin"
 
-# الانتقال تلقائياً للمجلد الرئيسي للمشروع
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$REPO_ROOT"
+fail() {
+  printf 'IDEA_RELEASE_ERROR: %s\n' "$*" >&2
+  exit 1
+}
 
-# مسار الموقع المباشر ومجلد الـ API في cPanel
-TARGET_PATH="/home/lsenet5/public_html"
-API_TARGET_PATH="$TARGET_PATH/idea-accounts-api"
+[[ -d "$REPO/.git" ]] || fail "The cPanel-managed Git repository is missing at $REPO."
+cd "$REPO"
 
-# التأكد من وجود مسارات النشر
-mkdir -p "$TARGET_PATH"
-mkdir -p "$API_TARGET_PATH"
+BRANCH="$(git symbolic-ref --quiet --short HEAD || true)"
+[[ "$BRANCH" == "main" ]] || fail "Only the main branch may be published (current: ${BRANCH:-detached})."
+[[ -z "$(git status --porcelain)" ]] || fail "The cPanel repository has local changes. Preserve and review them before deploying."
 
-# بناء المشروع تلقائياً إذا كان يحتوي على package.json
-if [ -f "package.json" ]; then
-    echo "Installing dependencies and building..."
-    export PATH=$PATH:/usr/local/bin:~/.nvm/versions/node/$(ls ~/.nvm/versions/node 2>/dev/null | tail -n 1)/bin
-    command -v corepack >/dev/null 2>&1 || { echo "Corepack is required; build in CI instead." >&2; exit 1; }
-    node scripts/verify-mysql-only.mjs
-    corepack pnpm install --frozen-lockfile
-    corepack pnpm run build:cpanel
+SHA="$(git rev-parse HEAD)"
+SHORT_SHA="$(printf '%s' "$SHA" | cut -c1-12)"
+
+mkdir -p "$STAGE_ROOT"
+chmod 700 "$STAGE_ROOT"
+exec 9>"$STAGE_ROOT/deploy.lock"
+flock -n 9 || fail "Another IDEA deployment is already running."
+
+# Prefer the cPanel Node.js 22 runtime when present; never silently build with an older Node.
+if [[ -x "$NODE22/node" && -x "$NODE22/corepack" ]]; then
+  export PATH="$NODE22:$PATH"
 fi
+command -v node >/dev/null 2>&1 || fail "Node.js is unavailable."
+NODE_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
+[[ "$NODE_MAJOR" == "22" ]] || fail "Node.js 22 is required; found $(node --version)."
+for bin in corepack python3 curl git flock sed tail cut; do
+  command -v "$bin" >/dev/null 2>&1 || fail "$bin is unavailable."
+done
+export COREPACK_ENABLE_DOWNLOAD_PROMPT=0
 
-# تحديد مجلد الإخراج الناتج عن البناء
-if [ -d "dist" ]; then
-    SOURCE_DIR="dist/"
-elif [ -d "out" ]; then
-    SOURCE_DIR="out/"
-elif [ -d "build" ]; then
-    SOURCE_DIR="build/"
-else
-    SOURCE_DIR="./"
+printf 'IDEA_SOURCE_SHA=%s\n' "$SHA"
+STAGE_LOG="$(mktemp "$STAGE_ROOT/cpanel-stage-$SHORT_SHA-XXXXXX.log")"
+
+if ! /bin/bash "$REPO/scripts/cpanel-stage-release.sh" >"$STAGE_LOG" 2>&1; then
+  cat "$STAGE_LOG" >&2
+  fail "Frontend staging, tests, or build failed. The live site was not changed."
 fi
+cat "$STAGE_LOG"
 
-echo "Copying frontend files to $TARGET_PATH ..."
+RELEASE_DIR="$(sed -n 's/^IDEA_STAGE_RELEASE_DIR=//p' "$STAGE_LOG" | tail -n 1)"
+[[ -n "$RELEASE_DIR" ]] || fail "The staging script did not return a release directory."
+case "$RELEASE_DIR" in
+  "$STAGE_ROOT"/release_"$SHORT_SHA"_*) ;;
+  *) fail "The staging script returned an unexpected release path: $RELEASE_DIR." ;;
+esac
+[[ -s "$RELEASE_DIR/index.html" && -d "$RELEASE_DIR/assets" ]] || fail "The staged frontend bundle is incomplete."
 
-# نقل ملفات الواجهة مع الحفاظ على مجلدات السيرفر والـ API
-rsync -av --delete \
-  --exclude='.git' \
-  --exclude='.gitignore' \
-  --exclude='.cpanel.yml' \
-  --exclude='.well-known' \
-  --exclude='cgi-bin' \
-  --exclude='scripts' \
-  --exclude='node_modules' \
-  --exclude='idea-accounts-api' \
-  "$SOURCE_DIR" "$TARGET_PATH/"
+# This publisher performs live PHP/MySQL health checks, backs up changed frontend files,
+# preserves .htaccess/API/data, verifies served routes and asset hashes, and rolls back on failure.
+python3 "$REPO/scripts/cpanel-publish-frontend.py" "$SHA" "$RELEASE_DIR"
 
-# نسخ ملف أداة العرض المعتمد
-if [ -f "server/cpanel/idea-accounts-api/visualize.php" ]; then
-    echo "Deploying server/cpanel/idea-accounts-api/visualize.php ..."
-    cp -f "server/cpanel/idea-accounts-api/visualize.php" "$API_TARGET_PATH/visualize.php"
-fi
-
-# ضبط الصلاحيات تلقائياً
-find "$TARGET_PATH" -type d -exec chmod 755 {} + 2>/dev/null || true
-find "$TARGET_PATH" -type f -exec chmod 644 {} + 2>/dev/null || true
-
-echo "=== Deployment Completed Successfully! ==="
+printf 'IDEA_FRONTEND_PROMOTION_SUCCESS=1\n'
+printf 'IDEA_SOURCE_SHA=%s\n' "$SHA"
+printf 'IDEA_LIVE_TARGET=/home/lsenet5/idea-dh.com\n'
+printf 'PHP_MYSQL_API_CONFIG_UPLOADS_AND_DATABASE_PRESERVED=1\n'
