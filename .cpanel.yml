@@ -1,4 +1,4 @@
 ---
 deployment:
   tasks:
-    - /bin/bash scripts/cpanel-safe-release.sh
+    - /bin/bash /home/lsenet5/repositories/Idea_Website/scripts/cpanel-safe-release.sh
