@@ -34,15 +34,4 @@
 [dir="rtl"] .idea-footer-promo-copy{padding-inline-end:40px}
 @media(max-width:1100px){.idea-footer-body{grid-template-columns:1fr}.idea-footer-nav{grid-template-columns:repeat(3,minmax(0,1fr));gap:28px 20px}.idea-footer-promo-copy{padding:60px 40px}}
 @media(max-width:720px){.idea-footer-promo{grid-template-columns:1fr}.idea-footer-promo-copy{padding:48px 24px 42px}.idea-footer-promo-image{min-height:260px;order:-1}.idea-footer-promo h2{font-size:clamp(37px,8vw,55px)}.idea-footer-body{width:calc(100% - 48px);padding:52px 0}.idea-footer-nav{grid-template-columns:repeat(2,minmax(0,1fr));gap:36px 20px}.idea-footer-group h3{margin-bottom:18px}.idea-footer-bottom{padding:23px 24px}.idea-footer-brand .idea-official-logo{max-width:180px}}
-.idea-footer-wordmark{height:clamp(112px,18vw,190px);max-width:980px;margin:-28px auto 8px;padding:0 24px;position:relative;isolation:isolate;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.idea-footer-wordmark:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(90% 125% at 50% 15%,color-mix(in srgb,var(--idea-gold) 12%,transparent),transparent 70%);pointer-events:none}
-.idea-footer-wordmark svg{width:100%;height:100%;overflow:visible;touch-action:pan-y}
-.idea-footer-wordmark-base,.idea-footer-wordmark-glow{font-family:var(--idea-font-display);font-size:80px;font-weight:750;letter-spacing:.08em;fill:none;stroke-width:.65;vector-effect:non-scaling-stroke}
-.idea-footer-wordmark-base{stroke:var(--idea-border);opacity:.75}
-.idea-footer-wordmark-glow{stroke-width:1.15;opacity:0;transition:opacity .35s ease}
-.idea-footer-wordmark-glow.is-visible{opacity:.92}
-html[data-theme="light"] .idea-footer-wordmark-base{stroke:color-mix(in srgb,var(--idea-text) 18%,transparent)}
-html[data-theme="dark"] .idea-footer-wordmark:before{background:radial-gradient(90% 125% at 50% 15%,color-mix(in srgb,var(--idea-gold) 9%,transparent),transparent 70%)}
-.idea-footer-wordmark:focus-visible{outline:2px solid var(--idea-gold);outline-offset:-4px}
-@media(max-width:720px){.idea-footer-wordmark{height:100px;margin:-18px auto 4px;padding:0 18px}.idea-footer-wordmark-base,.idea-footer-wordmark-glow{font-size:72px}}
-@media(prefers-reduced-motion:reduce){.idea-footer-promo-copy>a,.idea-footer-group a,.idea-footer-legal-bar a,.idea-footer-wordmark-glow{transition:none}}
+@media(prefers-reduced-motion:reduce){.idea-footer-promo-copy>a,.idea-footer-group a,.idea-footer-legal-bar a{transition:none}}
