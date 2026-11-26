@@ -48,6 +48,6 @@ test("the publisher targets idea-dh.com and preserves protected production servi
 test("automatic cPanel sync and manual deployment share the same publication markers", () => {
   assert.match(autoSync, /last-published-sha/);
   assert.match(autoSync, /last-published-index-sha256/);
-  assert.match(gitignore, /^package-lock\\.json$/m);
+  assert.ok(gitignore.includes("package-lock.json"));
   assert.match(release, /cpanel-publish-frontend\.py/);
 });
