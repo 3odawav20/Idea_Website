@@ -21,3 +21,8 @@ test('selected locale persists across routes',()=>{
  assert.match(loc,/localStorage.getItem\("idea-language"\)/);
  assert.match(loc,/localStorage.setItem\("idea-language", locale\)/);
 });
+
+test('a recent completed Runpod job is shown as verified, not unverified',()=>{
+ assert.match(page,/integration === "worker_verified"/);
+ assert.match(css,/idea-studio-provider\.verified/);
+});

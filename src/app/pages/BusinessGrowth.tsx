@@ -65,6 +65,8 @@ export function CompanyRevenueReport({ mode }: { mode: "admin" | "supplier" }) {
   const isAdmin = mode === "admin" && session?.role === "admin";
 
   const [report, setReport] = useState<MarketplaceSalesReport | null>(null);
+  const [salesCompanies, setSalesCompanies] = useState<MarketplaceCompany[]>([]);
+  const [salesCompanyId, setSalesCompanyId] = useState("");
   const [period, setPeriod] = useState(new Date().toISOString().slice(0, 7));
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -74,23 +76,31 @@ export function CompanyRevenueReport({ mode }: { mode: "admin" | "supplier" }) {
     setLoading(true);
     setError("");
     try {
-      const data = await fetchConfirmedSales(period);
-      setReport(data);
+      if (isAdmin) {
+        setReport(await fetchConfirmedSales(period));
+      } else {
+        const boot = await fetchMarketplaceBootstrap();
+        const companies = boot.companies || [];
+        setSalesCompanies(companies);
+        const id = companies.some((c) => c.id === salesCompanyId) ? salesCompanyId : companies[0]?.id || "";
+        setSalesCompanyId(id);
+        setReport(id ? await fetchConfirmedSales(period, id) : null);
+      }
     } catch (e) {
       setError(describeDashboardError(e, locale));
       setReport(null);
     } finally {
       setLoading(false);
     }
-  }, [period, session?.id, locale]);
+  }, [period, session?.id, locale, isAdmin, salesCompanyId]);
 
   useEffect(() => {
     void load();
   }, [load]);
 
   const rows = report?.rows || [];
-  const totalNet = useMemo(
-    () => rows.reduce((sum, r) => sum + Number(r.net_confirmed_cents || 0) / 100, 0),
+  const totalGross = useMemo(
+    () => rows.reduce((sum, r) => sum + Number(r.gross_cents || 0) / 100, 0),
     [rows]
   );
   const totalOrders = useMemo(
@@ -115,15 +125,19 @@ export function CompanyRevenueReport({ mode }: { mode: "admin" | "supplier" }) {
       </header>
 
       <div className="ibg-period">
+        {!isAdmin && <label>{ar ? "الشركة" : "Company"}<select value={salesCompanyId} onChange={(e) => { setReport(null); setSalesCompanyId(e.target.value); }}>
+          {!salesCompanies.length && <option value="">{ar ? "لا توجد شركة مرتبطة" : "No associated company"}</option>}
+          {salesCompanies.map((c) => <option key={c.id} value={c.id}>{c.public_name}</option>)}
+        </select></label>}
         <label>
           <CalendarDays size={17} /> {ar ? "الشهر" : "Month"}
           <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} />
         </label>
         <strong>
-          {ar ? "صافي المبيعات المؤكدة:" : "Net confirmed sales:"} {formatEgp(totalNet, locale)}
+          {ar ? "إجمالي المبيعات المدفوعة:" : "Gross captured sales:"} {report ? formatEgp(totalGross, locale) : "—"}
         </strong>
         <span>
-          {ar ? `عدد العمليات المدفوعة: ${totalOrders}` : `Paid orders: ${totalOrders}`}
+          {report ? (ar ? `عدد العمليات المدفوعة: ${totalOrders}` : `Paid orders: ${totalOrders}`) : "—"}
         </span>
         <button type="button" onClick={() => void load()} disabled={loading}>
           {loading ? (ar ? "جاري التحديث…" : "Loading…") : ar ? "تحديث المبيعات" : "Refresh"}
@@ -142,22 +156,22 @@ export function CompanyRevenueReport({ mode }: { mode: "admin" | "supplier" }) {
           <span>{ar ? "طلبات مدفوعة" : "Paid orders"}</span>
           <span>{ar ? "إجمالي" : "Gross"}</span>
           <span>{ar ? "المرتجعات" : "Refunds"}</span>
-          <span>{ar ? "الصافي" : "Net"}</span>
+          <span>{ar ? "الصافي بعد المرتجعات" : "Net after refunds"}</span>
         </div>
         {rows.map((item) => {
           const gross = Number(item.gross_cents || 0) / 100;
-          const net = Number(item.net_confirmed_cents || 0) / 100;
+          const net = item.refund_accounting === "separate_reconciliation_required" ? null : Number(item.net_confirmed_cents || 0) / 100;
           return (
             <div className="ibg-sale-row" key={item.company_id}>
               <strong>{item.public_name}</strong>
               <span>{item.orders_count}</span>
               <span>{formatEgp(gross, locale)}</span>
               <span>{item.refund_accounting || (ar ? "تُراجع محاسبيًا" : "Reviewed separately")}</span>
-              <b>{formatEgp(net, locale)}</b>
+              <b>{net === null ? (ar ? "غير محسوب" : "Not reconciled") : formatEgp(net, locale)}</b>
             </div>
           );
         })}
-        {!rows.length && !loading && (
+        {report && !rows.length && !loading && !error && (
           <p className="ibg-no-data">
             {ar
               ? "لا توجد سجلات مبيعات مدفوعة مؤكدة في الشهر المحدد. لا يتم اختلاق أرقام من عروض الأسعار."
@@ -384,12 +398,11 @@ export function BusinessAdvertising({ mode }: { mode: "admin" | "supplier" }) {
     if (!session) return;
     setError("");
     try {
-      const [boot, adReqs] = await Promise.all([
-        fetchMarketplaceBootstrap(),
-        fetchMarketplaceAdRequests(),
-      ]);
+      const boot = await fetchMarketplaceBootstrap();
       const cos = boot.companies || [];
       const pkgs = boot.packages || [];
+      const companyId = cos.some((c) => c.id === selectedCompany) ? selectedCompany : cos[0]?.id || "";
+      const adReqs = isAdmin ? await fetchMarketplaceAdRequests() : companyId ? await fetchMarketplaceAdRequests(companyId) : [];
       setCompanies(cos);
       setPackages(pkgs);
       setCampaigns(adReqs);
@@ -398,7 +411,7 @@ export function BusinessAdvertising({ mode }: { mode: "admin" | "supplier" }) {
     } catch (e) {
       setError(describeDashboardError(e, locale));
     }
-  }, [session?.id, locale]);
+  }, [session?.id, locale, isAdmin, selectedCompany]);
 
   useEffect(() => {
     void load();
@@ -628,7 +641,7 @@ export function BusinessAdvertising({ mode }: { mode: "admin" | "supplier" }) {
         <form className="ibg-form" onSubmit={(e) => void submitRequest(e)}>
           <label>
             {ar ? "الشركة" : "Company"}
-            <select value={selectedCompany} onChange={(e) => setSelectedCompany(e.target.value)}>
+            <select value={selectedCompany} onChange={(e) => { setCampaigns([]); setSelectedCompany(e.target.value); }}>
               {companies.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.public_name}

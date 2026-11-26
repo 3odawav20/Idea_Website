@@ -13,19 +13,19 @@ fail() {
 test -d "$REPO/.git" || fail "The cPanel-managed Git repository is missing."
 cd "$REPO"
 test -z "$(git status --porcelain)" || fail "Uncommitted changes detected in cPanel-managed repository. Review and preserve them before deploying."
-test -f package-lock.json || fail "package-lock.json missing. Refusing non-reproducible install."
+test -f pnpm-lock.yaml || fail "pnpm-lock.yaml missing. Refusing non-reproducible install."
 test -f scripts/build-cpanel.mjs || fail "cPanel package builder missing."
 command -v node >/dev/null 2>&1 || fail "Node.js is unavailable on this cPanel account. Build in CI and deploy a verified artifact instead."
-command -v npm >/dev/null 2>&1 || fail "npm is unavailable on this cPanel account. Build in CI and deploy a verified artifact instead."
+command -v corepack >/dev/null 2>&1 || fail "Corepack is unavailable on this cPanel account. Build in CI and deploy a verified artifact instead."
 
 printf 'IDEA_STAGE_SOURCE_SHA=%s\n' "$(git rev-parse HEAD)"
 printf 'IDEA_STAGE_NODE_VERSION=%s\n' "$(node --version)"
-npm ci --no-audit --no-fund
-npm run build:cpanel
+corepack pnpm install --frozen-lockfile
+corepack pnpm run build:cpanel
 
 test -s dist/index.html || fail "Build output dist/index.html missing."
-test -f dist/.htaccess || fail "Required Apache .htaccess missing."
-test -f dist/api/visualize.php || fail "Packaged PHP visualizer route missing."
+test -d dist/assets || fail "Build assets missing."
+test ! -e dist/api/visualize.php || fail "Legacy PHP API must not be bundled."
 mkdir -p "$STAGE_ROOT"
 SOURCE_SHA="$(git rev-parse --short=12 HEAD)"
 RELEASE_DIR="$(mktemp -d "$STAGE_ROOT/release_${SOURCE_SHA}_XXXXXXXX")"

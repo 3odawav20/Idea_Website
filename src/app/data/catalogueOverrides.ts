@@ -46,7 +46,7 @@ export function applyAdminOverride(source: Product, data: AdminOverride): Produc
     manufacturer: data.manufacturer || source.manufacturer,
     model: data.model || source.model,
     code: data.code || source.code,
-    collection: data.collection,
+    collection: data.collection === "tiles" ? source.collection : data.collection,
     image: isValidProductImage(data.image_url) ? data.image_url : source.image,
     gallery: isValidProductImage(data.image_url)
       ? [data.image_url, ...(source.gallery || []).filter((value) => value !== data.image_url)]

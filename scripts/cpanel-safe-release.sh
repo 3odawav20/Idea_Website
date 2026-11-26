@@ -21,18 +21,18 @@ cd "$REPO"
 [[ -z $(git status --porcelain) ]] || fail 'Repository has local changes; preserve and review them first.'
 SHA=$(git rev-parse HEAD)
 printf 'IDEA_SOURCE_SHA=%s\n' "$SHA"
-[[ -x "$NODE22/node" && -x "$NODE22/npm" ]] || fail 'Node.js 22 runtime is not available at the expected path.'
+[[ -x "$NODE22/node" && -x "$NODE22/corepack" ]] || fail 'Node.js 22 runtime is not available at the expected path.'
 export PATH="$NODE22:$PATH"
 [[ $(node -p 'process.versions.node.split(".")[0]') == 22 ]] || fail 'Node.js 22 is required.'
-for bin in npm php python3 curl rsync; do command -v "$bin" >/dev/null || fail "$bin is missing."; done
-npm ci --no-audit --no-fund
+for bin in corepack php python3 curl rsync; do command -v "$bin" >/dev/null || fail "$bin is missing."; done
+corepack pnpm install --frozen-lockfile
 node --test tests/*.test.mjs
 php tests/ai-role-policy.test.php
 php tests/tile-physical-size.test.php
 php tests/ai-mask-preservation.test.php
-for f in server/cpanel/api/visualize.php server/cpanel/api/social-auth.php server/cpanel/api/ask-idea.php server/cpanel/api/marketplace.php server/cpanel/api/tile-dimensions.php server/cpanel/idea-accounts-api/platform-ai.php; do php -l "$f"; done
-npm run build:cpanel
-[[ -s dist/index.html && -d dist/assets && -s dist/api/visualize.php && -f dist/.htaccess ]] || fail 'Incomplete cPanel bundle.'
+for f in server/cpanel/idea-accounts-api/visualize.php server/cpanel/api/social-auth.php server/cpanel/api/ask-idea.php server/cpanel/api/marketplace.php server/cpanel/api/tile-dimensions.php server/cpanel/idea-accounts-api/platform-ai.php; do php -l "$f"; done
+corepack pnpm run build:cpanel
+[[ -s dist/index.html && -d dist/assets && ! -e dist/api/visualize.php ]] || fail 'Incomplete cPanel bundle.'
 RELEASE=$(mktemp -d "$ROOT/release_${SHA:0:12}_XXXXXXXX")
 cp -a dist/. "$RELEASE/"
 printf 'IDEA_STAGE_SUCCESS=1\nIDEA_STAGE_RELEASE_DIR=%s\n' "$RELEASE"

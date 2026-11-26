@@ -5,11 +5,11 @@ import { readFileSync, existsSync } from "node:fs";
 const read = p => readFileSync(p, "utf8");
 const mysql = read("server/cpanel/idea-accounts-api/platform-ai.php");
 const old = read("deploy/livefree/20261102/idea-accounts-api/platform-ai.php");
-const qwen = read("server/cpanel/api/visualize.php");
+const visualizer = read("server/cpanel/idea-accounts-api/visualize.php");
 const front = read("src/app/pages/AiVisualizerStudio.tsx");
 
 test("deployable PHP AI adapters contain no Gemini API or Google image model fallback", () => {
-  for (const source of [mysql, old, qwen]) {
+  for (const source of [mysql, old, visualizer]) {
     assert.doesNotMatch(source, /GEMINI_API_KEY|generativelanguage\.googleapis\.com|google-nano-banana|gemini_model|:generateContent/i);
   }
   assert.match(old, /LEGACY_ADAPTER_RETIRED/);
@@ -46,15 +46,17 @@ test("MySQL AI permits buyers five lifetime attempts, admins unlimited, supplier
   assert.match(mysql, /platformTransaction/);
   assert.match(mysql, /AI_SUBSCRIPTION_REQUIRED/);
 });
-test("the original job system and previous staged files remain distinguishable", () => {
-  assert.ok(existsSync("server/cpanel/api/visualize.php"));
-  assert.ok(existsSync("server/cpanel/idea-accounts-api/platform-ai.php"));
-  assert.match(qwen, /IDEA_SUPABASE_URL/);
+test("only the PHP/MySQL visualizer adapter remains and cPanel builds never package legacy Supabase PHP", () => {
+  assert.equal(existsSync("server/cpanel/api/visualize.php"), false);
+  assert.ok(existsSync("server/cpanel/idea-accounts-api/visualize.php"));
+  assert.doesNotMatch(visualizer, /IDEA_SUPABASE_URL|supabaseUrl|auth\/v1\/user/i);
+  assert.match(visualizer, /accountSession\(\)/);
   assert.match(mysql, /idea_ai_jobs/);
-  // The MySQL adapter is NOT a complete application. Do not silently ship it
-  // without the original account platform and database schema.
   const build = read("scripts/build-cpanel.mjs");
-  assert.doesNotMatch(build, /idea-accounts-api\/platform-ai/);
+  assert.doesNotMatch(build, /server\/cpanel\/api\/visualize\.php|dist\/api\/visualize/);
+  const release = read("scripts/cpanel-safe-release.sh");
+  assert.match(release, /server\/cpanel\/idea-accounts-api\/visualize\.php/);
+  assert.doesNotMatch(release, /server\/cpanel\/api\/visualize\.php/);
 });
 test("Runpod generation never blocks an entire image request and polls accepted jobs", () => {
   assert.doesNotMatch(mysql, /\/runsync/);
@@ -80,4 +82,13 @@ test("Runpod polling is ownership scoped, bounded and fails closed", () => {
   assert.match(mysql, /RUNPOD_SUBMISSION_INTERRUPTED/);
   assert.match(mysql, /RUNPOD_VERIFICATION_FAILED/);
   assert.match(mysql, /state='failed'/);
+});
+
+test("stale Runpod reservations are reconciled before quota is reported", () => {
+  assert.match(mysql, /function platformAiReconcileStaleJobs/);
+  assert.match(mysql, /platformAiReconcileStaleJobs\(\$u\)/);
+  assert.match(mysql, /updated_at<\? ORDER BY updated_at ASC LIMIT 3/);
+  assert.match(mysql, /in_array\(\$code,\[404,410\],true\)/);
+  assert.match(mysql, /RUNPOD_JOB_EXPIRED/);
+  assert.match(mysql, /RUNPOD_JOB_STALE/);
 });

@@ -56,6 +56,6 @@ test("New Header: iPhone, iPad, wide desktop and motion preferences", () => {
 
 test("Header does not call Supabase; real admin ticker needs existing MySQL contract", () => {
   assert.doesNotMatch(header, /supabase|<AnnouncementBar\b/i);
-  assert.match(header, /PHP\/MySQL/);
+  assert.match(header, /fetchPublicMarketplaceTicker/);
   assert.match(header, /idea-catalogue-announcement/);
 });
