@@ -7,6 +7,7 @@ const release = readFileSync("scripts/cpanel-safe-release.sh", "utf8");
 const stage = readFileSync("scripts/cpanel-stage-release.sh", "utf8");
 const publisher = readFileSync("scripts/cpanel-publish-frontend.py", "utf8");
 const autoSync = readFileSync("scripts/cpanel-auto-sync.sh", "utf8");
+const gitignore = readFileSync(".gitignore", "utf8");
 
 test("cPanel YAML invokes the guarded release entrypoint from the managed repository", () => {
   assert.match(yaml, /^---\s*\n/);
@@ -30,6 +31,8 @@ test("cPanel staging uses the pinned pnpm lockfile and the same checks as CI", (
   assert.match(stage, /corepack pnpm run build:cpanel/);
   assert.match(stage, /process\.versions\.node/);
   assert.match(stage, /IDEA_STAGE_RELEASE_DIR=/);
+  assert.match(stage, /release_\$SOURCE_SHA"_XXXXXXXX/);
+  assert.match(release, /release_"\$SHORT_SHA"_\*/);
 });
 
 test("the publisher targets idea-dh.com and preserves protected production services", () => {
@@ -45,5 +48,6 @@ test("the publisher targets idea-dh.com and preserves protected production servi
 test("automatic cPanel sync and manual deployment share the same publication markers", () => {
   assert.match(autoSync, /last-published-sha/);
   assert.match(autoSync, /last-published-index-sha256/);
+  assert.match(gitignore, /^package-lock\\.json$/m);
   assert.match(release, /cpanel-publish-frontend\.py/);
 });
