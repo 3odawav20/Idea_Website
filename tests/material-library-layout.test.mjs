@@ -40,10 +40,28 @@ test("material product names are plain reference typography, never orange glass 
 });
 const home=readFileSync(new URL("../src/app/pages/Home.tsx",import.meta.url),"utf8");
 const homeCss=readFileSync(new URL("../src/app/pages/Home.css",import.meta.url),"utf8");
-test("homepage featured products use the same source face, text hierarchy and working quote/AI actions",()=>{
-  for(const token of ["localMaterialFace(product.id)","ideaInternalCode(product)","idea-home-featured-finish","idea-home-featured-maker","idea-home-featured-name","idea-home-featured-meta","addToQuote(product.id, unit)","/ai-room-visualizer?product="]) assert.ok(home.includes(token),token);
-  assert.ok(!home.includes("idea-material-name-pill"),"homepage product names must not render as orange pills");
-  for(const token of [".idea-home-featured-name",".idea-home-featured-maker",".idea-home-featured-meta",".idea-home-featured-actions","[data-theme=\"dark\"] .idea-home-material-sphere"]) assert.ok(homeCss.includes(token),token);
+const productsPage=readFileSync(new URL("../src/app/pages/Products.tsx",import.meta.url),"utf8");
+const productsCss=readFileSync(new URL("../src/app/pages/Products.css",import.meta.url),"utf8");
+test("homepage featured products reuse the shared source-backed marketplace card and its real actions",()=>{
+  assert.match(home,/import \{ Material3DProductCard, FEATURED_PRODUCT_IDS \} from "\.\/Products";/);
+  assert.ok(home.includes("featuredProducts.map((p) => ("));
+  assert.ok(home.includes("<Material3DProductCard key={p.id} product={p} />"));
+  for(const token of [
+    "localMaterialFace(product.id)",
+    "product.source?.original?.tiles?.[0]",
+    "ideaInternalCode(product)",
+    'className="idea-material-finish"',
+    'className="idea-material-maker"',
+    'className="idea-material-name"',
+    'className="idea-material-meta"',
+    "addToQuote(product.id, unit)",
+    "/ai-room-visualizer?product="
+  ]) assert.ok(productsPage.includes(token),token);
+  assert.ok(!productsPage.includes("idea-material-name-pill"),"featured product names must not render as orange pills");
+  for(const token of [".idea-material-card-body",".idea-material-finish",".idea-material-maker",".idea-material-name",".idea-material-meta",".idea-material-card-footer"]) {
+    assert.ok(productsCss.includes(token),token);
+  }
+  assert.ok(home.includes('import "./Products.css";'),"homepage loads the shared featured-card styles");
 });
 
 

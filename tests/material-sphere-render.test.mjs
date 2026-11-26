@@ -5,6 +5,7 @@ import { readFileSync } from "node:fs";
 const sphere = readFileSync(new URL("../src/app/components/MaterialSphere.tsx", import.meta.url), "utf8");
 const home = readFileSync(new URL("../src/app/pages/Home.tsx", import.meta.url), "utf8");
 const catalogue = readFileSync(new URL("../src/app/pages/MaterialCatalogue.tsx", import.meta.url), "utf8");
+const productsPage = readFileSync(new URL("../src/app/pages/Products.tsx", import.meta.url), "utf8");
 const sphereCss = readFileSync(new URL("../src/app/components/MaterialSphere.css", import.meta.url), "utf8");
 const homeCss = readFileSync(new URL("../src/app/pages/Home.css", import.meta.url), "utf8");
 const catalogueCss = readFileSync(new URL("../src/app/pages/MaterialCatalogue.css", import.meta.url), "utf8");
@@ -18,8 +19,12 @@ test("material spheres use spherical UV mapping and directional lighting", () =>
 });
 
 test("homepage and marketplace share the same sphere renderer and cached source faces", () => {
-  assert.ok(home.includes("localMaterialFace(product.id)"));
-  assert.ok(home.includes("<MaterialSphere"));
+  assert.ok(home.includes("Material3DProductCard"), "homepage delegates its featured shelf to the shared marketplace card");
+  assert.ok(home.includes("<Material3DProductCard key={p.id} product={p} />"));
+  assert.ok(productsPage.includes("localMaterialFace(product.id)"));
+  assert.ok(productsPage.includes("<MaterialOrb"));
+  assert.ok(productsPage.includes("<MaterialSphere"), "the Products orb delegates to the shared sphere component");
+  assert.ok(productsPage.includes("return <MaterialSphere src={src} alt={alt} className={className} loading={loading} />"));
   assert.ok(catalogue.includes("localMaterialFace(product.id)"));
   assert.ok(catalogue.includes("<MaterialSphere"));
   assert.ok(catalogue.includes("product.source?.original?.tiles?.[0]"));
@@ -36,7 +41,8 @@ test("featured shelf uses verified catalogue products and retains marketplace ac
 
 test("sphere fallbacks, both themes, responsive cards and reduced-motion support remain intact", () => {
   assert.ok(sphereCss.includes('data-rendered="true"'));
-  assert.ok(homeCss.includes("prefers-reduced-motion: reduce"));
+  assert.match(homeCss, /@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)/);
+  assert.match(homeCss, /idea-products-showroom-section \.idea-material-orb/);
   assert.ok(catalogueCss.includes('[data-theme="dark"] .idea-material-featured'));
   assert.ok(catalogueCss.includes('[data-theme="dark"] .idea-material-orb'));
   assert.ok(catalogueCss.includes("repeat(4, minmax(0, 1fr))"));

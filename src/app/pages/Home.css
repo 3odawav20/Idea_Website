@@ -122,3 +122,25 @@
   filter: saturate(1.12) contrast(1.045) brightness(1.02);
   -webkit-filter: saturate(1.12) contrast(1.045) brightness(1.02);
 }
+
+/* Product metadata stays readable in the homepage featured shelf. */
+.idea-products-showroom-section .idea-material-maker,
+.idea-products-showroom-section .idea-material-meta {
+  color: var(--idea-text-muted);
+  font-weight: 600;
+  text-shadow: var(--idea-readable-text-shadow);
+}
+
+/* Respect reduced-motion preferences for the entire homepage product shelf. */
+@media (prefers-reduced-motion: reduce) {
+  .idea-home-story-image img,
+  .idea-products-showroom-section .idea-material-card,
+  .idea-products-showroom-section .idea-material-orb,
+  .idea-products-showroom-section .idea-material-orb::before,
+  .idea-products-showroom-section .idea-material-orb::after,
+  .idea-products-showroom-section .idea-material-card-actions {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}

@@ -24,6 +24,7 @@ import { distinctStorefrontProducts } from "../data/storefrontDistinct";
 import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
 import { similarProducts } from "../data/recommendations";
 import { localMaterialFace } from "../data/localMaterialFace";
+import { MaterialSphere } from "../components/MaterialSphere";
 import { Chip, Container, Section } from "../components/ui";
 import "../components/Discovery.css";
 import { isLargeFormat, isOutdoor20mm, matchesApplication, isColourLabel, isUsageLabel } from "../data/discovery";
@@ -33,72 +34,7 @@ function cn(...inputs: (string | undefined | null | false)[]) {
   return twMerge(clsx(inputs));
 }
 
-// ─── 3D Material Sphere Orb Renderer ──────────────────────────────────────────
-
-function renderMaterialSphere(img: HTMLImageElement, canvas: HTMLCanvasElement): boolean {
-  if (!img.naturalWidth || !img.naturalHeight) return false;
-  const size = 384;
-  const texW = 512;
-  const texH = 256;
-  const offscreen = document.createElement("canvas");
-  offscreen.width = texW;
-  offscreen.height = texH;
-  const offCtx = offscreen.getContext("2d", { willReadFrequently: true });
-  const ctx = canvas.getContext("2d");
-  if (!offCtx || !ctx) return false;
-
-  const scale = Math.max(texW / img.naturalWidth, texH / img.naturalHeight);
-  const drawW = img.naturalWidth * scale;
-  const drawH = img.naturalHeight * scale;
-  offCtx.clearRect(0, 0, texW, texH);
-  offCtx.drawImage(img, (texW - drawW) / 2, (texH - drawH) / 2, drawW, drawH);
-
-  const srcData = offCtx.getImageData(0, 0, texW, texH);
-  const dstData = ctx.createImageData(size, size);
-
-  const lLen = Math.hypot(-0.42, 0.62, 0.66);
-  const lx = -0.42 / lLen;
-  const ly = 0.62 / lLen;
-  const lz = 0.66 / lLen;
-  const hLen = Math.hypot(lx, ly, lz + 1);
-  const hx = lx / hLen;
-  const hy = ly / hLen;
-  const hz = (lz + 1) / hLen;
-
-  for (let y = 0; y < size; y += 1) {
-    const ny = 1 - ((y + 0.5) / size) * 2;
-    for (let x = 0; x < size; x += 1) {
-      const nx = ((x + 0.5) / size) * 2 - 1;
-      const r2 = nx * nx + ny * ny;
-      if (r2 > 1) continue;
-      const nz = Math.sqrt(1 - r2);
-      const u = 0.5 + Math.atan2(nx, nz) / (Math.PI * 2);
-      const v = 0.5 - Math.asin(ny) / Math.PI;
-      const tx = ((Math.floor(u * texW) % texW) + texW) % texW;
-      const ty = Math.min(texH - 1, Math.max(0, Math.floor(v * texH)));
-      const srcIdx = (ty * texW + tx) * 4;
-      const dstIdx = (y * size + x) * 4;
-
-      const diff = Math.max(0, nx * lx + ny * ly + nz * lz);
-      const spec = Math.pow(Math.max(0, nx * hx + ny * hy + nz * hz), 48) * 0.22;
-      const fresnel = Math.pow(1 - nz, 2.2);
-      const shade = (0.56 + diff * 0.48) * (1 - fresnel * 0.1) - fresnel * 0.055;
-      const edgeAlpha = Math.min(1, Math.max(0, (1 - Math.sqrt(r2)) * (size / 2)));
-      const alpha = (srcData.data[srcIdx + 3] / 255) * edgeAlpha;
-
-      dstData.data[dstIdx] = Math.min(255, srcData.data[srcIdx] * shade + 255 * spec);
-      dstData.data[dstIdx + 1] = Math.min(255, srcData.data[srcIdx + 1] * shade + 255 * spec);
-      dstData.data[dstIdx + 2] = Math.min(255, srcData.data[srcIdx + 2] * shade + 255 * spec);
-      dstData.data[dstIdx + 3] = Math.round(alpha * 255);
-    }
-  }
-
-  canvas.width = size;
-  canvas.height = size;
-  ctx.clearRect(0, 0, size, size);
-  ctx.putImageData(dstData, 0, 0);
-  return true;
-}
+// ─── Shared 3D Material Sphere Renderer ─────────────────────────────────────
 
 export function MaterialOrb({
   src,
@@ -111,46 +47,7 @@ export function MaterialOrb({
   className?: string;
   loading?: "lazy" | "eager";
 }) {
-  const imgRef = useRef<HTMLImageElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [rendered, setRendered] = useState(false);
-
-  useEffect(() => {
-    const img = imgRef.current;
-    const canvas = canvasRef.current;
-    if (!img || !canvas) return;
-    let cancelled = false;
-    setRendered(false);
-
-    const handleLoad = () => {
-      if (cancelled || !img.complete || !img.naturalWidth) return;
-      try {
-        const ok = renderMaterialSphere(img, canvas);
-        if (!cancelled) setRendered(ok);
-      } catch {
-        if (!cancelled) setRendered(false);
-      }
-    };
-    const handleError = () => {
-      if (!cancelled) setRendered(false);
-    };
-
-    img.addEventListener("load", handleLoad);
-    img.addEventListener("error", handleError);
-    if (img.complete && img.naturalWidth) handleLoad();
-    return () => {
-      cancelled = true;
-      img.removeEventListener("load", handleLoad);
-      img.removeEventListener("error", handleError);
-    };
-  }, [src]);
-
-  return (
-    <span className={`idea-material-sphere-render ${className}`} data-rendered={rendered ? "true" : "false"}>
-      <img ref={imgRef} src={src} alt={alt} loading={loading} decoding="async" />
-      <canvas aria-hidden="true" ref={canvasRef} />
-    </span>
-  );
+  return <MaterialSphere src={src} alt={alt} className={className} loading={loading} />;
 }
 
 // ─── Interactive Translucent 3D GlareCard ────────────────────────────────────
