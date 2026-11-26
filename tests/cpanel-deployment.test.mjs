@@ -18,6 +18,7 @@ test("release entrypoint stages and validates before calling the protected publi
   assert.match(release, /cpanel-publish-frontend\.py/);
   assert.match(release, /flock/);
   assert.match(release, /IDEA_FRONTEND_PROMOTION_SUCCESS=1/);
+  assert.match(release, /mktemp "\$STAGE_ROOT\/cpanel-stage-\$SHORT_SHA-XXXXXX"/);
   assert.doesNotMatch(release, /rsync\s+-av\s+--delete|\/home\/lsenet5\/public_html|npm install/);
 });
 
