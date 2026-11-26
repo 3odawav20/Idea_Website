@@ -48,7 +48,7 @@ test -z "$(git status --porcelain)" || fail "The build changed tracked repositor
 mkdir -p "$STAGE_ROOT"
 chmod 700 "$STAGE_ROOT"
 SOURCE_SHA="$(git rev-parse --short=12 HEAD)"
-RELEASE_DIR="$(mktemp -d "$STAGE_ROOT/release_$SOURCE_SHA-XXXXXXXX")"
+RELEASE_DIR="$(mktemp -d "$STAGE_ROOT/release_$SOURCE_SHA"_XXXXXXXX)"
 cp -a dist/. "$RELEASE_DIR/"
 test -s "$RELEASE_DIR/index.html" || fail "The staging copy failed."
 test -d "$RELEASE_DIR/assets" || fail "The staged assets are missing."
