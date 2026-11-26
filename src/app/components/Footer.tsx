@@ -1,3 +1,5 @@
+import { useEffect, useId, useRef, useState } from "react";
+import { motion } from "motion/react";
 import { Link } from "react-router";
 import { ArrowUpRight, Layers3, Sparkles } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
@@ -89,6 +91,7 @@ export function Footer() {
           ))}
         </nav>
       </div>
+      <FooterWordmark />
       <div className="idea-footer-bottom">
         <span>© {new Date().getFullYear()} IDEA. {text("All rights reserved.", "جميع الحقوق محفوظة.", "Tous droits réservés.")}</span>
         <nav className="idea-footer-legal-bar" aria-label={text("Legal links", "الروابط القانونية", "Liens légaux")}>
@@ -99,5 +102,74 @@ export function Footer() {
         <span>{text("Private quotes · Product availability confirmed by suppliers", "عروض أسعار خاصة · التوفر يؤكده المورد", "Devis privés · Disponibilité confirmée par les fournisseurs")}</span>
       </div>
     </footer>
+  );
+}
+
+function FooterWordmark() {
+  const svgRef = useRef<SVGSVGElement>(null);
+  const gradientId = useId().replace(/:/g, "");
+  const [hovered, setHovered] = useState(false);
+  const [maskPosition, setMaskPosition] = useState({ cx: "50%", cy: "50%" });
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    const handlePointerMove = (event: PointerEvent) => {
+      const bounds = svg.getBoundingClientRect();
+      setMaskPosition({
+        cx: `${((event.clientX - bounds.left) / bounds.width) * 100}%`,
+        cy: `${((event.clientY - bounds.top) / bounds.height) * 100}%`,
+      });
+    };
+    svg.addEventListener("pointermove", handlePointerMove);
+    return () => svg.removeEventListener("pointermove", handlePointerMove);
+  }, []);
+
+  return (
+    <div className="idea-footer-wordmark" aria-hidden="true">
+      <svg
+        ref={svgRef}
+        viewBox="0 0 300 100"
+        role="presentation"
+        onPointerEnter={() => setHovered(true)}
+        onPointerLeave={() => setHovered(false)}
+      >
+        <defs>
+          <linearGradient id={`${gradientId}-color`}>
+            <stop offset="0%" stopColor="#fd760c" />
+            <stop offset="50%" stopColor="#f8c879" />
+            <stop offset="100%" stopColor="#3ca2fa" />
+          </linearGradient>
+          <motion.radialGradient
+            id={`${gradientId}-reveal`}
+            gradientUnits="userSpaceOnUse"
+            r="25%"
+            initial={{ cx: "50%", cy: "50%" }}
+            animate={maskPosition}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+          >
+            <stop offset="0%" stopColor="white" />
+            <stop offset="100%" stopColor="black" />
+          </motion.radialGradient>
+          <mask id={`${gradientId}-mask`}>
+            <rect width="100%" height="100%" fill={`url(#${gradientId}-reveal)`} />
+          </mask>
+        </defs>
+        <text x="50%" y="52%" textAnchor="middle" dominantBaseline="middle" className="idea-footer-wordmark-base">
+          IDEA
+        </text>
+        <text
+          x="50%"
+          y="52%"
+          textAnchor="middle"
+          dominantBaseline="middle"
+          stroke={`url(#${gradientId}-color)`}
+          mask={`url(#${gradientId}-mask)`}
+          className={`idea-footer-wordmark-glow${hovered ? " is-visible" : ""}`}
+        >
+          IDEA
+        </text>
+      </svg>
+    </div>
   );
 }
