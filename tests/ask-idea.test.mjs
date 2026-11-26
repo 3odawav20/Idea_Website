@@ -8,7 +8,6 @@ const app = load("src/app/components/AskIdea.tsx");
 const css = load("src/app/components/AskIdea.css");
 const layout = load("src/app/components/Layout.tsx");
 const build = load("scripts/build-cpanel.mjs");
-const publisher = load("scripts/cpanel-publish-frontend.py");
 const php = load("server/cpanel/api/ask-idea.php");
 const catalogue = JSON.parse(load("src/app/data/artceramic.json"));
 
@@ -40,10 +39,9 @@ test("server-only chat endpoint validates origin, input, rate limits and safe pr
   assert.doesNotMatch(php, /Access-Control-Allow-Origin: \*/);
 });
 
-test("cPanel frontend package leaves PHP APIs and canonical data host-managed", () => {
-  assert.doesNotMatch(build, /api\/ask-idea\.php|data\/idea-catalogue\.json/);
-  assert.match(build, /frontend package prepared/);
-  assert.match(publisher, /rel\.parts\[0\] in \("api","data"\)/);
+test("cPanel packaging includes assistant endpoint and canonical product catalogue", () => {
+  assert.match(build, /api\/ask-idea\.php/);
+  assert.match(build, /data\/idea-catalogue\.json/);
 });
 
 test("catalogue search gives named Manila products priority over generic question words", () => {

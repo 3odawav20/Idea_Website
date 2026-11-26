@@ -569,7 +569,7 @@
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]),
   textarea,
   select
-):not(.idea-auth-input-wrap input):not(.idea-auth-input-wrap select):not(.idea-navigation-content input) {
+):not(.idea-material-search-field input):not(.idea-auth-input-wrap input):not(.idea-auth-input-wrap select):not(.idea-navigation-content input) {
   background: var(--idea-gt-input-bg);
   border: 0;
   box-shadow: var(--idea-gt-input-shadow);
@@ -582,7 +582,7 @@
   input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]):not([type="color"]),
   textarea,
   select
-):not(.idea-auth-input-wrap input):not(.idea-auth-input-wrap select):not(.idea-navigation-content input):focus {
+):not(.idea-material-search-field input):not(.idea-auth-input-wrap input):not(.idea-auth-input-wrap select):not(.idea-navigation-content input):focus {
   background: var(--idea-gt-input-bg-focus);
   box-shadow: var(--idea-gt-input-shadow-focus);
   outline: none;

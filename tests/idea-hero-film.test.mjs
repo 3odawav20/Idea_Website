@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import {readFileSync,statSync} from "node:fs";
+import {readFileSync} from "node:fs";
 const component=readFileSync("src/app/components/HeroBrandFilm.tsx","utf8");
 const styles=readFileSync("src/app/components/HeroBrandFilm.css","utf8");
 const home=readFileSync("src/app/pages/Home.tsx","utf8");
@@ -16,10 +16,7 @@ test("both desktop and mobile films use IDEA-owned media URLs",()=>{
  assert.match(component,/media="\(max-width: 767px\)"/);
  assert.match(component,/idea-light-porcelain\.webp/);
 });
-test("light and dark themes select distinct original desktop/mobile films and matching fallbacks",()=>{
- assert.match(component,/const SOURCES = \{\s*desktop: "\/media\/hero\/idea-owner-20261112\.mp4",\s*mobile: "\/media\/hero\/idea-owner-20261112-mobile\.mp4"/);
- assert.match(component,/mode === "dark" \? \{\s*desktop: "\/media\/hero\/idea-dark-desktop\.mp4",\s*mobile: "\/media\/hero\/idea-dark-mobile\.mp4"/);
- for(const file of ["idea-owner-20261112.mp4","idea-owner-20261112-mobile.mp4","idea-dark-desktop.mp4","idea-dark-mobile.mp4"]) assert.ok(statSync("public/media/hero/"+file).size>100000);
+test("both themes use the supplied film with theme-specific image fallbacks",()=>{
  assert.match(component,/mode === "dark"/);
  assert.match(component,/idea-dark-porcelain\.webp/);
  assert.match(component,/idea-dark-marble\.webp/);
@@ -53,7 +50,7 @@ test("branded word-by-word captions maintain white/orange contrast and progressi
  assert.match(styles,/color:\s*#fff/);
  assert.match(styles,/idea-film-word-reveal/);
  assert.match(styles,/text-shadow:/);
- assert.match(styles,/font-family:\s*["\']Comic Neue["\'],\s*cursive\s*!important/);
+ assert.match(styles,/font-family:\s*'Audiowide'/);
  assert.match(styles,/html\[lang="ar"\].*\.idea-film-caption h1/);
  assert.match(styles,/prefers-reduced-motion:\s*reduce/);
 });

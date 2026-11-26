@@ -14,7 +14,7 @@ const METHODS: { key: PaymentMethodKey; tKey: string; marks: () => React.ReactNo
   { key: "applepay", tKey: "pay.applepay", marks: () => <span style={{ ...chip, background: "var(--idea-text)" }}><ApplePayMark /></span> },
   { key: "bank", tKey: "pay.bank", marks: () => <span style={{ color: "var(--idea-text-muted)", fontSize: "var(--idea-text-xs)" }}>Instant transfer</span> },
 ];
-const chip: React.CSSProperties = { background: "var(--idea-page-background)", borderRadius: "var(--idea-radius-sm)", padding: "var(--idea-space-1) var(--idea-space-2)", display: "inline-flex", alignItems: "center" };
+const chip: React.CSSProperties = { background: "var(--idea-surface)", borderRadius: "var(--idea-radius-sm)", padding: "var(--idea-space-1) var(--idea-space-2)", display: "inline-flex", alignItems: "center" };
 
 export function Checkout() {
   const [sp] = useSearchParams();

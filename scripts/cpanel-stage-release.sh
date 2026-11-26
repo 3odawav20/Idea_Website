@@ -24,15 +24,13 @@ npm ci --no-audit --no-fund
 npm run build:cpanel
 
 test -s dist/index.html || fail "Build output dist/index.html missing."
-test -d dist/assets || fail "Frontend assets missing."
-test ! -e dist/api/visualize.php || fail "Legacy PHP API must never be bundled with frontend assets."
+test -f dist/.htaccess || fail "Required Apache .htaccess missing."
+test -f dist/api/visualize.php || fail "Packaged PHP visualizer route missing."
 mkdir -p "$STAGE_ROOT"
 SOURCE_SHA="$(git rev-parse --short=12 HEAD)"
 RELEASE_DIR="$(mktemp -d "$STAGE_ROOT/release_${SOURCE_SHA}_XXXXXXXX")"
 cp -a dist/. "$RELEASE_DIR/"
 test -s "$RELEASE_DIR/index.html" || fail "Staging copy failed."
-test -d "$RELEASE_DIR/assets" || fail "Staged frontend assets missing."
-test ! -e "$RELEASE_DIR/api/visualize.php" || fail "Staged release contains an obsolete PHP API."
 
 printf 'IDEA_STAGE_SUCCESS=1\n'
 printf 'IDEA_STAGE_RELEASE_DIR=%s\n' "$RELEASE_DIR"

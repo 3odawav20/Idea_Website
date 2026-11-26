@@ -478,7 +478,7 @@ export function MaterialLookStrip() {
   const heading  = locale === "ar" ? "اختر أسلوب سطحك" : locale === "fr" ? "Trouvez votre style" : "Find Your Surface Style";
 
   return (
-    <section style={{ background: "var(--idea-page-background)", paddingBottom: "var(--idea-space-7)", overflowX: "hidden" }}>
+    <section style={{ background: "var(--idea-bg-2)", paddingBottom: "var(--idea-space-7)", overflowX: "hidden" }}>
 
       {/* ── Header ───────────────────────────────────────────────────────── */}
       <motion.div

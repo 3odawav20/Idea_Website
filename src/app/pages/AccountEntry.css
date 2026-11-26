@@ -160,7 +160,7 @@ html[lang="en"] .idea-auth-feature small,html[lang="fr"] .idea-auth-feature smal
   position:relative;z-index:3;
   display:flex;align-items:center;justify-content:center;
   padding:clamp(18px,2.4vw,44px);
-  background:var(--idea-page-background);
+  background:linear-gradient(135deg,rgba(19,19,19,.93),#0c0c0b 65%,#101010);
 }
 .idea-auth-scene--light .idea-auth-panel-wrap{
   background:linear-gradient(135deg,rgba(47,30,16,.96),#1c130e 55%,#130f0d);
@@ -177,9 +177,6 @@ html[lang="en"] .idea-auth-feature small,html[lang="fr"] .idea-auth-feature smal
 .idea-auth-scene--light .idea-auth-panel{
   background:linear-gradient(135deg,rgba(66,40,21,.88),rgba(27,20,15,.93));
   border-color:rgba(253,100,1,.29);
-}
-[data-theme="dark"] .idea-auth-scene:not(.idea-auth-scene--light) .idea-auth-panel{
-  background:linear-gradient(rgba(14,14,14,.5),rgba(14,14,14,.5)),url("/images/night-marble-theme.jpg") center / cover;
 }
 .idea-auth-scene--admin .idea-auth-panel{max-width:470px;border-color:rgba(253,100,1,.37)}
 .idea-auth-panel-header{position:relative;margin:0 0 20px;text-align:center}
@@ -1428,7 +1425,7 @@ html[lang="en"] .idea-auth-submit,html[lang="fr"] .idea-auth-submit{font-family:
 }
 .idea-auth-scene.idea-auth-scene--light .idea-wa-otp-select,
 .idea-auth-scene.idea-auth-scene--light .idea-wa-otp-input{
-  background:var(--idea-page-background);
+  background:#ffffff;
   border-color:rgba(20,32,24,.24);
   color:#141a16;
 }

@@ -9,12 +9,11 @@ import { Panel, StatusBadge } from "../components/dash";
 function PlanCard({ plan, interval, current, onChoose }: { plan: Plan; interval: "monthly" | "annual"; current: boolean; onChoose: () => void }) {
   const price = interval === "annual" ? plan.annual : plan.monthly;
   return (
-    <div
-      className={`idea-plan-card glass-card${current ? " is-current" : ""}`}
-      style={{
-        borderRadius: "var(--idea-radius-lg)", padding: "var(--idea-space-5)", display: "flex", flexDirection: "column",
-      }}
-    >
+    <div style={{
+      background: "var(--idea-surface)", border: `1px solid ${current ? "var(--idea-gold)" : "var(--idea-border)"}`,
+      borderRadius: "var(--idea-radius-lg)", padding: "var(--idea-space-5)", display: "flex", flexDirection: "column",
+      boxShadow: current ? "var(--idea-shadow-gold)" : undefined,
+    }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div className="idea-display" style={{ fontSize: "var(--idea-text-lg)", color: "var(--idea-text)" }}>{plan.name}</div>
         {current && <StatusBadge text="Current" tone="gold" />}

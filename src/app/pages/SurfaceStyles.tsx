@@ -37,7 +37,7 @@ function LookThumb({ look, idx }: { look: typeof MATERIAL_LOOKS[0]; idx: number 
           overflow: "hidden",
           borderRadius: "var(--idea-radius-lg)",
           aspectRatio: "3/4",
-          background: "var(--idea-page-background)",
+          background: "var(--idea-surface)",
         }}>
           <img
             src={look.image}
@@ -149,7 +149,7 @@ export function SurfaceStyles() {
     <>
       {/* ── Hero intro ──────────────────────────────────────────────────── */}
       <div style={{
-        background: "var(--idea-page-background)",
+        background: "var(--idea-bg)",
         borderBottom: "var(--idea-hairline)",
         padding: "var(--idea-space-9) var(--idea-space-7) var(--idea-space-8)",
         maxWidth: "var(--idea-content-max)",
@@ -292,7 +292,7 @@ export function SurfaceStyles() {
 
       {/* ── Bottom CTA ──────────────────────────────────────────────────── */}
       <div style={{
-        background: "var(--idea-page-background)",
+        background: "var(--idea-surface)",
         borderTop: "var(--idea-hairline)",
         borderBottom: "var(--idea-hairline)",
         padding: "var(--idea-space-7) var(--idea-space-7)",

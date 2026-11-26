@@ -18,7 +18,7 @@ export function HowItWorks() {
         <SectionHeader eyebrow="Process" title={t("nav.how")} sub={t("home.bestPriceBody")} />
         <div style={{ display: "grid", gap: "var(--idea-space-4)" }}>
           {steps.map((s, i) => (
-            <div key={i} style={{ display: "flex", gap: "var(--idea-space-4)", alignItems: "flex-start", background: "var(--idea-page-background)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-5)" }}>
+            <div key={i} style={{ display: "flex", gap: "var(--idea-space-4)", alignItems: "flex-start", background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-md)", padding: "var(--idea-space-5)" }}>
               <div style={{ width: 46, height: 46, borderRadius: 999, display: "grid", placeItems: "center", background: "var(--idea-gold-soft)", border: "1px solid var(--idea-gold)", color: "var(--idea-gold-bright)", flexShrink: 0 }}>
                 <s.icon size={20} />
               </div>

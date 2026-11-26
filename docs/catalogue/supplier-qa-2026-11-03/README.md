@@ -51,7 +51,7 @@ The 135 unclassified records do NOT contribute to material targets. The existing
 
 ## Admin/private finances
 
-Supplier private prices are stored in MySQL in `idea_marketplace_product_meta.private_price_cents`; the PHP marketplace endpoint only exposes these fields to the owning supplier or a verified platform administrator. Financial offers are not exported in public catalogue data. The old global catalogue-admin-price table and promotions flow are not part of the current PHP/MySQL contract.
+Existing public.catalogue_admin_prices policy already restricts price access to authenticated server-verified administrators. The new administrator-only promotions migration and form allow multiple supplier price/promotion drafts with source URLs, dates, private row-level security and no automatic storefront publication. The migration has not been applied to production by this batch. Financial offers are not exported in public catalogue data.
 
 ## Reproducible workflow
 

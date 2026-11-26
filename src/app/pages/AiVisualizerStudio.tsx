@@ -2,46 +2,22 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { localMaterialFace } from "../data/localMaterialFace";
 import { Link, useSearchParams } from "react-router";
 import {
-  ArrowLeftRight, Check, ChevronDown, CircleAlert, Download,
-  Eye, Focus, ImagePlus, Layers3, Maximize2, RotateCcw,
+  ArrowLeftRight, Check, ChevronDown, CircleAlert, Download, Expand,
+  Eye, Focus, ImagePlus, Layers3, LockKeyhole, Maximize2, RotateCcw,
   Search, ShieldCheck, Sparkles, UploadCloud, X, ZoomIn, ZoomOut,
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
-import { getPhpSession } from "../backend/phpAccounts";
+import { supabase } from "../backend/supabaseClient";
 import type { Product } from "../data/types";
 import "./AiVisualizerStudio.css";
 
 type Surface = "floor" | "walls" | "both";
-type MaterialSurface = Exclude<Surface, "both">;
-type Point = [number, number];
-type SurfaceSelection = {
-  productId: string | null;
-  face: number;
-  sizeId: string;
-  rotation: number;
-  grout: string;
-  area: Point[];
-};
-function emptySelection(productId: string | null = null): SurfaceSelection {
-  return { productId, face: 0, sizeId: "", rotation: 0, grout: "#ddd8cf", area: [] };
-}
-
-function supportsSurface(product: Product, target: MaterialSurface) {
-  return target === "floor" ? /\bfloor\b/i.test(product.application || "") : /\bwall\b/i.test(product.application || "");
-}
-
-function cataloguedSizes(product: Product | null) {
-  return (product?.sizes || []).filter(({ widthMm, heightMm }) =>
-    typeof widthMm === "number" && typeof heightMm === "number" &&
-    widthMm >= 50 && heightMm >= 50 && widthMm <= 3200 && heightMm <= 3200
-  );
-}
 type RoomKind = "living" | "bedroom" | "kitchen" | "bathroom" | "office" | "hallway" | "commercial" | "other";
 type JobStage = "idle" | "uploading" | "validating" | "queued" | "generating" | "verification_failed" | "ready" | "failed";
-type ViewMode = "compare" | "original" | "result" | "mask";
+type ViewMode = "compare" | "original" | "result";
 type Quota = { limit: number | null; used: number; remaining: number | null; unlimited: boolean };
 type Quality = {
   dimensionsPreserved?: boolean;
@@ -54,7 +30,6 @@ type JobResponse = {
   state?: string;
   stage?: JobStage;
   image?: string;
-  maskAvailable?: boolean;
   error?: string;
   code?: string;
   quota?: Quota;
@@ -62,12 +37,12 @@ type JobResponse = {
 };
 
 const ALLOWED = ["image/jpeg", "image/png", "image/webp"];
-const MAX_BYTES = 8 * 1024 * 1024;
+const MAX_BYTES = 12 * 1024 * 1024;
 const POLL_INTERVAL = 2500;
-const POLL_LIMIT = 480;
+const POLL_LIMIT = 240;
 const STAGE_ORDER: JobStage[] = ["uploading", "validating", "queued", "generating", "ready"];
 
-const MAX_PIXELS = 10_000_000;
+const MAX_PIXELS = 12_000_000;
 const MAX_EDGE = 8192;
 
 // Keep the full frame and normalize oversized camera images before PHP validation.
@@ -184,31 +159,8 @@ export function AiVisualizerStudio() {
     if (ar) return containsArabic(direct) ? direct : containsArabic(arabic) ? arabic : "خامة " + code;
     return direct && !containsArabic(direct) ? direct : english && !containsArabic(english) ? english : "Material " + code;
   };
-  const [surface, setSurface] = useState<Surface>(() => searchParams.get("surface") === "walls" ? "walls" : "floor");
-  const [materialSurface, setMaterialSurface] = useState<MaterialSurface>(() => surface === "walls" ? "walls" : "floor");
-  const [selections, setSelections] = useState<Record<MaterialSurface, SurfaceSelection>>(() => ({
-    walls: emptySelection(surface === "walls" ? searchParams.get("product") : null),
-    floor: emptySelection(surface === "floor" ? searchParams.get("product") : null),
-  }));
-  const [drawingArea, setDrawingArea] = useState(false);
-  const [maskAvailable, setMaskAvailable] = useState<string | null>(null);
-  const targets: MaterialSurface[] = surface === "both" ? ["walls", "floor"] : [surface];
-  const surfaceLabel = (value: MaterialSurface) => value === "walls"
-    ? tr("الحيطان", "Walls", "Murs") : tr("الأرضية", "Floor", "Sol");
-  const materialFor = (value: MaterialSurface) => {
-    const selection = selections[value];
-    const product = products.find((item) => item.id === selection.productId || item.slug === selection.productId) || null;
-    const faces = product ? materialFaces(product) : [];
-    const sizes = cataloguedSizes(product);
-    return {
-      selection, product, faces, sizes,
-      face: faces[selection.face] || faces[0] || null,
-      size: sizes.find((item) => item.id === selection.sizeId) || sizes[0] || null,
-    };
-  };
-  const activeMaterial = materialFor(materialSurface);
-  const { product: selectedProduct, face: selectedFaceImage, faces: selectedFaces, sizes: physicalSizes, size: selectedPhysicalSize } = activeMaterial;
-  const { face: faceIndex, rotation, grout, area } = activeMaterial.selection;
+  const selectedId = searchParams.get("product");
+  const selectedProduct = products.find((product) => product.id === selectedId || product.slug === selectedId) || null;
 
   const [search, setSearch] = useState("");
   const [atlasGroup, setAtlasGroup] = useState<"all" | "ceramics" | "porcelain" | "marble" | "marble-look">("all");
@@ -218,14 +170,21 @@ export function AiVisualizerStudio() {
   const [atlasColor, setAtlasColor] = useState("");
   const [atlasTexture, setAtlasTexture] = useState("");
   const [atlasVisibleCount, setAtlasVisibleCount] = useState(24);
+  const [faceIndex, setFaceIndex] = useState(0);
   const [photo, setPhoto] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
   const [photoMeta, setPhotoMeta] = useState<{ width: number; height: number; megapixels: string } | null>(null);
+  const [material, setMaterial] = useState<File | null>(null);
+  const [materialUrl, setMaterialUrl] = useState<string | null>(null);
+  const [surface, setSurface] = useState<Surface>("floor");
   const [roomKind, setRoomKind] = useState<RoomKind>("living");
+  const [rotation, setRotation] = useState(0);
+  const [grout, setGrout] = useState("#ddd8cf");
+  const [tileSize, setTileSize] = useState("60 × 60 cm");
   const [result, setResult] = useState<string | null>(null);
   const [quality, setQuality] = useState<Quality | null>(null);
   const [compare, setCompare] = useState(50);
-  const [viewMode, setViewMode] = useState<ViewMode>("original");
+  const [viewMode, setViewMode] = useState<ViewMode>("compare");
   const [zoom, setZoom] = useState(1);
   const [stage, setStage] = useState<JobStage>("idle");
   const [jobId, setJobId] = useState<string | null>(null);
@@ -235,13 +194,19 @@ export function AiVisualizerStudio() {
   const inputRef = useRef<HTMLInputElement>(null);
   const requestRef = useRef<AbortController | null>(null);
 
+  const selectedFaces = useMemo(() => selectedProduct ? materialFaces(selectedProduct) : [], [selectedProduct]);
+  // Never offer an arbitrary default; only use dimensions recorded for this product variant.
+  const physicalSizes = (selectedProduct?.sizes || []).filter((size) =>
+    Number.isFinite(size.widthMm) && Number.isFinite(size.heightMm) &&
+    Number(size.widthMm) >= 50 && Number(size.heightMm) >= 50 &&
+    Number(size.widthMm) <= 3200 && Number(size.heightMm) <= 3200
+  );
+  const selectedPhysicalSize = physicalSizes.find((size) => size.id === tileSize) || physicalSizes[0] || null;
+
+  const selectedFaceImage = selectedFaces[faceIndex] || selectedFaces[0] || null;
   const safePhotoUrl = safeBlobUrl(photoUrl);
+  const safeMaterialUrl = safeBlobUrl(materialUrl);
   const busy = !["idle", "ready", "failed", "verification_failed"].includes(stage);
-  const selectionsReady = targets.every((target) => {
-    const choice = materialFor(target);
-    return choice.product && supportsSurface(choice.product, target) && choice.face && choice.size &&
-      (choice.selection.area.length === 0 || choice.selection.area.length >= 3);
-  });
   // Keep product provenance intact: a marble pattern is NOT proof of natural marble.
   const isMarbleLook = (product: (typeof products)[number]) =>
     product.collection !== "marble" && /marble|calacatta|carrara|statuario|onyx|رخام|كالاكاتا|كرارا|أونيكس/i.test([
@@ -272,7 +237,6 @@ export function AiVisualizerStudio() {
   const eligibleProducts = useMemo(() => {
     const query = search.trim().toLocaleLowerCase();
     return materialLibrary.filter((product) => {
-      if (!supportsSurface(product, materialSurface)) return false;
       if (atlasGroup === "marble-look" && !isMarbleLook(product)) return false;
       if (atlasGroup === "ceramics" && product.collection !== "ceramics") return false;
       if (atlasGroup === "porcelain" && product.collection !== "porcelain") return false;
@@ -289,7 +253,7 @@ export function AiVisualizerStudio() {
         ...(product.colors || []), ...product.sizes.map((size) => size.label),
       ].some((value) => String(value || "").toLocaleLowerCase().includes(query));
     });
-  }, [materialLibrary, materialSurface, search, atlasGroup, atlasBrand, atlasFinish, atlasSize, atlasColor, atlasTexture]);
+  }, [materialLibrary, search, atlasGroup, atlasBrand, atlasFinish, atlasSize, atlasColor, atlasTexture]);
   useEffect(() => setAtlasVisibleCount(24), [search, atlasGroup, atlasBrand, atlasFinish, atlasSize, atlasColor, atlasTexture]);
   const visibleAtlasProducts = eligibleProducts.slice(0, atlasVisibleCount);
   const resetAtlas = () => {
@@ -297,153 +261,128 @@ export function AiVisualizerStudio() {
     setAtlasSize(""); setAtlasColor(""); setAtlasTexture("");
   };
 
+  useEffect(() => setFaceIndex(0), [selectedProduct?.id]);
   useEffect(() => () => requestRef.current?.abort(), []);
   useEffect(() => () => { if (photoUrl) URL.revokeObjectURL(photoUrl); }, [photoUrl]);
+  useEffect(() => () => { if (materialUrl) URL.revokeObjectURL(materialUrl); }, [materialUrl]);
 
   useEffect(() => {
+    if (!aiEligible || !supabase) {
+      setQuota(null);
+      return;
+    }
     let active = true;
     void (async () => {
+      const { data: auth } = await supabase.auth.getSession();
+      if (!auth.session?.access_token) return;
       const response = await fetch("/api/visualize.php?action=status", {
-        credentials: "same-origin",
+        headers: { Authorization: `Bearer ${auth.session.access_token}` },
         cache: "no-store",
       });
       const data = await response.json().catch(() => null) as (JobResponse & { integration?: string }) | null;
       if (!active || !data) return;
-      setQuota(aiEligible ? data.quota || null : null);
+      if (data.quota) setQuota(data.quota);
       setIntegration(data.integration || (response.ok ? "configuration_present_unverified" : "configuration_required"));
     })().catch(() => { if (active) setIntegration("unavailable"); });
     return () => { active = false; };
   }, [session?.id, aiEligible]);
 
-  function clearResult() {
-    setResult(null);
-    setQuality(null);
-    setMaskAvailable(null);
-    setJobId(null);
-    setViewMode("original");
-    setStage("idle");
-    setError("");
-  }
-
-  function updateMaterial(next: Partial<SurfaceSelection>) {
-    if (busy) return;
-    setSelections((previous) => ({
-      ...previous,
-      [materialSurface]: { ...previous[materialSurface], ...next },
-    }));
-    clearResult();
-  }
-
-  function selectSurface(next: Surface) {
-    if (busy || next === surface) return;
-    setSurface(next);
-    setMaterialSurface(next === "both" ? "walls" : next);
-    setDrawingArea(false);
-    clearResult();
-  }
-
-  async function loadRoom(file: File) {
+  async function onRoomFile(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
     setStage("validating");
     try {
       const prepared = await prepareUpload(file);
+      const url = URL.createObjectURL(prepared.file);
       setPhotoMeta({ width: prepared.width, height: prepared.height, megapixels: (prepared.width * prepared.height / 1_000_000).toFixed(1) });
       setPhoto(prepared.file);
-      setPhotoUrl(URL.createObjectURL(prepared.file));
-      setSelections((previous) => ({
-        walls: { ...previous.walls, area: [] },
-        floor: { ...previous.floor, area: [] },
-      }));
-      setDrawingArea(false);
+      setPhotoUrl(url);
+      setResult(null);
+      setQuality(null);
+      setJobId(null);
       setZoom(1);
-      clearResult();
+      setError("");
+      setStage("idle");
     } catch (cause) {
       setStage("failed");
       const code = cause instanceof Error ? cause.message : "";
       setError(code === "invalid_dimensions"
-        ? tr("اختار صورة بعرض وارتفاع لا يقلوا عن 256 بكسل.", "Choose an image at least 256px on each side.")
-        : tr("تعذر تجهيز الصورة. جرّب JPG أو PNG أو WebP.", "Could not open the image. Try JPG, PNG or WebP."));
+        ? tr("الصورة صغيرة جدًا أو أبعادها غير مناسبة. اختر صورة لا يقل كل بُعد فيها عن 256 بكسل.", "Choose an image at least 256px on each side.")
+        : code === "unsupported_format"
+          ? tr("اختر صورة JPG أو PNG أو WebP.", "Choose a JPG, PNG or WebP image.")
+          : tr("تعذر تجهيز الصورة. جرّب صورة أخرى.", "The image could not be prepared. Try another image."));
     }
   }
 
-  async function onRoomFile(event: ChangeEvent<HTMLInputElement>) {
+  async function onMaterialFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = "";
-    if (file && !busy) await loadRoom(file);
-  }
-
-  async function loadSampleRoom() {
-    if (busy) return;
-    setStage("validating");
+    if (!file) return;
     try {
-      const response = await fetch(import.meta.env.BASE_URL + "images/category-covers/ceramics-v2.webp");
-      if (!response.ok) throw new Error("sample_unavailable");
-      await loadRoom(new File([await response.blob()], "idea-sample-bathroom.webp", { type: "image/webp" }));
-      setRoomKind("bathroom");
+      const prepared = await prepareUpload(file);
+      setMaterial(prepared.file);
+      setMaterialUrl(URL.createObjectURL(prepared.file));
+      setResult(null);
+      setQuality(null);
+      setError("");
     } catch {
-      setStage("failed");
-      setError(tr("تعذر تحميل الغرفة التجريبية.", "The sample room could not be loaded."));
+      setError(tr("تعذر تجهيز صورة الخامة. اختر صورة JPG أو PNG أو WebP بأبعاد لا تقل عن 256 بكسل.", "Choose a readable JPG, PNG or WebP reference at least 256px on each side."));
     }
   }
 
   function chooseProduct(id: string) {
-    if (busy) return;
-    setSearchParams({ product: id, surface: materialSurface }, { replace: true });
-    updateMaterial({ productId: id, face: 0, sizeId: "" });
+    setSearchParams({ product: id }, { replace: true });
+    setMaterial(null);
+    setMaterialUrl(null);
+    setFaceIndex(0);
+    setTileSize("");
+    setResult(null);
+    setQuality(null);
+    setError("");
     window.requestAnimationFrame(() => {
-      document.querySelector(".idea-studio-material")?.scrollIntoView({
+      document.querySelector(".idea-studio-workspace")?.scrollIntoView({
         behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
         block: "start",
       });
     });
   }
 
-  async function csrfToken() {
-    const current = await getPhpSession();
-    if (!current.user || !["buyer", "admin"].includes(current.user.role)) {
-      throw new Error(tr("سجّل الدخول بحساب عميل أو أدمن.", "Sign in with a customer or administrator account."));
+  async function accessToken() {
+    if (!supabase) throw new Error(tr("خدمة تسجيل الدخول غير مهيأة.", "Authentication is not configured."));
+    const { data, error: authError } = await supabase.auth.getSession();
+    if (authError || !data.session?.access_token) throw new Error(tr("سجّل الدخول قبل بدء التوليد.", "Sign in before starting a generation."));
+    return data.session.access_token;
+  }
+
+  async function materialBlob(signal: AbortSignal) {
+    if (material) return material;
+    if (!selectedFaceImage) return null;
+    try {
+      const response = await fetch(selectedFaceImage, { mode: "cors", signal, cache: "force-cache" });
+      if (!response.ok) return null;
+      const blob = await response.blob();
+      return ALLOWED.includes(blob.type) && blob.size > 0 && blob.size <= MAX_BYTES ? blob : null;
+    } catch {
+      return null;
     }
-    return current.csrf;
   }
 
-  async function privatePost(action: "job" | "asset", id: string, token: string, signal: AbortSignal, asset?: "result" | "mask") {
-    const body = new FormData();
-    body.append("action", action);
-    body.append("job", id);
-    if (asset) body.append("asset", asset);
-    return fetch("/api/visualize.php", { method: "POST", credentials: "same-origin", headers: { "X-CSRF-Token": token }, body, cache: "no-store", signal });
-  }
-
-  async function privatePng(id: string, asset: "result" | "mask", token: string, signal: AbortSignal): Promise<string> {
-    const response = await privatePost("asset", id, token, signal, asset);
-    if (!response.ok) throw new Error((await response.json().catch(() => null))?.error || "IMAGE_NOT_READY");
-    const blob = await response.blob();
-    if (blob.type !== "image/png" || blob.size < 8 || blob.size > 42000000) throw new Error("VERIFIED_IMAGE_UNREADABLE");
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result));
-      reader.onerror = () => reject(new Error("VERIFIED_IMAGE_UNREADABLE"));
-      reader.readAsDataURL(blob);
-    });
-  }
-
-  async function pollJob(id: string, controller: AbortController) {
-    const token = await csrfToken();
+  async function pollJob(id: string, token: string, controller: AbortController) {
     for (let attempt = 0; attempt < POLL_LIMIT; attempt++) {
       await wait(POLL_INTERVAL, controller.signal);
-      const response = await privatePost("job", id, token, controller.signal);
+      const response = await fetch(`/api/visualize.php?job=${encodeURIComponent(id)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+        signal: controller.signal,
+      });
       const data = await response.json().catch(() => null) as JobResponse | null;
-      if (!response.ok || !data) throw new Error(data?.error || tr("استجابة غير صالحة من خدمة التصور.", "The visualization service returned an invalid response."));
+      if (!data) throw new Error(tr("استجابة غير صالحة من خدمة التصور.", "The visualization service returned an invalid response."));
       if (data.quota) setQuota(data.quota);
       if (data.stage) setStage(data.stage);
       if (data.state === "ready" && data.image) {
-        const secureResult = "/api/visualize.php?job=" + encodeURIComponent(id) + "&asset=result";
-        if (data.image !== secureResult && !/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(data.image)) {
-          throw new Error(tr("تعذر قراءة النتيجة.", "The result could not be read."));
-        }
-        const image = data.image === secureResult ? await privatePng(id, "result", token, controller.signal) : data.image;
-        const mask = data.maskAvailable === true ? await privatePng(id, "mask", token, controller.signal) : null;
-        setResult(image);
-        setMaskAvailable(mask);
+        if (!/^data:image\/png;base64,[A-Za-z0-9+/=]+$/.test(data.image)) throw new Error("Invalid verified image response");
+        setResult(data.image);
         setQuality(data.quality || null);
         setCompare(50);
         setViewMode("compare");
@@ -472,9 +411,13 @@ export function AiVisualizerStudio() {
       inputRef.current?.click();
       return;
     }
-    if (!selectionsReady) {
-      setError(tr("اختار خامة بمقاس موثق لكل سطح، وأكمل أي مساحة محددة على الصورة.",
-                  "Choose a catalogue material with a documented size for each surface and finish any area selection."));
+    if (!selectedProduct) {
+      setError(tr("اختر منتجًا حقيقيًا من المكتبة.", "Select a real catalogue product."));
+      return;
+    }
+    if (!selectedPhysicalSize) {
+      setError(tr("مقاس البلاطة غير موثق لهذا المنتج. يجب إضافة المقاس الحقيقي قبل التوليد.",
+                  "This product has no verified physical tile dimensions. Add an actual size before generating."));
       return;
     }
     if (quota && !quota.unlimited && quota.remaining === 0) {
@@ -487,33 +430,33 @@ export function AiVisualizerStudio() {
     setError("");
     setStage("uploading");
     try {
-      const token = await csrfToken();
+      const token = await accessToken();
+      const reference = await materialBlob(controller.signal);
+      if (!reference) throw new Error(tr(
+        "تعذر قراءة صورة المنتج من مصدرها. ارفع عينة أصلية واضحة للخامة.",
+        "The product image cannot be read from its source. Upload a clear original material reference."
+      ));
       const form = new FormData();
       form.append("action", "create");
-      form.append("editVersion", "2");
       form.append("room", photo);
+      form.append("material", reference, "material-reference");
+      form.append("productId", selectedProduct.id);
+      form.append("productName", selectedProduct.name.en);
+      form.append("brand", selectedProduct.brand);
+      form.append("finish", selectedProduct.finish || "");
       form.append("surface", surface);
       form.append("roomKind", roomKind);
-      for (const target of targets) {
-        const choice = materialFor(target);
-        if (!choice.product || !choice.face || !choice.size) throw new Error("Invalid catalogue material");
-        const prefix = target + "_";
-        form.append(prefix + "face", String(choice.selection.face));
-        form.append(prefix + "productId", choice.product.id);
-        form.append(prefix + "tileSize", choice.size.label);
-        form.append(prefix + "tileWidth", String(choice.size.widthMm));
-        form.append(prefix + "tileHeight", String(choice.size.heightMm));
-        form.append(prefix + "rotation", String(choice.selection.rotation));
-        form.append(prefix + "grout", choice.selection.grout);
-        form.append(prefix + "area", JSON.stringify(choice.selection.area));
-      }
+      form.append("rotation", String(rotation));
+      form.append("tileSize", selectedPhysicalSize.label);
+       form.append("tile_width_mm", String(selectedPhysicalSize.widthMm));
+       form.append("tile_height_mm", String(selectedPhysicalSize.heightMm));
+       form.append("variant_id", selectedPhysicalSize.id);
+      form.append("grout", grout);
       form.append("idempotencyKey", crypto.randomUUID());
-      setDrawingArea(false);
       setStage("validating");
       const response = await fetch("/api/visualize.php", {
         method: "POST",
-        credentials: "same-origin",
-        headers: { "X-CSRF-Token": token },
+        headers: { Authorization: `Bearer ${token}` },
         body: form,
         cache: "no-store",
         signal: controller.signal,
@@ -523,7 +466,7 @@ export function AiVisualizerStudio() {
       if (data.quota) setQuota(data.quota);
       setJobId(data.jobId);
       setStage(data.stage || "queued");
-      await pollJob(data.jobId, controller);
+      await pollJob(data.jobId, token, controller);
     } catch (cause) {
       if (!controller.signal.aborted) {
         setStage("failed");
@@ -535,10 +478,20 @@ export function AiVisualizerStudio() {
   }
 
   async function cancelJob() {
-    if (!requestRef.current || !busy) return;
+    if (!jobId || !busy) return;
     requestRef.current?.abort();
-    setStage("failed");
-    setError(tr("تم إيقاف المتابعة فقط. قد تستمر الوظيفة على الخادم؛ راجع سجل التصميمات.", "Polling stopped only. The server job may continue; check design history."));
+    try {
+      const token = await accessToken();
+      const form = new FormData();
+      form.append("action", "cancel");
+      form.append("jobId", jobId);
+      const response = await fetch("/api/visualize.php", { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: form, cache: "no-store" });
+      const data = await response.json().catch(() => null) as JobResponse | null;
+      if (data?.quota) setQuota(data.quota);
+    } finally {
+      setStage("idle");
+      setJobId(null);
+    }
   }
 
   const productName = selectedProduct ? localizedName(selectedProduct) : tr("اختر خامة", "Select a material");
@@ -562,8 +515,8 @@ export function AiVisualizerStudio() {
           <span><b>IDEA</b><small>{tr("محرك حماية المشهد", "IMMUTABLE SCENE ENGINE")}</small></span>
         </div>
         <div className="idea-studio-command-status">
-          <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : integration === "worker_verified" ? "verified" : ""}`}>
-            <i /> {integration === "worker_verified" ? tr("تم التحقق من عامل Runpod", "Runpod worker verified") : integration === "configuration_present_unverified" ? tr("Runpod جاهز للاختبار", "Runpod configuration unverified") : tr("حالة Runpod غير مؤكدة", "Runpod status unavailable")}
+          <span className={`idea-studio-provider ${integration === "configuration_present_unverified" ? "pending" : ""}`}>
+            <i /> {integration === "configuration_present_unverified" ? tr("Runpod جاهز للاختبار", "Runpod configuration unverified") : tr("حالة Runpod غير مؤكدة", "Runpod status unavailable")}
           </span>
           <span className="idea-studio-quota">
             <ShieldCheck size={15} />
@@ -582,23 +535,22 @@ export function AiVisualizerStudio() {
 
       <section className="idea-studio-intro">
         <div>
-          <h1>{tr("استوديو الخامات", "Surface Studio", "Studio des surfaces")}</h1>
-          <p>{tr("ارفع صورة غرفتك، واختار خامة للحيطان وخامة للأرضية، وشوف الفرق على نفس الصورة.",
-            "Upload a room photo, choose wall and floor materials, and compare the result on the same image.",
-            "Importez une photo, choisissez les revêtements et comparez le résultat.")}</p>
+          <span className="idea-studio-kicker"><Sparkles size={14} /> {tr("IDEA / استوديو الخامات 2030", "IDEA MATERIAL INTELLIGENCE / 2030")}</span>
+          <h1>{tr("غيّر السطح.", "Change the surface.")}<em>{tr(" لا تغيّر الغرفة.", " Never the room.")}</em></h1>
+          <p>{tr("المشهد الأصلي يظل مرجعًا ثابتًا. لا تُنشر أي نتيجة إلا بعد التحقق من القناع والأبعاد وإعادة تركيب البكسلات المحمية من الصورة الأصلية.", "Your original scene remains immutable. No result is released without mask, dimension and protected-pixel verification.")}</p>
         </div>
+        <div className="idea-studio-trust"><LockKeyhole size={18} /><span><b>{tr("تركيب آمن للصورة", "PIXEL-SAFE COMPOSITING")}</b><small>{tr("الصورة الأصلية · قناع معتمد · علامة IDEA", "ORIGINAL FRAME · VERIFIED MASK · IDEA WATERMARK")}</small></span></div>
       </section>
 
       <div className="idea-studio-workspace">
         <aside className="idea-studio-rail idea-studio-room">
-          <div className="idea-studio-rail-head"><div><h2>{tr("صورة الغرفة", "Room photo", "Photo de la pièce")}</h2></div></div>
-          <button className="idea-studio-upload" type="button" disabled={busy} onClick={() => inputRef.current?.click()}>
+          <div className="idea-studio-rail-head"><span>01</span><div><small>{tr("ذكاء الغرفة", "ROOM INTELLIGENCE")}</small><h2>{tr("المشهد الأصلي", "Source scene")}</h2></div><ChevronDown size={16} /></div>
+          <button className="idea-studio-upload" type="button" onClick={() => inputRef.current?.click()}>
             <UploadCloud size={24} />
             <strong>{photo ? tr("تغيير صورة الغرفة", "Replace room image") : tr("ارفع صورة الغرفة", "Upload room image")}</strong>
-            <small dir="ltr">JPG · PNG · WEBP · 8 MB</small>
+            <small dir="ltr">JPG · PNG · WEBP · 12 MB</small>
           </button>
-          <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={onRoomFile} />
-          {!photo && <button className="idea-studio-sample-room" type="button" disabled={busy} onClick={() => void loadSampleRoom()}>{tr("جرّب صورة حمام", "Try a sample bathroom", "Essayer une salle de bain")}</button>}
+          <input ref={inputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={onRoomFile} capture="environment" />
           {photoMeta && (
             <div className="idea-studio-analysis">
               <span><Check size={13} /> {tr("تم فك الصورة", "Image decoded")}</span>
@@ -612,35 +564,31 @@ export function AiVisualizerStudio() {
           <div className="idea-studio-control-block">
             <label>{tr("المساحة المطلوب تغييرها", "Target surface")}</label>
             <div className="idea-studio-choice">
-              {([["walls", surfaceLabel("walls")], ["floor", surfaceLabel("floor")], ["both", tr("الاتنين", "Both", "Les deux")]] as const).map(([value, label]) => (
-                <button type="button" key={value} disabled={busy} aria-pressed={surface === value} className={surface === value ? "active" : ""} onClick={() => selectSurface(value)}>{label}</button>
+              {([["floor", tr("الأرضية", "Floor")], ["walls", tr("الحوائط", "Walls")], ["both", tr("الاثنان", "Both")]] as const).map(([value, label]) => (
+                <button type="button" key={value} className={surface === value ? "active" : ""} onClick={() => setSurface(value)}>{label}</button>
               ))}
             </div>
           </div>
-          <div className="idea-studio-control-block">
-            <label htmlFor="idea-studio-room-kind">{tr("نوع الغرفة", "Room type", "Type de pièce")}</label>
-            <select id="idea-studio-room-kind" disabled={busy} value={roomKind} onChange={(event) => { setRoomKind(event.target.value as RoomKind); clearResult(); }}>
-              <option value="living">{tr("غرفة معيشة", "Living room", "Salon")}</option>
-              <option value="bedroom">{tr("غرفة نوم", "Bedroom", "Chambre")}</option>
-              <option value="kitchen">{tr("مطبخ", "Kitchen", "Cuisine")}</option>
-              <option value="bathroom">{tr("حمام", "Bathroom", "Salle de bain")}</option>
-              <option value="office">{tr("مكتب", "Office", "Bureau")}</option>
-              <option value="hallway">{tr("ممر", "Hallway", "Couloir")}</option>
-              <option value="commercial">{tr("مساحة تجارية", "Commercial", "Commerce")}</option>
-              <option value="other">{tr("أخرى", "Other", "Autre")}</option>
-            </select>
+          <div className="idea-studio-protection">
+            <span><ShieldCheck size={15} /> {tr("حماية إلزامية", "Mandatory protection")}</span>
+            <ul>
+              <li>{tr("الأثاث والأشخاص", "Furniture and people")}</li>
+              <li>{tr("الأبواب والنوافذ", "Doors and windows")}</li>
+              <li>{tr("السقف والتركيبات", "Ceiling and fixtures")}</li>
+              <li>{tr("كل سطح غير محدد", "Every unselected surface")}</li>
+            </ul>
           </div>
-          <button className="idea-studio-reset-source" type="button" disabled={!photo || busy} onClick={() => { setPhoto(null); setPhotoUrl(null); setPhotoMeta(null); setDrawingArea(false); clearResult(); }}>
-            <RotateCcw size={14} /> {tr("إزالة الصورة", "Remove photo", "Retirer la photo")}
+          <button className="idea-studio-reset-source" type="button" disabled={!photo} onClick={() => { setPhoto(null); setPhotoUrl(null); setPhotoMeta(null); setResult(null); setStage("idle"); }}>
+            <RotateCcw size={14} /> {tr("مسح المشهد", "Clear source")}
           </button>
         </aside>
 
         <section className="idea-studio-canvas" aria-label={tr("لوحة المعاينة المعمارية", "Architectural visualization canvas")}>
           <div className="idea-studio-canvas-head">
-            <div><span className={`idea-studio-live ${stage}`} /><b>{stageText[stage]}</b></div>
+            <div><span className={`idea-studio-live ${stage}`} /><b>{stageText[stage]}</b>{jobId && <small>JOB {jobId.slice(0, 8).toUpperCase()}</small>}</div>
             <div className="idea-studio-view-tabs">
               {(["original", "compare", "result"] as ViewMode[]).map((mode) => (
-                <button key={mode} type="button" disabled={drawingArea || (mode !== "original" && !result)} aria-pressed={viewMode === mode} className={viewMode === mode ? "active" : ""} onClick={() => setViewMode(mode)}>
+                <button key={mode} type="button" disabled={mode !== "original" && !result} className={viewMode === mode ? "active" : ""} onClick={() => setViewMode(mode)}>
                   {mode === "original" ? tr("الأصل", "Original") : mode === "compare" ? tr("مقارنة", "Compare") : tr("النتيجة", "Result")}
                 </button>
               ))}
@@ -655,29 +603,7 @@ export function AiVisualizerStudio() {
           <div className="idea-studio-stage">
             {safePhotoUrl ? (
               <div className="idea-studio-image-plane" style={{ transform: `scale(${zoom})` }}>
-                {drawingArea && photoMeta ? (
-                  <svg className="idea-studio-area-editor" viewBox={"0 0 " + photoMeta.width + " " + photoMeta.height}
-                    aria-label={tr("تحديد جزء من " + surfaceLabel(materialSurface), "Outline a region of the " + surfaceLabel(materialSurface).toLowerCase())}
-                    onClick={(event) => {
-                      const matrix = event.currentTarget.getScreenCTM();
-                      if (!matrix || area.length >= 24) return;
-                      const point = new DOMPoint(event.clientX, event.clientY).matrixTransform(matrix.inverse());
-                      const x = point.x / photoMeta.width;
-                      const y = point.y / photoMeta.height;
-                      if (x >= 0 && x <= 1 && y >= 0 && y <= 1) updateMaterial({ area: [...area, [x, y]] });
-                    }}>
-                    <image href={safePhotoUrl} width={photoMeta.width} height={photoMeta.height} />
-                    <polygon points={area.map(([x, y]) => (x * photoMeta.width) + "," + (y * photoMeta.height)).join(" ")} />
-                    {area.map(([x, y], index) => <circle key={index} cx={x * photoMeta.width} cy={y * photoMeta.height}
-                      r={Math.max(photoMeta.width, photoMeta.height) / 140} />)}
-                  </svg>
-                ) : viewMode === "mask" && jobId ? (
-                  <>
-                    <img className="idea-studio-single-image" src={safePhotoUrl} alt={tr("الغرفة الأصلية", "Original room")} />
-                    <img className="idea-studio-single-image idea-studio-mask-image" src={maskAvailable || undefined}
-                      alt={tr("مساحات الحيطان والأرضية اللي اتغيرت", "Wall and floor areas accepted for editing")} />
-                  </>
-                ) : viewMode === "compare" && result ? (
+                {viewMode === "compare" && result ? (
                   <div className="idea-studio-comparison">
                     <img src={safePhotoUrl} alt={tr("الغرفة الأصلية", "Original room")} />
                     <div className="idea-studio-after" style={{ clipPath: `inset(0 ${100-compare}% 0 0)` }}><img src={result} alt={tr("النتيجة", "Verified result")} /></div>
@@ -703,25 +629,17 @@ export function AiVisualizerStudio() {
                 <div className="idea-studio-stage-track">
                   {STAGE_ORDER.map((item) => <span key={item} className={STAGE_ORDER.indexOf(item) <= STAGE_ORDER.indexOf(stage) ? "done" : ""}>{stageText[item]}</span>)}
                 </div>
-                <button type="button" onClick={() => void cancelJob()}><X size={14} /> {tr("إيقاف المتابعة", "Stop waiting")}</button>
+                <button type="button" onClick={() => void cancelJob()}><X size={14} /> {tr("إلغاء الوظيفة", "Cancel job")}</button>
               </div>
             )}
           </div>
           <div className="idea-studio-canvas-foot">
-            {drawingArea ? (
-              <div className="idea-studio-region-tools">
-                <span>{tr("علّم حدود " + surfaceLabel(materialSurface) + " بالضغط على الصورة.", "Click along the boundary of the " + surfaceLabel(materialSurface).toLowerCase() + ".")}</span>
-                <button type="button" disabled={area.length === 0} onClick={() => updateMaterial({ area: area.slice(0, -1) })}>{tr("تراجع", "Undo")}</button>
-                <button type="button" onClick={() => { updateMaterial({ area: [] }); setDrawingArea(false); }}>{tr("تحديد تلقائي", "Use automatic detection")}</button>
-                <button type="button" disabled={area.length < 3} onClick={() => setDrawingArea(false)}><Check size={15} />{tr("اعتماد المنطقة", "Use this area")}</button>
-              </div>
-            ) : (
-              <div>
-                {photo && !result && <button type="button" disabled={busy} onClick={() => { setZoom(1); setDrawingArea(true); }}><Focus size={15} />{area.length ? tr("تعديل التحديد", "Edit selected area") : tr("حدد جزء من السطح", "Limit to an area")}</button>}
-                {maskAvailable && <button type="button" aria-pressed={viewMode === "mask"} onClick={() => setViewMode(viewMode === "mask" ? "compare" : "mask")}><Eye size={15} />{tr("عرض مناطق التعديل", "Show edited areas")}</button>}
-              </div>
-            )}
-            {result && <a download="idea-room-visualization.png" href={result}><Download size={16} /> {tr("تنزيل PNG", "Download PNG")}</a>}
+            <div>
+              <button type="button" disabled={!result} onClick={() => setViewMode("compare")}><ArrowLeftRight size={15} /> {tr("واقع الخامة", "Material Reality")}</button>
+              <button type="button" disabled><Eye size={15} /> {tr("قناع الحماية بعد التحليل", "Protection mask after analysis")}</button>
+              <button type="button" disabled><Expand size={15} /> {tr("مراجعة المعماري", "Architect review")}</button>
+            </div>
+            {result && <a download={`idea-${selectedProduct?.slug || "visualization"}.png`} href={result}><Download size={16} /> {tr("تنزيل PNG", "Download PNG")}</a>}
           </div>
           {quality && (
             <div className="idea-studio-quality">
@@ -735,23 +653,7 @@ export function AiVisualizerStudio() {
         </section>
 
         <aside className="idea-studio-rail idea-studio-material">
-          <div className="idea-studio-rail-head"><div><h2>{tr("خامات الغرفة", "Room materials", "Revêtements")}</h2></div></div>
-          <div className="idea-studio-material-slots" role="group" aria-label={tr("خامة لكل سطح", "Materials by surface")}>
-            {targets.map((target) => {
-              const choice = materialFor(target);
-              return (
-                <button key={target} type="button" disabled={busy} aria-pressed={materialSurface === target}
-                  onClick={() => { setMaterialSurface(target); setDrawingArea(false); }}>
-                  <span className="idea-studio-slot-thumbnail">{choice.face ? <img src={choice.face} alt="" /> : <Layers3 size={19} />}</span>
-                  <span><strong>{surfaceLabel(target)}</strong><small>{choice.product ? localizedName(choice.product) : tr("اختار خامة", "Choose material", "Choisir")}</small></span>
-                  {choice.face && <Check size={14} />}
-                </button>
-              );
-            })}
-          </div>
-          <a className="idea-studio-browse" href="#idea-material-atlas">
-            <Search size={15} />{tr("اختار من الكتالوج", "Browse catalogue", "Parcourir le catalogue")}<ChevronDown size={14} />
-          </a>
+          <div className="idea-studio-rail-head"><span>02</span><div><small>{tr("ذكاء الخامة", "MATERIAL INTELLIGENCE")}</small><h2>{tr("المنتج المحدد", "Selected product")}</h2></div><ChevronDown size={16} /></div>
           <div className="idea-studio-product-image">
             {selectedFaceImage ? <img src={selectedFaceImage} alt={productName} /> : <span><ImagePlus size={28} />{tr("اختر وجه بلاطة أصلي", "Select an original tile face")}</span>}
           </div>
@@ -763,7 +665,7 @@ export function AiVisualizerStudio() {
                   <button type="button" key={face}
                     aria-label={tr(`الوجه ${index + 1}`, `Face ${index + 1}`)}
                     aria-pressed={index === faceIndex} className={index === faceIndex ? "active" : ""}
-                    disabled={busy} onClick={() => updateMaterial({ face: index })}>
+                    onClick={() => { setFaceIndex(index); setMaterial(null); setMaterialUrl(null); setResult(null); setQuality(null); }}>
                     <img src={face} alt="" loading="lazy" />
                   </button>
                 ))}
@@ -782,15 +684,24 @@ export function AiVisualizerStudio() {
               <Link className="idea-studio-product-link" to={`/product/${selectedProduct.slug}`}>{tr("فتح صفحة المنتج", "Open product page")}</Link>
             </>
           )}
-          <details className="idea-studio-material-settings">
-            <summary>{tr("المقاس والتركيب", "Size and layout", "Format et pose")}</summary>
+          <label className="idea-studio-sample"><ImagePlus size={16} /><span>{tr("عينة خامة أوضح", "Clearer material reference")}<small>{tr("اختياري عند تعذر قراءة صورة المصدر", "Optional when source media is blocked")}</small></span><input type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={onMaterialFile} /></label>
+          {safeMaterialUrl && <div className="idea-studio-material-thumb"><img src={safeMaterialUrl} alt="" /><Check size={14} /> {tr("مرجع مخصص", "Custom reference")}</div>}
+          <div className="idea-studio-control-block">
+            <label>{tr("نوع الغرفة", "Room type")}</label>
+            <select value={roomKind} onChange={(event) => setRoomKind(event.target.value as RoomKind)}>
+              <option value="living">{tr("غرفة معيشة", "Living room")}</option><option value="bedroom">{tr("غرفة نوم", "Bedroom")}</option>
+              <option value="kitchen">{tr("مطبخ", "Kitchen")}</option><option value="bathroom">{tr("حمام", "Bathroom")}</option>
+              <option value="office">{tr("مكتب", "Office")}</option><option value="hallway">{tr("ممر", "Hallway")}</option>
+              <option value="commercial">{tr("مساحة تجارية", "Commercial")}</option><option value="other">{tr("أخرى", "Other")}</option>
+            </select>
+          </div>
           <div className="idea-studio-control-block">
             <label>{tr("اتجاه البلاطة", "Tile orientation")}</label>
-            <div className="idea-studio-choice">{[0,45,90].map((value) => <button type="button" key={value} className={rotation === value ? "active" : ""} disabled={busy} aria-pressed={rotation === value} onClick={() => updateMaterial({ rotation: value })}>{value}°</button>)}</div>
+            <div className="idea-studio-choice">{[0,45,90].map((value) => <button type="button" key={value} className={rotation === value ? "active" : ""} onClick={() => setRotation(value)}>{value}°</button>)}</div>
           </div>
           <div className="idea-studio-control-block">
             <label>{tr("المقاس الحقيقي للبلاطة", "Actual tile size")}</label>
-            <select value={selectedPhysicalSize?.id || ""} onChange={(event) => updateMaterial({ sizeId: event.target.value })} disabled={busy || physicalSizes.length <= 1}>
+            <select value={selectedPhysicalSize?.id || ""} onChange={(event) => setTileSize(event.target.value)} disabled={physicalSizes.length <= 1}>
                {physicalSizes.length ? physicalSizes.map((size) => (
                  <option value={size.id} key={size.id}>
                    {String(Number(size.widthMm) / 10) + " × " + String(Number(size.heightMm) / 10) + " cm"}
@@ -802,15 +713,14 @@ export function AiVisualizerStudio() {
           </div>
           <div className="idea-studio-control-block">
             <label>{tr("لون الفواصل", "Grout tone")}</label>
-            <div className="idea-studio-colors">{["#3b3b3b","#ffffff","#ddd8cf","#9b998f"].map((color) => <button type="button" key={color} style={{ background: color }} className={grout === color ? "active" : ""} disabled={busy} aria-pressed={grout === color} onClick={() => updateMaterial({ grout: color })} aria-label={color} />)}</div>
+            <div className="idea-studio-colors">{["#3b3b3b","#ffffff","#ddd8cf","#9b998f"].map((color) => <button type="button" key={color} style={{ background: color }} className={grout === color ? "active" : ""} onClick={() => setGrout(color)} aria-label={color} />)}</div>
           </div>
-          </details>
           {!session && <small role="status"><Link to="/login">{tr("سجّل الدخول بحساب مستخدم لتوليد الصور.", "Sign in with a customer account to generate images.")}</Link></small>}
           {session && !aiEligible && <small role="status">{tr("حسابات الشركات ليس لها صلاحية توليد الصور.", "Company accounts are not eligible for AI generation.")}</small>}
-          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={!aiEligible || busy || !photo || !selectionsReady || drawingArea || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
-            <Sparkles size={17} /> {tr("اعمل المعاينة", "Generate preview", "Créer l’aperçu")}
+          <button className="idea-studio-generate" type="button" onClick={() => void generate()} disabled={!aiEligible || busy || !photo || !selectedProduct || !selectedPhysicalSize || (!selectedFaceImage && !material) || Boolean(quota && !quota.unlimited && quota.remaining === 0)}>
+            <Sparkles size={17} /> {tr("ابدأ التوليد المحمي", "Generate with scene lock")}
           </button>
-          <small className="idea-studio-consent">{tr("صورة الغرفة ووجوه الخامات بتتبعث لـRunpod للمعالجة المؤقتة.", "Generation sends the room and material references to Runpod for temporary processing.")}</small>
+          <small className="idea-studio-consent">{tr("ببدء التوليد تُرسل الصورتان إلى Runpod للمعالجة المؤقتة وفق سياسة الخصوصية.", "Generation sends the room and material references to Runpod for temporary processing.")}</small>
         </aside>
       </div>
 
@@ -818,7 +728,7 @@ export function AiVisualizerStudio() {
         <div className="idea-atlas-overline"><span className="idea-studio-kicker">{tr("IDEA / مكتبة الخامات 2030", "IDEA / MATERIAL ATLAS 2030")}</span><span>{tr("كتالوج مستورد • يتوسع مع كل مورد جديد", "Source-linked catalogue · expanding with supplier imports")}</span></div>
         <div className="idea-studio-library-head">
           <div>
-            <h2 id="idea-atlas-heading">{tr("اختار خامة", "Choose a material for", "Choisir pour")} <em>{surfaceLabel(materialSurface)}</em></h2>
+            <h2 id="idea-atlas-heading">{tr("عالم كامل من", "A universe of")} <em>{tr("الخامات المعمارية.", "architectural surfaces.")}</em></h2>
             <p>{tr("سيراميك، بورسلين، وتصميمات بتأثير الرخام. اختر بلاطتك الحقيقية وشوفها في غرفتك.", "Ceramic, porcelain and marble-effect designs. Choose an actual catalogue product and visualize it in your own room.")}</p>
           </div>
           <div className="idea-atlas-total" aria-live="polite"><strong>{materialLibrary.length.toLocaleString()}</strong><span>{tr("خامة متاحة حاليًا", "catalogue materials")}</span></div>

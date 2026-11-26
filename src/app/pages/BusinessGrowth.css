@@ -1,6 +1,6 @@
 .ibg-root{--ibg-panel:#1a1a1a;--ibg-sub:#232323;--ibg-line:rgba(255,255,255,.13);--ibg-text:#f3f3f3;--ibg-muted:#b0b0b0;--ibg-accent:#c99a5d;
  color:var(--ibg-text);display:grid;gap:18px;max-width:1470px;margin:0 auto;padding:4px 0 35px}
-[data-theme="light"] .ibg-root{--ibg-panel:var(--idea-page-background);--ibg-sub:#f6f6f6;--ibg-line:#dedede;--ibg-text:#232323;--ibg-muted:#686868;--ibg-accent:#805529}
+[data-theme="light"] .ibg-root{--ibg-panel:#fff;--ibg-sub:#f6f6f6;--ibg-line:#dedede;--ibg-text:#232323;--ibg-muted:#686868;--ibg-accent:#805529}
 .ibg-root *{box-sizing:border-box}
 .ibg-head h1{font-size:clamp(21px,3vw,34px);margin:9px 0;color:var(--ibg-text);line-height:1.3}
 .ibg-head p{font-size:13px;color:var(--ibg-muted);max-width:750px;line-height:1.8}
@@ -51,7 +51,7 @@
 .ibg-package-price{display:block;margin-top:12px;color:var(--idea-gold-bright);
   font-weight:750;font-size:12px;line-height:1.5}
 .ibg-rates{border:1px solid var(--idea-border-neutral);border-radius:14px;
-  padding:17px;background:var(--idea-page-background);margin:16px 0}
+  padding:17px;background:var(--idea-surface);margin:16px 0}
 .ibg-rates h3{color:var(--idea-text);font-size:16px;margin:0 0 6px}
 .ibg-rates>p{color:var(--idea-text-muted);font-size:12px;line-height:1.7}
 .ibg-rates-list{display:grid;gap:10px}
@@ -60,10 +60,10 @@
   background:var(--idea-surface-2)}
 .ibg-rate-item>strong{color:var(--idea-text);align-self:center;font-size:13px}
 .ibg-rate-item label{display:grid;gap:6px;color:var(--idea-text-muted);font-size:11px}
-.ibg-rate-item input{background:var(--idea-page-background);color:var(--idea-text);
+.ibg-rate-item input{background:var(--idea-surface);color:var(--idea-text);
   border:1px solid var(--idea-border-neutral);border-radius:8px;padding:10px;min-width:0;width:100%}
 .ibg-rate-item button{cursor:pointer;border:1px solid var(--idea-border-neutral);border-radius:8px;
-  background:var(--idea-page-background);color:var(--idea-text);padding:10px 12px}
+  background:var(--idea-surface);color:var(--idea-text);padding:10px 12px}
 .ibg-rate-item button:disabled{opacity:.55;cursor:not-allowed}
 @media(max-width:850px){.ibg-rate-item{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ibg-rate-item>strong{grid-column:1/-1}}

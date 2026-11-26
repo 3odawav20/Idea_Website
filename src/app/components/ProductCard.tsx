@@ -22,9 +22,13 @@ export function ProductCard({ product }: { product: Product }) {
   const unit = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble" ? "sqm" : "pieces";
 
   return (
-    <div className="idea-product-card idea-material-sheet glass-card" style={{
-      borderRadius: 14, overflow: "hidden", display: "flex", flexDirection: "column",
-    }}>
+    <div className="idea-product-card idea-material-sheet" style={{
+      background: "var(--idea-surface)", border: "var(--idea-hairline)", borderRadius: "var(--idea-radius-lg)",
+      overflow: "hidden", display: "flex", flexDirection: "column", transition: "transform .3s, box-shadow .3s",
+    }}
+      onMouseEnter={(e) => { e.currentTarget.style.transform = "translateY(-4px)"; e.currentTarget.style.boxShadow = "var(--idea-shadow-md)"; }}
+      onMouseLeave={(e) => { e.currentTarget.style.transform = ""; e.currentTarget.style.boxShadow = ""; }}
+    >
       <Link className="idea-material-photo" to={`/product/${product.slug}`} style={{ position: "relative", display: "block", aspectRatio: "4/3", overflow: "hidden" }}>
         {imageFailed || !displayImage ? (
           <span className="idea-image-unavailable">Image unavailable</span>

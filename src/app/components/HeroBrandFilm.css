@@ -85,7 +85,6 @@
 .idea-editorial-hero.idea-film-ready .idea-film-caption {
   position: absolute;
   z-index: 5;
-  isolation: isolate;
   inset-inline: clamp(18px, 6vw, 112px);
   bottom: clamp(42px, 8.5svh, 106px);
   max-width: min(930px, 88%);
@@ -94,44 +93,26 @@
   color: #fff;
   pointer-events: none;
 }
-.idea-editorial-hero.idea-film-ready .idea-film-caption::before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  inset: -52px -72px -44px -72px;
-  pointer-events: none;
-  background: radial-gradient(
-    ellipse 76% 74% at 32% 58%,
-    rgba(0, 0, 0, 0.68) 0%,
-    rgba(0, 0, 0, 0.36) 44%,
-    rgba(0, 0, 0, 0.12) 68%,
-    transparent 86%
-  );
-  filter: blur(26px);
-}
 .idea-editorial-hero.idea-film-ready .idea-film-eyebrow {
   margin: 0 0 clamp(12px, 1.4vw, 20px);
   color: #fff;
-  font-family: "Comic Neue", cursive !important;
+  font-family: var(--idea-font-body);
   font-weight: 700;
-  font-style: normal;
-  font-size: clamp(14px, 1.25vw, 19px);
+  font-size: clamp(12px, 1.1vw, 16px);
   line-height: 1.4;
-  letter-spacing: .12em;
-  text-shadow: 0 2px 6px rgba(0,0,0,.62), 0 6px 18px rgba(0,0,0,.48);
-}
-.idea-editorial-hero.idea-film-ready .idea-film-caption h1,
-.idea-editorial-hero.idea-film-ready .idea-film-caption h1 * {
-  font-family: "Comic Neue", cursive !important;
-  font-weight: 700;
-  font-style: normal;
+  letter-spacing: .14em;
+  text-shadow: 0 2px 5px rgba(0,0,0,.84), 0 7px 20px rgba(0,0,0,.56);
 }
 .idea-editorial-hero.idea-film-ready .idea-film-caption h1 {
   margin: 0;
   max-width: 100%;
-  font-size: clamp(34px, 4.8vw, 80px);
-  line-height: 1.12;
-  letter-spacing: .01em;
+  /* The supplied IDEA mark uses custom letterform artwork, not a verified off-the-shelf font.
+     Audiowide has the nearest practical rounded/geometric display feel for Latin headlines. */
+  font-family: 'Audiowide', 'Ubuntu', sans-serif !important;
+  font-size: clamp(30px, 4.4vw, 74px);
+  font-weight: 400;
+  line-height: 1.16;
+  letter-spacing: -.028em;
   text-wrap: balance;
   overflow-wrap: anywhere;
 }
@@ -154,9 +135,9 @@
   transform: translate3d(0, 20px, 0) scale(.97);
   filter: blur(4px);
   animation: idea-film-word-reveal .74s cubic-bezier(.16, 1, .3, 1) both;
-  text-shadow: 0 2px 6px rgba(0,0,0,.58),
-               0 8px 22px rgba(0,0,0,.64),
-               0 18px 46px rgba(0,0,0,.48);
+  text-shadow: 0 2px 1px rgba(0,0,0,.94),
+               0 5px 9px rgba(0,0,0,.87),
+               0 12px 28px rgba(0,0,0,.78);
 }
 @keyframes idea-film-word-reveal {
   to {
@@ -168,29 +149,11 @@
 html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption {
   text-align: start;
 }
-html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption::before {
-  background: radial-gradient(
-    ellipse 76% 74% at 68% 58%,
-    rgba(0, 0, 0, 0.68) 0%,
-    rgba(0, 0, 0, 0.36) 44%,
-    rgba(0, 0, 0, 0.12) 68%,
-    transparent 86%
-  );
-}
 html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-eyebrow {
-  font-family: "Fustat", "Cairo", sans-serif !important;
-  font-optical-sizing: auto;
-  font-style: normal;
-  font-weight: 700;
   letter-spacing: 0;
 }
-html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption h1,
-html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption h1 * {
-  font-family: "Fustat", "Cairo", sans-serif !important;
-  font-optical-sizing: auto;
-  font-style: normal;
-}
 html[lang="ar"] .idea-editorial-hero.idea-film-ready .idea-film-caption h1 {
+  font-family: 'Cairo', Arial, sans-serif !important;
   font-size: clamp(30px, 4.1vw, 68px);
   line-height: 1.4;
   letter-spacing: 0;

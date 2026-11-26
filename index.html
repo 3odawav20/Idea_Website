@@ -3,16 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script>
-      (() => {
-        try {
-          const savedTheme = localStorage.getItem("idea.theme");
-          document.documentElement.setAttribute("data-theme", savedTheme === "dark" ? "dark" : "light");
-        } catch {
-          document.documentElement.setAttribute("data-theme", "dark");
-        }
-      })();
-    </script>
     <meta name="theme-color" content="#ff7200" />
     <title>IDEA — Architectural Surfaces, Ceramics, Porcelain &amp; Marble</title>
     <meta
@@ -97,7 +87,6 @@
       href="https://fonts.googleapis.com/css2?family=Anton&family=Comic+Neue:ital,wght@0,300;0,400;0,700;1,400&family=Fustat:wght@200..800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/assets/idea-smoked-glass-20261124.css?v=footer-solid-20261124" />
   </head>
   <body>
     <div id="root"></div>

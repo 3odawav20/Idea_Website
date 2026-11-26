@@ -1,24 +1,26 @@
-import { DestinationFan } from "../components/ui/card-fan-carousel";
-import { useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
+import type { CSSProperties } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Layers, FileText, Sparkles, Users, MapPin, Play, FolderOpen, Download } from "lucide-react";
+import { ArrowRight, Layers, FileText, Users, MapPin, Play, FolderOpen, Download } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
+import type { Product } from "../data/types";
 import { HeroBrandFilm } from "../components/HeroBrandFilm";
+import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
+import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
-import { ideaInternalCode, productMaker } from "../data/ideaProductIdentity";
-import { localMaterialFace } from "../data/localMaterialFace";
-import { MaterialSphere } from "../components/MaterialSphere";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
+import { Material3DProductCard, FEATURED_PRODUCT_IDS } from "./Products";
+import "./Products.css";
 import "./Home.css";
 import "../components/Discovery.css";
 import { LOOKS, DESTINATIONS } from "../data/discovery";
 import { GUIDES } from "./Resources";
 import { useCollectionDestinations } from "../components/useCollectionDestinations";
+import SocialCards from "@/components/ui/card-fan-carousel";
+import CollapsingCards from "@/components/ui/cue-collapsing-cards-accordion";
 
 const EDITORIALS = [
   { image: "porcelain", href: "/collections/porcelain", title: { en: "Porcelain. A new perspective on space.", ar: "بورسلين. منظور جديد للمساحة.", fr: "Porcelaine. Une nouvelle perspective." }, body: { en: "Explore luminous surfaces, subtle veining and generous formats for considered interiors.", ar: "اكتشف أسطح مضيئة وعروق ناعمة ومقاسات واسعة لمساحات متناسقة.", fr: "Des surfaces lumineuses et de grands formats pour des intérieurs raffinés." } },
@@ -27,47 +29,87 @@ const EDITORIALS = [
 ];
 const BATH_SLUGS = ["bathroom-sets", "bathroom-units", "faucets", "shower-units", "bathtubs", "bathroom-accessories"];
 
-
-function GuideFlipCard({ guide, locale }: { guide: (typeof GUIDES)[number]; locale: keyof (typeof GUIDES)[number]["title"] }) {
-  const [flipped, setFlipped] = useState(false);
-  const reduced = useReducedMotion();
-  const transition = { duration: reduced ? 0 : 0.7, ease: [0.4, 0.2, 0.2, 1] as const };
-  const face = { backfaceVisibility: "hidden" as const, WebkitBackfaceVisibility: "hidden" as const };
-  return (
-    <Link to={`/journal/${guide.id}`} aria-label={guide.title[locale]}
-      onPointerEnter={e => { if (e.pointerType === "mouse") setFlipped(true); }}
-      onPointerLeave={() => setFlipped(false)}
-      onFocus={() => setFlipped(true)} onBlur={() => setFlipped(false)}
-      style={{ perspective: 1000 }}>
-      <div style={{ display: "grid", transformStyle: "preserve-3d" }}>
-        <motion.div aria-hidden={flipped} initial={false}
-          animate={{ rotateY: flipped ? -180 : 0 }} transition={transition}
-          style={{ ...face, gridArea: "1 / 1" }}>
-          <img src={`/images/featured/${guide.image}.webp`} alt="" loading="lazy" width={600} height={450}/>
-          <h3>{guide.title[locale]}</h3>
-        </motion.div>
-        <motion.div aria-hidden={!flipped} initial={false}
-          animate={{ rotateY: flipped ? 0 : 180 }} transition={transition}
-          style={{ ...face, gridArea: "1 / 1", minHeight: 0, overflow: "hidden", borderRadius: 10, background: "var(--idea-surface)", color: "var(--idea-text)", padding: "clamp(12px, 2vw, 24px)", display: "flex", flexDirection: "column", justifyContent: "center", gap: 8 }}>
-          <h3>{guide.title[locale]}</h3>
-          <p className="text-sm leading-relaxed line-clamp-5">{guide.body[locale]}</p>
-          <span style={{ display: "flex", alignItems: "center", gap: 8 }}>{({ en: "Read guide", ar: "اقرأ الدليل", fr: "Lire le guide" })[locale]} <ArrowRight size={16}/></span>
-        </motion.div>
-      </div>
-    </Link>
-  );
-}
-
 export function Home() {
   const { locale, t } = useI18n();
-  const { products, addToQuote } = useStore();
-  // Public home cards show one design per source maker, never repetitive variants.
-  const featuredProducts = distinctStorefrontProducts(products).slice(0, 8);
+  const { products } = useStore();
+  // Match the exact 3D featured surfaces shown inside /products.
+  const byId = new Map(products.map((p) => [p.id, p]));
+  const pickedFeatured = FEATURED_PRODUCT_IDS.map((id) => byId.get(id)).filter((p): p is Product => p !== undefined);
+  const featuredProducts =
+    pickedFeatured.length === FEATURED_PRODUCT_IDS.length
+      ? pickedFeatured
+      : distinctStorefrontProducts(products).slice(0, 4);
   const destinations = useCollectionDestinations();
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
+  const designGuideCards = [
+    {
+      idx: 1,
+      wordmark: text("Finish", "التشطيب", "Finition"),
+      title: GUIDES[0].title[locale],
+      subtitle: GUIDES[0].body[locale],
+      img: `/images/featured/${GUIDES[0].image}.webp`,
+      href: `/journal/${GUIDES[0].id}`,
+    },
+    {
+      idx: 2,
+      wordmark: text("Format", "المقاس", "Format"),
+      title: GUIDES[1].title[locale],
+      subtitle: GUIDES[1].body[locale],
+      img: `/images/featured/${GUIDES[1].image}.webp`,
+      href: `/journal/${GUIDES[1].id}`,
+    },
+    {
+      idx: 3,
+      wordmark: text("Palette", "الألوان", "Palette"),
+      title: GUIDES[2].title[locale],
+      subtitle: GUIDES[2].body[locale],
+      img: `/images/featured/${GUIDES[2].image}.webp`,
+      href: `/journal/${GUIDES[2].id}`,
+    },
+    {
+      idx: 4,
+      wordmark: text("Marble", "الرخام", "Marbre"),
+      title: text("Marble & natural light", "الرخام والإضاءة الطبيعية", "Marbre et lumière naturelle"),
+      subtitle: text(
+        "Explore how subtle veining and surface reflection interact with daylight across open interiors.",
+        "اكتشف كيف تتفاعل عروق الرخام وانعكاسات الأسطح مع الإضاءة الطبيعية في المساحات المفتوحة.",
+        "Découvrez comment le veinage et la lumière naturelle interagissent dans vos espaces."
+      ),
+      img: "/images/featured/marble.webp",
+      href: "/glossary",
+    },
+    {
+      idx: 5,
+      wordmark: text("Stone", "الحجر", "Pierre"),
+      title: text("Indoor to outdoor continuity", "انسيابية المساحات الداخلية والخارجية", "Continuité intérieur et extérieur"),
+      subtitle: text(
+        "Coordinate textured stone surfaces and slip-verified finishes for seamless architectural transitions.",
+        "نسّق الأسطح الحجرية والتشطيبات المعتمدة لتحقيق امتداد بصري متناغم بين الداخل والخارج.",
+        "Harmonisez les surfaces effet pierre pour une transition fluide entre intérieur et extérieur."
+      ),
+      img: "/images/featured/stone.webp",
+      href: "/journal",
+    },
+  ];
+  const destinationFanCards = [
+    ...DESTINATIONS.map((d) => ({
+      imgUrl: `/images/featured/${d.image}.webp`,
+      alt: d.label[locale],
+      label: d.label[locale],
+      linkUrl: `/inspiration/${d.id}`,
+    })),
+    {
+      imgUrl: "/images/featured/ceramics.webp",
+      alt: text("All surfaces", "كل الخامات", "Toutes les surfaces"),
+      label: text("All surfaces", "كل الخامات", "Toutes les surfaces"),
+      ariaLabel: text("Browse all materials", "تصفح كل الخامات", "Voir tous les matériaux"),
+      linkUrl: "/products",
+    },
+  ];
   return (
     <div className="idea-home-editorial">
       <HeroBrandFilm />
+      <SponsoredHeroVideo />
       <div className="idea-usp">{[
         {icon:Layers,to:"/products",title:text("Premium surface inspiration","إلهام بخامات فاخرة","Inspiration haut de gamme"),sub:text("Explore materials & finishes","اكتشف الخامات والتشطيبات","Matières & finitions")},
         {icon:FileText,to:"/request-quote/new",title:text("Private quote requests","طلبات عروض أسعار خاصة","Devis privés"),sub:text("Specify your project needs","حدد احتياجات مشروعك","Précisez votre projet")},
@@ -75,65 +117,7 @@ export function Home() {
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={22}/><span>{item.title}<small>{item.sub}</small></span></Link>)}</div>
       <div className="idea-home-finder-scene"><HeroSearchPanel /></div>
       <FeaturedCollectionStrip />
-      {featuredProducts.length > 0 && <section className="idea-home-section idea-home-product-section" aria-labelledby="featured-surfaces-title">
-        <div className="idea-home-featured-heading">
-          <div>
-            <p className="idea-home-featured-eyebrow">{text("IDEA MATERIAL LIBRARY", "مكتبة خامات IDEA", "MATÉRIAUX IDEA")}</p>
-            <h2 id="featured-surfaces-title">{t("home.featured")}</h2>
-            <p>{text("Explore distinctive tiles and surfaces from our curated catalogue.", "اكتشف بلاطات وخامات مميزة من كتالوجنا المختار.", "Explorez des carreaux et surfaces sélectionnés dans notre catalogue.")}</p>
-          </div>
-          <Link className="idea-home-featured-all" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link>
-        </div>
-        <nav className="idea-home-surface-filters" aria-label={text("Browse surface types", "تصفح أنواع الخامات", "Parcourir les matériaux")}>
-          {[
-            { label: text("All surfaces", "كل الخامات", "Toutes les surfaces"), to: "/products" },
-            { label: text("Tiles", "بلاط", "Carrelage"), to: "/products?material=tiles" },
-            { label: text("Ceramics", "سيراميك", "Céramiques"), to: "/collections/ceramics" },
-            { label: text("Porcelain", "بورسلين", "Porcelaine"), to: "/collections/porcelain" },
-            { label: text("Marble", "رخام", "Marbre"), to: "/products?material=marble" },
-          ].map((item, index) => <Link key={item.label} className={index === 0 ? "is-active" : ""} to={item.to}>{item.label}</Link>)}
-        </nav>
-        <div className="idea-home-featured-grid">{featuredProducts.map((product) => {
-          const maker = productMaker(product, locale);
-          const isSurface = ["ceramics", "porcelain", "marble"].includes(product.collection);
-          const image = localMaterialFace(product.id) || (isSurface ? product.source?.original?.tiles?.[0] : product.image) || product.image;
-          const unit = isSurface ? "sqm" : "pieces";
-          return <article className="idea-home-featured-card" key={product.id}>
-            <Link className="idea-home-featured-photo" to={`/product/${product.slug}`} aria-label={product.name[locale]}>
-              <MaterialSphere
-                className="idea-home-material-sphere"
-                src={image}
-                alt=""
-                loading="lazy"
-              />
-              <span className="sr-only">{product.name[locale]}</span>
-            </Link>
-            <div className="idea-home-featured-card-copy">
-              {product.finish && <span className="idea-home-featured-finish">{product.finish}</span>}
-              <div className="idea-home-featured-maker">
-                <strong>{maker.verified ? maker.value : product.brand}</strong>
-                <small>{maker.verified ? maker.label : text("Brand", "العلامة التجارية", "Marque")}</small>
-              </div>
-              <Link className="idea-home-featured-name" to={`/product/${product.slug}`} title={product.name[locale]}>
-                {product.name[locale]}
-              </Link>
-              <div className="idea-home-featured-meta">
-                {product.sizes[0] && <span>{product.sizes[0].label}</span>}
-                <code dir="ltr">{ideaInternalCode(product)}</code>
-              </div>
-              <div className="idea-home-featured-actions">
-                <button type="button" onClick={() => addToQuote(product.id, unit)}>
-                  <FileText size={14} /> {t("action.requestPrice")}
-                </button>
-                <Link to={`/ai-room-visualizer?product=${encodeURIComponent(product.id)}`}>
-                  <Sparkles size={15} /> {text("Try in AI", "جرّب بالذكاء الاصطناعي", "Essayer avec l’IA")}
-                </Link>
-              </div>
-            </div>
-          </article>;
-        })}</div>
-        <div className="idea-home-center"><Link className="idea-home-text-link" to="/products">{t("action.browseAll")} <ArrowRight size={16} /></Link></div>
-      </section>}
+      <SponsoredCollectionCards />
       <section className="idea-home-section">
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
         {EDITORIALS.map((item, index) => (
@@ -148,7 +132,10 @@ export function Home() {
         ))}
       </section>
       <SurfaceMaterialStrip />
-      <section className="idea-home-section"><h2 className="idea-home-centered-title">{text("Search your destination", "اختار مساحتك", "Choisissez votre espace")}</h2><DestinationFan locale={locale} cards={[...DESTINATIONS.map(d => ({ id: d.id, imgUrl: `/images/featured/${d.image}.webp`, label: d.label[locale], linkUrl: `/inspiration/${d.id}` })), { id: "all-surfaces", imgUrl: "/images/featured/ceramics.webp", label: text("All surfaces", "كل الخامات", "Toutes les surfaces"), linkUrl: "/products", ariaLabel: text("Browse all materials", "تصفح كل الخامات", "Voir tous les matériaux") }]} /></section>
+      <section className="idea-home-section">
+        <h2 className="idea-home-centered-title">{text("Search your destination", "اختار مساحتك", "Choisissez votre espace")}</h2>
+        <SocialCards cards={destinationFanCards} />
+      </section>
       <section className="idea-home-section"><article className="idea-home-story"><Link className="idea-home-story-image" to="/showrooms"><img src="/images/featured/stone.webp" alt={text("Online surface showroom", "معرض الخامات الإلكتروني", "Showroom virtuel")} loading="lazy" width={1600} height={900}/></Link><div className="idea-home-story-copy"><h2>{text("Your showroom experience.", "تجربة المعرض بطريقتك.", "Votre expérience showroom.")}</h2><p>{text("Discover surfaces in the interactive showroom and explore showroom information.", "اكتشف الخامات في المعرض التفاعلي وتصفح معلومات المعارض.", "Découvrez les surfaces dans notre showroom interactif.")}</p><Link className="idea-home-text-link" to="/showrooms">{text("Explore showrooms", "استكشف المعارض", "Explorer les showrooms")} <ArrowRight size={16}/></Link></div></article></section>
       <section className="idea-home-section"><h2 className="idea-home-centered-title">{text("Explore the world of IDEA", "استكشف عالم IDEA", "Explorer l’univers IDEA")}</h2><div className="idea-home-resource-grid">{[
         {icon:Play,to:"/videos",title:text("Video inspiration","إلهام بالفيديو","Inspiration vidéo"),body:text("Explore our media library status and interactive inspiration.","تصفح حالة مكتبة الفيديو والإلهام التفاعلي.","Médias et inspiration interactive.")},
@@ -156,7 +143,15 @@ export function Home() {
         {icon:Download,to:"/downloads",title:text("Downloads","التنزيلات","Téléchargements"),body:text("Take the current product index with you.","حمّل فهرس المنتجات الحالي.","Téléchargez l’index produits actuel.")},
         {icon:MapPin,to:"/contact",title:text("Contact & appointments","التواصل والمواعيد","Contact & rendez-vous"),body:text("Find enquiry options and appointment availability.","اعرف طرق الاستفسار وحالة حجز المواعيد.","Renseignements et disponibilité des rendez-vous.")},
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={24}/><h3>{item.title}</h3><p>{item.body}</p><ArrowRight size={16}/></Link>)}</div></section>
-      <section className="idea-home-section"><h2 className="idea-home-centered-title">{text("Design notes & guides", "أفكار وأدلة التصميم", "Conseils & guides")}</h2><div className="idea-home-journal">{GUIDES.map(g=><GuideFlipCard key={g.id} guide={g} locale={locale} />)}</div><div className="idea-home-center"><Link className="idea-home-text-link" to="/journal">{text("All news & guides", "كل الأخبار والأدلة", "Actualités & guides")} <ArrowRight size={16}/></Link></div></section>
+      <section className="idea-home-section">
+        <h2 className="idea-home-centered-title">{text("Design notes & guides", "أفكار وأدلة التصميم", "Conseils & guides")}</h2>
+        <CollapsingCards cards={designGuideCards} ctaLabel={text("Read guide", "اقرأ الدليل", "Lire le guide")} />
+        <div className="idea-home-center">
+          <Link className="idea-home-text-link" to="/journal">
+            {text("All news & guides", "كل الأخبار والأدلة", "Actualités & guides")} <ArrowRight size={16} />
+          </Link>
+        </div>
+      </section>
       <section className="idea-home-section"><div className="idea-home-newsletter"><div><h2>{text("Stay inspired.", "خليك دايمًا مُلهم.", "Gardez l’inspiration.")}</h2><p>{text("Read the latest IDEA guides. Email subscriptions will be available once the mailing service is connected.", "تابع أحدث أدلة IDEA. الاشتراك البريدي هيتاح بعد ربط خدمة المراسلات.", "Consultez les guides IDEA. Les emails seront disponibles après connexion du service.")}</p></div><Link className="idea-home-text-link" to="/updates">{text("Updates", "التحديثات", "Actualités")} <ArrowRight size={16}/></Link></div></section>
       <section className="idea-home-section">
         <h2 className="idea-home-centered-title">{t("home.sanitary")}</h2>
@@ -168,6 +163,26 @@ export function Home() {
           </Link>;
         })}</div>
       </section>
+      {featuredProducts.length > 0 && (
+        <section className="idea-home-section idea-products-showroom-section">
+          <h2 className="idea-home-centered-title">{t("home.featured")}</h2>
+          <div
+            className="idea-material-catalogue"
+            style={{ minHeight: 0, "--mc-orb": "clamp(148px, 14vw, 200px)" } as CSSProperties}
+          >
+            <div className="idea-material-grid">
+              {featuredProducts.map((p) => (
+                <Material3DProductCard key={p.id} product={p} />
+              ))}
+            </div>
+          </div>
+          <div className="idea-home-center">
+            <Link className="idea-home-text-link" to="/products">
+              {t("action.browseAll")} <ArrowRight size={16} />
+            </Link>
+          </div>
+        </section>
+      )}
       <section className="idea-home-section idea-home-quote"><h2>{text("Request a private quote", "اطلب عرض سعر خاص", "Demandez un devis privé")}</h2><p>{t("home.bestPriceBody")}</p>
         <Link className="idea-home-text-link" to="/request-quote/new">{t("action.requestPrice")} <ArrowRight size={16} /></Link>
       </section>

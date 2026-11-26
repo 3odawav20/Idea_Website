@@ -13,13 +13,11 @@ test("AI catalogue only shows supplier-original product face images", () => {
   assert.doesNotMatch(studio, /src=\{product\.image\}/);
 });
 test("model receives the chosen original tile face, not a room/lifestyle photograph", () => {
-  const surfaces = readFileSync("server/cpanel/idea-accounts-api/platform-ai-surfaces.php", "utf8");
-  assert.match(studio, /form\.append\(prefix \+ "face", String\(choice\.selection\.face\)\)/);
+  assert.match(studio, /fetch\(selectedFaceImage,/);
   assert.doesNotMatch(studio, /fetch\(selectedProduct\.image,/);
-  assert.match(studio, /updateMaterial\(\{ face: index \}\)/);
+  assert.match(studio, /form\.append\("material", reference,/);
+  assert.match(studio, /setFaceIndex\(index\)/);
   assert.match(studio, /selectedFaceImage \? <img src=\{selectedFaceImage\}/);
-  assert.match(surfaces, /\$sourceFaces\[\$index\]/);
-  assert.match(surfaces, /material_reference.*base64_encode\(\$face\)/);
 });
 test("existing supplier catalogue records all have actual source face references", () => {
   assert.equal(catalogue.length, 475);

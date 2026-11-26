@@ -12,6 +12,8 @@ import {
 } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
+import { useBackend } from "../backend/db";
+import { supabase } from "../backend/supabaseClient";
 import type { Product } from "../data/types";
 import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
 import { similarProducts } from "../data/recommendations";
@@ -41,6 +43,7 @@ function uniqueProducts(items: Product[]) {
 export function ProductDetail() {
   const { slug } = useParams();
   const { t, locale } = useI18n();
+  const { session } = useBackend();
   const { products, isFavorite, toggleFavorite, toggleCompare, addToQuote } = useStore();
   const product = products.find((item) => item.slug === slug);
   const [activeImg, setActiveImg] = useState(0);
@@ -51,6 +54,7 @@ export function ProductDetail() {
   const lightboxButton = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const [failedImages, setFailedImages] = useState<number[]>([]);
+  const [adminPrice, setAdminPrice] = useState<{ price: number; currency: string } | null>(null);
 
   useEffect(() => {
     setActiveImg(0);
@@ -66,6 +70,22 @@ export function ProductDetail() {
     dialogRef.current?.focus();
     return () => { document.body.style.overflow = oldOverflow; };
   }, [lightboxOpen]);
+
+  useEffect(() => {
+    setAdminPrice(null);
+    if (!product || session?.role !== "admin" || !supabase) return;
+    let active = true;
+    void supabase
+      .from("catalogue_admin_prices")
+      .select("price,currency")
+      .eq("product_id", product.id)
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (!active || error || !data) return;
+        setAdminPrice({ price: Number(data.price), currency: data.currency });
+      });
+    return () => { active = false; };
+  }, [product?.id, session?.role]);
 
   const copy = (value: Copy) => value[locale];
 
@@ -106,7 +126,7 @@ export function ProductDetail() {
   const isTile = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble";
   const unit = isTile ? "sqm" : "pieces";
   const fav = isFavorite(product.id);
-  const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? String(product.collection).replaceAll("-", " ");
+  const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? product.collection.replaceAll("-", " ");
 
   const applicationGroups = (() => {
     if (!isTile) {
@@ -197,6 +217,7 @@ export function ProductDetail() {
               <button type="button" onClick={()=>addToQuote(product.id,unit)}><FileText size={17}/>{copy({en:"Request private quote",ar:"طلب عرض سعر خاص",fr:"Demander un devis privé"})}</button>
             </div>
             <small>{copy({en:"Prices stay private. Unverified technical fields are not invented.",ar:"الأسعار خاصة. لا تُضاف مواصفات غير موثقة.",fr:"Les prix sont privés; aucune spécification inventée."})}</small>
+            {session?.role==="admin"&&adminPrice&&<div className="idea-admin-price"><span>{t("price.admin")}</span><strong>{new Intl.NumberFormat("en-EG",{style:"currency",currency:adminPrice.currency}).format(adminPrice.price)}</strong></div>}
           </div>
         </Container>
       </section>

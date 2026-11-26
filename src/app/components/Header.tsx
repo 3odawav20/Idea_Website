@@ -5,7 +5,6 @@ import { useI18n } from "../i18n/i18n";
 import { useTheme } from "../theme/theme";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
-import { fetchPublicMarketplaceTicker, type MarketplaceAnnouncement } from "../backend/dashboardApi";
 import { IdeaLogo } from "./IdeaLogo";
 import { DiscoveryNavigation } from "./DiscoveryNavigation";
 import "./Header.css";
@@ -18,7 +17,6 @@ export function Header() {
   const [q, setQ] = useState("");
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [announcement, setAnnouncement] = useState<MarketplaceAnnouncement | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -31,13 +29,6 @@ export function Header() {
     pathname === "/register/business" ||
     pathname === "/business/login" ||
     pathname === "/admin/login";
-  useEffect(() => {
-    let active = true;
-    void fetchPublicMarketplaceTicker()
-      .then(rows => { if (active) setAnnouncement(rows[0] ?? null); })
-      .catch(() => { if (active) setAnnouncement(null); });
-    return () => { active = false; };
-  }, []);
   useEffect(() => {
     const onScroll = () => setScrolled(current => {
       const next = window.scrollY > 28;
@@ -94,22 +85,12 @@ export function Header() {
       <div className="idea-reference-header-row" dir="ltr">
         <Link className="idea-reference-logo" to="/" aria-label={text("IDEA — Home", "الرئيسية — IDEA", "IDEA — Accueil")}><IdeaLogo compact /></Link>
         <div className="idea-reference-ticker">
+          {/* Static, truthful catalogue fallback until the existing PHP/MySQL
+              platform exposes a verified admin-published announcement contract.
+              No external account-service request or fabricated live sales in the header. */}
           <div className="idea-catalogue-announcement" dir={locale === "ar" ? "rtl" : "ltr"}>
-            <span aria-hidden="true">✦</span>
-            {announcement ? (
-              <>
-                <span>{locale === "ar" ? announcement.text_ar : announcement.text_en}</span>
-                <span aria-hidden="true">✦</span>
-                {announcement.link_path && announcement.link_path.startsWith("/") && !announcement.link_path.startsWith("//") &&
-                  <Link to={announcement.link_path}>{text("Learn more", "اعرف المزيد", "En savoir plus")}</Link>}
-              </>
-            ) : (
-              <>
-                <span>{text(`${products.length} products in the catalogue · Explore surfaces & plan your space`, `${products.length} منتج في الكتالوج · اكتشف الخامات وصمّم مساحتك`, `${products.length} produits au catalogue · Découvrez les surfaces`)}</span>
-                <span aria-hidden="true">✦</span>
-                <Link to="/products">{text("Learn more", "اعرف المزيد", "En savoir plus")}</Link>
-              </>
-            )}
+            <span aria-hidden="true">✦</span><span>{text(`${products.length} products in the catalogue · Explore surfaces & plan your space`, `${products.length} منتج في الكتالوج · اكتشف الخامات وصمّم مساحتك`, `${products.length} produits au catalogue · Découvrez les surfaces`)}</span>
+            <span aria-hidden="true">✦</span><Link to="/products">{text("Learn more", "اعرف المزيد", "En savoir plus")}</Link>
           </div>
         </div>
         <div className="idea-reference-actions">{controls}</div>

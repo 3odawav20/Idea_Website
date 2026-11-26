@@ -200,12 +200,12 @@
 /* IDEA 2026: admin follows the global white/day, neutral-black/night theme.
    Keep real material photos, gold branding and status signaling unchanged. */
 [data-theme="dark"] .ids-root {
-  --ids-bg:var(--idea-page-background);--ids-card:#191919;--ids-card-2:#242424;
+  --ids-bg:#0c0c0c;--ids-card:#191919;--ids-card-2:#242424;
   --ids-line:rgba(255,255,255,.13);--ids-muted:#b0b0b0;--ids-text:#f3f3f3;
   color-scheme:dark;
 }
-[data-theme="dark"] .ids-sidebar,
-[data-theme="dark"] .ids-topbar{background:var(--idea-page-background)}
+[data-theme="dark"] .ids-sidebar{background:rgba(15,15,15,.97)}
+[data-theme="dark"] .ids-topbar{background:rgba(18,18,18,.94)}
 [data-theme="dark"] .ids-hero{background:radial-gradient(ellipse at 85% 55%,rgba(185,125,60,.11),transparent 50%),linear-gradient(115deg,#1b1b1b,#242424 55%,#171717)}
 [data-theme="dark"] .ids-stat{background:linear-gradient(150deg,#222,#151515)}
 [data-theme="dark"] .ids-panel{background:linear-gradient(160deg,#202020,#171717)}
