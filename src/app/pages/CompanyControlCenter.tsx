@@ -316,7 +316,7 @@ export function CompanyControlCenter({ mode }: { mode: "admin" | "supplier" }) {
         : "Member access revoked."
     );
 
-  if (!session || (mode === "supplier" && session.role !== "business") || (mode === "admin" && !isAdmin)) {
+  if (!session || (mode === "supplier" && session.role!=="business") || (mode === "admin" && !isAdmin)) {
     return (
       <div role="alert" style={{ padding: 24 }}>
         {ar ? "هذه الصفحة تتطلب صلاحية الشركة أو مسؤول IDEA." : "This workspace requires a verified supplier or IDEA administrator session."}
@@ -838,6 +838,7 @@ export function CompanyApplication() {
     setError("");
     setMessage("");
     try {
+      // Onboarding workflow: apply_for_idea_company (saved via PHP/MySQL company-verification-submit)
       const record = await submitCompanyVerification({
         legalName: legal.trim(),
         publicName: name.trim(),

@@ -1,13 +1,11 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Layers, FileText, Users, MapPin, Play, FolderOpen, Download } from "lucide-react";
+import { ArrowRight, Layers, FileText, Users } from "lucide-react";
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { COLLECTIONS } from "../data/catalog";
 import type { Product } from "../data/types";
 import { HeroBrandFilm } from "../components/HeroBrandFilm";
-import { SponsoredHeroVideo } from "../components/SponsoredHeroVideo";
-import { SponsoredCollectionCards } from "../components/SponsoredCollectionCards";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
 import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
@@ -16,18 +14,20 @@ import { Material3DProductCard, FEATURED_PRODUCT_IDS } from "./Products";
 import "./Products.css";
 import "./Home.css";
 import "../components/Discovery.css";
-import { LOOKS, DESTINATIONS } from "../data/discovery";
+import { DESTINATIONS } from "../data/discovery";
 import { GUIDES } from "./Resources";
 import { useCollectionDestinations } from "../components/useCollectionDestinations";
 import SocialCards from "@/components/ui/card-fan-carousel";
 import CollapsingCards from "@/components/ui/cue-collapsing-cards-accordion";
+import CardGrid, { type CardGridItem } from "@/components/CardGrid";
+import CircularGallery, { type GalleryItem } from "@/components/ui/circular-gallery";
 
 const EDITORIALS = [
   { image: "porcelain", href: "/collections/porcelain", title: { en: "Porcelain. A new perspective on space.", ar: "بورسلين. منظور جديد للمساحة.", fr: "Porcelaine. Une nouvelle perspective." }, body: { en: "Explore luminous surfaces, subtle veining and generous formats for considered interiors.", ar: "اكتشف أسطح مضيئة وعروق ناعمة ومقاسات واسعة لمساحات متناسقة.", fr: "Des surfaces lumineuses et de grands formats pour des intérieurs raffinés." } },
   { image: "ceramics", href: "/collections/ceramics", title: { en: "Ceramics. Colour with character.", ar: "سيراميك. ألوان لها شخصية.", fr: "Céramique. Des couleurs de caractère." }, body: { en: "From rich glazed walls to elegant floors, find the finish that makes a room yours.", ar: "من الحوائط اللامعة للأرضيات الأنيقة، اختار اللمسة اللي تعبّر عنك.", fr: "Des murs émaillés aux sols élégants, trouvez la finition qui vous ressemble." } },
   { image: "marble", href: "/products?material=marble", title: { en: "Marble surfaces. Naturally expressive.", ar: "أسطح رخامية. جمال بتفاصيل طبيعية.", fr: "Surfaces marbrées. Une beauté expressive." }, body: { en: "Explore marble textures and envision a distinctive finish for your space.", ar: "استكشف نقوش الرخام وتخيّل اللمسة المناسبة لمساحتك.", fr: "Explorez les textures marbrées pour imaginer votre espace." } },
 ];
-const BATH_SLUGS = ["bathroom-sets", "bathroom-units", "faucets", "shower-units", "bathtubs", "bathroom-accessories"];
+const BATH_SLUGS = ["sanitary-ware", "bathroom-sets", "bathroom-units", "faucets", "shower-units", "bathtubs", "bathroom-accessories"];
 
 export function Home() {
   const { locale, t } = useI18n();
@@ -41,6 +41,58 @@ export function Home() {
       : distinctStorefrontProducts(products).slice(0, 4);
   const destinations = useCollectionDestinations();
   const text = (en: string, ar: string, fr: string) => ({ en, ar, fr })[locale];
+  const exploreIdeaCards: CardGridItem[] = [
+    {
+      id: "projects",
+      title: text("Projects & architectural concepts", "المشروعات والأفكار المعمارية", "Projets & concepts architecturaux"),
+      description: text(
+        "Discover curated project inspirations, spatial concepts and surface applications across modern interiors.",
+        "اكتشف أفكار المشروعات وتطبيقات الخامات والمساحات المعمارية الحديثة.",
+        "Découvrez nos concepts d’aménagement et applications de surfaces."
+      ),
+      ctaText: text("Explore projects", "استكشف المشروعات", "Explorer les projets"),
+      image: "/images/featured/porcelain.webp",
+      href: "/projects",
+    },
+    {
+      id: "downloads",
+      title: text("Catalogues & product index", "الكتالوجات وفهرس المنتجات", "Catalogues & index produits"),
+      description: text(
+        "Take the current verified product index, dimensions and technical surface specifications with you.",
+        "حمّل فهرس المنتجات الموثق بالمقاسات والمواصفات الفنية الكاملة للخامات.",
+        "Téléchargez l’index produits actuel avec dimensions et spécifications."
+      ),
+      ctaText: text("View downloads", "تصفح التنزيلات", "Voir les téléchargements"),
+      image: "/images/featured/marble.webp",
+      href: "/downloads",
+    },
+    {
+      id: "contact",
+      title: text("Contact, quotes & appointments", "التواصل والمواعيد وعروض الأسعار", "Contact, devis & rendez-vous"),
+      description: text(
+        "Connect with our team for private project quotations, material enquiries and showroom availability.",
+        "تواصل معنا لطلبات عروض الأسعار الخاصة والاستفسارات الفنية وحالة حجز المواعيد.",
+        "Contactez-nous pour vos demandes de devis privés et rendez-vous."
+      ),
+      ctaText: text("Get in touch", "تواصل معنا", "Nous contacter"),
+      image: "/images/featured/ceramics.webp",
+      href: "/contact",
+    },
+  ];
+  const sanitaryGalleryItems: GalleryItem[] = BATH_SLUGS.map((slug) => {
+    const c = COLLECTIONS.find((item) => item.slug === slug)!;
+    return {
+      common: c.title[locale],
+      binomial: c.blurb[locale],
+      href: `/collections/${slug}`,
+      photo: {
+        url: c.image,
+        text: c.title[locale],
+        pos: "center",
+        by: text("Explore collection →", "تصفح القسم ←", "Voir la collection →"),
+      },
+    };
+  });
   const designGuideCards = [
     {
       idx: 1,
@@ -95,13 +147,21 @@ export function Home() {
     ...DESTINATIONS.map((d) => ({
       imgUrl: `/images/featured/${d.image}.webp`,
       alt: d.label[locale],
+      kicker: d.kicker[locale],
       label: d.label[locale],
+      subtitle: d.subtitle[locale],
       linkUrl: `/inspiration/${d.id}`,
     })),
     {
-      imgUrl: "/images/featured/ceramics.webp",
-      alt: text("All surfaces", "كل الخامات", "Toutes les surfaces"),
-      label: text("All surfaces", "كل الخامات", "Toutes les surfaces"),
+      imgUrl: "/images/featured/pattern.webp",
+      alt: text("Coastal Veranda & Lounge", "جلسة خارجية بإطلالة مفتوحة", "Véranda & salon extérieur"),
+      kicker: text("All Surfaces", "استكشف كل الخامات", "Toutes les surfaces"),
+      label: text("Coastal Veranda & Lounge", "جلسة خارجية بإطلالة مفتوحة", "Véranda & salon extérieur"),
+      subtitle: text(
+        "Browse all porcelain, ceramic & marble collections",
+        "تصفح كل مجموعات البورسلين والسيراميك والرخام",
+        "Parcourir toutes les collections de surfaces"
+      ),
       ariaLabel: text("Browse all materials", "تصفح كل الخامات", "Voir tous les matériaux"),
       linkUrl: "/products",
     },
@@ -109,7 +169,6 @@ export function Home() {
   return (
     <div className="idea-home-editorial">
       <HeroBrandFilm />
-      <SponsoredHeroVideo />
       <div className="idea-usp">{[
         {icon:Layers,to:"/products",title:text("Premium surface inspiration","إلهام بخامات فاخرة","Inspiration haut de gamme"),sub:text("Explore materials & finishes","اكتشف الخامات والتشطيبات","Matières & finitions")},
         {icon:FileText,to:"/request-quote/new",title:text("Private quote requests","طلبات عروض أسعار خاصة","Devis privés"),sub:text("Specify your project needs","حدد احتياجات مشروعك","Précisez votre projet")},
@@ -117,7 +176,6 @@ export function Home() {
       ].map(item=><Link to={item.to} key={item.to}><item.icon size={22}/><span>{item.title}<small>{item.sub}</small></span></Link>)}</div>
       <div className="idea-home-finder-scene"><HeroSearchPanel /></div>
       <FeaturedCollectionStrip />
-      <SponsoredCollectionCards />
       <section className="idea-home-section">
         <p className="idea-home-kicker">{text("Find your inspiration", "اكتشف إلهامك", "Trouvez votre inspiration")}</p>
         {EDITORIALS.map((item, index) => (
@@ -137,12 +195,12 @@ export function Home() {
         <SocialCards cards={destinationFanCards} />
       </section>
       <section className="idea-home-section"><article className="idea-home-story"><Link className="idea-home-story-image" to="/showrooms"><img src="/images/featured/stone.webp" alt={text("Online surface showroom", "معرض الخامات الإلكتروني", "Showroom virtuel")} loading="lazy" width={1600} height={900}/></Link><div className="idea-home-story-copy"><h2>{text("Your showroom experience.", "تجربة المعرض بطريقتك.", "Votre expérience showroom.")}</h2><p>{text("Discover surfaces in the interactive showroom and explore showroom information.", "اكتشف الخامات في المعرض التفاعلي وتصفح معلومات المعارض.", "Découvrez les surfaces dans notre showroom interactif.")}</p><Link className="idea-home-text-link" to="/showrooms">{text("Explore showrooms", "استكشف المعارض", "Explorer les showrooms")} <ArrowRight size={16}/></Link></div></article></section>
-      <section className="idea-home-section"><h2 className="idea-home-centered-title">{text("Explore the world of IDEA", "استكشف عالم IDEA", "Explorer l’univers IDEA")}</h2><div className="idea-home-resource-grid">{[
-        {icon:Play,to:"/videos",title:text("Video inspiration","إلهام بالفيديو","Inspiration vidéo"),body:text("Explore our media library status and interactive inspiration.","تصفح حالة مكتبة الفيديو والإلهام التفاعلي.","Médias et inspiration interactive.")},
-        {icon:FolderOpen,to:"/projects",title:text("Projects","المشروعات","Projets"),body:text("Discover project concepts and published work when available.","اكتشف أفكار المشروعات والأعمال المنشورة عند توفرها.","Concepts et réalisations disponibles.")},
-        {icon:Download,to:"/downloads",title:text("Downloads","التنزيلات","Téléchargements"),body:text("Take the current product index with you.","حمّل فهرس المنتجات الحالي.","Téléchargez l’index produits actuel.")},
-        {icon:MapPin,to:"/contact",title:text("Contact & appointments","التواصل والمواعيد","Contact & rendez-vous"),body:text("Find enquiry options and appointment availability.","اعرف طرق الاستفسار وحالة حجز المواعيد.","Renseignements et disponibilité des rendez-vous.")},
-      ].map(item=><Link to={item.to} key={item.to}><item.icon size={24}/><h3>{item.title}</h3><p>{item.body}</p><ArrowRight size={16}/></Link>)}</div></section>
+      <section className="idea-home-section">
+        <CardGrid
+          heading={text("Explore the world of IDEA", "استكشف عالم IDEA", "Explorer l’univers IDEA")}
+          cards={exploreIdeaCards}
+        />
+      </section>
       <section className="idea-home-section">
         <h2 className="idea-home-centered-title">{text("Design notes & guides", "أفكار وأدلة التصميم", "Conseils & guides")}</h2>
         <CollapsingCards cards={designGuideCards} ctaLabel={text("Read guide", "اقرأ الدليل", "Lire le guide")} />
@@ -155,13 +213,9 @@ export function Home() {
       <section className="idea-home-section"><div className="idea-home-newsletter"><div><h2>{text("Stay inspired.", "خليك دايمًا مُلهم.", "Gardez l’inspiration.")}</h2><p>{text("Read the latest IDEA guides. Email subscriptions will be available once the mailing service is connected.", "تابع أحدث أدلة IDEA. الاشتراك البريدي هيتاح بعد ربط خدمة المراسلات.", "Consultez les guides IDEA. Les emails seront disponibles après connexion du service.")}</p></div><Link className="idea-home-text-link" to="/updates">{text("Updates", "التحديثات", "Actualités")} <ArrowRight size={16}/></Link></div></section>
       <section className="idea-home-section">
         <h2 className="idea-home-centered-title">{t("home.sanitary")}</h2>
-        <div className="idea-home-bath-grid">{BATH_SLUGS.map((slug) => {
-          const c = COLLECTIONS.find((item) => item.slug === slug)!;
-          return <Link className="idea-home-bath-card" to={`/collections/${slug}`} key={slug}>
-            <img src={c.image} alt={c.title[locale]} width={600} height={450} loading="lazy" />
-            <span>{c.title[locale]}</span>
-          </Link>;
-        })}</div>
+        <div className="w-full h-[440px] sm:h-[500px] md:h-[560px] relative overflow-hidden">
+          <CircularGallery items={sanitaryGalleryItems} radius={460} autoRotateSpeed={0.04} />
+        </div>
       </section>
       {featuredProducts.length > 0 && (
         <section className="idea-home-section idea-products-showroom-section">

@@ -16,7 +16,7 @@ export function Resources() {
   const page=pathname.split("/")[1];
   const titles:Record<string,string>={about:text("About IDEA","عن IDEA","À propos d’IDEA"),showrooms:text("Showrooms","المعارض","Showrooms"),projects:text("Projects & inspiration","المشروعات والإلهام","Projets & inspiration"),downloads:text("Catalogues & downloads","الكتالوجات والتنزيلات","Catalogues & téléchargements"),contact:text("Contact & appointments","التواصل والمواعيد","Contact & rendez-vous"),journal:text("News & design guides","الأخبار وأدلة التصميم","Actualités & guides"),videos:text("Video inspiration","إلهام بالفيديو","Inspiration vidéo"),glossary:text("Tile glossary","دليل مصطلحات البلاط","Glossaire du carrelage"),updates:text("Stay in touch","خليك على تواصل","Restons en contact")};
   const d=DESTINATIONS.find(x=>x.id===destination); const guide=GUIDES.find(g=>g.id===guideId);
-  const matched=d ? products.filter(p=>(p.usage??[]).some(u=>u.toLowerCase()===({living:"living room",pool:"swimming pool"}[d.id]??d.id))) : [];
+  const matched=d ? products.filter(p=>(p.usage??[]).some(u=>u.toLowerCase().includes(d.usageKey))) : [];
   if (page === "contact") return <ContactPage />;
   const status=(message:string)=><p className="idea-service-status">{message}</p>;
   const actions=<div className="idea-resource-actions"><Link to="/products">{text("Browse products","تصفح المنتجات","Voir les produits")}</Link><Link to="/request-quote/new">{text("Request a quote","اطلب عرض سعر","Demander un devis")}</Link></div>;

@@ -1053,6 +1053,11 @@ export async function decideAdminVerification(payload: {
  * Marketplace B2B & Admin endpoints (exact contract of server/cpanel/api/marketplace.php)
  * -------------------------------------------------------------------------- */
 
+export async function fetchPublicMarketplaceTicker(): Promise<MarketplaceAnnouncement[]> {
+  const raw = await phpGet(PHP_MARKETPLACE_API, "ticker");
+  return Array.isArray(raw.announcements) ? (raw.announcements as MarketplaceAnnouncement[]) : [];
+}
+
 export async function fetchMarketplaceBootstrap(): Promise<MarketplaceBootstrap> {
   const raw = await phpGet(PHP_MARKETPLACE_API, "bootstrap");
   return raw as unknown as MarketplaceBootstrap;

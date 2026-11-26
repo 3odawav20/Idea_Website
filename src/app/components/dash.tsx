@@ -188,7 +188,7 @@ export function DashLayout({
             </button>
           </div>
           <nav
-            className="idea-dash-nav idea-glass-tablist idea-glass-tablist--vertical"
+            className={`idea-dash-nav idea-dash-rail-nav idea-glass-tablist idea-glass-tablist--vertical${mobileOpen ? " is-open" : ""}`}
             aria-label={title}
           >
             {links.map((l) => (

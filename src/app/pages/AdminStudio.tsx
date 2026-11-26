@@ -30,7 +30,8 @@ import "./AdminStudio.css";
 
 type Material = "ceramics" | "porcelain" | "tiles" | "marble";
 const MATERIALS: Material[] = ["ceramics", "porcelain", "tiles", "marble"];
-const MIN_PER_MATERIAL = 2000;
+const TARGET_PER_MATERIAL=2000;
+const MIN_PER_MATERIAL = TARGET_PER_MATERIAL;
 const format = (n: number) => new Intl.NumberFormat("en-US").format(n);
 const materialName = (s: string) => (s === "marble" ? "Natural marble" : s.charAt(0).toUpperCase() + s.slice(1));
 

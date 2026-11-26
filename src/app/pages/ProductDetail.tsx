@@ -13,7 +13,6 @@ import {
 import { useI18n } from "../i18n/i18n";
 import { useStore } from "../store/store";
 import { useBackend } from "../backend/db";
-import { supabase } from "../backend/supabaseClient";
 import type { Product } from "../data/types";
 import { ideaInternalCode, productMaker, sourceSku } from "../data/ideaProductIdentity";
 import { similarProducts } from "../data/recommendations";
@@ -54,7 +53,7 @@ export function ProductDetail() {
   const lightboxButton = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const [failedImages, setFailedImages] = useState<number[]>([]);
-  const [adminPrice, setAdminPrice] = useState<{ price: number; currency: string } | null>(null);
+  const [adminPrice] = useState<{ price: number; currency: string } | null>(null);
 
   useEffect(() => {
     setActiveImg(0);
@@ -70,22 +69,6 @@ export function ProductDetail() {
     dialogRef.current?.focus();
     return () => { document.body.style.overflow = oldOverflow; };
   }, [lightboxOpen]);
-
-  useEffect(() => {
-    setAdminPrice(null);
-    if (!product || session?.role !== "admin" || !supabase) return;
-    let active = true;
-    void supabase
-      .from("catalogue_admin_prices")
-      .select("price,currency")
-      .eq("product_id", product.id)
-      .maybeSingle()
-      .then(({ data, error }) => {
-        if (!active || error || !data) return;
-        setAdminPrice({ price: Number(data.price), currency: data.currency });
-      });
-    return () => { active = false; };
-  }, [product?.id, session?.role]);
 
   const copy = (value: Copy) => value[locale];
 
@@ -126,7 +109,7 @@ export function ProductDetail() {
   const isTile = product.collection === "ceramics" || product.collection === "porcelain" || product.collection === "marble";
   const unit = isTile ? "sqm" : "pieces";
   const fav = isFavorite(product.id);
-  const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? product.collection.replaceAll("-", " ");
+  const collectionLabel = COLLECTION_LABELS[product.collection]?.[locale] ?? String(product.collection).replaceAll("-", " ");
 
   const applicationGroups = (() => {
     if (!isTile) {

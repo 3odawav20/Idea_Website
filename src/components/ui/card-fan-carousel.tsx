@@ -9,7 +9,9 @@ export interface CardItem {
   imgUrl: string;
   alt?: string;
   linkUrl?: string;
+  kicker?: string;
   label?: string;
+  subtitle?: string;
   ariaLabel?: string;
 }
 
@@ -289,9 +291,15 @@ export function SocialCards({ cards }: SocialCardsProps) {
                 {captionText && (
                   <span
                     dir="auto"
-                    className="fan-card-label absolute inset-x-0 bottom-0 z-20 px-3 pt-8 pb-3.5 text-center text-white font-semibold tracking-wide"
+                    className="fan-card-label absolute inset-x-0 bottom-0 z-20 flex flex-col items-center justify-end gap-1 px-3.5 pt-12 pb-4 text-center text-white"
                   >
-                    {captionText}
+                    {card.kicker && (
+                      <span className="fan-card-kicker">{card.kicker}</span>
+                    )}
+                    <span className="fan-card-title">{captionText}</span>
+                    {card.subtitle && (
+                      <span className="fan-card-subtitle">{card.subtitle}</span>
+                    )}
                   </span>
                 )}
               </div>

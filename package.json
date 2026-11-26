@@ -4,8 +4,10 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "build": "vite build",
-    "build:cpanel": "vite build && node scripts/build-cpanel.mjs",
+    "verify:mysql": "node scripts/verify-mysql-only.mjs",
+    "build": "node scripts/verify-mysql-only.mjs && vite build",
+    "build:cpanel": "node scripts/verify-mysql-only.mjs && vite build && node scripts/build-cpanel.mjs",
+    "lint": "node scripts/verify-mysql-only.mjs && node --test tests/*.test.mjs",
     "test:visualizer": "node --test tests/visualizer.test.mjs",
     "dev": "vite --host 0.0.0.0 --port 3000",
     "preview": "vite preview --host 0.0.0.0 --port 3000"
@@ -15,15 +17,12 @@
     "@emotion/styled": "11.14.1",
     "@figma/astraui": "1.0.0",
     "@figma/astraui-kit": "0.1.3",
-    "@firebase/eslint-plugin-security-rules": "^0.0.2",
-    "@supabase/supabase-js": "^2.116.0",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "cmdk": "1.1.1",
     "date-fns": "3.6.0",
     "embla-carousel-react": "8.6.0",
     "eslint": "^10.15.0",
-    "firebase": "^13.4.0",
     "gsap": "^3.15.1",
     "input-otp": "1.4.2",
     "lucide-react": "0.487.0",
@@ -49,11 +48,33 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.12",
+    "@types/node": "22.20.5",
+    "@types/react": "18.3.28",
+    "@types/react-dom": "18.3.7",
+    "@types/three": "0.181.0",
     "@vitejs/plugin-react": "4.7.0",
+    "esbuild": "0.25.10",
     "tailwindcss": "4.1.12",
+    "tsx": "^4.23.15",
+    "typescript": "6.0.3",
     "vite": "6.4.6"
   },
-  "overrides": {
-    "vite": "6.4.6"
-  }
+  "pnpm": {
+    "overrides": {
+      "@babel/core": "7.29.6",
+      "@grpc/grpc-js": "1.13.6",
+      "baseline-browser-mapping": "2.11.0",
+      "browserslist": "4.28.7",
+      "lodash": "4.18.0",
+      "nanoid": "3.3.18",
+      "picomatch": "4.0.4",
+      "postcss": "8.5.23",
+      "react-router": "7.18.2",
+      "source-map-js": "1.2.2",
+      "tar": "7.5.21",
+      "vite": "6.4.6",
+      "yaml": "1.10.3"
+    }
+  },
+  "packageManager": "pnpm@10.0.0"
 }
