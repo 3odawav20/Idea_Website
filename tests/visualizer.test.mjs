@@ -4,6 +4,8 @@ import { readFileSync, existsSync } from "node:fs";
 
 const app = readFileSync("src/app/App.tsx", "utf8");
 const page = readFileSync("src/app/pages/AiVisualizerStudio.tsx", "utf8");
+const layout = readFileSync("src/app/components/Layout.tsx", "utf8");
+const roomvo = readFileSync("src/app/components/RoomvoAssistant.tsx", "utf8");
 const cards = readFileSync("src/app/components/ProductCard.tsx", "utf8");
 const detail = readFileSync("src/app/pages/ProductDetail.tsx", "utf8");
 const server = readFileSync("server/cpanel/idea-accounts-api/visualize.php", "utf8");
@@ -72,4 +74,16 @@ test("walls and floor have independent catalogue selections and one logical MySQ
   assert.equal((surfaces.match(/INSERT INTO idea_ai_jobs/g) || []).length, 1);
   assert.ok(surfaces.indexOf("accountRate('ai-create'") < surfaces.indexOf("return platformTransaction("),
     "the production rate limiter opens its own transaction");
+});
+
+
+test("Roomvo Assistant is installed once with the official IDEA widget configuration", () => {
+  assert.match(layout, /RoomvoAssistant/);
+  assert.match(layout, /RoomvoAssistantPanel/);
+  assert.match(roomvo, /https:\/\/www\\.roomvo\\.com\/static\/scripts\/b2b\/common\/assistant\\.js/);
+  assert.match(roomvo, /roomvoAssistant/);
+  assert.match(roomvo, /data-locale", "ar-eg/);
+  assert.match(roomvo, /data-position", "bottom-right/);
+  assert.match(roomvo, /idea-roomvo-assistant-active/);
+  assert.match(roomvo, /not automatically synchronized to Roomvo/);
 });
