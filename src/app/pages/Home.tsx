@@ -18,7 +18,8 @@ import { GUIDES } from "./Resources";
 import { useCollectionDestinations } from "../components/useCollectionDestinations";
 import SocialCards from "@/components/ui/card-fan-carousel";
 import CollapsingCards from "@/components/ui/cue-collapsing-cards-accordion";
-import CardGrid, { type CardGridItem } from "@/components/CardGrid";
+import type { CardGridItem } from "@/components/CardGrid";
+import { PerspectiveGallery } from "@/components/ui/perspective-gallery";
 import CircularGallery, { type GalleryItem } from "@/components/ui/circular-gallery";
 
 const EDITORIALS = [
@@ -198,9 +199,13 @@ export function Home() {
       </section>
       <section className="idea-home-section"><article className="idea-home-story"><Link className="idea-home-story-image" to="/showrooms"><img src="/images/featured/stone.webp" alt={text("Online surface showroom", "معرض الخامات الإلكتروني", "Showroom virtuel")} loading="lazy" width={1600} height={900}/></Link><div className="idea-home-story-copy"><h2>{text("Your showroom experience.", "تجربة المعرض بطريقتك.", "Votre expérience showroom.")}</h2><p>{text("Discover surfaces in the interactive showroom and explore showroom information.", "اكتشف الخامات في المعرض التفاعلي وتصفح معلومات المعارض.", "Découvrez les surfaces dans notre showroom interactif.")}</p><Link className="idea-home-text-link" to="/showrooms">{text("Explore showrooms", "استكشف المعارض", "Explorer les showrooms")} <ArrowRight size={16}/></Link></div></article></section>
       <section className="idea-home-section">
-        <CardGrid
-          heading={text("Explore the world of IDEA", "استكشف عالم IDEA", "Explorer l’univers IDEA")}
-          cards={exploreIdeaCards}
+        <PerspectiveGallery
+          title={text("Explore the world of IDEA", "استكشف عالم IDEA", "Explorer l’univers IDEA")}
+          description={text("Move across the gallery or use the arrows to explore.", "حرّك المؤشر على المعرض أو استخدم الأسهم للاستكشاف.", "Parcourez la galerie ou utilisez les flèches.")}
+          dir={locale === "ar" ? "rtl" : "ltr"}
+          previousLabel={text("Previous", "السابق", "Précédent")}
+          nextLabel={text("Next", "التالي", "Suivant")}
+          items={exploreIdeaCards.map((card) => ({ ...card, subtitle: card.description ?? "" }))}
         />
       </section>
       <section className="idea-home-section">
