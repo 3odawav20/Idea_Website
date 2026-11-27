@@ -454,3 +454,26 @@
   .idea-studio .idea-studio-material { order: 3; }
   .idea-studio .idea-studio-rail-head { padding-block: 4px; }
 }
+
+
+/* IDEA visualizer: official brand, near-black dark mode and real spherical product faces. */
+.idea-studio-brandmark{width:auto;height:38px;display:flex;align-items:center;justify-content:flex-start;border:0;background:transparent;box-shadow:none}
+.idea-studio-brandmark .idea-official-logo--compact{width:116px;max-width:116px}
+.idea-studio-brandmark .idea-official-logo img{width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 1px 2px rgba(0,0,0,.45))}
+.idea-studio-brand-copy small{display:block;color:var(--studio-muted);font-size:8px;letter-spacing:.12em;white-space:nowrap}
+.idea-studio-library .idea-studio-swatch-image{display:grid;place-items:center;aspect-ratio:1.18;min-height:172px;overflow:visible;border:0;background:transparent;isolation:isolate}
+.idea-studio-library .idea-studio-swatch-image::after{position:absolute;z-index:0;inset-block-end:11%;inset-inline-start:50%;width:58%;height:9%;border-radius:50%;background:radial-gradient(ellipse,rgba(0,0,0,.46),rgba(0,0,0,.12) 54%,transparent 78%);filter:blur(13px);transform:translateX(-50%);content:"";pointer-events:none}
+.idea-studio-library .idea-studio-material-orb{position:relative;z-index:1;display:block;width:min(78%,194px);aspect-ratio:1;border:1px solid rgba(255,255,255,.26);border-radius:50%;box-shadow:0 18px 27px rgba(0,0,0,.34),0 4px 9px rgba(0,0,0,.18);transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s ease}
+.idea-studio-library .idea-studio-swatches>.idea-atlas-product>button:hover .idea-studio-material-orb{transform:translate3d(0,-5px,12px) scale(1.025);box-shadow:0 24px 34px rgba(0,0,0,.42),0 6px 12px rgba(0,0,0,.2)}
+.idea-studio-library .idea-studio-swatch-image i{z-index:3;inset-block-start:12px;inset-inline-start:auto;inset-inline-end:12px;bottom:auto}
+.idea-studio-library .idea-studio-swatches>.idea-atlas-product>button.selected .idea-studio-swatch-image{border-color:transparent}
+[data-theme="dark"] .idea-studio{--studio-bg:#050505;--studio-panel:#0b0b0b;--studio-panel-2:#121212;--studio-line:rgba(253,100,1,.18);background:#050505;color:#f2ece4}
+[data-theme="dark"] .idea-studio-commandbar{background:rgba(0,0,0,.97)}
+[data-theme="dark"] .idea-studio-intro{background:linear-gradient(115deg,#050505 0%,#101010 54%,#060606 100%)}
+[data-theme="dark"] .idea-studio-rail,[data-theme="dark"] .idea-studio-canvas,[data-theme="dark"] .idea-studio-library{background:#090909}
+[data-theme="dark"] .idea-studio button:not(.idea-studio-colors button){border-color:rgba(253,100,1,.24);background:#101010;color:#eee7dd}
+[data-theme="dark"] .idea-studio button:not(.idea-studio-colors button):hover:not(:disabled){border-color:rgba(253,100,1,.62);background:#1a1a1a;color:#f0c993}
+[data-theme="dark"] .idea-studio button[aria-pressed="true"]:not(.idea-studio-colors button),[data-theme="dark"] .idea-studio button.active:not(.idea-studio-colors button){border-color:#fd6401;background:#1b1510;color:#fff0df}
+[data-theme="dark"] .idea-studio button:disabled{opacity:.42}
+@media(max-width:680px){.idea-studio-brandmark .idea-official-logo--compact{width:104px;max-width:104px}.idea-studio-brand-copy small{display:none}.idea-studio-library .idea-studio-swatch-image{min-height:132px}.idea-studio-library .idea-studio-material-orb{width:min(76%,150px)}}
+@media(prefers-reduced-motion:reduce){.idea-studio-library .idea-studio-material-orb{transition:none}}

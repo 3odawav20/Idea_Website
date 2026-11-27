@@ -39,12 +39,13 @@ test("brand attribution has auditable provenance and does not expose supplier pr
     else assert.equal(item.product_brand_evidence,null);
   }
 });
-test("material-only product cards distinguish actual maker, brand and IDEA references",()=>{
+test("marketplace cards preserve maker evidence while the AI picker uses IDEA identity only",()=>{
   assert.match(card,/ideaInternalCode\(product\)/);
   assert.match(card,/productMaker\(product, locale\)/);
   assert.match(card,/maker\.verified \? maker\.value : product\.brand/);
   assert.match(card,/idea-material-photo/);
   assert.match(studio,/materialFaces\(product\)\[0\]/);
   assert.match(studio,/ideaInternalCode\(product\)/);
-  assert.match(studio,/sourceSku\(product\)/);
+  assert.match(studio,/IDEA catalogue product/);
+  assert.doesNotMatch(studio,/sourceSku\(product\)|Supplier SKU|productMaker\(product, locale\)/);
 });
