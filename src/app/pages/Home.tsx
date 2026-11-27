@@ -8,7 +8,6 @@ import type { Product } from "../data/types";
 import { HeroBrandFilm } from "../components/HeroBrandFilm";
 import { HeroSearchPanel } from "../components/HeroSearchPanel";
 import { distinctStorefrontProducts } from "../data/storefrontDistinct";
-import { SurfaceMaterialStrip } from "../components/SurfaceMaterialStrip";
 import { FeaturedCollectionStrip } from "../components/FeaturedCollectionStrip";
 import { Material3DProductCard, FEATURED_PRODUCT_IDS } from "./Products";
 import "./Products.css";
@@ -193,7 +192,6 @@ export function Home() {
           </article>
         ))}
       </section>
-      <SurfaceMaterialStrip />
       <section className="idea-home-section">
         <h2 className="idea-home-centered-title">{text("Search your destination", "اختار مساحتك", "Choisissez votre espace")}</h2>
         <SocialCards cards={destinationFanCards} />
