@@ -5,7 +5,6 @@ import { readFileSync, existsSync } from "node:fs";
 const app = readFileSync("src/app/App.tsx", "utf8");
 const page = readFileSync("src/app/pages/AiVisualizerStudio.tsx", "utf8");
 const layout = readFileSync("src/app/components/Layout.tsx", "utf8");
-const roomvo = readFileSync("src/app/components/RoomvoAssistant.tsx", "utf8");
 const cards = readFileSync("src/app/components/ProductCard.tsx", "utf8");
 const detail = readFileSync("src/app/pages/ProductDetail.tsx", "utf8");
 const server = readFileSync("server/cpanel/idea-accounts-api/visualize.php", "utf8");
@@ -77,13 +76,9 @@ test("walls and floor have independent catalogue selections and one logical MySQ
 });
 
 
-test("Roomvo Assistant is installed once with the official IDEA widget configuration", () => {
-  assert.match(layout, /RoomvoAssistant/);
-  assert.match(layout, /RoomvoAssistantPanel/);
-  assert.match(roomvo, /https:\/\/www\.roomvo\.com\/static\/scripts\/b2b\/common\/assistant\.js/);
-  assert.match(roomvo, /roomvoAssistant/);
-  assert.match(roomvo, /data-locale", "ar-eg/);
-  assert.match(roomvo, /data-position", "bottom-right/);
-  assert.match(roomvo, /idea-roomvo-assistant-active/);
-  assert.match(roomvo, /not automatically synchronized to Roomvo/);
+test("third-party Roomvo assistant is absent while IDEA visualizer remains routed", () => {
+  assert.match(app, /path="\/ai-room-visualizer" element=\{<AiVisualizerStudio/);
+  assert.doesNotMatch(layout, /RoomvoAssistant|roomvo\.com|roomvoAssistant/i);
+  assert.equal(existsSync("src/app/components/RoomvoAssistant.tsx"), false);
+  assert.equal(existsSync("src/app/components/RoomvoAssistant.css"), false);
 });
