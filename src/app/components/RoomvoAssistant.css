@@ -1,0 +1,87 @@
+.idea-roomvo-panel {
+  width: min(calc(100% - 32px), 1748px);
+  margin: 16px auto 20px;
+  padding: clamp(16px, 2.4vw, 28px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px 28px;
+  color: #f4eee5;
+  border: 1px solid rgba(217, 170, 108, .32);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 84% 18%, rgba(217,170,108,.16), transparent 34%),
+    linear-gradient(115deg, #111211, #1b1916 62%, #111);
+  box-shadow: 0 14px 36px rgba(0,0,0,.16);
+}
+.idea-roomvo-panel-copy { min-width: 0; }
+.idea-roomvo-panel-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #e4b77f;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .18em;
+}
+.idea-roomvo-panel-kicker i { font-style: normal; opacity: .6; }
+.idea-roomvo-panel h2 {
+  margin: 8px 0 6px;
+  color: #fffaf2;
+  font: 500 clamp(20px, 2.2vw, 29px)/1.2 var(--idea-font-display, Georgia, serif);
+}
+.idea-roomvo-panel-copy p {
+  max-width: 760px;
+  margin: 0;
+  color: #c5bdb2;
+  font-size: 13px;
+  line-height: 1.75;
+}
+.idea-roomvo-panel-mark {
+  min-width: 190px;
+  padding: 14px 18px;
+  display: grid;
+  gap: 5px;
+  border-inline-start: 1px solid rgba(217,170,108,.42);
+}
+.idea-roomvo-panel-mark span {
+  color: #e4b77f;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .16em;
+}
+.idea-roomvo-panel-mark strong { color: #fff6e9; font-size: 13px; }
+.idea-roomvo-panel-mark small { color: #b5aa9c; font-size: 10px; }
+.idea-roomvo-panel-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid rgba(217,170,108,.17);
+  color: #b8b0a6;
+  font-size: 11px;
+  line-height: 1.7;
+}
+[data-theme="light"] .idea-roomvo-panel {
+  color: #25211c;
+  border-color: rgba(142,94,48,.25);
+  background:
+    radial-gradient(circle at 84% 18%, rgba(185,130,76,.13), transparent 34%),
+    linear-gradient(115deg, #fff, #f4eee6 62%, #fff);
+  box-shadow: 0 12px 30px rgba(52,39,24,.08);
+}
+[data-theme="light"] .idea-roomvo-panel h2 { color: #211b15; }
+[data-theme="light"] .idea-roomvo-panel-copy p,
+[data-theme="light"] .idea-roomvo-panel-note { color: #62594f; }
+[data-theme="light"] .idea-roomvo-panel-mark { border-color: rgba(142,94,48,.3); }
+[data-theme="light"] .idea-roomvo-panel-mark strong { color: #282019; }
+[data-theme="light"] .idea-roomvo-panel-mark small { color: #6d6258; }
+
+@media (max-width: 680px) {
+  .idea-roomvo-panel { grid-template-columns: 1fr; }
+  .idea-roomvo-panel-mark {
+    min-width: 0;
+    padding: 10px 0 0;
+    border-inline-start: 0;
+    border-top: 1px solid rgba(217,170,108,.25);
+  }
+}

@@ -25,3 +25,20 @@
 @keyframes idea-ask-orbit{to{transform:rotate(360deg)}}@keyframes idea-ask-pulse{50%{transform:scale(1.13);opacity:.25}}@keyframes idea-ask-appear{from{transform:translateY(10px);opacity:0}to{transform:translateY(0);opacity:1}}
 @media(max-width:480px){.idea-ask-root{inset-inline-end:13px;bottom:calc(12px + env(safe-area-inset-bottom,0px))}.idea-ask-launcher{width:65px;height:65px}.idea-ask-panel{bottom:76px;height:min(540px,calc(100dvh - 104px));border-radius:18px}.idea-ask-launcher-logo{width:54px}.idea-ask-launcher-logo .idea-official-logo--compact{width:54px!important}}
 @media(prefers-reduced-motion:reduce){.idea-ask-launcher::before,.idea-ask-launcher::after,.idea-ask-panel{animation:none}.idea-ask-launcher{transition:none}}
+
+
+/* Keep IDEA's own chat launcher clear of the Roomvo Assistant widget. */
+body.idea-roomvo-assistant-active .idea-ask-root {
+  left: clamp(12px, 2.1vw, 34px);
+  right: auto;
+  inset-inline-end: auto;
+}
+body.idea-roomvo-assistant-active .idea-ask-panel {
+  left: 0;
+  right: auto;
+  inset-inline-end: auto;
+}
+@media (max-width: 480px) {
+  body.idea-roomvo-assistant-active .idea-ask-root { left: 13px; right: auto; inset-inline-end: auto; }
+  body.idea-roomvo-assistant-active .idea-ask-panel { left: 0; right: auto; inset-inline-end: auto; }
+}
