@@ -5,7 +5,6 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { AskIdea } from "./AskIdea";
 import { CookieNotice } from "./CookieNotice";
-import { RoomvoAssistant, RoomvoAssistantPanel } from "./RoomvoAssistant";
 
 export function Layout() {
   const { pathname } = useLocation();
@@ -42,14 +41,12 @@ export function Layout() {
             exit={reduce ? { opacity: 0 } : { opacity: 0, y: -8 }}
             transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
           >
-            {pathname === "/ai-room-visualizer" && <RoomvoAssistantPanel />}
             <Outlet />
           </motion.div>
         </AnimatePresence>
       </main>
       <Footer />
       <AskIdea />
-      <RoomvoAssistant />
       <CookieNotice />
     </div>
   );
