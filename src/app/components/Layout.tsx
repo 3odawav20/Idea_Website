@@ -1,4 +1,7 @@
 import { useEffect } from "react";
+import { ShaderBackground } from "@/components/ui/light-shader";
+import { useTheme } from "../theme/theme";
+import "./ShaderBackground.css";
 import { Outlet, useLocation, useNavigationType } from "react-router";
 import { motion, useScroll, useSpring, useReducedMotion, AnimatePresence } from "motion/react";
 import { Header } from "./Header";
@@ -8,6 +11,8 @@ import { CookieNotice } from "./CookieNotice";
 
 export function Layout() {
   const { pathname } = useLocation();
+  const { mode } = useTheme();
+  const shaderEnabled = pathname === "/" || pathname === "/products" || pathname.startsWith("/products/") || pathname.startsWith("/collections") || pathname === "/contact";
   const navigationType = useNavigationType();
   const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll();
@@ -21,7 +26,8 @@ export function Layout() {
   }, [pathname, navigationType, reduce]);
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--idea-bg)" }}>
+    <div className={shaderEnabled ? "idea-shader-layout" : undefined} style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--idea-bg)" }}>
+      {shaderEnabled && <ShaderBackground className="idea-site-shader" mode={mode} />}
       {/* Reading progress — thin gold sweep pinned to the very top */}
       <motion.div
         aria-hidden
