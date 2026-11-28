@@ -6,8 +6,11 @@ import { Footer } from "./Footer";
 import { AskIdea } from "./AskIdea";
 import { CookieNotice } from "./CookieNotice";
 import { RoomvoAssistant, RoomvoAssistantPanel } from "./RoomvoAssistant";
+import { ShaderBackground } from "@/components/ui/light-shader";
+import { useTheme } from "../theme/theme";
 
 export function Layout() {
+  const { mode } = useTheme();
   const { pathname } = useLocation();
   const navigationType = useNavigationType();
   const reduce = useReducedMotion();
@@ -22,7 +25,12 @@ export function Layout() {
   }, [pathname, navigationType, reduce]);
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--idea-bg)" }}>
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", background: "var(--idea-bg)", isolation: "isolate" }}>
+      {mode === "dark" && !reduce && (
+        <div aria-hidden style={{ position: "fixed", inset: 0, zIndex: -1, pointerEvents: "none" }}>
+          <ShaderBackground className="h-full w-full" />
+        </div>
+      )}
       {/* Reading progress — thin gold sweep pinned to the very top */}
       <motion.div
         aria-hidden
