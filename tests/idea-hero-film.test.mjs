@@ -50,7 +50,7 @@ test("branded word-by-word captions maintain white/orange contrast and progressi
  assert.match(styles,/color:\s*#fff/);
  assert.match(styles,/idea-film-word-reveal/);
  assert.match(styles,/text-shadow:/);
- assert.match(styles,/font-family:\s*'Audiowide'/);
+ assert.match(styles,/font-family:\s*["\']Comic Neue["\'],\s*cursive\s*!important/);
  assert.match(styles,/html\[lang="ar"\].*\.idea-film-caption h1/);
  assert.match(styles,/prefers-reduced-motion:\s*reduce/);
 });
