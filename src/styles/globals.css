@@ -520,3 +520,9 @@ html[lang] :where(h1, h2, h3, h4) {
     cursor: not-allowed;
   }
 }
+
+/* Dark mode: let the fixed shader background rendered in Layout show through the page.
+   Layout's root keeps var(--idea-bg) underneath, so reduced-motion users still get a solid dark page. */
+[data-theme='dark'] :is(.idea-home-editorial, .idea-featured) {
+  background: transparent;
+}
