@@ -277,3 +277,21 @@ export async function verifyWhatsAppOtp(payload: {
   }
   return data as unknown as PhpSession;
 }
+
+export async function authenticateGoogleBusiness(payload: Record<string, unknown>): Promise<PhpSession> {
+  const session = await getPhpSession();
+  const response = await fetch(SOCIAL_AUTH_API + "?action=google-business", {
+    method: "POST", credentials: "same-origin", cache: "no-store",
+    headers: { "Content-Type": "application/json", Accept: "application/json", "X-CSRF-Token": session.csrf },
+    body: JSON.stringify(payload),
+  });
+  const data = await parseAccountResponse(response);
+  const user = data.user as PhpUser | undefined;
+  if (!user?.id || user.role !== "supplier") throw new Error("BUSINESS_ACCOUNT_REQUIRED");
+  return getPhpSession();
+}
+export async function googleBusinessReadiness(): Promise<{ready:boolean;clientId:string|null}> {
+  const response = await fetch(SOCIAL_AUTH_API + "?action=providers", {credentials:"same-origin",cache:"no-store",headers:{Accept:"application/json"}});
+  const data = await parseAccountResponse(response);
+  return {ready:data.businessGoogle===true, clientId:typeof data.googleClientId==="string"?data.googleClientId:null};
+}
